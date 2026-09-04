@@ -8,19 +8,31 @@ export default async function handler(req, res) {
     }
 
     let symbol = "XAUUSD";
-    let currentPrice = 4476.64;
+    let currentPrice = null;
 
     try {
         if (req.body) {
             if (req.body.symbol) symbol = req.body.symbol.toUpperCase();
+            if (req.body.price) currentPrice = parseFloat(req.body.price);
             if (req.body.currentPrice) currentPrice = parseFloat(req.body.currentPrice);
-        } else if (req.query) {
+        }
+        if (req.query) {
             if (req.query.symbol) symbol = req.query.symbol.toUpperCase();
+            if (req.query.price) currentPrice = parseFloat(req.query.price);
             if (req.query.currentPrice) currentPrice = parseFloat(req.query.currentPrice);
         }
     } catch (e) {}
 
-    const apiKey = process.env.DEEPSEEK_API_KEY || "";
+    // Default price normalization per asset
+    if (symbol.includes("XAG") || symbol.includes("SILVER")) {
+        if (!currentPrice || currentPrice > 100) currentPrice = 38.42;
+    } else if (symbol.includes("BTC")) {
+        if (!currentPrice || currentPrice < 1000) currentPrice = 94850.0;
+    } else if (symbol.includes("EUR")) {
+        if (!currentPrice || currentPrice > 10) currentPrice = 1.0832;
+    } else {
+        if (!currentPrice || currentPrice < 1000) currentPrice = 4473.50;
+    }
 
     // -------------------------------------------------------------
     // ASSET-SPECIFIC INSTITUTIONAL INTELLIGENCE & MACRO ENGINE
@@ -33,7 +45,7 @@ export default async function handler(req, res) {
             verdict: isAboveInitial ? "BULLISH EXPANSION (HIGH BETA)" : "STRONG BUY (DISCOUNT DEMAND)",
             confidence: "92%",
             trade_state: isAboveInitial ? "EXPANDING WITH GOLD — PULLBACK ADVISORY" : "ACCUMULATION ZONE ACTIVE",
-            summary: `Silver ($${currentPrice.toFixed(2)}) is reacting to Gold's DXY macro tailwind with high-beta leverage. Secondary entry @ $38.20–$38.35.`,
+            summary: `Silver ($${currentPrice.toFixed(2)}) is reacting to Gold's DXY macro tailwind with high-beta leverage. Secondary entry @ $38.15–$38.30.`,
             smart_money_story: `Silver (XAGUSD) exhibits a +0.88 institutional correlation with Gold. Following the Asian session liquidity harvest below $37.85, smart money absorbed commercial limit orders into the 4H Discount POI ($37.80–$38.15). With DXY softening (104.12) and industrial supply tightness, Silver is primed for an aggressive expansion targeting the $39.20 BSL and $40.50 Macro Whale Sell Wall.`,
             intermarket_impact: `⚡ **Intermarket Macro Impact on Silver:** Gold's breakout directly fuels Silver upside with 1.5x–2.0x beta volatility. Weakening US Dollar Index (DXY -0.35%) and falling real yields are exceptionally bullish for Silver.`,
             missed_trade_advisory: {

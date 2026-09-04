@@ -1477,7 +1477,7 @@
             },
             'XAGUSD': {
                 name: 'Spot Silver / US Dollar',
-                binance: '', // Silver calculated proxy or TV
+                binance: '',
                 tv: 'OANDA:XAGUSD',
                 decimals: 2,
                 directionCall: 'SILVER WILL BUY (HIGH BETA EXPANSION TO $39.20 - $40.50)',
@@ -1852,10 +1852,74 @@
             }
         }
 
+        function updatePillarGrid(symbol) {
+            const techEl = document.getElementById('pillar-tech-body');
+            const ofEl = document.getElementById('pillar-of-body');
+            const fvgEl = document.getElementById('pillar-fvg-body');
+            const macroEl = document.getElementById('pillar-macro-body');
+
+            if (symbol === 'XAGUSD') {
+                if (techEl) techEl.innerHTML = `• <b>4H Trend:</b> Bullish Expansion | 50% Equilibrium @ $38.10<br/>• <b>1H Structure:</b> Bullish OB + FVG Retest @ $38.15 - $38.30<br/>• <b>15M Microstructure:</b> Bullish CHoCH Breakout Confirmed`;
+                if (ofEl) ofEl.innerHTML = `• <b>Buy Wall Defense:</b> $8.4M (2.4M Oz) @ $37.80<br/>• <b>Sell Wall Target:</b> $12.1M (3.1M Oz) @ $40.50<br/>• <b>Delta Pressure:</b> Aggressive spot metal buying (+180K Oz)`;
+                if (fvgEl) fvgEl.innerHTML = `• <b>1H Bullish FVG:</b> $38.00 – $38.20 (Mitigated)<br/>• <b>15M Discount FVG:</b> $38.15 – $38.30 (Pullback Zone)<br/>• <b>4H Overhead Void:</b> Target $39.20 ➔ $40.50`;
+                if (macroEl) macroEl.innerHTML = `• <b>Gold Beta Correlation:</b> +0.88 (1.5x Beta Leverage)<br/>• <b>DXY Weakness:</b> 104.12 (-0.35% Metal Tailwinds)<br/>• <b>Industrial Demand:</b> Global silver supply deficit tailwind`;
+            } else if (symbol === 'BTCUSD') {
+                if (techEl) techEl.innerHTML = `• <b>4H Trend:</b> Bullish Consolidation | 50% Equilibrium @ $93,500<br/>• <b>1H Structure:</b> Demand Absorption @ $93,600 - $94,000<br/>• <b>15M Microstructure:</b> Higher Low Structure Intact`;
+                if (ofEl) ofEl.innerHTML = `• <b>Buy Wall Defense:</b> $42.5M Limit Bids @ $93,000<br/>• <b>Sell Wall Target:</b> $65.8M Limit Asks @ $98,800<br/>• <b>Delta Pressure:</b> Spot ETF inflow accumulation (+3,240 BTC)`;
+                if (fvgEl) fvgEl.innerHTML = `• <b>1H Bullish FVG:</b> $93,200 – $93,800 (Mitigated)<br/>• <b>15M Demand Zone:</b> $93,600 – $94,000 (Pullback Zone)<br/>• <b>4H Overhead Void:</b> Target $96,500 ➔ $98,800`;
+                if (macroEl) macroEl.innerHTML = `• <b>Risk-On Liquidity:</b> Capital rotation into digital assets<br/>• <b>DXY Softness:</b> 104.12 easing yields<br/>• <b>Funding Rate:</b> 0.01% Neutral reset`;
+            } else if (symbol === 'EURUSD') {
+                if (techEl) techEl.innerHTML = `• <b>4H Trend:</b> Bullish Reversal | 50% Equilibrium @ 1.0820<br/>• <b>1H Structure:</b> Demand Rebound @ 1.0825 - 1.0835<br/>• <b>15M Microstructure:</b> Asian Low Swept & Rejected`;
+                if (ofEl) ofEl.innerHTML = `• <b>Buy Wall Defense:</b> €180M Limit Bids @ 1.0805<br/>• <b>Sell Wall Target:</b> €240M Limit Asks @ 1.0965<br/>• <b>Delta Pressure:</b> London desk buyer absorption (+850 lots)`;
+                if (fvgEl) fvgEl.innerHTML = `• <b>1H Bullish FVG:</b> 1.0815 – 1.0830 (Mitigated)<br/>• <b>15M Discount FVG:</b> 1.0825 – 1.0835 (Pullback Zone)<br/>• <b>4H Overhead Void:</b> Target 1.0910 ➔ 1.0965`;
+                if (macroEl) macroEl.innerHTML = `• <b>DXY Inversion:</b> Dollar Index rejection at 104.20<br/>• <b>ECB Policy:</b> Rate pause expectations priced in<br/>• <b>News Guard:</b> US NFP (06:00 PM IST)`;
+            } else {
+                if (techEl) techEl.innerHTML = `• <b>4H Trend:</b> Bullish Expansion | 50% Equilibrium @ $4465.00<br/>• <b>1H Structure:</b> Bullish OB + FVG Retest @ $4466.20 - $4469.00<br/>• <b>15M Microstructure:</b> Bullish CHoCH Breakout Confirmed`;
+                if (ofEl) ofEl.innerHTML = `• <b>Buy Wall Defense:</b> $24.6M (18,450 Lots) @ $4462.50<br/>• <b>Sell Wall Target:</b> $19.1M (14,200 Lots) @ $4488.50<br/>• <b>Delta Pressure:</b> Aggressive limit order buying (+4,820 Lots)`;
+                if (fvgEl) fvgEl.innerHTML = `• <b>1H Bullish FVG:</b> $4466.20 – $4469.00 (Mitigated)<br/>• <b>15M Discount FVG:</b> $4470.00 – $4471.20 (Pullback Zone)<br/>• <b>4H Overhead Void:</b> Target $4478.00 ➔ $4488.50`;
+                if (macroEl) macroEl.innerHTML = `• <b>DXY (Dollar Index):</b> 104.12 (-0.35% Weakness ➔ Gold Tailwinds)<br/>• <b>US 10Y Yields:</b> 4.21% (Easing pressure)<br/>• <b>News Guard:</b> High-impact US NFP (06:00 PM IST)`;
+            }
+        }
+
         function switchAsset(symbol) {
             activeSymbol = symbol;
             const asset = assetDefinitions[symbol] || assetDefinitions['XAUUSD'];
             
+            // Set initial asset prices immediately
+            if (symbol === 'XAGUSD') {
+                liveBid = 38.42;
+                liveSpreadPts = 0.04;
+                liveAsk = 38.46;
+            } else if (symbol === 'BTCUSD') {
+                liveBid = 94850.0;
+                liveSpreadPts = 12.0;
+                liveAsk = 94862.0;
+            } else if (symbol === 'EURUSD') {
+                liveBid = 1.0832;
+                liveSpreadPts = 0.0001;
+                liveAsk = 1.0833;
+            } else {
+                liveBid = 4473.50;
+                liveSpreadPts = 5.4;
+                liveAsk = 4474.04;
+            }
+
+            const decimals = asset.decimals || 2;
+            const hdrBid = document.getElementById('hdr-bid');
+            if (hdrBid) hdrBid.innerText = `$${liveBid.toFixed(decimals)}`;
+            const hdrAsk = document.getElementById('hdr-ask');
+            if (hdrAsk) hdrAsk.innerText = `$${liveAsk.toFixed(decimals)}`;
+            const hdrSpread = document.getElementById('hdr-spread');
+            if (hdrSpread) hdrSpread.innerText = `${liveSpreadPts.toFixed(1)} PTS`;
+
+            const chartHudPrice = document.getElementById('chart-hud-price');
+            if (chartHudPrice) chartHudPrice.innerText = `$${liveBid.toFixed(decimals)}`;
+            const chartHudSpread = document.getElementById('chart-hud-spread');
+            if (chartHudSpread) chartHudSpread.innerText = `SPREAD: ${liveSpreadPts.toFixed(1)} PTS`;
+
+            const domBidAsk = document.getElementById('dom-live-bid-ask');
+            if (domBidAsk) domBidAsk.innerText = `$${liveBid.toFixed(decimals)} / $${liveAsk.toFixed(decimals)}`;
+
             // Highlight active button
             document.querySelectorAll('.asset-btn').forEach(b => b.classList.remove('active'));
             const activeBtn = document.getElementById(`btn-asset-${symbol}`);
@@ -1879,6 +1943,9 @@
             if (dirCall && asset.directionCall) {
                 dirCall.innerHTML = `🎯 CALL: <span style="color:#10B981;">${asset.directionCall}</span>`;
             }
+
+            updatePillarGrid(symbol);
+            updateDomLadder(liveBid, liveAsk);
 
             if (currentChartMode === 'tradingview') {
                 initTradingViewWidget();
@@ -2023,7 +2090,8 @@
         function updateDomLadder(bid, ask) {
             const askRows = [];
             const bidRows = [];
-            const step = activeSymbol === 'XAGUSD' ? 0.05 : (activeSymbol === 'BTCUSD' ? 25.0 : 0.50);
+            const step = activeSymbol === 'XAGUSD' ? 0.05 : (activeSymbol === 'BTCUSD' ? 25.0 : (activeSymbol === 'EURUSD' ? 0.0005 : 0.50));
+            const decimals = assetDefinitions[activeSymbol]?.decimals || 2;
 
             for (let i = 7; i >= 1; i--) {
                 const p = ask + (i * step);
@@ -2031,7 +2099,7 @@
                 const qty = (1.20 + (seed + 1) * 1.8).toFixed(2);
                 const isWhale = i === 1 || i === 4 || i === 7;
                 const widthPct = Math.min(95, Math.max(25, Math.round((parseFloat(qty) / 5.2) * 85)));
-                askRows.push(`<div class="ladder-row ladder-ask"><div class="ladder-ask-bar" style="width:${widthPct}%"></div><span style="position:relative;z-index:2;">$${p.toFixed(2)}</span><span style="position:relative;z-index:2;">${qty} oz ${isWhale ? '⚡' : ''}</span></div>`);
+                askRows.push(`<div class="ladder-row ladder-ask"><div class="ladder-ask-bar" style="width:${widthPct}%"></div><span style="position:relative;z-index:2;">$${p.toFixed(decimals)}</span><span style="position:relative;z-index:2;">${qty} oz ${isWhale ? '⚡' : ''}</span></div>`);
             }
 
             for (let i = 1; i <= 5; i++) {
@@ -2040,7 +2108,7 @@
                 const qty = (1.40 + (seed + 1) * 1.9).toFixed(2);
                 const isWhale = i === 1 || i === 3 || i === 5;
                 const widthPct = Math.min(95, Math.max(25, Math.round((parseFloat(qty) / 5.2) * 85)));
-                bidRows.push(`<div class="ladder-row ladder-bid"><div class="ladder-bid-bar" style="width:${widthPct}%"></div><span style="position:relative;z-index:2;">$${p.toFixed(2)}</span><span style="position:relative;z-index:2;">${qty} oz ${isWhale ? '⚡' : ''}</span></div>`);
+                bidRows.push(`<div class="ladder-row ladder-bid"><div class="ladder-bid-bar" style="width:${widthPct}%"></div><span style="position:relative;z-index:2;">$${p.toFixed(decimals)}</span><span style="position:relative;z-index:2;">${qty} oz ${isWhale ? '⚡' : ''}</span></div>`);
             }
 
             const asksContainer = document.getElementById('dom-asks-container');
