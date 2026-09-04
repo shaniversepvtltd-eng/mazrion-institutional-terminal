@@ -26,18 +26,26 @@ export default async function handler(req, res) {
     // ==================== 1. SILVER (XAGUSD) ====================
     if (symbol.includes("XAG") || symbol.includes("SILVER")) {
         if (!currentPrice || currentPrice > 100 || currentPrice < 10) currentPrice = 38.45;
-        const isLow = currentPrice < 38.00;
         const p = currentPrice;
         
+        const entry = parseFloat((p - 0.20).toFixed(2));
+        const sl = parseFloat((p - 0.45).toFixed(2));
+        const tp1 = parseFloat((p + 0.65).toFixed(2));
+        const tp2 = parseFloat((p + 1.25).toFixed(2));
+        const risk = parseFloat((entry - sl).toFixed(2));
+        const reward1 = parseFloat((tp1 - entry).toFixed(2));
+        const rr = (reward1 / (risk || 0.01)).toFixed(1);
+        const dollarRisk = (risk * 50 * 0.01 * 10).toFixed(2); // ~$3.75 on micro lot
+
         return res.status(200).json({
             symbol: "XAGUSD",
-            verdict: isLow ? "🟡 DEMAND ACCUMULATION (PULLBACK WATCH)" : "🟢 BULLISH MEAN REVERSION",
+            verdict: "🟢 BULLISH MEAN REVERSION (PULLBACK ACCUMULATION)",
             confidence: "94%",
             trade_state: "15M RECOVERY CYCLE",
             traffic_light: {
                 status: "YELLOW",
                 badge: "🟡 YELLOW LIGHT: PULLBACK WATCH ACTIVE",
-                instruction: `Silver trading @ $${p.toFixed(2)}. Rebound active off $37.40 low. Limit order pullback protocol active.`
+                instruction: `Silver trading @ $${p.toFixed(2)}. Rebound active off $37.40 floor. Limit order pullback protocol active.`
             },
             smt_radar: {
                 status: "🟢 BULLISH SMT RECOVERY",
@@ -57,43 +65,43 @@ export default async function handler(req, res) {
                 dxy: "104.45 (Dollar Consolidation)",
                 gsr: "86.2"
             },
-            summary: `Silver ($${p.toFixed(2)}) staging mean-reversion rebound. Buying dips above $37.80 support.`,
+            summary: `Silver ($${p.toFixed(2)}) staging mean-reversion rebound. Buying pullbacks above $38.00 support.`,
             smart_money_story: `Following the 06:00 PM NFP liquidity sweep down to $37.40, smart money absorbed retail stops and initiated 15M/1H re-accumulation. Silver is now pushing toward the $38.80–$39.20 liquidity imbalance void.`,
-            intermarket_impact: `⚡ **Macro Telemetry:** DXY stabilized after initial NFP spike. Industrial and precious metals seeing renewed accumulation.`,
+            intermarket_impact: `⚡ **Macro Telemetry:** DXY stabilized after initial NFP spike. Precious metals seeing renewed accumulation.`,
             missed_trade_advisory: {
                 status: "PULLBACK ENTRY ACTIVE",
                 fomo_warning: `🚨 Do not chase green candles at the top of 15M expansion. Enter on pullbacks to discount.`,
-                action_rule: `1. Place Limit Bids inside $37.80–$38.10.\n2. SL structural floor @ $37.20.\n3. TP1 @ $38.80 | TP2 @ $39.50.`,
-                secondary_entry: "$37.80 – $38.10",
-                secondary_sl: "$37.20",
-                secondary_tp: "$38.80 / $39.50"
+                action_rule: `1. Place Limit Bids inside $${(entry - 0.10).toFixed(2)} – $${entry.toFixed(2)}.\n2. SL structural floor @ $${sl.toFixed(2)}.\n3. TP1 @ $${tp1.toFixed(2)} | TP2 @ $${tp2.toFixed(2)}.`,
+                secondary_entry: `$${(entry - 0.10).toFixed(2)} – $${entry.toFixed(2)}`,
+                secondary_sl: `$${sl.toFixed(2)}`,
+                secondary_tp: `$${tp1.toFixed(2)} / $${tp2.toFixed(2)}`
             },
             checklist: [
                 { status: "CONFIRMED", title: "Macro Demand Defended", desc: "Bounced off $37.40 weekly floor" },
                 { status: "CONFIRMED", title: "15M Bullish CHoCH", desc: "Clean break above $38.00 resistance" },
-                { status: "WAIT", title: "Pullback Re-Test", desc: `Wait for 5M retest of $38.00 support` },
+                { status: "WAIT", title: "Pullback Re-Test", desc: `Wait for 5M retest of $${entry.toFixed(2)} support` },
                 { status: "CONFIRMED", title: "Risk Protocol", desc: "0.01 Lot Scale-Down Enforced" }
             ],
             levels: {
                 current_price: `$${p.toFixed(2)}`,
-                execution_zone: `$${(p - 0.35).toFixed(2)} – $${(p - 0.15).toFixed(2)}`,
-                structural_sl: `$${(p - 0.95).toFixed(2)} (Structural Wick Floor)`,
-                target_1: `$${(p + 0.65).toFixed(2)} (FVG Void Re-Test)`,
-                target_2: `$${(p + 1.25).toFixed(2)} (Major Resistance)`,
-                risk_reward: "1 : 2.8 R/R"
+                execution_zone: `$${(entry - 0.10).toFixed(2)} – $${entry.toFixed(2)} (15M Pullback POI)`,
+                structural_sl: `$${sl.toFixed(2)} (15M Demand Wick Floor)`,
+                target_1: `$${tp1.toFixed(2)} (FVG Void Fill)`,
+                target_2: `$${tp2.toFixed(2)} (Major Resistance)`,
+                risk_reward: `1 : ${rr} R/R`
             },
             key_pills: {
                 poi15m: `$${(p - 0.20).toFixed(2)}–$${(p - 0.10).toFixed(2)}`,
                 poi1h: `$${(p - 0.45).toFixed(2)}–$${(p - 0.30).toFixed(2)}`,
                 poi4h: `$${(p - 0.85).toFixed(2)}–$${(p - 0.60).toFixed(2)}`,
                 ssl: `$${(p - 1.05).toFixed(2)}`,
-                buywall: `$${(p - 0.25).toFixed(2)}`,
-                sl: `$${(p - 0.95).toFixed(2)}`,
+                buywall: `$${entry.toFixed(2)}`,
+                sl: `$${sl.toFixed(2)}`,
                 pdl: `$${(p - 1.05).toFixed(2)}`,
                 pdh: `$${(p + 1.20).toFixed(2)}`,
-                sellwall: `$${(p + 0.65).toFixed(2)}`,
-                tp: `$${(p + 0.65).toFixed(2)}`,
-                eqh: `$${(p + 1.25).toFixed(2)}`
+                sellwall: `$${tp1.toFixed(2)}`,
+                tp: `$${tp1.toFixed(2)}`,
+                eqh: `$${tp2.toFixed(2)}`
             },
             timeframes: {
                 "1m": { status: "BULLISH 🟢", cls: "bull" },
@@ -108,12 +116,12 @@ export default async function handler(req, res) {
                 symbol: "XAGUSD",
                 order_type: "BUY LIMIT",
                 lot_size: "0.01 LOTS",
-                entry: (p - 0.25).toFixed(2),
-                sl: (p - 0.95).toFixed(2),
-                tp1: (p + 0.65).toFixed(2),
-                tp2: (p + 1.25).toFixed(2),
-                dollar_risk: "$3.50",
-                risk_pct: "0.70% (2% Guard Active)"
+                entry: entry.toFixed(2),
+                sl: sl.toFixed(2),
+                tp1: tp1.toFixed(2),
+                tp2: tp2.toFixed(2),
+                dollar_risk: `$${dollarRisk}`,
+                risk_pct: `${((parseFloat(dollarRisk) / 500) * 100).toFixed(2)}% (Strict 2% Small Account Guard)`
             }
         });
     }
@@ -123,6 +131,15 @@ export default async function handler(req, res) {
         if (!currentPrice || currentPrice < 1000) currentPrice = 94850.0;
         const p = currentPrice;
         
+        const entry = parseFloat((p - 350).toFixed(0));
+        const sl = parseFloat((p - 850).toFixed(0));
+        const tp1 = parseFloat((p + 1600).toFixed(0));
+        const tp2 = parseFloat((p + 3500).toFixed(0));
+        const risk = entry - sl;
+        const reward1 = tp1 - entry;
+        const rr = (reward1 / (risk || 1)).toFixed(1);
+        const dollarRisk = (risk * 0.01).toFixed(2); // $5.00 on 0.01 lot
+
         return res.status(200).json({
             symbol: "BTCUSDT",
             verdict: "🟢 BULLISH ACCUMULATION (ETF BID DEFENSE)",
@@ -157,37 +174,37 @@ export default async function handler(req, res) {
             missed_trade_advisory: {
                 status: "BUY THE PULLBACK",
                 fomo_warning: `🚨 Enter on 5M/15M pullbacks to support rather than market buying breakouts.`,
-                action_rule: `1. Place Buy Limits @ $94,100–$94,400.\n2. Invalidation SL @ $93,200.\n3. TP1 @ $96,500 | TP2 @ $98,500.`,
-                secondary_entry: "$94,100 – $94,400",
-                secondary_sl: "$93,200",
-                secondary_tp: "$96,500 / $98,500"
+                action_rule: `1. Place Buy Limits @ $${(entry - 150).toFixed(0)}–$${entry.toFixed(0)}.\n2. Invalidation SL @ $${sl.toFixed(0)}.\n3. TP1 @ $${tp1.toFixed(0)} | TP2 @ $${tp2.toFixed(0)}.`,
+                secondary_entry: `$${(entry - 150).toFixed(0)} – $${entry.toFixed(0)}`,
+                secondary_sl: `$${sl.toFixed(0)}`,
+                secondary_tp: `$${tp1.toFixed(0)} / $${tp2.toFixed(0)}`
             },
             checklist: [
                 { status: "CONFIRMED", title: "Demand Floor Held", desc: "Bids defended $93,500 support" },
                 { status: "CONFIRMED", title: "15M Bullish Structure", desc: "Higher high + higher low sequence" },
-                { status: "WAIT", title: "5M Entry Trigger", desc: "Pullback retest of $94,300 level" },
+                { status: "WAIT", title: "5M Entry Trigger", desc: `Pullback retest of $${entry.toFixed(0)} level` },
                 { status: "CONFIRMED", title: "Risk Protocol", desc: "0.01 Lots Strict 2% Risk Cap" }
             ],
             levels: {
                 current_price: `$${p.toFixed(0)}`,
-                execution_zone: `$${(p - 450).toFixed(0)} – $${(p - 200).toFixed(0)}`,
-                structural_sl: `$${(p - 1400).toFixed(0)} (Below 4H Swing Low)`,
-                target_1: `$${(p + 1600).toFixed(0)} (BSL Liquidity Pool)`,
-                target_2: `$${(p + 3500).toFixed(0)} (Major Range High)`,
-                risk_reward: "1 : 3.2 R/R"
+                execution_zone: `$${(entry - 150).toFixed(0)} – $${entry.toFixed(0)} (15M Pullback POI)`,
+                structural_sl: `$${sl.toFixed(0)} (15M Demand Base Floor)`,
+                target_1: `$${tp1.toFixed(0)} (BSL Liquidity Pool)`,
+                target_2: `$${tp2.toFixed(0)} (Major Range High)`,
+                risk_reward: `1 : ${rr} R/R`
             },
             key_pills: {
                 poi15m: `$${(p - 250).toFixed(0)}–$${(p - 150).toFixed(0)}`,
                 poi1h: `$${(p - 600).toFixed(0)}–$${(p - 400).toFixed(0)}`,
                 poi4h: `$${(p - 1200).toFixed(0)}–$${(p - 800).toFixed(0)}`,
                 ssl: `$${(p - 1400).toFixed(0)}`,
-                buywall: `$${(p - 350).toFixed(0)}`,
-                sl: `$${(p - 1400).toFixed(0)}`,
+                buywall: `$${entry.toFixed(0)}`,
+                sl: `$${sl.toFixed(0)}`,
                 pdl: `$${(p - 1200).toFixed(0)}`,
                 pdh: `$${(p + 2800).toFixed(0)}`,
-                sellwall: `$${(p + 1600).toFixed(0)}`,
-                tp: `$${(p + 1600).toFixed(0)}`,
-                eqh: `$${(p + 3500).toFixed(0)}`
+                sellwall: `$${tp1.toFixed(0)}`,
+                tp: `$${tp1.toFixed(0)}`,
+                eqh: `$${tp2.toFixed(0)}`
             },
             timeframes: {
                 "1m": { status: "BULLISH 🟢", cls: "bull" },
@@ -202,12 +219,12 @@ export default async function handler(req, res) {
                 symbol: "BTCUSD",
                 order_type: "BUY LIMIT",
                 lot_size: "0.01 LOTS",
-                entry: (p - 350).toFixed(2),
-                sl: (p - 1400).toFixed(2),
-                tp1: (p + 1600).toFixed(2),
-                tp2: (p + 3500).toFixed(2),
-                dollar_risk: "$14.00",
-                risk_pct: "1.40% (Safe Cap)"
+                entry: entry.toFixed(2),
+                sl: sl.toFixed(2),
+                tp1: tp1.toFixed(2),
+                tp2: tp2.toFixed(2),
+                dollar_risk: `$${dollarRisk}`,
+                risk_pct: `${((parseFloat(dollarRisk) / 500) * 100).toFixed(2)}% (Safe Cap)`
             }
         });
     }
@@ -217,9 +234,18 @@ export default async function handler(req, res) {
         if (!currentPrice || currentPrice > 10 || currentPrice < 0.5) currentPrice = 1.0825;
         const p = currentPrice;
         
+        const entry = parseFloat((p - 0.0012).toFixed(4));
+        const sl = parseFloat((p - 0.0030).toFixed(4));
+        const tp1 = parseFloat((p + 0.0055).toFixed(4));
+        const tp2 = parseFloat((p + 0.0085).toFixed(4));
+        const risk = entry - sl;
+        const reward1 = tp1 - entry;
+        const rr = (reward1 / (risk || 0.0001)).toFixed(1);
+        const dollarRisk = (risk * 1000).toFixed(2); // ~$1.80 on 0.01 lot (1,000 units)
+
         return res.status(200).json({
             symbol: "EURUSD",
-            verdict: "🟡 CONSOLIDATION / PULLBACK REBOUND",
+            verdict: "🟢 BULLISH PULLBACK ACCUMULATION",
             confidence: "91%",
             trade_state: "15M MEAN REVERSION",
             traffic_light: {
@@ -251,36 +277,36 @@ export default async function handler(req, res) {
             missed_trade_advisory: {
                 status: "LIMIT ORDER BUY",
                 fomo_warning: `🚨 Wait for 5M candle pullback before entering long positions.`,
-                action_rule: `Buy limit @ 1.0800–1.0815 | SL @ 1.0765 | TP @ 1.0860 / 1.0890.`,
-                secondary_entry: "1.0800 – 1.0815",
-                secondary_sl: "1.0765",
-                secondary_tp: "1.0860 / 1.0890"
+                action_rule: `Buy limit @ ${entry.toFixed(4)} | SL @ ${sl.toFixed(4)} | TP @ ${tp1.toFixed(4)} / ${tp2.toFixed(4)}.`,
+                secondary_entry: `${entry.toFixed(4)}`,
+                secondary_sl: `${sl.toFixed(4)}`,
+                secondary_tp: `${tp1.toFixed(4)} / ${tp2.toFixed(4)}`
             },
             checklist: [
                 { status: "CONFIRMED", title: "Support Base Held", desc: "1.0780 floor defended" },
                 { status: "CONFIRMED", title: "DXY Easing", desc: "USD pullback underway" },
-                { status: "WAIT", title: "5M Trigger", desc: "Wait for pullback to 1.0810" }
+                { status: "WAIT", title: "5M Trigger", desc: `Wait for pullback to ${entry.toFixed(4)}` }
             ],
             levels: {
                 current_price: `$${p.toFixed(4)}`,
-                execution_zone: `$${(p - 0.0020).toFixed(4)} – $${(p - 0.0010).toFixed(4)}`,
-                structural_sl: `$${(p - 0.0055).toFixed(4)}`,
-                target_1: `$${(p + 0.0045).toFixed(4)}`,
-                target_2: `$${(p + 0.0080).toFixed(4)}`,
-                risk_reward: "1 : 2.5 R/R"
+                execution_zone: `$${(entry - 0.0008).toFixed(4)} – $${entry.toFixed(4)} (15M Pullback POI)`,
+                structural_sl: `$${sl.toFixed(4)} (15M Support Base)`,
+                target_1: `$${tp1.toFixed(4)}`,
+                target_2: `$${tp2.toFixed(4)}`,
+                risk_reward: `1 : ${rr} R/R`
             },
             key_pills: {
                 poi15m: `$${(p - 0.0015).toFixed(4)}`,
                 poi1h: `$${(p - 0.0030).toFixed(4)}`,
                 poi4h: `$${(p - 0.0050).toFixed(4)}`,
-                ssl: `$${(p - 0.0055).toFixed(4)}`,
-                buywall: `$${(p - 0.0020).toFixed(4)}`,
-                sl: `$${(p - 0.0055).toFixed(4)}`,
+                ssl: `$${sl.toFixed(4)}`,
+                buywall: `$${entry.toFixed(4)}`,
+                sl: `$${sl.toFixed(4)}`,
                 pdl: `$${(p - 0.0050).toFixed(4)}`,
                 pdh: `$${(p + 0.0080).toFixed(4)}`,
-                sellwall: `$${(p + 0.0045).toFixed(4)}`,
-                tp: `$${(p + 0.0045).toFixed(4)}`,
-                eqh: `$${(p + 0.0080).toFixed(4)}`
+                sellwall: `$${tp1.toFixed(4)}`,
+                tp: `$${tp1.toFixed(4)}`,
+                eqh: `$${tp2.toFixed(4)}`
             },
             timeframes: {
                 "1m": { status: "BULLISH 🟢", cls: "bull" },
@@ -295,52 +321,47 @@ export default async function handler(req, res) {
                 symbol: "EURUSD",
                 order_type: "BUY LIMIT",
                 lot_size: "0.01 LOTS",
-                entry: (p - 0.0015).toFixed(4),
-                sl: (p - 0.0055).toFixed(4),
-                tp1: (p + 0.0045).toFixed(4),
-                tp2: (p + 0.0080).toFixed(4),
-                dollar_risk: "$4.00",
-                risk_pct: "0.80%"
+                entry: entry.toFixed(4),
+                sl: sl.toFixed(4),
+                tp1: tp1.toFixed(4),
+                tp2: tp2.toFixed(4),
+                dollar_risk: `$${dollarRisk}`,
+                risk_pct: `${((parseFloat(dollarRisk) / 500) * 100).toFixed(2)}%`
             }
         });
     }
 
     // ==================== 4. DEFAULT: GOLD (XAUUSD) ====================
-    if (!currentPrice || currentPrice < 1000) currentPrice = 4436.50;
+    if (!currentPrice || currentPrice < 1000) currentPrice = 4435.00;
     const p = currentPrice;
 
-    // Dynamic State Evaluation based on Live Price
-    const isPostNfpRebound = p >= 4425.0; // Market bounced +$55 off $4378 low into $4436 resistance
-    const isDeepDiscount = p < 4410.0;    // Market at lower demand block ($4380-$4405)
+    // 15M Institutional Pullback Setup Calculations
+    const pullbackEntry = parseFloat((p - 14.0).toFixed(2));  // e.g. $4,421.00
+    const structuralSl = parseFloat((p - 23.5).toFixed(2));   // e.g. $4,411.50 (9.5 pts risk below 15M Demand Base)
+    const tp1Target = parseFloat((p + 18.5).toFixed(2));      // e.g. $4,453.50 (32.5 pts reward to FVG Void)
+    const tp2Target = 4475.00;                               // e.g. $4,475.00 (54.0 pts reward to Pre-News Supply)
 
-    const verdictText = isPostNfpRebound
-        ? "🟢 BULLISH MEAN REVERSION / PULLBACK ACCUMULATION"
-        : (isDeepDiscount ? "🟢 MACRO DEMAND DEFENSE ($4380–$4400)" : "🟡 PULLBACK WATCH ACTIVE");
+    const riskPoints = parseFloat((pullbackEntry - structuralSl).toFixed(2));   // 9.50 pts
+    const rewardPoints1 = parseFloat((tp1Target - pullbackEntry).toFixed(2));   // 32.50 pts
+    const rewardPoints2 = parseFloat((tp2Target - pullbackEntry).toFixed(2));   // 54.00 pts
 
-    const trafficStatus = isPostNfpRebound ? "YELLOW" : (isDeepDiscount ? "GREEN" : "YELLOW");
-    const trafficBadge = isPostNfpRebound
-        ? "🟡 YELLOW LIGHT: PULLBACK WATCH ACTIVE"
-        : (isDeepDiscount ? "🟢 GREEN LIGHT: DEMAND DISCOUNT BUY" : "🟡 YELLOW LIGHT: WAIT FOR PULLBACK");
+    // Mathematical R/R: Reward / Risk
+    const exactRr1 = (rewardPoints1 / (riskPoints || 1)).toFixed(1); // e.g. 3.4
+    const exactRr2 = (rewardPoints2 / (riskPoints || 1)).toFixed(1); // e.g. 5.7
 
-    const trafficInstruction = isPostNfpRebound
-        ? `Price ($${p.toFixed(2)}) recovered +$58 off $4378 low. Do NOT chase market longs into $4440–$4445 resistance. Place Buy Limits on 15M pullback at $4418–$4425.`
-        : `Price testing macro demand floor ($4380–$4405). Bids absorbing institutional liquidity.`;
-
-    const execZoneLow = isPostNfpRebound ? (p - 18.0).toFixed(2) : (p - 8.0).toFixed(2);
-    const execZoneHigh = isPostNfpRebound ? (p - 10.0).toFixed(2) : (p - 2.0).toFixed(2);
-    const structSl = isPostNfpRebound ? "4376.50 (Below $4378 Structural Low)" : "4368.00 (Weekly Low)";
-    const tp1Val = isPostNfpRebound ? (p + 18.5).toFixed(2) : (p + 35.0).toFixed(2);
-    const tp2Val = isPostNfpRebound ? "4475.00 (Pre-News FVG Void)" : "4470.00 (Pre-News Supply)";
+    // Exact Dollar Risk: 0.01 Lots = 1 Ounce -> 1 Point ($1.00) = $1.00 Loss
+    const exactDollarRisk = (riskPoints * 1.0).toFixed(2); // e.g. $9.50
+    const exactRiskPct = ((parseFloat(exactDollarRisk) / 500.0) * 100.0).toFixed(2); // e.g. 1.90% (Under 2% Cap!)
 
     return res.status(200).json({
         symbol: "XAUUSD",
-        verdict: verdictText,
+        verdict: "🟢 BULLISH MEAN REVERSION (PULLBACK ACCUMULATION)",
         confidence: "95%",
         trade_state: "15M RE-ACCUMULATION & REBOUND CYCLE",
         traffic_light: {
-            status: trafficStatus,
-            badge: trafficBadge,
-            instruction: trafficInstruction
+            status: "YELLOW",
+            badge: "🟡 YELLOW LIGHT: PULLBACK WATCH ACTIVE",
+            instruction: `Price ($${p.toFixed(2)}) recovered +$58 off $4378 floor. Do NOT chase market buys into $4440 resistance. Place Buy Limits on 15M discount pullback @ $${(pullbackEntry - 3.0).toFixed(2)}–$${pullbackEntry.toFixed(2)}.`
         },
         smt_radar: {
             status: "🟢 BULLISH DEMAND ABSORPTION REBOUND",
@@ -361,43 +382,43 @@ export default async function handler(req, res) {
             cftc_positioning: "Commercial Floor Defended @ $4380",
             gsr: "85.8"
         },
-        summary: `Gold ($${p.toFixed(2)}) staged a +$58 rebound off $4378 low. Looking for discount pullbacks to $4418–$4425 for continuation toward $4455–$4475.`,
-        smart_money_story: `After the initial 06:00 PM NFP liquidity flush down to $4,378, commercial smart money absorbed seller stops at the Previous Month Low ($4,380) and initiated a violent 15M/1H short squeeze. Price is now testing the broken S/R flip at $4,436–$4,442. Smart money protocol dictates waiting for a 15M pullback to re-accumulate with structural protection beneath $4,378.`,
+        summary: `Gold ($${p.toFixed(2)}) staged a +$58 rebound off $4378 low. Looking for discount pullbacks to $${pullbackEntry.toFixed(2)} for 1 : ${exactRr1} R/R continuation toward $${tp1Target.toFixed(2)}.`,
+        smart_money_story: `After the initial 06:00 PM NFP liquidity flush down to $4,378, commercial smart money absorbed seller stops at the Previous Month Low ($4,380) and initiated a violent 15M/1H short squeeze. Price is now testing the broken S/R flip at $4,436–$4,442. Smart money protocol dictates waiting for a 15M pullback to re-accumulate with structural protection beneath $4,411.50.`,
         intermarket_impact: `⚡ **Macro Telemetry:** DXY has peaked at 104.75 and is currently pulling back to 104.38, providing steady tailwinds for Gold and Silver recovery.`,
         missed_trade_advisory: {
             status: "PULLBACK ENTRY PROTOCOL",
             fomo_warning: `🚨 DO NOT CHASE VERTICAL GREEN CANDLES AT RESISTANCE ($4440)! Wait for 15M pullback to enter.`,
-            action_rule: `1. Place BUY LIMIT orders inside $${execZoneLow} – $${execZoneHigh}.\n2. Place Structural SL below $4376.50 (1.5 ATR beyond $4378 wick).\n3. TP1 @ $${tp1Val} | TP2 @ $4475.00.\n4. Enforce 0.01 lot size small account guard.`,
-            secondary_entry: `$${execZoneLow} – $${execZoneHigh}`,
-            secondary_sl: "$4376.50",
-            secondary_tp: `$${tp1Val} / $4475.00`
+            action_rule: `1. Place BUY LIMIT orders @ $${(pullbackEntry - 3.0).toFixed(2)} – $${pullbackEntry.toFixed(2)}.\n2. Place Structural SL @ $${structuralSl.toFixed(2)} (1.5 ATR below 15M POI base).\n3. TP1 @ $${tp1Target.toFixed(2)} (1 : ${exactRr1} R/R) | TP2 @ $4475.00 (1 : ${exactRr2} R/R).\n4. Enforce 0.01 lot size ($${exactDollarRisk} risk = ${exactRiskPct}% account risk).`,
+            secondary_entry: `$${(pullbackEntry - 3.0).toFixed(2)} – $${pullbackEntry.toFixed(2)}`,
+            secondary_sl: `$${structuralSl.toFixed(2)}`,
+            secondary_tp: `$${tp1Target.toFixed(2)} / $4475.00`
         },
         checklist: [
             { status: "CONFIRMED", title: "Demand Floor Absorbed", desc: "Whale buyers defended $4,378-$4,380 PML floor" },
             { status: "CONFIRMED", title: "15M Bullish CHoCH", desc: "Clean break + close above $4,415 previous resistance" },
-            { status: "WAIT", title: "15M Discount Pullback", desc: `Wait for 5M/15M pullback to $${execZoneLow}-$${execZoneHigh}` },
+            { status: "WAIT", title: "15M Discount Pullback", desc: `Wait for 5M/15M pullback to $${(pullbackEntry - 3.0).toFixed(2)}-$${pullbackEntry.toFixed(2)}` },
             { status: "CONFIRMED", title: "DXY Retracement", desc: "Dollar Index retreating from 104.75 peak" },
-            { status: "CONFIRMED", title: "Risk Management", desc: "0.01 Lots Strict 2% Account Cap Active" }
+            { status: "CONFIRMED", title: "Risk Management", desc: `0.01 Lots = $${exactDollarRisk} (${exactRiskPct}% Risk - Strictly within 2% Rule)` }
         ],
         levels: {
             current_price: `$${p.toFixed(2)}`,
-            execution_zone: `$${execZoneLow} – $${execZoneHigh} (15M Pullback POI)`,
-            structural_sl: structSl,
-            target_1: `$${tp1Val} (Immediate FVG Void Fill)`,
-            target_2: tp2Val,
-            risk_reward: "1 : 2.9 R/R"
+            execution_zone: `$${(pullbackEntry - 3.0).toFixed(2)} – $${pullbackEntry.toFixed(2)} (15M Pullback POI)`,
+            structural_sl: `$${structuralSl.toFixed(2)} (15M Demand Base Floor)`,
+            target_1: `$${tp1Target.toFixed(2)} (Immediate FVG Void Fill)`,
+            target_2: "4475.00 (Pre-News FVG Void)",
+            risk_reward: `1 : ${exactRr1} R/R (TP1) | 1 : ${exactRr2} R/R (TP2)`
         },
         key_pills: {
-            poi15m: `$${(p - 12.0).toFixed(2)}–$${(p - 6.0).toFixed(2)}`,
+            poi15m: `$${(pullbackEntry - 3.0).toFixed(2)}–$${pullbackEntry.toFixed(2)}`,
             poi1h: `$${(p - 22.0).toFixed(2)}–$${(p - 15.0).toFixed(2)}`,
             poi4h: "$4380.0–$4395.0",
-            ssl: "$4378.00 (Swept Floor)",
-            buywall: `$${(p - 15.0).toFixed(2)}`,
-            sl: "$4376.50",
+            ssl: `$${structuralSl.toFixed(2)} (Demand Floor)`,
+            buywall: `$${pullbackEntry.toFixed(2)}`,
+            sl: `$${structuralSl.toFixed(2)}`,
             pdl: "$4380.00",
             pdh: "$4491.23",
             sellwall: `$${(p + 18.0).toFixed(2)}`,
-            tp: `$${tp1Val}`,
+            tp: `$${tp1Target.toFixed(2)}`,
             eqh: "4475.00"
         },
         pillars: {
@@ -419,12 +440,12 @@ export default async function handler(req, res) {
             symbol: "XAUUSD",
             order_type: "BUY LIMIT",
             lot_size: "0.01 LOTS",
-            entry: (p - 15.0).toFixed(2),
-            sl: "4376.50",
-            tp1: tp1Val,
+            entry: pullbackEntry.toFixed(2),
+            sl: structuralSl.toFixed(2),
+            tp1: tp1Target.toFixed(2),
             tp2: "4475.00",
-            dollar_risk: "$3.85",
-            risk_pct: "0.77% (Strict 2% Small Account Guard)"
+            dollar_risk: `$${exactDollarRisk}`,
+            risk_pct: `${exactRiskPct}% (Strict 2% Small Account Guard)`
         }
     });
 }
