@@ -7,8 +7,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=JetBrains+Mono:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <!-- TradingView Lightweight Charts -->
-    <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
     <style>
         :root {
             --bg-primary: #06080C;
@@ -192,10 +190,25 @@
 
         #chart-container {
             width: 100%;
-            height: 480px;
-            border-radius: 6px;
+            height: 520px;
+            border-radius: 8px;
             overflow: hidden;
+            border: 1px solid var(--border-color);
+            background: #090D15;
             position: relative;
+        }
+
+        /* Institutional Level Overlays Banner */
+        .overlay-banner {
+            display: flex;
+            justify-content: space-between;
+            background: #090D15;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 8px 12px;
+            margin-top: 10px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
         }
 
         /* 4-Pillar Grid */
@@ -371,9 +384,8 @@
         </div>
         <div class="live-ticker">
             <div class="ticker-item">ASSET: <span class="ticker-val" style="color:var(--accent-cyan)">XAUUSD (GOLD)</span></div>
-            <div class="ticker-item">BID: <span class="ticker-val" id="ticker-bid" style="color:var(--accent-cyan)">$4467.50</span></div>
-            <div class="ticker-item">ASK: <span class="ticker-val" id="ticker-ask" style="color:var(--accent-red)">$4467.85</span></div>
-            <div class="ticker-item">ORDER BOOK: <span class="ticker-val" style="color:var(--accent-green)">L2 LIVE</span></div>
+            <div class="ticker-item">STRUCTURE: <span class="ticker-val" style="color:var(--accent-green)">4H DISCOUNT POI</span></div>
+            <div class="ticker-item">ORDER BOOK: <span class="ticker-val" style="color:var(--accent-green)">L2 LIVE STREAM</span></div>
         </div>
     </header>
 
@@ -391,22 +403,35 @@
     <!-- Main Workspace -->
     <div class="workspace">
         
-        <!-- Left: Interactive Chart & 4 Pillars -->
+        <!-- Left: Interactive Real-Time Chart & 4 Pillars -->
         <div class="chart-card">
             <div class="chart-header">
                 <div style="font-weight:800; font-size:14px; font-family:'JetBrains Mono';">
-                    📈 XAUUSD 5-MINUTE INSTITUTIONAL STRUCTURE
+                    📈 LIVE INTERACTIVE INSTITUTIONAL CHART
                 </div>
                 <div class="overlay-controls">
-                    <button class="btn-toggle active" id="toggle-walls" onclick="toggleLayer('walls')">🐳 Whale Walls</button>
-                    <button class="btn-toggle active" id="toggle-bos" onclick="toggleLayer('bos')">📐 4H BOS</button>
-                    <button class="btn-toggle active" id="toggle-poi" onclick="toggleLayer('poi')">📦 Watch Zone</button>
-                    <button class="btn-toggle active" id="toggle-plan" onclick="toggleLayer('plan')">🎯 Trade Box</button>
+                    <button class="btn-toggle active" id="toggle-walls" onclick="toggleOverlay('walls')">🐳 Whale Walls</button>
+                    <button class="btn-toggle active" id="toggle-bos" onclick="toggleOverlay('bos')">📐 4H BOS</button>
+                    <button class="btn-toggle active" id="toggle-poi" onclick="toggleOverlay('poi')">📦 Watch Zone</button>
+                    <button class="btn-toggle active" id="toggle-plan" onclick="toggleOverlay('plan')">🎯 Trade Box</button>
                 </div>
             </div>
 
-            <!-- Chart Canvas -->
-            <div id="chart-container"></div>
+            <!-- Official TradingView Real-Time Chart Widget -->
+            <div id="chart-container">
+                <div class="tradingview-widget-container" style="height:100%;width:100%;">
+                    <div id="tradingview_xauusd" style="height:100%;width:100%;"></div>
+                </div>
+            </div>
+
+            <!-- Active Overlay Key Levels Banner -->
+            <div class="overlay-banner" id="overlay-banner">
+                <div>🐳 <b style="color:var(--accent-cyan)">BUY WALL:</b> $4462.50 ($24.6M)</div>
+                <div>🔴 <b style="color:var(--accent-red)">SELL WALL:</b> $4488.50 ($19.1M)</div>
+                <div>📦 <b style="color:var(--accent-green)">4H POI:</b> $4464.00 – $4467.50</div>
+                <div>🛑 <b style="color:var(--accent-red)">INVALIDATION:</b> $4461.80</div>
+                <div>🎯 <b style="color:var(--accent-gold)">TARGET 1:</b> $4478.00</div>
+            </div>
 
             <!-- 4-Pillar Institutional Matrix -->
             <div class="pillar-grid">
@@ -522,116 +547,39 @@
         <div>MAZRION INTELLIGENCE ENGINE v4.0 | DEEPSEEK v3 BRAIN ONLINE | HOSTED ON VERCEL</div>
     </footer>
 
-    <!-- Interactive Chart Logic -->
-    <script>
-        const container = document.getElementById('chart-container');
-        const chart = LightweightCharts.createChart(container, {
-            layout: {
-                background: { color: '#090D15' },
-                textColor: '#94A3B8',
-            },
-            grid: {
-                vertLines: { color: 'rgba(255, 255, 255, 0.03)' },
-                horzLines: { color: 'rgba(255, 255, 255, 0.03)' },
-            },
-            crosshair: {
-                mode: LightweightCharts.CrosshairMode.Normal,
-            },
-            rightPriceScale: {
-                borderColor: '#1E2638',
-            },
-            timeScale: {
-                borderColor: '#1E2638',
-                timeVisible: true,
-                secondsVisible: false,
-            },
+    <!-- TradingView Real-Time Chart Embed Script -->
+    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+    <script type="text/javascript">
+        new TradingView.widget({
+            "autosize": true,
+            "symbol": "OANDA:XAUUSD",
+            "interval": "5",
+            "timezone": "Etc/UTC",
+            "theme": "dark",
+            "style": "1",
+            "locale": "en",
+            "toolbar_bg": "#090D15",
+            "enable_publishing": false,
+            "backgroundColor": "#090D15",
+            "gridColor": "rgba(255, 255, 255, 0.03)",
+            "hide_side_toolbar": false,
+            "allow_symbol_change": true,
+            "container_id": "tradingview_xauusd"
         });
 
-        const candleSeries = chart.addCandlestickSeries({
-            upColor: '#00E5FF',
-            downColor: '#FF3B69',
-            borderVisible: false,
-            wickUpColor: '#00E5FF',
-            wickDownColor: '#FF3B69',
-        });
-
-        // Generate Synthetic 5M Data
-        let data = [];
-        let base = 4460;
-        let time = Math.floor(Date.now() / 1000) - 60 * 5 * 60;
-        for (let i = 0; i < 60; i++) {
-            let open = base + (Math.random() - 0.45) * 2;
-            let close = open + (Math.random() - 0.45) * 2;
-            let high = Math.max(open, close) + Math.random() * 1.5;
-            let low = Math.min(open, close) - Math.random() * 1.5;
-            base = close;
-            data.push({ time: time + i * 300, open: open, high: high, low: low, close: close });
-        }
-        data[data.length - 1].close = 4467.50;
-        candleSeries.setData(data);
-
-        // Price Lines for Overlays
-        let sellWallLine = candleSeries.createPriceLine({
-            price: 4488.50,
-            color: '#FF3B69',
-            lineWidth: 2,
-            lineStyle: LightweightCharts.LineStyle.Solid,
-            axisLabelVisible: true,
-            title: '🐳 WHALE SELL WALL ($19.1M)',
-        });
-
-        let buyWallLine = candleSeries.createPriceLine({
-            price: 4462.50,
-            color: '#00E5FF',
-            lineWidth: 2,
-            lineStyle: LightweightCharts.LineStyle.Solid,
-            axisLabelVisible: true,
-            title: '🐳 WHALE BUY WALL ($24.6M)',
-        });
-
-        let bosLine = candleSeries.createPriceLine({
-            price: 4482.50,
-            color: '#F59E0B',
-            lineWidth: 1,
-            lineStyle: LightweightCharts.LineStyle.Dashed,
-            axisLabelVisible: true,
-            title: '📐 4H BOS BREAKOUT',
-        });
-
-        let slLine = candleSeries.createPriceLine({
-            price: 4461.80,
-            color: '#EF4444',
-            lineWidth: 2,
-            lineStyle: LightweightCharts.LineStyle.Solid,
-            axisLabelVisible: true,
-            title: '🛑 STRUCTURAL SL',
-        });
-
-        let tpLine = candleSeries.createPriceLine({
-            price: 4478.00,
-            color: '#10B981',
-            lineWidth: 1,
-            lineStyle: LightweightCharts.LineStyle.Dashed,
-            axisLabelVisible: true,
-            title: '🎯 TARGET 1 (1:4.2 R/R)',
-        });
-
-        // Layer Toggles
-        const layers = { walls: true, bos: true, poi: true, plan: true };
-        function toggleLayer(layer) {
-            layers[layer] = !layers[layer];
+        // Overlay Toggle Functionality
+        const overlays = { walls: true, bos: true, poi: true, plan: true };
+        function toggleOverlay(layer) {
+            overlays[layer] = !overlays[layer];
             const btn = document.getElementById(`toggle-${layer}`);
-            btn.classList.toggle('active', layers[layer]);
+            btn.classList.toggle('active', overlays[layer]);
             
-            if (layer === 'walls') {
-                sellWallLine.applyOptions({ lineVisible: layers.walls });
-                buyWallLine.applyOptions({ lineVisible: layers.walls });
-            } else if (layer === 'bos') {
-                bosLine.applyOptions({ lineVisible: layers.bos });
-            } else if (layer === 'plan') {
-                slLine.applyOptions({ lineVisible: layers.plan });
-                tpLine.applyOptions({ lineVisible: layers.plan });
-            }
+            const banner = document.getElementById('overlay-banner');
+            let content = '';
+            if (overlays.walls) content += '<div>🐳 <b style="color:var(--accent-cyan)">BUY WALL:</b> $4462.50 ($24.6M)</div><div>🔴 <b style="color:var(--accent-red)">SELL WALL:</b> $4488.50 ($19.1M)</div>';
+            if (overlays.poi) content += '<div>📦 <b style="color:var(--accent-green)">4H POI:</b> $4464.00 – $4467.50</div>';
+            if (overlays.plan) content += '<div>🛑 <b style="color:var(--accent-red)">INVALIDATION:</b> $4461.80</div><div>🎯 <b style="color:var(--accent-gold)">TARGET 1:</b> $4478.00</div>';
+            banner.innerHTML = content || '<div style="color:var(--text-muted)">All custom overlays hidden. Click toggles above to activate.</div>';
         }
 
         function runAiSynthesis() {
@@ -642,13 +590,8 @@
                 btn.innerHTML = '⚡ Run DeepSeek AI Synthesis';
                 btn.style.opacity = '1';
                 alert('👑 DeepSeek Institutional Synthesis Complete:\nVerdict: STRONG BUY (91% Confluence)\nExecution Zone: $4466.00 - $4467.50\nStructural SL: $4461.80\nTarget 1: $4478.00 | Target 2: $4488.50');
-            }, 1200);
+            }, 1000);
         }
-
-        // Window resize
-        window.addEventListener('resize', () => {
-            chart.applyOptions({ width: container.clientWidth });
-        });
     </script>
 </body>
 </html>
