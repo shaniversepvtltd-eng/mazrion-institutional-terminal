@@ -934,17 +934,17 @@
 
                     <!-- Clean Institutional Key Levels HUD (Click to Toggle Exact Chart Line) -->
                     <div class="key-levels-bar">
-                        <div class="key-pill active" id="pill-pdh" onclick="toggleLevelLine('pdh')">📅 <b style="color:var(--accent-gold)">PDH:</b> $4491.23</div>
-                        <div class="key-pill active" id="pill-sellwall" onclick="toggleLevelLine('sellwall')">🐳 <b style="color:var(--accent-red)">SELL WALL:</b> $4488.50</div>
-                        <div class="key-pill active" id="pill-tp" onclick="toggleLevelLine('tp')">🎯 <b style="color:var(--accent-green)">TP:</b> $4478.00</div>
-                        <div class="key-pill active" id="pill-bsl" onclick="toggleLevelLine('bsl')">💧 <b style="color:var(--accent-cyan)">BSL EQH:</b> $4478.20</div>
-                        <div class="key-pill active" id="pill-poi15m" onclick="toggleLevelLine('poi15m')">📦 <b style="color:var(--accent-cyan)">15M POI:</b> $4468.5–$4471</div>
-                        <div class="key-pill active" id="pill-poi1h" onclick="toggleLevelLine('poi1h')">📦 <b style="color:var(--accent-gold)">1H POI:</b> $4466.2–$4469</div>
-                        <div class="key-pill active" id="pill-poi4h" onclick="toggleLevelLine('poi4h')">📦 <b style="color:var(--accent-green)">4H POI:</b> $4464–$4467.5</div>
-                        <div class="key-pill active" id="pill-ssl" onclick="toggleLevelLine('ssl')">💧 <b style="color:var(--accent-gold)">SSL SWEEP:</b> $4463.80</div>
-                        <div class="key-pill active" id="pill-buywall" onclick="toggleLevelLine('buywall')">🐳 <b style="color:var(--accent-cyan)">BUY WALL:</b> $4462.50</div>
-                        <div class="key-pill active" id="pill-sl" onclick="toggleLevelLine('sl')">🛑 <b style="color:var(--accent-red)">SL:</b> $4461.80</div>
-                        <div class="key-pill active" id="pill-pdl" onclick="toggleLevelLine('pdl')">📅 <b style="color:var(--accent-gold)">PDL:</b> $4460.00</div>
+                        <div class="key-pill" id="pill-pdh" onclick="toggleLevelLine('pdh')">📅 <b style="color:var(--accent-gold)">PDH:</b> $4491.23</div>
+                        <div class="key-pill" id="pill-sellwall" onclick="toggleLevelLine('sellwall')">🐳 <b style="color:var(--accent-red)">SELL WALL:</b> $4488.50</div>
+                        <div class="key-pill" id="pill-tp" onclick="toggleLevelLine('tp')">🎯 <b style="color:var(--accent-green)">TP:</b> $4478.00</div>
+                        <div class="key-pill" id="pill-bsl" onclick="toggleLevelLine('bsl')">💧 <b style="color:var(--accent-cyan)">BSL EQH:</b> $4478.20</div>
+                        <div class="key-pill" id="pill-poi15m" onclick="toggleLevelLine('poi15m')">📦 <b style="color:var(--accent-cyan)">15M POI:</b> $4468.5–$4471</div>
+                        <div class="key-pill" id="pill-poi1h" onclick="toggleLevelLine('poi1h')">📦 <b style="color:var(--accent-gold)">1H POI:</b> $4466.2–$4469</div>
+                        <div class="key-pill" id="pill-poi4h" onclick="toggleLevelLine('poi4h')">📦 <b style="color:var(--accent-green)">4H POI:</b> $4464–$4467.5</div>
+                        <div class="key-pill" id="pill-ssl" onclick="toggleLevelLine('ssl')">💧 <b style="color:var(--accent-gold)">SSL SWEEP:</b> $4463.80</div>
+                        <div class="key-pill" id="pill-buywall" onclick="toggleLevelLine('buywall')">🐳 <b style="color:var(--accent-cyan)">BUY WALL:</b> $4462.50</div>
+                        <div class="key-pill" id="pill-sl" onclick="toggleLevelLine('sl')">🛑 <b style="color:var(--accent-red)">SL:</b> $4461.80</div>
+                        <div class="key-pill" id="pill-pdl" onclick="toggleLevelLine('pdl')">📅 <b style="color:var(--accent-gold)">PDL:</b> $4460.00</div>
                     </div>
 
                     <!-- Real-Market Exact Chart Canvas Container -->
@@ -1421,17 +1421,17 @@
         };
 
         const levelStates = {
-            pdh: true,
-            sellwall: true,
-            tp: true,
-            bsl: true,
-            poi15m: true,
-            poi1h: true,
-            poi4h: true,
-            ssl: true,
-            buywall: true,
-            sl: true,
-            pdl: true
+            pdh: false,
+            sellwall: false,
+            tp: false,
+            bsl: false,
+            poi15m: false,
+            poi1h: false,
+            poi4h: false,
+            ssl: false,
+            buywall: false,
+            sl: false,
+            pdl: false
         };
 
         async function fetchRealMarketData(tf = '5m') {
