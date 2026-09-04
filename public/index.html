@@ -949,6 +949,12 @@
 
                     <!-- Real-Market Exact Chart Canvas Container -->
                     <div id="chart-container">
+                        <!-- Live Floating Watermark HUD like MT5 / Institutional Terminal -->
+                        <div id="chart-live-hud" style="position:absolute; top:12px; left:16px; z-index:5; background:rgba(9, 13, 21, 0.88); backdrop-filter:blur(6px); border:1px solid var(--border-color); padding:5px 12px; border-radius:6px; font-family:'JetBrains Mono', monospace; font-size:12px; display:flex; align-items:center; gap:10px; pointer-events:none; box-shadow:0 4px 15px rgba(0,0,0,0.6);">
+                            <span style="font-weight:900; color:#FFF; letter-spacing:0.5px;">XAUUSD</span>
+                            <span id="chart-hud-price" style="font-weight:800; color:var(--accent-cyan);">$4472.38</span>
+                            <span id="chart-hud-spread" style="font-size:10px; font-weight:700; color:var(--text-muted); background:rgba(255,255,255,0.06); padding:2px 6px; border-radius:3px;">SPREAD: 5.4 PTS</span>
+                        </div>
                         <div id="mazrion_chart_canvas" style="height:100%; width:100%;"></div>
                     </div>
 
@@ -1380,6 +1386,44 @@
         let lwChart = null;
         let candleSeries = null;
         let activePriceLines = {};
+        let askPriceLine = null;
+        let bidPriceLine = null;
+
+        function updateBidAskPriceLines() {
+            if (!candleSeries) return;
+
+            if (!askPriceLine) {
+                askPriceLine = candleSeries.createPriceLine({
+                    price: liveAsk,
+                    color: '#FF3B69',
+                    lineWidth: 1.5,
+                    lineStyle: LightweightCharts.LineStyle.Dotted,
+                    axisLabelVisible: true,
+                    title: 'Ask'
+                });
+            } else {
+                askPriceLine.applyOptions({
+                    price: liveAsk,
+                    title: 'Ask'
+                });
+            }
+
+            if (!bidPriceLine) {
+                bidPriceLine = candleSeries.createPriceLine({
+                    price: liveBid,
+                    color: '#00E5FF',
+                    lineWidth: 1.5,
+                    lineStyle: LightweightCharts.LineStyle.Dotted,
+                    axisLabelVisible: true,
+                    title: 'Bid'
+                });
+            } else {
+                bidPriceLine.applyOptions({
+                    price: liveBid,
+                    title: 'Bid'
+                });
+            }
+        }
 
         const levelDefinitions = {
             pdh: [
@@ -1505,6 +1549,7 @@
             }
 
             renderAllPriceLines();
+            updateBidAskPriceLines();
             lwChart.timeScale().fitContent();
 
             window.addEventListener('resize', () => {
@@ -1564,6 +1609,7 @@
             const candles = await fetchRealMarketData(tf);
             if (candles && candleSeries) {
                 candleSeries.setData(candles);
+                updateBidAskPriceLines();
                 lwChart.timeScale().fitContent();
                 showToast(`⚡ Switched to ${tf.toUpperCase()} Real Live Market Feed`);
             }
@@ -1786,9 +1832,15 @@
                     document.getElementById('hdr-ask').innerText = `$${liveAsk.toFixed(2)}`;
                     document.getElementById('hdr-spread').innerText = `${liveSpreadPts.toFixed(1)} PTS`;
 
+                    const chartHudPrice = document.getElementById('chart-hud-price');
+                    if (chartHudPrice) chartHudPrice.innerText = `$${liveBid.toFixed(2)}`;
+                    const chartHudSpread = document.getElementById('chart-hud-spread');
+                    if (chartHudSpread) chartHudSpread.innerText = `SPREAD: ${liveSpreadPts.toFixed(1)} PTS`;
+
                     const domBidAsk = document.getElementById('dom-live-bid-ask');
                     if (domBidAsk) domBidAsk.innerText = `$${liveBid.toFixed(2)} / $${liveAsk.toFixed(2)}`;
                     updateDomLadder(liveBid, liveAsk);
+                    updateBidAskPriceLines();
 
                     if (candleSeries) {
                         const nowSec = Math.floor(Date.now() / 1000);
