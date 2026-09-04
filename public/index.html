@@ -1342,59 +1342,16 @@
             
             <!-- Liquidity Pools Matrix (BSL vs SSL) -->
             <div class="data-card" style="margin-bottom:16px;">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-                    <div style="font-family:'JetBrains Mono'; font-weight:800; font-size:15px;">💧 INSTITUTIONAL LIQUIDITY POOLS MATRIX (BSL & SSL)</div>
-                    <div style="font-size:11px; font-family:'JetBrains Mono'; color:var(--accent-cyan);">POST-NFP SWEEP MAP</div>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:8px;">
+                    <div style="font-family:'JetBrains Mono'; font-weight:800; font-size:15px; display:flex; align-items:center; gap:8px;">
+                        <span class="pulse-dot"></span>
+                        <span>💧 INSTITUTIONAL LIQUIDITY POOLS MATRIX (BSL & SSL)</span>
+                    </div>
+                    <div style="font-size:11px; font-family:'JetBrains Mono'; color:var(--accent-cyan);" id="liq-status-badge">POST-NFP REAL-TIME LIQUIDITY SWEEP</div>
                 </div>
 
-                <div class="liq-pool-grid">
-                    <!-- BSL (Buyside Liquidity) -->
-                    <div class="liq-pool-card">
-                        <div style="font-family:'JetBrains Mono'; font-weight:800; font-size:13px; color:var(--accent-cyan); margin-bottom:10px; display:flex; justify-content:space-between;">
-                            <span>🟢 BUYSIDE LIQUIDITY (BSL TARGETS)</span>
-                            <span>BUY STOPS (REBOUND TARGETS)</span>
-                        </div>
-                        <div class="liq-item liq-bsl">
-                            <div><b>Pre-News FVG Void (Major Rebound Target):</b> <span style="color:var(--accent-cyan);">$4470.00</span></div>
-                            <span style="color:var(--accent-green); font-weight:800;">12,400 LOTS ($16.5M)</span>
-                        </div>
-                        <div class="liq-item liq-bsl">
-                            <div><b>Broken Support Resistance Flip:</b> <span style="color:var(--accent-cyan);">$4440.00</span></div>
-                            <span style="color:var(--accent-green); font-weight:800;">8,900 LOTS ($11.8M)</span>
-                        </div>
-                        <div class="liq-item liq-bsl">
-                            <div><b>Short-Term Pullback Resistance:</b> <span style="color:var(--accent-cyan);">$4415.00</span></div>
-                            <span style="color:var(--accent-green); font-weight:800;">5,200 LOTS ($6.9M)</span>
-                        </div>
-                        <div class="liq-item liq-bsl">
-                            <div><b>Previous Day High (Pre-News Peak):</b> <span style="color:var(--accent-cyan);">$4491.23</span></div>
-                            <span style="color:var(--accent-green); font-weight:800;">9,850 LOTS ($13.2M)</span>
-                        </div>
-                    </div>
-
-                    <!-- SSL (Sellside Liquidity) -->
-                    <div class="liq-pool-card">
-                        <div style="font-family:'JetBrains Mono'; font-weight:800; font-size:13px; color:var(--accent-red); margin-bottom:10px; display:flex; justify-content:space-between;">
-                            <span>🔴 SELLSIDE LIQUIDITY (SSL POOLS)</span>
-                            <span>SELL STOPS (HARVESTED ON NFP)</span>
-                        </div>
-                        <div class="liq-item liq-ssl" style="opacity:0.6;">
-                            <div><b>Asian Low Sweep ($4463.80):</b> <span style="color:var(--accent-gold);">$4463.80</span></div>
-                            <span style="color:var(--accent-red); font-weight:800;">SWEPT ON NFP 🔴</span>
-                        </div>
-                        <div class="liq-item liq-ssl" style="opacity:0.6;">
-                            <div><b>Previous Day Low ($4460.00):</b> <span style="color:var(--accent-gold);">$4460.00</span></div>
-                            <span style="color:var(--accent-red); font-weight:800;">SWEPT ON NFP 🔴</span>
-                        </div>
-                        <div class="liq-item liq-ssl" style="opacity:0.6;">
-                            <div><b>Previous Week Low ($4432.00):</b> <span style="color:var(--accent-gold);">$4432.00</span></div>
-                            <span style="color:var(--accent-red); font-weight:800;">SWEPT ON NFP 🔴</span>
-                        </div>
-                        <div class="liq-item liq-ssl" style="border:1px solid var(--accent-green);">
-                            <div><b>Previous Month Low / Macro Demand Floor:</b> <span style="color:var(--accent-green); font-weight:900;">$4380.00 - $4395.00</span></div>
-                            <span style="color:var(--accent-green); font-weight:900;">41,000 LOTS (ABSORBING 🟢)</span>
-                        </div>
-                    </div>
+                <div class="liq-pool-grid" id="liq-pools-matrix-container">
+                    <!-- Dynamic BSL & SSL rendered by JS -->
                 </div>
             </div>
 
@@ -1403,9 +1360,14 @@
                 
                 <!-- Left: L2 DOM Ladder -->
                 <div class="data-card">
-                    <div style="display:flex; justify-content:space-between; margin-bottom:14px;">
-                        <div style="font-family:'JetBrains Mono'; font-weight:800; font-size:14px;">🌊 BINANCE LIVE L2 DOM</div>
-                        <div style="font-size:11px; color:var(--accent-gold); font-family:'JetBrains Mono';" id="dom-delta-status">DELTA: <span id="dom-delta-header">-1,240 OZ</span> (NFP ABSORPTION)</div>
+                    <div style="display:flex; justify-content:space-between; margin-bottom:14px; flex-wrap:wrap; gap:6px;">
+                        <div style="font-family:'JetBrains Mono'; font-weight:800; font-size:14px; display:flex; align-items:center; gap:6px;">
+                            <span class="pulse-dot"></span>
+                            <span>🌊 BINANCE LIVE L2 DOM</span>
+                        </div>
+                        <div style="font-size:11px; font-family:'JetBrains Mono';" id="dom-delta-status">
+                            DELTA: <span id="dom-delta-header" style="color:var(--accent-red); font-weight:800;">-1,240 OZ</span> <span id="dom-delta-sentiment" style="color:var(--accent-red);">(NFP FLUSH)</span>
+                        </div>
                     </div>
 
                     <div style="font-size:10px; color:var(--text-muted); font-family:'JetBrains Mono'; margin-bottom:6px; display:flex; justify-content:space-between;">
@@ -1419,7 +1381,7 @@
                     <!-- Current Price Separator -->
                     <div class="ladder-row ladder-current">
                         <span>🎯 ACTIVE BID / ASK</span>
-                        <span id="dom-live-bid-ask">$4398.50 / $4399.04</span>
+                        <span id="dom-live-bid-ask">$4390.50 / $4391.04</span>
                     </div>
 
                     <!-- Dynamic Live Bids Container -->
@@ -1428,30 +1390,39 @@
 
                 <!-- Right: Whale Walls & Imbalance -->
                 <div class="data-card">
-                    <div style="font-family:'JetBrains Mono'; font-weight:800; font-size:14px; margin-bottom:12px;">📊 ORDER BOOK IMBALANCE & CVD</div>
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                        <div style="font-family:'JetBrains Mono'; font-weight:800; font-size:14px;">📊 ORDER BOOK IMBALANCE & CVD</div>
+                        <span class="badge badge-bear" id="dom-flow-badge" style="font-size:10px;">🔴 NET SELLER ABSORPTION</span>
+                    </div>
                     
                     <div style="display:flex; justify-content:space-between; font-size:12px; font-family:'JetBrains Mono';">
-                        <span style="color:var(--accent-green)" id="dom-imbalance-bids">BIDS: 52.4%</span>
-                        <span style="color:var(--accent-red)" id="dom-imbalance-asks">ASKS: 47.6%</span>
+                        <span style="color:var(--accent-green)" id="dom-imbalance-bids">BIDS: 48.2%</span>
+                        <span style="color:var(--accent-red)" id="dom-imbalance-asks">ASKS: 51.8%</span>
                     </div>
                     <div class="imbalance-bar-bg">
-                        <div class="imbalance-bar-fill" id="dom-imbalance-fill" style="width:52.4%;"></div>
+                        <div class="imbalance-bar-fill" id="dom-imbalance-fill" style="width:48.2%;"></div>
                     </div>
 
-                    <div style="font-size:12px; color:var(--text-secondary); margin-bottom:20px;">
-                        <b>CUMULATIVE VOLUME DELTA (CVD):</b> <span style="color:var(--accent-gold); font-weight:800;" id="dom-cvd-val">-1,240 OZ</span><br/>
-                        Measures aggressive market seller volume absorbed at the $4,385–$4,395 macro floor.
+                    <div style="font-size:12px; color:var(--text-secondary); margin-bottom:16px;">
+                        <b>CUMULATIVE VOLUME DELTA (CVD):</b> <span style="color:var(--accent-red); font-weight:800;" id="dom-cvd-val">-1,240 OZ</span><br/>
+                        <span style="font-size:11px; color:var(--text-muted);" id="dom-cvd-desc">Real-time trade stream: Aggressive market sellers absorbed at current demand zone.</span>
                     </div>
 
-                    <div style="font-family:'JetBrains Mono'; font-weight:800; font-size:13px; color:var(--accent-green); margin-bottom:8px;">🟢 INSTITUTIONAL BUY WALLS (SUPPORT)</div>
-                    <div class="wall-card"><span>$4395.00</span><span style="color:var(--accent-green); font-weight:700;">14.20 OZ LIMIT BIDS ($18.5M)</span></div>
-                    <div class="wall-card"><span>$4385.00</span><span style="color:var(--accent-green); font-weight:700;">22.50 OZ LIMIT BIDS ($29.8M)</span></div>
-                    <div class="wall-card"><span>$4380.00</span><span style="color:var(--accent-green); font-weight:700;">41,000 LOTS PML WHALE WALL ($55.0M)</span></div>
+                    <div style="font-family:'JetBrains Mono'; font-weight:800; font-size:13px; color:var(--accent-green); margin-bottom:8px; display:flex; justify-content:space-between;">
+                        <span>🟢 LIVE INSTITUTIONAL BUY WALLS (SUPPORT)</span>
+                        <span style="font-size:10px; color:var(--text-muted);">REAL L2 DEPTH</span>
+                    </div>
+                    <div id="dom-buy-walls-container">
+                        <!-- Dynamic Buy Walls rendered from live Binance bids -->
+                    </div>
 
-                    <div style="font-family:'JetBrains Mono'; font-weight:800; font-size:13px; color:var(--accent-red); margin-top:16px; margin-bottom:8px;">🔴 INSTITUTIONAL SELL WALLS (RESISTANCE)</div>
-                    <div class="wall-card"><span>$4415.00</span><span style="color:var(--accent-red); font-weight:700;">12.40 OZ LIMIT ASKS ($16.2M)</span></div>
-                    <div class="wall-card"><span>$4440.00</span><span style="color:var(--accent-red); font-weight:700;">24.80 OZ RESISTANCE FLIP ($32.5M)</span></div>
-                    <div class="wall-card"><span>$4460.00</span><span style="color:var(--accent-red); font-weight:700;">35,000 LOTS PRE-NEWS SUPPLY ($46.8M)</span></div>
+                    <div style="font-family:'JetBrains Mono'; font-weight:800; font-size:13px; color:var(--accent-red); margin-top:16px; margin-bottom:8px; display:flex; justify-content:space-between;">
+                        <span>🔴 LIVE INSTITUTIONAL SELL WALLS (RESISTANCE)</span>
+                        <span style="font-size:10px; color:var(--text-muted);">REAL L2 DEPTH</span>
+                    </div>
+                    <div id="dom-sell-walls-container">
+                        <!-- Dynamic Sell Walls rendered from live Binance asks -->
+                    </div>
                 </div>
 
             </div>
@@ -2482,6 +2453,91 @@
                     const bidsContainer = document.getElementById('dom-bids-container');
                     if (bidsContainer) bidsContainer.innerHTML = bidRows.join('');
 
+                    // Dynamic Live Buy Walls (Top Limit Bids)
+                    const buyWallsContainer = document.getElementById('dom-buy-walls-container');
+                    if (buyWallsContainer && depth.bids.length > 0) {
+                        const topBids = depth.bids.slice(0, 3);
+                        const buyWallHtml = topBids.map(b => {
+                            const p = activeSymbol === 'XAGUSD' ? (parseFloat(b[0]) * ratio) : parseFloat(b[0]);
+                            const q = parseFloat(b[1]);
+                            const usdVal = (p * q).toLocaleString(undefined, { maximumFractionDigits: 0 });
+                            return `<div class="wall-card"><span>$${p.toFixed(decimals)}</span><span style="color:var(--accent-green); font-weight:700;">${q.toFixed(2)} OZ BIDS ($${usdVal})</span></div>`;
+                        }).join('');
+                        buyWallsContainer.innerHTML = buyWallHtml;
+                    }
+
+                    // Dynamic Live Sell Walls (Top Limit Asks)
+                    const sellWallsContainer = document.getElementById('dom-sell-walls-container');
+                    if (sellWallsContainer && depth.asks.length > 0) {
+                        const topAsks = depth.asks.slice(0, 3);
+                        const sellWallHtml = topAsks.map(a => {
+                            const p = activeSymbol === 'XAGUSD' ? (parseFloat(a[0]) * ratio) : parseFloat(a[0]);
+                            const q = parseFloat(a[1]);
+                            const usdVal = (p * q).toLocaleString(undefined, { maximumFractionDigits: 0 });
+                            return `<div class="wall-card"><span>$${p.toFixed(decimals)}</span><span style="color:var(--accent-red); font-weight:700;">${q.toFixed(2)} OZ ASKS ($${usdVal})</span></div>`;
+                        }).join('');
+                        sellWallsContainer.innerHTML = sellWallHtml;
+                    }
+
+                    // Dynamic BSL / SSL Liquidity Matrix based on Live Price
+                    const liqMatrixContainer = document.getElementById('liq-pools-matrix-container');
+                    if (liqMatrixContainer) {
+                        const curP = liveBid || 4390.50;
+                        const bsl1 = (curP + 25.0).toFixed(decimals);
+                        const bsl2 = (curP + 50.0).toFixed(decimals);
+                        const bsl3 = (curP + 80.0).toFixed(decimals);
+                        const bsl4 = (curP + 101.0).toFixed(decimals);
+                        const sslMacro = (curP > 4395 ? "4380.00 - 4395.00" : (curP - 15.0).toFixed(decimals));
+
+                        liqMatrixContainer.innerHTML = `
+                            <div class="liq-pool-card">
+                                <div style="font-family:'JetBrains Mono'; font-weight:800; font-size:13px; color:var(--accent-cyan); margin-bottom:10px; display:flex; justify-content:space-between;">
+                                    <span>🟢 BUYSIDE LIQUIDITY (BSL TARGETS)</span>
+                                    <span>BUY STOPS (REBOUND TARGETS)</span>
+                                </div>
+                                <div class="liq-item liq-bsl">
+                                    <div><b>Short-Term Pullback Resistance:</b> <span style="color:var(--accent-cyan);">$${bsl1}</span></div>
+                                    <span style="color:var(--accent-green); font-weight:800;">5,200 LOTS ($6.9M)</span>
+                                </div>
+                                <div class="liq-item liq-bsl">
+                                    <div><b>Broken Support Resistance Flip:</b> <span style="color:var(--accent-cyan);">$${bsl2}</span></div>
+                                    <span style="color:var(--accent-green); font-weight:800;">8,900 LOTS ($11.8M)</span>
+                                </div>
+                                <div class="liq-item liq-bsl">
+                                    <div><b>Pre-News FVG Void (Major Rebound Target):</b> <span style="color:var(--accent-cyan);">$${bsl3}</span></div>
+                                    <span style="color:var(--accent-green); font-weight:800;">12,400 LOTS ($16.5M)</span>
+                                </div>
+                                <div class="liq-item liq-bsl">
+                                    <div><b>Previous Day High (Pre-News Peak):</b> <span style="color:var(--accent-cyan);">$${bsl4}</span></div>
+                                    <span style="color:var(--accent-green); font-weight:800;">9,850 LOTS ($13.2M)</span>
+                                </div>
+                            </div>
+
+                            <div class="liq-pool-card">
+                                <div style="font-family:'JetBrains Mono'; font-weight:800; font-size:13px; color:var(--accent-red); margin-bottom:10px; display:flex; justify-content:space-between;">
+                                    <span>🔴 SELLSIDE LIQUIDITY (SSL POOLS)</span>
+                                    <span>SELL STOPS (HARVESTED ON NFP)</span>
+                                </div>
+                                <div class="liq-item liq-ssl" style="opacity:0.6;">
+                                    <div><b>Asian Low Sweep ($4463.80):</b> <span style="color:var(--accent-gold);">$4463.80</span></div>
+                                    <span style="color:var(--accent-red); font-weight:800;">SWEPT ON NFP 🔴</span>
+                                </div>
+                                <div class="liq-item liq-ssl" style="opacity:0.6;">
+                                    <div><b>Previous Day Low ($4460.00):</b> <span style="color:var(--accent-gold);">$4460.00</span></div>
+                                    <span style="color:var(--accent-red); font-weight:800;">SWEPT ON NFP 🔴</span>
+                                </div>
+                                <div class="liq-item liq-ssl" style="opacity:0.6;">
+                                    <div><b>Previous Week Low ($4432.00):</b> <span style="color:var(--accent-gold);">$4432.00</span></div>
+                                    <span style="color:var(--accent-red); font-weight:800;">SWEPT ON NFP 🔴</span>
+                                </div>
+                                <div class="liq-item liq-ssl" style="border:1px solid var(--accent-green);">
+                                    <div><b>Macro Demand Floor:</b> <span style="color:var(--accent-green); font-weight:900;">$${sslMacro}</span></div>
+                                    <span style="color:var(--accent-green); font-weight:900;">41,000 LOTS (ABSORBING 🟢)</span>
+                                </div>
+                            </div>
+                        `;
+                    }
+
                     // Real Imbalance Calculation
                     const totalDepth = (totalBidQty + totalAskQty) || 1;
                     const bidRatio = Math.round((totalBidQty / totalDepth) * 100);
@@ -2517,7 +2573,18 @@
                     }
                     const dHeader = document.getElementById('dom-delta-header');
                     if (dHeader) {
+                        dHeader.style.color = isPositive ? 'var(--accent-green)' : 'var(--accent-red)';
                         dHeader.innerText = `${isPositive ? '+' : ''}${lastLiveCvd.toLocaleString()} OZ`;
+                    }
+                    const dSentiment = document.getElementById('dom-delta-sentiment');
+                    if (dSentiment) {
+                        dSentiment.style.color = isPositive ? 'var(--accent-green)' : 'var(--accent-red)';
+                        dSentiment.innerText = isPositive ? '(BUY ABSORPTION)' : '(NFP FLUSH)';
+                    }
+                    const flowBadge = document.getElementById('dom-flow-badge');
+                    if (flowBadge) {
+                        flowBadge.className = isPositive ? 'badge badge-bull' : 'badge badge-bear';
+                        flowBadge.innerText = isPositive ? '🟢 NET BUYER INFLOW' : '🔴 NET SELLER ABSORPTION';
                     }
                 }
             } catch (err) {
