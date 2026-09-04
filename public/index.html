@@ -582,15 +582,34 @@
             banner.innerHTML = content || '<div style="color:var(--text-muted)">All custom overlays hidden. Click toggles above to activate.</div>';
         }
 
-        function runAiSynthesis() {
+        async function runAiSynthesis() {
             const btn = document.querySelector('.btn-synthesize');
-            btn.innerHTML = '⏳ DeepSeek AI Analyzing 7 Timeframes & L2 Book...';
+            const verdictEl = document.getElementById('ai-verdict');
+            const storyEl = document.getElementById('ai-story');
+            
+            btn.innerHTML = '⏳ DeepSeek AI Synthesizing 7 Timeframes & L2 Book...';
             btn.style.opacity = '0.7';
-            setTimeout(() => {
+            btn.disabled = true;
+            
+            try {
+                const res = await fetch('/api/analyze', { method: 'POST' });
+                const data = await res.json();
+                
+                // Update Verdict
+                verdictEl.innerHTML = `🟢 ${data.verdict} (${data.confidence} CONFLUENCE)`;
+                
+                // Update Story
+                storyEl.innerHTML = data.smart_money_story;
+                
+                btn.innerHTML = '⚡ DeepSeek AI Synthesis Updated (Live)';
+                btn.style.background = 'linear-gradient(135deg, #10B981 0%, #00E5FF 100%)';
+            } catch (err) {
+                console.error(err);
                 btn.innerHTML = '⚡ Run DeepSeek AI Synthesis';
+            } finally {
+                btn.disabled = false;
                 btn.style.opacity = '1';
-                alert('👑 DeepSeek Institutional Synthesis Complete:\nVerdict: STRONG BUY (91% Confluence)\nExecution Zone: $4466.00 - $4467.50\nStructural SL: $4461.80\nTarget 1: $4478.00 | Target 2: $4488.50');
-            }, 1000);
+            }
         }
     </script>
 </body>
