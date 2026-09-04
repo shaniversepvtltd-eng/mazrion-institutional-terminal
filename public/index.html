@@ -250,7 +250,7 @@
             color: #000;
         }
 
-        /* Institutional Key Levels Bar */
+        /* Institutional Key Levels Bar & Interactive Toggles */
         .key-levels-bar {
             display: flex;
             align-items: center;
@@ -261,7 +261,7 @@
             border-radius: 6px;
             margin-bottom: 10px;
             flex-wrap: wrap;
-            gap: 8px;
+            gap: 6px;
             font-family: 'JetBrains Mono', monospace;
             font-size: 11px;
         }
@@ -270,17 +270,24 @@
             display: flex;
             align-items: center;
             gap: 5px;
-            background: rgba(255, 255, 255, 0.03);
+            background: rgba(255, 255, 255, 0.04);
             border: 1px solid var(--border-color);
-            padding: 3px 8px;
+            padding: 4px 8px;
             border-radius: 4px;
             cursor: pointer;
             transition: all 0.2s;
+            user-select: none;
+        }
+
+        .key-pill.active {
+            background: rgba(0, 229, 255, 0.15);
+            border-color: var(--accent-cyan);
+            box-shadow: 0 0 10px rgba(0, 229, 255, 0.2);
         }
 
         .key-pill:hover {
             border-color: var(--accent-cyan);
-            background: rgba(0, 229, 255, 0.1);
+            transform: translateY(-1px);
         }
 
         #chart-container {
@@ -291,6 +298,61 @@
             border: 1px solid var(--border-color);
             background: #06080C;
             position: relative;
+        }
+
+        /* Glass Overlay Lines Layer on Chart */
+        .chart-overlay-layer {
+            position: absolute;
+            top: 40px;
+            left: 0;
+            right: 65px;
+            bottom: 35px;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .overlay-line {
+            position: absolute;
+            left: 0;
+            right: 0;
+            height: 0;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            transition: opacity 0.25s ease, transform 0.25s ease;
+        }
+
+        .overlay-line.dashed {
+            border-top: 1.5px dashed;
+        }
+
+        .overlay-line.solid {
+            border-top: 2px solid;
+        }
+
+        .overlay-line-badge {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            font-weight: 800;
+            padding: 2px 8px;
+            border-radius: 4px;
+            margin-right: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
+            transform: translateY(-50%);
+            display: inline-block;
+        }
+
+        .overlay-band {
+            position: absolute;
+            left: 0;
+            right: 0;
+            background: rgba(16, 185, 129, 0.14);
+            border-top: 1.5px dashed #10B981;
+            border-bottom: 1.5px dashed #10B981;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            transition: opacity 0.25s ease;
         }
 
         /* 4-Pillar Summary Grid */
@@ -729,8 +791,8 @@
 
         <div style="font-family:'JetBrains Mono'; font-size:12px; display:flex; gap:16px;">
             <div>ASSET: <b style="color:var(--accent-cyan)">XAUUSD</b></div>
-            <div>BID: <b style="color:var(--accent-cyan)" id="hdr-bid">$4471.28</b></div>
-            <div>ASK: <b style="color:var(--accent-red)" id="hdr-ask">$4471.82</b></div>
+            <div>BID: <b style="color:var(--accent-cyan)" id="hdr-bid">$4472.60</b></div>
+            <div>ASK: <b style="color:var(--accent-red)" id="hdr-ask">$4473.14</b></div>
             <div>SPREAD: <b style="color:var(--accent-gold)" id="hdr-spread">5.4 PTS</b></div>
         </div>
     </header>
@@ -758,7 +820,7 @@
                     <div class="chart-header">
                         <div style="display:flex; align-items:center; gap:8px; font-family:'JetBrains Mono';">
                             <span style="font-weight:900; font-size:15px; color:#FFF;">XAUUSD</span>
-                            <span style="font-size:12px; color:var(--text-secondary);">OANDA Spot Gold • Live Official Feed</span>
+                            <span style="font-size:12px; color:var(--text-secondary);">OANDA Spot Gold • Live Stream</span>
                         </div>
                         <div class="chart-actions">
                             <button class="btn-action btn-alert" onclick="openAlertModal()">
@@ -766,26 +828,65 @@
                             </button>
                             <a href="https://www.tradingview.com/chart/?symbol=OANDA%3AXAUUSD" target="_blank" style="text-decoration:none;">
                                 <button class="btn-action">
-                                    <span>↗</span> <span>Open in TradingView (Account / Broker)</span>
+                                    <span>↗</span> <span>Open in TradingView</span>
                                 </button>
                             </a>
                         </div>
                     </div>
 
-                    <!-- Clean Institutional Key Levels HUD (Click to Set Alert) -->
+                    <!-- Clean Institutional Key Levels HUD (Click to Toggle Chart Line) -->
                     <div class="key-levels-bar">
-                        <div class="key-pill" onclick="quickSetAlert('PDH', 4491.23)">📅 <b style="color:var(--accent-gold)">PDH:</b> $4491.23</div>
-                        <div class="key-pill" onclick="quickSetAlert('PDL', 4460.00)">📅 <b style="color:var(--accent-gold)">PDL:</b> $4460.00</div>
-                        <div class="key-pill" onclick="quickSetAlert('4H POI', 4464.00)">📦 <b style="color:var(--accent-green)">4H DEMAND POI:</b> $4464–$4467.50</div>
-                        <div class="key-pill" onclick="quickSetAlert('BUY WALL', 4462.50)">🐳 <b style="color:var(--accent-cyan)">BUY WALL:</b> $4462.50</div>
-                        <div class="key-pill" onclick="quickSetAlert('SELL WALL', 4488.50)">🐳 <b style="color:var(--accent-red)">SELL WALL:</b> $4488.50</div>
-                        <div class="key-pill" onclick="quickSetAlert('SL', 4461.80)">🛑 <b style="color:var(--accent-red)">SL:</b> $4461.80</div>
-                        <div class="key-pill" onclick="quickSetAlert('TP', 4478.00)">🎯 <b style="color:var(--accent-gold)">TP:</b> $4478.00</div>
+                        <div class="key-pill active" id="pill-pdh" onclick="toggleOverlayLine('pdh')">📅 <b style="color:var(--accent-gold)">PDH:</b> $4491.23</div>
+                        <div class="key-pill active" id="pill-pdl" onclick="toggleOverlayLine('pdl')">📅 <b style="color:var(--accent-gold)">PDL:</b> $4460.00</div>
+                        <div class="key-pill active" id="pill-poi" onclick="toggleOverlayLine('poi')">📦 <b style="color:var(--accent-green)">4H POI:</b> $4464–$4467.50</div>
+                        <div class="key-pill active" id="pill-buywall" onclick="toggleOverlayLine('buywall')">🐳 <b style="color:var(--accent-cyan)">BUY WALL:</b> $4462.50</div>
+                        <div class="key-pill active" id="pill-sellwall" onclick="toggleOverlayLine('sellwall')">🐳 <b style="color:var(--accent-red)">SELL WALL:</b> $4488.50</div>
+                        <div class="key-pill active" id="pill-sl" onclick="toggleOverlayLine('sl')">🛑 <b style="color:var(--accent-red)">SL:</b> $4461.80</div>
+                        <div class="key-pill active" id="pill-tp" onclick="toggleOverlayLine('tp')">🎯 <b style="color:var(--accent-gold)">TP:</b> $4478.00</div>
                     </div>
 
-                    <!-- Official TradingView Real-Time Chart Container -->
+                    <!-- Official TradingView Real-Time Chart Container with Glass Overlay Lines -->
                     <div id="chart-container">
+                        <!-- TradingView Embed -->
                         <div id="tradingview_xauusd" style="height:100%; width:100%;"></div>
+
+                        <!-- Interactive Marking Overlay Lines Layer -->
+                        <div class="chart-overlay-layer" id="chart-overlay-layer">
+                            <!-- PDH Line -->
+                            <div class="overlay-line dashed" id="line-pdh" style="top: 14%; border-color: #F59E0B;">
+                                <span class="overlay-line-badge" style="background: rgba(245, 158, 11, 0.9); color: #000;">📅 PDH: $4491.23</span>
+                            </div>
+
+                            <!-- Sell Wall Line -->
+                            <div class="overlay-line solid" id="line-sellwall" style="top: 20%; border-color: #FF3B69;">
+                                <span class="overlay-line-badge" style="background: rgba(255, 59, 105, 0.9); color: #FFF;">🐳 WHALE SELL WALL: $4488.50 ($19.1M)</span>
+                            </div>
+
+                            <!-- TP1 Line -->
+                            <div class="overlay-line dashed" id="line-tp" style="top: 38%; border-color: #10B981;">
+                                <span class="overlay-line-badge" style="background: rgba(16, 185, 129, 0.9); color: #000;">🎯 TARGET 1: $4478.00</span>
+                            </div>
+
+                            <!-- 4H Demand POI Band -->
+                            <div class="overlay-band" id="line-poi" style="top: 66%; height: 26px;">
+                                <span class="overlay-line-badge" style="background: rgba(16, 185, 129, 0.9); color: #000;">📦 4H DISCOUNT POI: $4464.00 – $4467.50</span>
+                            </div>
+
+                            <!-- Buy Wall Line -->
+                            <div class="overlay-line solid" id="line-buywall" style="top: 76%; border-color: #00E5FF;">
+                                <span class="overlay-line-badge" style="background: rgba(0, 229, 255, 0.9); color: #000;">🐳 WHALE BUY WALL: $4462.50 ($24.6M)</span>
+                            </div>
+
+                            <!-- Structural SL Line -->
+                            <div class="overlay-line solid" id="line-sl" style="top: 80%; border-color: #EF4444;">
+                                <span class="overlay-line-badge" style="background: rgba(239, 68, 68, 0.95); color: #FFF;">🛑 HARD STRUCTURAL SL: $4461.80</span>
+                            </div>
+
+                            <!-- PDL Line -->
+                            <div class="overlay-line dashed" id="line-pdl" style="top: 85%; border-color: #F59E0B;">
+                                <span class="overlay-line-badge" style="background: rgba(245, 158, 11, 0.9); color: #000;">📅 PDL: $4460.00</span>
+                            </div>
+                        </div>
                     </div>
 
                     <!-- 4-Pillar Grid -->
@@ -917,7 +1018,7 @@
                     <!-- Current Price Separator -->
                     <div class="ladder-row ladder-current">
                         <span>🎯 ACTIVE GOLD BID / ASK</span>
-                        <span id="dom-live-bid-ask">$4471.28 / $4471.82</span>
+                        <span id="dom-live-bid-ask">$4472.60 / $4473.14</span>
                     </div>
 
                     <!-- Dynamic Live Bids Container -->
@@ -1119,7 +1220,7 @@
         let tvWidget = new TradingView.widget({
             "autosize": true,
             "symbol": "OANDA:XAUUSD",
-            "interval": "1",
+            "interval": "5",
             "timezone": "Etc/UTC",
             "theme": "dark",
             "style": "1",
@@ -1143,6 +1244,29 @@
             
             document.getElementById(`tab-${tabId}`).classList.add('active');
             event.target.classList.add('active');
+        }
+
+        // Overlay Lines Toggle State
+        const overlayLinesState = {
+            pdh: true,
+            pdl: true,
+            poi: true,
+            buywall: true,
+            sellwall: true,
+            sl: true,
+            tp: true
+        };
+
+        function toggleOverlayLine(key) {
+            overlayLinesState[key] = !overlayLinesState[key];
+            const pill = document.getElementById(`pill-${key}`);
+            const line = document.getElementById(`line-${key}`);
+            
+            if (pill) pill.classList.toggle('active', overlayLinesState[key]);
+            if (line) {
+                line.style.opacity = overlayLinesState[key] ? '1' : '0';
+                line.style.pointerEvents = overlayLinesState[key] ? 'auto' : 'none';
+            }
         }
 
         // Alert Manager System
@@ -1183,12 +1307,6 @@
 
         function setModalPrice(price) {
             document.getElementById('alert-target-price').value = price;
-        }
-
-        function quickSetAlert(label, price) {
-            document.getElementById('alert-target-price').value = price;
-            document.getElementById('alert-target-label').value = `${label} Alert`;
-            openAlertModal();
         }
 
         function saveAlert() {
@@ -1277,7 +1395,7 @@
         }
 
         // Dynamic Order Flow DOM Re-rendering Engine
-        let liveBid = 4471.28;
+        let liveBid = 4472.60;
         let liveSpreadPts = 5.4;
         let liveAsk = liveBid + (liveSpreadPts * 0.1);
 
@@ -1342,7 +1460,7 @@
             if (cvdHeader) cvdHeader.innerText = `+${cvdVal.toLocaleString()} OZ`;
         }
 
-        // Initialize DOM
+        // Initialize DOM & Alerts
         updateDomLadder(liveBid, liveAsk);
         renderAlerts();
 
@@ -1352,7 +1470,7 @@
             liveSpreadPts = 5.4 + (Math.random() - 0.5) * 0.5;
             const spreadDollars = liveSpreadPts * 0.1;
             
-            liveBid = 4471.28 + jitter;
+            liveBid = 4472.60 + jitter;
             liveAsk = liveBid + spreadDollars;
             
             // Update Top Header
