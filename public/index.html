@@ -900,24 +900,82 @@
                         </div>
                     </div>
 
-                    <!-- Clean Institutional Key Levels HUD (Click to Copy / Preset Alert) -->
+                    <!-- Clean Institutional Key Levels HUD (Click to Toggle Chart Line) -->
                     <div class="key-levels-bar">
-                        <div class="key-pill active" id="pill-pdh" onclick="selectInstitutionalLevel(4491.23, 'Previous Day High (PDH)')">📅 <b style="color:var(--accent-gold)">PDH:</b> $4491.23</div>
-                        <div class="key-pill active" id="pill-sellwall" onclick="selectInstitutionalLevel(4488.50, 'Whale Sell Wall')">🐳 <b style="color:var(--accent-red)">SELL WALL:</b> $4488.50</div>
-                        <div class="key-pill active" id="pill-tp" onclick="selectInstitutionalLevel(4478.00, 'Target TP1')">🎯 <b style="color:var(--accent-green)">TP:</b> $4478.00</div>
-                        <div class="key-pill active" id="pill-bsl" onclick="selectInstitutionalLevel(4478.20, 'BSL Equal Highs')">💧 <b style="color:var(--accent-cyan)">BSL EQH:</b> $4478.20</div>
-                        <div class="key-pill active" id="pill-poi15m" onclick="selectInstitutionalLevel(4471.00, '15M Execution POI')">📦 <b style="color:var(--accent-cyan)">15M POI:</b> $4468.5–$4471</div>
-                        <div class="key-pill active" id="pill-poi1h" onclick="selectInstitutionalLevel(4466.20, '1H Refined POI')">📦 <b style="color:var(--accent-gold)">1H POI:</b> $4466.2–$4469</div>
-                        <div class="key-pill active" id="pill-poi4h" onclick="selectInstitutionalLevel(4464.00, '4H Macro POI')">📦 <b style="color:var(--accent-green)">4H POI:</b> $4464–$4467.5</div>
-                        <div class="key-pill active" id="pill-ssl" onclick="selectInstitutionalLevel(4463.80, 'SSL Harvest Floor')">💧 <b style="color:var(--accent-gold)">SSL SWEEP:</b> $4463.80</div>
-                        <div class="key-pill active" id="pill-buywall" onclick="selectInstitutionalLevel(4462.50, 'Whale Buy Wall')">🐳 <b style="color:var(--accent-cyan)">BUY WALL:</b> $4462.50</div>
-                        <div class="key-pill active" id="pill-sl" onclick="selectInstitutionalLevel(4461.80, 'Structural Stop Loss')">🛑 <b style="color:var(--accent-red)">SL:</b> $4461.80</div>
-                        <div class="key-pill active" id="pill-pdl" onclick="selectInstitutionalLevel(4460.00, 'Previous Day Low (PDL)')">📅 <b style="color:var(--accent-gold)">PDL:</b> $4460.00</div>
+                        <div class="key-pill active" id="pill-pdh" onclick="toggleOverlayLine('pdh')">📅 <b style="color:var(--accent-gold)">PDH:</b> $4491.23</div>
+                        <div class="key-pill active" id="pill-sellwall" onclick="toggleOverlayLine('sellwall')">🐳 <b style="color:var(--accent-red)">SELL WALL:</b> $4488.50</div>
+                        <div class="key-pill active" id="pill-tp" onclick="toggleOverlayLine('tp')">🎯 <b style="color:var(--accent-green)">TP:</b> $4478.00</div>
+                        <div class="key-pill active" id="pill-bsl" onclick="toggleOverlayLine('bsl')">💧 <b style="color:var(--accent-cyan)">BSL EQH:</b> $4478.20</div>
+                        <div class="key-pill active" id="pill-poi15m" onclick="toggleOverlayLine('poi15m')">📦 <b style="color:var(--accent-cyan)">15M POI:</b> $4468.5–$4471</div>
+                        <div class="key-pill active" id="pill-poi1h" onclick="toggleOverlayLine('poi1h')">📦 <b style="color:var(--accent-gold)">1H POI:</b> $4466.2–$4469</div>
+                        <div class="key-pill active" id="pill-poi4h" onclick="toggleOverlayLine('poi4h')">📦 <b style="color:var(--accent-green)">4H POI:</b> $4464–$4467.5</div>
+                        <div class="key-pill active" id="pill-ssl" onclick="toggleOverlayLine('ssl')">💧 <b style="color:var(--accent-gold)">SSL SWEEP:</b> $4463.80</div>
+                        <div class="key-pill active" id="pill-buywall" onclick="toggleOverlayLine('buywall')">🐳 <b style="color:var(--accent-cyan)">BUY WALL:</b> $4462.50</div>
+                        <div class="key-pill active" id="pill-sl" onclick="toggleOverlayLine('sl')">🛑 <b style="color:var(--accent-red)">SL:</b> $4461.80</div>
+                        <div class="key-pill active" id="pill-pdl" onclick="toggleOverlayLine('pdl')">📅 <b style="color:var(--accent-gold)">PDL:</b> $4460.00</div>
                     </div>
 
-                    <!-- Official TradingView Real-Time Chart Container -->
+                    <!-- Official TradingView Real-Time Chart Container with Glass Overlay Lines -->
                     <div id="chart-container">
                         <div id="tradingview_xauusd" style="height:100%; width:100%;"></div>
+
+                        <!-- Interactive Marking Overlay Lines Layer -->
+                        <div class="chart-overlay-layer" id="chart-overlay-layer">
+                            <!-- PDH Line -->
+                            <div class="overlay-line dashed" id="line-pdh" style="top: 10%; border-color: #F59E0B;">
+                                <span class="overlay-line-badge" style="background: rgba(245, 158, 11, 0.95); color: #000;">📅 PDH BSL: $4491.23</span>
+                            </div>
+
+                            <!-- Sell Wall Line -->
+                            <div class="overlay-line solid" id="line-sellwall" style="top: 16%; border-color: #FF3B69;">
+                                <span class="overlay-line-badge" style="background: rgba(255, 59, 105, 0.95); color: #FFF;">🐳 WHALE SELL WALL: $4488.50</span>
+                            </div>
+
+                            <!-- TP1 Line -->
+                            <div class="overlay-line dashed" id="line-tp" style="top: 32%; border-color: #10B981;">
+                                <span class="overlay-line-badge" style="background: rgba(16, 185, 129, 0.95); color: #000;">🎯 TARGET 1: $4478.00</span>
+                            </div>
+
+                            <!-- BSL EQH Line -->
+                            <div class="overlay-line dashed" id="line-bsl" style="top: 35%; border-color: #00E5FF;">
+                                <span class="overlay-line-badge" style="background: rgba(0, 229, 255, 0.95); color: #000;">💧 BSL EQH: $4478.20</span>
+                            </div>
+
+                            <!-- 15M POI Band -->
+                            <div class="overlay-band" id="line-poi15m" style="top: 48%; height: 22px; background: rgba(0, 229, 255, 0.12); border-color: #00E5FF;">
+                                <span class="overlay-line-badge" style="background: rgba(0, 229, 255, 0.95); color: #000;">📦 15M POI: $4468.50 – $4471.00</span>
+                            </div>
+
+                            <!-- 1H POI Band -->
+                            <div class="overlay-band" id="line-poi1h" style="top: 55%; height: 24px; background: rgba(245, 158, 11, 0.12); border-color: #F59E0B;">
+                                <span class="overlay-line-badge" style="background: rgba(245, 158, 11, 0.95); color: #000;">📦 1H REFINED POI: $4466.20 – $4469.00</span>
+                            </div>
+
+                            <!-- 4H Demand POI Band -->
+                            <div class="overlay-band" id="line-poi4h" style="top: 62%; height: 26px; background: rgba(16, 185, 129, 0.14); border-color: #10B981;">
+                                <span class="overlay-line-badge" style="background: rgba(16, 185, 129, 0.95); color: #000;">📦 4H MACRO POI: $4464.00 – $4467.50</span>
+                            </div>
+
+                            <!-- SSL Sweep Line -->
+                            <div class="overlay-line dashed" id="line-ssl" style="top: 70%; border-color: #F59E0B;">
+                                <span class="overlay-line-badge" style="background: rgba(245, 158, 11, 0.95); color: #000;">💧 SSL SWEEP: $4463.80</span>
+                            </div>
+
+                            <!-- Buy Wall Line -->
+                            <div class="overlay-line solid" id="line-buywall" style="top: 76%; border-color: #00E5FF;">
+                                <span class="overlay-line-badge" style="background: rgba(0, 229, 255, 0.95); color: #000;">🐳 WHALE BUY WALL: $4462.50 ($24.6M)</span>
+                            </div>
+
+                            <!-- Structural SL Line -->
+                            <div class="overlay-line solid" id="line-sl" style="top: 81%; border-color: #EF4444;">
+                                <span class="overlay-line-badge" style="background: rgba(239, 68, 68, 0.95); color: #FFF;">🛑 HARD STRUCTURAL SL: $4461.80</span>
+                            </div>
+
+                            <!-- PDL Line -->
+                            <div class="overlay-line dashed" id="line-pdl" style="top: 87%; border-color: #F59E0B;">
+                                <span class="overlay-line-badge" style="background: rgba(245, 158, 11, 0.95); color: #000;">📅 PDL SSL: $4460.00</span>
+                            </div>
+                        </div>
                     </div>
 
                     <!-- 4-Pillar Grid -->
@@ -1373,15 +1431,32 @@
             showToast(isFull ? '⛶ Full Chart Expanded' : '🗗 Standard Split View Restored');
         }
 
-        // Select Institutional Level Preset
-        function selectInstitutionalLevel(price, label) {
-            openAlertModal();
-            setModalPrice(price);
-            document.getElementById('alert-target-label').value = label;
-            try {
-                navigator.clipboard.writeText(price.toString());
-                showToast(`🎯 Selected $${price.toFixed(2)} (${label}) — Copied to Clipboard!`);
-            } catch(e) {}
+        // Overlay Lines Toggle State
+        const overlayLinesState = {
+            pdh: true,
+            sellwall: true,
+            tp: true,
+            bsl: true,
+            poi15m: true,
+            poi1h: true,
+            poi4h: true,
+            ssl: true,
+            buywall: true,
+            sl: true,
+            pdl: true
+        };
+
+        function toggleOverlayLine(key) {
+            overlayLinesState[key] = !overlayLinesState[key];
+            const pill = document.getElementById(`pill-${key}`);
+            const line = document.getElementById(`line-${key}`);
+            
+            if (pill) pill.classList.toggle('active', overlayLinesState[key]);
+            if (line) {
+                line.style.opacity = overlayLinesState[key] ? '1' : '0';
+                line.style.pointerEvents = overlayLinesState[key] ? 'auto' : 'none';
+            }
+            showToast(overlayLinesState[key] ? `👁️ Showing Level on Chart` : `🙈 Level Hidden from Chart`);
         }
 
         // ==================== ALERT SYSTEM ====================
