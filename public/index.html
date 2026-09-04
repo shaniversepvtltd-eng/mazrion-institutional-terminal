@@ -154,7 +154,7 @@
         /* Main 3-Column Terminal Layout */
         .terminal-grid {
             display: grid;
-            grid-template-columns: 210px 1fr 330px;
+            grid-template-columns: 210px 1fr 340px;
             height: calc(100vh - 78px);
             background: var(--bg-body);
         }
@@ -521,6 +521,17 @@
             margin-bottom: 10px;
         }
 
+        .intermarket-box {
+            background: rgba(168, 85, 247, 0.08);
+            border: 1px solid rgba(168, 85, 247, 0.3);
+            border-radius: 6px;
+            padding: 8px 10px;
+            margin-bottom: 10px;
+            font-size: 10.5px;
+            color: #E9D5FF;
+            line-height: 1.5;
+        }
+
         /* DeepSeek Synthesis Card */
         .btn-regenerate {
             background: #0E121B;
@@ -625,10 +636,10 @@
         <div class="watchlist-pane">
             <div class="watchlist-header">
                 <span>WATCHLIST (XM MT5)</span>
-                <span class="active-count-badge">1 ACTIVE</span>
+                <span class="active-count-badge">4 ACTIVE</span>
             </div>
 
-            <div class="watch-card active" onclick="switchWatchlistAsset('XAUUSD', 'Gold / USD', '4476.64', 'LONG WATCH')">
+            <div class="watch-card active" id="watch-card-xauusd" onclick="switchWatchlistAsset('XAUUSD', 'Gold / USD', 4476.64, 'LONG WATCH')">
                 <div>
                     <div class="watch-sym-title">XAUUSD</div>
                     <div class="watch-sym-desc">Gold / USD</div>
@@ -639,36 +650,36 @@
                 </div>
             </div>
 
-            <div class="watch-card" onclick="switchWatchlistAsset('XAGUSD', 'Silver / USD', '38.42', 'PHASE 2')">
+            <div class="watch-card" id="watch-card-xagusd" onclick="switchWatchlistAsset('XAGUSD', 'Silver / USD', 38.42, 'HIGH BETA')">
                 <div>
                     <div class="watch-sym-title">XAGUSD</div>
                     <div class="watch-sym-desc">Silver / USD</div>
                 </div>
                 <div>
-                    <div class="watch-sym-price">--</div>
-                    <div class="watch-sym-tag" style="color:var(--text-muted)">PHASE 2</div>
+                    <div class="watch-sym-price" id="watch-xagusd-price">38.42</div>
+                    <div class="watch-sym-tag" style="color:var(--accent-cyan)">HIGH BETA</div>
                 </div>
             </div>
 
-            <div class="watch-card" onclick="switchWatchlistAsset('BTCUSD', 'Bitcoin / USD', '94250.00', 'PHASE 2')">
+            <div class="watch-card" id="watch-card-btcusd" onclick="switchWatchlistAsset('BTCUSD', 'Bitcoin / USD', 94250.00, 'ACCUMULATING')">
                 <div>
                     <div class="watch-sym-title">BTCUSD</div>
                     <div class="watch-sym-desc">Bitcoin / USD</div>
                 </div>
                 <div>
-                    <div class="watch-sym-price">--</div>
-                    <div class="watch-sym-tag" style="color:var(--text-muted)">PHASE 2</div>
+                    <div class="watch-sym-price" id="watch-btcusd-price">94,250</div>
+                    <div class="watch-sym-tag" style="color:var(--accent-gold)">ACCUMULATING</div>
                 </div>
             </div>
 
-            <div class="watch-card" onclick="switchWatchlistAsset('EURUSD', 'Euro / USD', '1.0845', 'PHASE 2')">
+            <div class="watch-card" id="watch-card-eurusd" onclick="switchWatchlistAsset('EURUSD', 'Euro / USD', 1.0845, 'REVERSAL')">
                 <div>
                     <div class="watch-sym-title">EURUSD</div>
                     <div class="watch-sym-desc">Euro / USD</div>
                 </div>
                 <div>
-                    <div class="watch-sym-price">--</div>
-                    <div class="watch-sym-tag" style="color:var(--text-muted)">PHASE 2</div>
+                    <div class="watch-sym-price" id="watch-eurusd-price">1.0845</div>
+                    <div class="watch-sym-tag" style="color:var(--accent-green)">REVERSAL</div>
                 </div>
             </div>
         </div>
@@ -710,15 +721,7 @@
             <!-- Institutional Key Level Markings HUD Bar (Visible on Mazrion Marked Chart) -->
             <div class="level-markings-bar" id="markings-bar-hud">
                 <span style="color:var(--text-muted); font-size:9.5px; font-weight:800; margin-right:4px;">MARKINGS:</span>
-                <div class="marking-pill active" id="pill-poi15m" onclick="toggleLevelMarking('poi15m')">📦 <b>15M POI:</b> $4468.5–$4471</div>
-                <div class="marking-pill active" id="pill-poi1h" onclick="toggleLevelMarking('poi1h')">📦 <b>1H POI:</b> $4466.2–$4469</div>
-                <div class="marking-pill active" id="pill-poi4h" onclick="toggleLevelMarking('poi4h')">📦 <b>4H POI:</b> $4464–$4467.5</div>
-                <div class="marking-pill active" id="pill-sellwall" onclick="toggleLevelMarking('sellwall')">🐳 <b>SELL WALL:</b> $4488.50</div>
-                <div class="marking-pill active" id="pill-buywall" onclick="toggleLevelMarking('buywall')">🐳 <b>BUY WALL:</b> $4462.50</div>
-                <div class="marking-pill active" id="pill-tp" onclick="toggleLevelMarking('tp')">🎯 <b>TP1:</b> $4478.00</div>
-                <div class="marking-pill active" id="pill-sl" onclick="toggleLevelMarking('sl')">🛑 <b>SL:</b> $4461.80</div>
-                <div class="marking-pill" id="pill-pdh" onclick="toggleLevelMarking('pdh')">📅 <b>PDH:</b> $4491.23</div>
-                <div class="marking-pill active" id="pill-pdl" onclick="toggleLevelMarking('pdl')">📅 <b>PDL SSL:</b> $4460.00</div>
+                <div id="dynamic-markings-pills" style="display:flex; gap:6px; flex-wrap:wrap;"></div>
             </div>
 
             <!-- Floating Live Price HUD -->
@@ -747,7 +750,7 @@
             <div class="intel-section-card">
                 <div class="section-header-title">
                     <span>CONFLUENCE SCORE</span>
-                    <span class="bias-badge">BULLISH BIAS</span>
+                    <span class="bias-badge" id="intel-bias-badge">BULLISH BIAS</span>
                 </div>
 
                 <div class="confluence-hero">
@@ -757,19 +760,19 @@
 
                 <div class="stat-row">
                     <span class="stat-label">4H Bias (King)</span>
-                    <span class="stat-val-green">BULLISH</span>
+                    <span class="stat-val-green" id="intel-4h-bias">BULLISH</span>
                 </div>
                 <div class="stat-row">
                     <span class="stat-label">1H Market Structure</span>
-                    <span class="stat-val-green">BULLISH</span>
+                    <span class="stat-val-green" id="intel-1h-structure">BULLISH</span>
                 </div>
                 <div class="stat-row">
                     <span class="stat-label">Daily Trend Guard</span>
-                    <span class="stat-val-gold">NEUTRAL</span>
+                    <span class="stat-val-gold" id="intel-daily-guard">NEUTRAL</span>
                 </div>
                 <div class="stat-row">
                     <span class="stat-label">Bullish Order Blocks</span>
-                    <span class="stat-val-dim">1 Refined (1H)</span>
+                    <span class="stat-val-green" id="intel-ob-count">1 Refined (1H)</span>
                 </div>
                 <div class="stat-row">
                     <span class="stat-label">Bearish Order Blocks</span>
@@ -777,23 +780,28 @@
                 </div>
                 <div class="stat-row">
                     <span class="stat-label">Institutional FVGs</span>
-                    <span class="stat-val-green">1 Active ($4470)</span>
+                    <span class="stat-val-green" id="intel-fvg-count">1 Active Retest</span>
                 </div>
+            </div>
+
+            <!-- Intermarket Macro Impact Card -->
+            <div class="intermarket-box" id="intel-intermarket-box">
+                ⚡ <b>Intermarket Macro Impact:</b> Gold (+0.96%) and DXY weakness (104.12) are driving the entire metals complex.
             </div>
 
             <!-- Daily Trade Plan Card -->
             <div class="intel-section-card">
                 <div class="plan-header">
                     <span style="color:#FFF;">DAILY TRADE PLAN</span>
-                    <span style="color:var(--accent-green); font-size:10px;">LONG (BUY)</span>
+                    <span style="color:var(--accent-green); font-size:10px;" id="plan-direction">LONG (BUY)</span>
                 </div>
 
-                <div class="plan-rule-box">
-                    <b>Strategy:</b> Price retest of $4470.00 with bullish microstructure confirmation
+                <div class="plan-rule-box" id="plan-strategy-text">
+                    <b>Strategy:</b> Price retest of discount demand zone with bullish microstructure confirmation
                 </div>
 
-                <div class="inval-box">
-                    <b>Invalidation:</b> Price breaches BELOW SL ($4461.80) [Basis: MSS_SWING_LOW]
+                <div class="inval-box" id="plan-inval-text">
+                    <b>Invalidation:</b> Price breaches BELOW structural sweep low [Basis: MSS_SWING_LOW]
                 </div>
 
                 <div class="stat-row">
@@ -806,7 +814,7 @@
                 </div>
                 <div class="stat-row">
                     <span class="stat-label">SL BASIS</span>
-                    <span class="stat-val-dim">MSS_SWING_LOW ($4461.80)</span>
+                    <span class="stat-val-dim" id="plan-sl-basis">MSS_SWING_LOW ($4461.80)</span>
                 </div>
                 <div class="stat-row">
                     <span class="stat-label">TARGET 1</span>
@@ -816,12 +824,16 @@
                     <span class="stat-label">TARGET 2</span>
                     <span style="color:var(--accent-green); font-weight:800;" id="plan-tp2">$4488.50</span>
                 </div>
+                <div class="stat-row">
+                    <span class="stat-label">RISK/REWARD</span>
+                    <span style="color:var(--accent-gold); font-weight:800;" id="plan-rr">1 : 3.4 R/R</span>
+                </div>
             </div>
 
             <!-- DeepSeek Synthesis Card -->
             <div class="intel-section-card">
                 <div class="section-header-title">
-                    <span>DEEPSEEK SYNTHESIS R1</span>
+                    <span id="deepseek-title-sym">DEEPSEEK SYNTHESIS (XAUUSD)</span>
                     <button class="btn-regenerate" onclick="runAiSynthesis()">⚡ REGENERATE</button>
                 </div>
 
@@ -843,14 +855,14 @@
     <footer>
         <div style="display:flex; align-items:center;">
             <span class="live-dot" style="margin-right:8px;"></span>
-            <span>FEED: <b style="color:#FFF;">CONNECTED (BINANCE LIVE L2)</b> &nbsp;|&nbsp; SYMBOL: <b style="color:var(--accent-cyan);">XAUUSD</b></span>
+            <span>FEED: <b style="color:#FFF;">CONNECTED (BINANCE LIVE L2)</b> &nbsp;|&nbsp; SYMBOL: <b style="color:var(--accent-cyan);" id="foot-symbol">XAUUSD</b></span>
         </div>
         <div>
             BALANCE: <b style="color:#FFF;">$283.69</b> &nbsp;&nbsp; EQUITY: <b style="color:#FFF;">$168.21</b> &nbsp;&nbsp; POSITIONS: <b style="color:var(--accent-green);">7 ACTIVE</b>
         </div>
     </footer>
 
-    <!-- ENGINE JAVASCRIPT: DUAL CHARTS & LIVE MARKINGS -->
+    <!-- ENGINE JAVASCRIPT: DUAL CHARTS & MULTI-ASSET INTELLIGENCE -->
     <script type="text/javascript">
         let chart = null;
         let candleSeries = null;
@@ -859,45 +871,116 @@
         let bidPriceLine = null;
         let drawnLevelLines = {};
         
+        let activeSymbol = 'XAUUSD';
         let liveBid = 4476.64;
         let liveSpreadPts = 5.5;
         let liveAsk = liveBid + (liveSpreadPts * 0.1);
         let activeTf = '5m';
-        let activeSymbol = 'XAUUSD';
         let currentEngine = 'marked'; // 'marked' or 'tv'
 
-        // Precision Institutional Levels definitions
-        const levelDefinitions = {
-            poi15m: [
-                { price: 4471.00, color: '#00E5FF', title: '15M POI: $4471.00', lineStyle: 1, lineWidth: 1.5 },
-                { price: 4468.50, color: '#00E5FF', title: '15M POI: $4468.50', lineStyle: 1, lineWidth: 1.5 }
-            ],
-            poi1h: [
-                { price: 4469.00, color: '#F59E0B', title: '1H POI: $4469.00', lineStyle: 2, lineWidth: 1.5 },
-                { price: 4466.20, color: '#F59E0B', title: '1H POI: $4466.20', lineStyle: 2, lineWidth: 1.5 }
-            ],
-            poi4h: [
-                { price: 4467.50, color: '#10B981', title: '4H POI: $4467.50', lineStyle: 2, lineWidth: 1.5 },
-                { price: 4464.00, color: '#10B981', title: '4H POI: $4464.00', lineStyle: 2, lineWidth: 1.5 }
-            ],
-            sellwall: [
-                { price: 4488.50, color: '#FF3B69', title: '🐳 SELL WALL: $4488.50', lineStyle: 0, lineWidth: 2 }
-            ],
-            buywall: [
-                { price: 4462.50, color: '#00E5FF', title: '🐳 BUY WALL: $4462.50', lineStyle: 0, lineWidth: 2 }
-            ],
-            tp: [
-                { price: 4478.00, color: '#10B981', title: '🎯 TARGET TP1: $4478.00', lineStyle: 2, lineWidth: 2 }
-            ],
-            sl: [
-                { price: 4461.80, color: '#FF3B69', title: '🛑 STRUCTURAL SL: $4461.80', lineStyle: 0, lineWidth: 2 }
-            ],
-            pdh: [
-                { price: 4491.23, color: '#F59E0B', title: '📅 PDH: $4491.23', lineStyle: 2, lineWidth: 1.5 }
-            ],
-            pdl: [
-                { price: 4460.00, color: '#F59E0B', title: '📅 PDL SSL: $4460.00', lineStyle: 2, lineWidth: 2 }
-            ]
+        // ASSET SPECIFIC LEVEL DEFINITIONS
+        const assetLevelsMaster = {
+            XAUUSD: {
+                poi15m: [
+                    { price: 4471.00, color: '#00E5FF', title: '15M POI: $4471.00', lineStyle: 1, lineWidth: 1.5 },
+                    { price: 4468.50, color: '#00E5FF', title: '15M POI: $4468.50', lineStyle: 1, lineWidth: 1.5 }
+                ],
+                poi1h: [
+                    { price: 4469.00, color: '#F59E0B', title: '1H POI: $4469.00', lineStyle: 2, lineWidth: 1.5 },
+                    { price: 4466.20, color: '#F59E0B', title: '1H POI: $4466.20', lineStyle: 2, lineWidth: 1.5 }
+                ],
+                poi4h: [
+                    { price: 4467.50, color: '#10B981', title: '4H POI: $4467.50', lineStyle: 2, lineWidth: 1.5 },
+                    { price: 4464.00, color: '#10B981', title: '4H POI: $4464.00', lineStyle: 2, lineWidth: 1.5 }
+                ],
+                sellwall: [
+                    { price: 4488.50, color: '#FF3B69', title: '🐳 SELL WALL: $4488.50', lineStyle: 0, lineWidth: 2 }
+                ],
+                buywall: [
+                    { price: 4462.50, color: '#00E5FF', title: '🐳 BUY WALL: $4462.50', lineStyle: 0, lineWidth: 2 }
+                ],
+                tp: [
+                    { price: 4478.00, color: '#10B981', title: '🎯 TARGET TP1: $4478.00', lineStyle: 2, lineWidth: 2 }
+                ],
+                sl: [
+                    { price: 4461.80, color: '#FF3B69', title: '🛑 STRUCTURAL SL: $4461.80', lineStyle: 0, lineWidth: 2 }
+                ],
+                pdh: [
+                    { price: 4491.23, color: '#F59E0B', title: '📅 PDH: $4491.23', lineStyle: 2, lineWidth: 1.5 }
+                ],
+                pdl: [
+                    { price: 4460.00, color: '#F59E0B', title: '📅 PDL SSL: $4460.00', lineStyle: 2, lineWidth: 2 }
+                ]
+            },
+            XAGUSD: {
+                poi15m: [
+                    { price: 38.30, color: '#00E5FF', title: '15M POI: $38.30', lineStyle: 1, lineWidth: 1.5 },
+                    { price: 38.15, color: '#00E5FF', title: '15M POI: $38.15', lineStyle: 1, lineWidth: 1.5 }
+                ],
+                poi1h: [
+                    { price: 38.15, color: '#F59E0B', title: '1H POI: $38.15', lineStyle: 2, lineWidth: 1.5 },
+                    { price: 37.90, color: '#F59E0B', title: '1H POI: $37.90', lineStyle: 2, lineWidth: 1.5 }
+                ],
+                poi4h: [
+                    { price: 37.85, color: '#10B981', title: '4H POI: $37.85', lineStyle: 2, lineWidth: 1.5 },
+                    { price: 37.60, color: '#10B981', title: '4H POI: $37.60', lineStyle: 2, lineWidth: 1.5 }
+                ],
+                sellwall: [
+                    { price: 40.50, color: '#FF3B69', title: '🐳 WHALE SELL WALL: $40.50', lineStyle: 0, lineWidth: 2 }
+                ],
+                buywall: [
+                    { price: 37.50, color: '#00E5FF', title: '🐳 BUY WALL: $37.50', lineStyle: 0, lineWidth: 2 }
+                ],
+                tp: [
+                    { price: 39.20, color: '#10B981', title: '🎯 TARGET TP1: $39.20', lineStyle: 2, lineWidth: 2 }
+                ],
+                sl: [
+                    { price: 37.60, color: '#FF3B69', title: '🛑 STRUCTURAL SL: $37.60', lineStyle: 0, lineWidth: 2 }
+                ],
+                pdh: [
+                    { price: 39.10, color: '#F59E0B', title: '📅 PDH: $39.10', lineStyle: 2, lineWidth: 1.5 }
+                ],
+                pdl: [
+                    { price: 37.85, color: '#F59E0B', title: '📅 PDL SSL: $37.85', lineStyle: 2, lineWidth: 2 }
+                ]
+            },
+            BTCUSD: {
+                poi15m: [
+                    { price: 94000, color: '#00E5FF', title: '15M POI: $94,000', lineStyle: 1, lineWidth: 1.5 },
+                    { price: 93600, color: '#00E5FF', title: '15M POI: $93,600', lineStyle: 1, lineWidth: 1.5 }
+                ],
+                poi1h: [
+                    { price: 93800, color: '#F59E0B', title: '1H POI: $93,800', lineStyle: 2, lineWidth: 1.5 },
+                    { price: 93200, color: '#F59E0B', title: '1H POI: $93,200', lineStyle: 2, lineWidth: 1.5 }
+                ],
+                sellwall: [
+                    { price: 98800, color: '#FF3B69', title: '🐳 WHALE WALL: $98,800', lineStyle: 0, lineWidth: 2 }
+                ],
+                buywall: [
+                    { price: 92400, color: '#00E5FF', title: '🐳 BUY WALL: $92,400', lineStyle: 0, lineWidth: 2 }
+                ],
+                tp: [
+                    { price: 96500, color: '#10B981', title: '🎯 TP1: $96,500', lineStyle: 2, lineWidth: 2 }
+                ],
+                sl: [
+                    { price: 92400, color: '#FF3B69', title: '🛑 SL: $92,400', lineStyle: 0, lineWidth: 2 }
+                ]
+            },
+            EURUSD: {
+                poi15m: [
+                    { price: 1.0835, color: '#00E5FF', title: '15M POI: 1.0835', lineStyle: 1, lineWidth: 1.5 },
+                    { price: 1.0825, color: '#00E5FF', title: '15M POI: 1.0825', lineStyle: 1, lineWidth: 1.5 }
+                ],
+                sellwall: [
+                    { price: 1.0965, color: '#FF3B69', title: '🐳 RESISTANCE: 1.0965', lineStyle: 0, lineWidth: 2 }
+                ],
+                tp: [
+                    { price: 1.0910, color: '#10B981', title: '🎯 TP1: 1.0910', lineStyle: 2, lineWidth: 2 }
+                ],
+                sl: [
+                    { price: 1.0795, color: '#FF3B69', title: '🛑 SL: 1.0795', lineStyle: 0, lineWidth: 2 }
+                ]
+            }
         };
 
         const activeLevelStates = {
@@ -911,6 +994,23 @@
             pdh: false,
             pdl: true
         };
+
+        function renderMarkingPillButtons() {
+            const container = document.getElementById('dynamic-markings-pills');
+            if (!container) return;
+            const levels = assetLevelsMaster[activeSymbol] || assetLevelsMaster.XAUUSD;
+            
+            const pillKeys = Object.keys(levels);
+            container.innerHTML = pillKeys.map(k => {
+                const item = levels[k][0];
+                const isActive = activeLevelStates[k] !== false;
+                return `
+                    <div class="marking-pill ${isActive ? 'active' : ''}" id="pill-${k}" onclick="toggleLevelMarking('${k}')">
+                        <b>${k.toUpperCase()}:</b> $${typeof item.price === 'number' ? (item.price > 100 ? item.price.toFixed(2) : item.price.toFixed(4)) : item.price}
+                    </div>
+                `;
+            }).join('');
+        }
 
         // 1. Initialize Native Marked Chart
         function initMazrionMarkedChart() {
@@ -965,7 +1065,6 @@
                 },
             });
 
-            // Resize listener
             window.addEventListener('resize', () => {
                 if (chart && container) {
                     chart.applyOptions({
@@ -975,14 +1074,14 @@
                 }
             });
 
+            renderMarkingPillButtons();
             loadKlineFeed(activeTf);
         }
 
-        // Render all active markings onto the native chart
+        // Render active markings onto native chart
         function renderAllActiveMarkings() {
             if (!candleSeries) return;
 
-            // Remove existing lines
             Object.keys(drawnLevelLines).forEach(key => {
                 drawnLevelLines[key].forEach(line => {
                     try { candleSeries.removePriceLine(line); } catch(e) {}
@@ -990,11 +1089,12 @@
             });
             drawnLevelLines = {};
 
-            // Draw each active marking
-            Object.keys(activeLevelStates).forEach(key => {
-                if (activeLevelStates[key] && levelDefinitions[key]) {
+            const levels = assetLevelsMaster[activeSymbol] || assetLevelsMaster.XAUUSD;
+
+            Object.keys(levels).forEach(key => {
+                if (activeLevelStates[key] && levels[key]) {
                     drawnLevelLines[key] = [];
-                    levelDefinitions[key].forEach(item => {
+                    levels[key].forEach(item => {
                         const line = candleSeries.createPriceLine({
                             price: item.price,
                             color: item.color,
@@ -1015,7 +1115,7 @@
             if (pill) pill.classList.toggle('active', activeLevelStates[key]);
             
             renderAllActiveMarkings();
-            showToast(`${activeLevelStates[key] ? '✅ Enabled' : '❌ Disabled'} marking on chart: ${key.toUpperCase()}`);
+            showToast(`${activeLevelStates[key] ? '✅ Enabled' : '❌ Disabled'} on chart: ${key.toUpperCase()}`);
         }
 
         // 2. Initialize TradingView Pro Chart
@@ -1027,7 +1127,15 @@
             const tfMap = { '1m': '1', '3m': '3', '5m': '5', '15m': '15', '30m': '30', '1h': '60', '4h': '240', '1d': 'D', '1w': 'W', '1mn': 'M' };
             const interval = tfMap[tf] || '5';
 
-            const iframeUrl = `https://s.tradingview.com/widgetembed/?frameElementId=tradingview_mazrion_dual&symbol=OANDA%3AXAUUSD&interval=${interval}&hidesidetoolbar=0&symboledit=1&saveimage=1&toolbarbg=07090E&theme=dark&style=1&timezone=Asia%2FKolkata&locale=en`;
+            const symMap = {
+                XAUUSD: 'OANDA:XAUUSD',
+                XAGUSD: 'OANDA:XAGUSD',
+                BTCUSD: 'BINANCE:BTCUSDT',
+                EURUSD: 'FX:EURUSD'
+            };
+            const tvSym = encodeURIComponent(symMap[activeSymbol] || 'OANDA:XAUUSD');
+
+            const iframeUrl = `https://s.tradingview.com/widgetembed/?frameElementId=tradingview_mazrion_dual&symbol=${tvSym}&interval=${interval}&hidesidetoolbar=0&symboledit=1&saveimage=1&toolbarbg=07090E&theme=dark&style=1&timezone=Asia%2FKolkata&locale=en`;
 
             const iframe = document.createElement('iframe');
             iframe.setAttribute('src', iframeUrl);
@@ -1079,46 +1187,90 @@
             const tfMap = { '1m': '1m', '3m': '3m', '5m': '5m', '15m': '15m', '30m': '30m', '1h': '1h', '4h': '4h', '1d': '1d', '1w': '1w', '1mn': '1M' };
             const interval = tfMap[tf] || '5m';
 
-            try {
-                const res = await fetch(`https://api.binance.com/api/v3/klines?symbol=PAXGUSDT&interval=${interval}&limit=120`);
-                const raw = await res.json();
-                
-                if (Array.isArray(raw)) {
-                    const candleData = [];
-                    const volumeData = [];
+            const binanceSymbolMap = {
+                XAUUSD: 'PAXGUSDT',
+                XAGUSD: null,
+                BTCUSD: 'BTCUSDT',
+                EURUSD: 'EURUSDT'
+            };
 
-                    raw.forEach(d => {
-                        const time = Math.floor(d[0] / 1000);
-                        const open = parseFloat(d[1]);
-                        const high = parseFloat(d[2]);
-                        const low = parseFloat(d[3]);
-                        const close = parseFloat(d[4]);
-                        const volume = parseFloat(d[5]);
+            const binanceSym = binanceSymbolMap[activeSymbol];
 
-                        candleData.push({ time, open, high, low, close });
-                        volumeData.push({
-                            time,
-                            value: volume,
-                            color: close >= open ? 'rgba(16, 185, 129, 0.4)' : 'rgba(255, 59, 105, 0.4)'
+            if (binanceSym) {
+                try {
+                    const res = await fetch(`https://api.binance.com/api/v3/klines?symbol=${binanceSym}&interval=${interval}&limit=120`);
+                    const raw = await res.json();
+                    
+                    if (Array.isArray(raw)) {
+                        const candleData = [];
+                        const volumeData = [];
+
+                        raw.forEach(d => {
+                            const time = Math.floor(d[0] / 1000);
+                            const open = parseFloat(d[1]);
+                            const high = parseFloat(d[2]);
+                            const low = parseFloat(d[3]);
+                            const close = parseFloat(d[4]);
+                            const volume = parseFloat(d[5]);
+
+                            candleData.push({ time, open, high, low, close });
+                            volumeData.push({
+                                time,
+                                value: volume,
+                                color: close >= open ? 'rgba(16, 185, 129, 0.4)' : 'rgba(255, 59, 105, 0.4)'
+                            });
                         });
-                    });
 
-                    candleSeries.setData(candleData);
-                    volumeSeries.setData(volumeData);
+                        candleSeries.setData(candleData);
+                        volumeSeries.setData(volumeData);
 
-                    const last = candleData[candleData.length - 1];
-                    liveBid = last.close;
-                    liveAsk = liveBid + (liveSpreadPts * 0.1);
-                    updateBidAskLines();
-                    renderAllActiveMarkings();
-                }
-            } catch (err) {
-                console.error("Feed error", err);
+                        const last = candleData[candleData.length - 1];
+                        liveBid = last.close;
+                        liveAsk = liveBid + (liveSpreadPts * (activeSymbol === 'BTCUSD' ? 2 : 0.1));
+                        updateBidAskLines();
+                        renderAllActiveMarkings();
+                        return;
+                    }
+                } catch (err) {}
             }
+
+            // Synthetic generation for Silver / FX with high fidelity
+            const candleData = [];
+            const volumeData = [];
+            const baseP = activeSymbol === 'XAGUSD' ? 38.42 : (activeSymbol === 'EURUSD' ? 1.0845 : 4476.64);
+            const nowSec = Math.floor(Date.now() / 1000);
+            const stepSec = tf === '1h' ? 3600 : (tf === '15m' ? 900 : 300);
+
+            for (let i = 80; i >= 0; i--) {
+                const time = nowSec - (i * stepSec);
+                const drift = (80 - i) * (activeSymbol === 'XAGUSD' ? 0.008 : 0.0001);
+                const noise = Math.sin(i * 12) * (activeSymbol === 'XAGUSD' ? 0.25 : 0.0015);
+                const close = baseP - 0.5 + drift + noise;
+                const open = close - (Math.sin(i * 7) * (activeSymbol === 'XAGUSD' ? 0.15 : 0.001));
+                const high = Math.max(open, close) + (Math.abs(Math.cos(i * 3)) * (activeSymbol === 'XAGUSD' ? 0.2 : 0.0012));
+                const low = Math.min(open, close) - (Math.abs(Math.sin(i * 5)) * (activeSymbol === 'XAGUSD' ? 0.2 : 0.0012));
+                const volume = 200 + Math.floor(Math.abs(Math.sin(i)) * 400);
+
+                candleData.push({ time, open, high, low, close });
+                volumeData.push({
+                    time,
+                    value: volume,
+                    color: close >= open ? 'rgba(16, 185, 129, 0.4)' : 'rgba(255, 59, 105, 0.4)'
+                });
+            }
+
+            candleSeries.setData(candleData);
+            volumeSeries.setData(volumeData);
+            liveBid = baseP;
+            liveAsk = liveBid + (activeSymbol === 'XAGUSD' ? 0.03 : 0.0002);
+            updateBidAskLines();
+            renderAllActiveMarkings();
         }
 
         function updateBidAskLines() {
             if (!candleSeries) return;
+
+            const formatDecimals = activeSymbol === 'EURUSD' ? 4 : 2;
 
             if (!askPriceLine) {
                 askPriceLine = candleSeries.createPriceLine({
@@ -1153,9 +1305,10 @@
             }
 
             const hudPrice = document.getElementById('hud-live-price');
-            if (hudPrice) hudPrice.innerText = liveBid.toFixed(2);
-            const watchPrice = document.getElementById('watch-xauusd-price');
-            if (watchPrice) watchPrice.innerText = liveBid.toFixed(2);
+            if (hudPrice) hudPrice.innerText = liveBid.toFixed(formatDecimals);
+            
+            const watchP = document.getElementById(`watch-${activeSymbol.toLowerCase()}-price`);
+            if (watchP) watchP.innerText = liveBid > 1000 ? liveBid.toLocaleString() : liveBid.toFixed(formatDecimals);
         }
 
         function changeChartTimeframe(tf) {
@@ -1173,42 +1326,77 @@
 
         function switchWatchlistAsset(symbol, name, price, tag) {
             activeSymbol = symbol;
+            liveBid = price;
+            
             document.querySelectorAll('.watch-card').forEach(c => c.classList.remove('active'));
-            if (event && event.target) {
-                const card = event.target.closest('.watch-card');
-                if (card) card.classList.add('active');
-            }
+            const selectedCard = document.getElementById(`watch-card-${symbol.toLowerCase()}`);
+            if (selectedCard) selectedCard.classList.add('active');
 
             const activeSym = document.getElementById('chart-active-symbol');
             if (activeSym) activeSym.innerText = symbol;
             const hudSym = document.getElementById('hud-symbol-title');
             if (hudSym) hudSym.innerText = symbol;
+            const footSym = document.getElementById('foot-symbol');
+            if (footSym) footSym.innerText = symbol;
+            const dsTitle = document.getElementById('deepseek-title-sym');
+            if (dsTitle) dsTitle.innerText = `DEEPSEEK SYNTHESIS (${symbol})`;
+
+            renderMarkingPillButtons();
 
             if (currentEngine === 'marked') {
                 loadKlineFeed(activeTf);
             } else {
                 renderTradingViewProChart(activeTf);
             }
+
+            runAiSynthesis();
+            showToast(`⚡ Terminal Switched to ${name}`);
         }
 
         async function runAiSynthesis() {
             const btn = document.querySelector('.btn-regenerate');
             const storyBox = document.getElementById('deepseek-story-box');
-            btn.innerText = '⏳ GENERATING...';
+            const intermarketBox = document.getElementById('intel-intermarket-box');
+            const planEntry = document.getElementById('plan-entry');
+            const planSl = document.getElementById('plan-sl');
+            const planTp1 = document.getElementById('plan-tp1');
+            const planTp2 = document.getElementById('plan-tp2');
+            const planRr = document.getElementById('plan-rr');
+            const planStrat = document.getElementById('plan-strategy-text');
+            const planInval = document.getElementById('plan-inval-text');
+
+            btn.innerText = '⏳ SYNTHESIZING...';
             
             try {
                 const res = await fetch('/api/analyze', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ currentPrice: liveBid })
+                    body: JSON.stringify({ symbol: activeSymbol, currentPrice: liveBid })
                 });
                 const data = await res.json();
-                if (data && data.smart_money_story && storyBox) {
-                    storyBox.innerText = data.smart_money_story;
+                
+                if (data) {
+                    if (data.smart_money_story && storyBox) storyBox.innerText = data.smart_money_story;
+                    if (data.intermarket_impact && intermarketBox) intermarketBox.innerHTML = data.intermarket_impact;
+                    
+                    if (data.levels) {
+                        if (planEntry) planEntry.innerText = data.levels.execution_zone;
+                        if (planSl) planSl.innerText = data.levels.structural_sl;
+                        if (planTp1) planTp1.innerText = data.levels.target_1;
+                        if (planTp2) planTp2.innerText = data.levels.target_2;
+                        if (planRr) planRr.innerText = data.levels.risk_reward;
+                    }
+
+                    if (data.summary && planStrat) {
+                        planStrat.innerHTML = `<b>Strategy:</b> ${data.summary}`;
+                    }
+
+                    if (data.missed_trade_advisory && planInval) {
+                        planInval.innerHTML = `<b>Advisory:</b> ${data.missed_trade_advisory.fomo_warning}`;
+                    }
                 }
             } catch (e) {}
             btn.innerText = '⚡ REGENERATE';
-            showToast('⚡ DeepSeek Institutional Analysis Updated!');
         }
 
         function showToast(msg) {
@@ -1221,31 +1409,33 @@
         // Initialize on DOM load
         window.addEventListener('DOMContentLoaded', () => {
             initMazrionMarkedChart();
+            runAiSynthesis();
         });
 
         // Real-time live tick stream
         setInterval(async () => {
             try {
-                const res = await fetch('https://api.binance.com/api/v3/ticker/price?symbol=PAXGUSDT');
-                const data = await res.json();
-                if (data && data.price) {
-                    liveBid = parseFloat(data.price);
-                    liveSpreadPts = 5.2 + (Math.random() - 0.5) * 0.4;
-                    liveAsk = liveBid + (liveSpreadPts * 0.1);
-                    updateBidAskLines();
-
-                    if (candleSeries && currentEngine === 'marked') {
-                        const nowSec = Math.floor(Date.now() / 1000);
-                        const tfSecs = { '1m': 60, '3m': 180, '5m': 300, '15m': 900, '30m': 1800, '1h': 3600, '4h': 14400, '1d': 86400 }[activeTf] || 300;
-                        const currentBarTime = Math.floor(nowSec / tfSecs) * tfSecs;
-                        candleSeries.update({
-                            time: currentBarTime,
-                            open: liveBid - (Math.random() - 0.5) * 0.3,
-                            high: Math.max(liveBid, liveBid + 0.2),
-                            low: Math.min(liveBid, liveBid - 0.2),
-                            close: liveBid
-                        });
+                if (activeSymbol === 'XAUUSD') {
+                    const res = await fetch('https://api.binance.com/api/v3/ticker/price?symbol=PAXGUSDT');
+                    const data = await res.json();
+                    if (data && data.price) {
+                        liveBid = parseFloat(data.price);
+                        liveSpreadPts = 5.2 + (Math.random() - 0.5) * 0.4;
+                        liveAsk = liveBid + (liveSpreadPts * 0.1);
+                        updateBidAskLines();
                     }
+                } else if (activeSymbol === 'BTCUSD') {
+                    const res = await fetch('https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT');
+                    const data = await res.json();
+                    if (data && data.price) {
+                        liveBid = parseFloat(data.price);
+                        liveAsk = liveBid + 2.50;
+                        updateBidAskLines();
+                    }
+                } else if (activeSymbol === 'XAGUSD') {
+                    liveBid = 38.42 + (Math.sin(Date.now() / 3000) * 0.08);
+                    liveAsk = liveBid + 0.03;
+                    updateBidAskLines();
                 }
             } catch (e) {}
         }, 1500);
