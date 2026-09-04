@@ -1213,7 +1213,7 @@
 
                 <!-- Right: DeepSeek AI Senior Strategist -->
                 <div class="intel-card">
-                    <button class="btn-synthesize" id="btn-run-synthesis" onclick="runAiSynthesis()">⚡ Run DeepSeek AI Synthesis</button>
+                    <button class="btn-synthesize" id="btn-run-synthesis" onclick="runAiSynthesis(true)">⚡ Run DeepSeek AI Synthesis</button>
 
                     <!-- Verdict Banner: ULTRA CLEAR DIRECTION (BUY / SELL / NEUTRAL) -->
                     <div class="verdict-banner sell-mode" id="verdict-banner-box">
@@ -2183,9 +2183,9 @@
         }
 
         // ==================== REAL-TIME DEEPSEEK AI SYNTHESIS ENGINE ====================
-        async function runAiSynthesis() {
+        async function runAiSynthesis(isManual = false) {
             const btn = document.getElementById('btn-run-synthesis');
-            if (btn) {
+            if (btn && isManual) {
                 btn.disabled = true;
                 btn.style.opacity = '0.7';
                 btn.innerHTML = '🔄 Synthesizing Live Market State...';
@@ -2380,18 +2380,22 @@
                     }
                     
                     if (btn) {
-                        btn.innerHTML = '⚡ DeepSeek AI Synthesis Live (Synced)';
+                        btn.innerHTML = '⚡ Run DeepSeek AI Synthesis';
                         btn.style.background = 'linear-gradient(135deg, #10B981 0%, #00E5FF 100%)';
                     }
-                    showToast(`⚡ DeepSeek AI Live Analysis Synced for ${activeSymbol}!`);
+                    if (isManual) {
+                        showToast(`⚡ DeepSeek AI Analysis Generated for ${activeSymbol}!`);
+                    }
                 }
             } catch (err) {
                 console.error(err);
-                btn.innerHTML = '⚡ Run DeepSeek AI Synthesis';
-                showToast('⚠️ AI Synthesis connection error.');
+                if (btn) btn.innerHTML = '⚡ Run DeepSeek AI Synthesis';
+                if (isManual) showToast('⚠️ AI Synthesis connection error.');
             } finally {
-                btn.disabled = false;
-                btn.style.opacity = '1';
+                if (btn) {
+                    btn.disabled = false;
+                    btn.style.opacity = '1';
+                }
             }
         }
 
@@ -2703,13 +2707,8 @@
             initPrecisionChart();
             updateDomLadder(liveBid, liveAsk);
             renderAlerts();
-            runAiSynthesis(); // Auto-run initial AI synthesis on startup
+            runAiSynthesis(false); // Quiet initial sync on load without toast popup
         });
-
-        // Auto-refresh DeepSeek AI Synthesis every 25 seconds with live ticking price
-        setInterval(() => {
-            runAiSynthesis();
-        }, 25000);
 
         // Real-Time Live Market Poller & Tick Stream
         setInterval(async () => {
