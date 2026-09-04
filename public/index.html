@@ -575,6 +575,41 @@
             justify-content: space-between;
         }
 
+        /* Liquidity Pools Matrix Styling */
+        .liq-pool-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+            margin-top: 12px;
+        }
+
+        .liq-pool-card {
+            background: #090D15;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 12px;
+        }
+
+        .liq-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 10px;
+            margin-bottom: 6px;
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.02);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11.5px;
+        }
+
+        .liq-bsl {
+            border-left: 3px solid var(--accent-cyan);
+        }
+
+        .liq-ssl {
+            border-left: 3px solid var(--accent-red);
+        }
+
         /* News Table */
         .news-table {
             width: 100%;
@@ -585,16 +620,16 @@
 
         .news-table th {
             text-align: left;
-            padding: 8px 12px;
+            padding: 10px 12px;
             background: #090D15;
             color: var(--text-muted);
             font-family: 'JetBrains Mono', monospace;
-            font-size: 10px;
+            font-size: 11px;
             border-bottom: 1px solid var(--border-color);
         }
 
         .news-table td {
-            padding: 10px 12px;
+            padding: 12px;
             border-bottom: 1px solid var(--border-color);
         }
 
@@ -602,10 +637,21 @@
             background: rgba(255, 59, 105, 0.15);
             color: var(--accent-red);
             border: 1px solid rgba(255, 59, 105, 0.4);
-            padding: 2px 6px;
+            padding: 3px 8px;
             border-radius: 4px;
-            font-weight: 700;
+            font-weight: 800;
             font-size: 10px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .time-ist-badge {
+            background: rgba(245, 158, 11, 0.15);
+            border: 1px solid rgba(245, 158, 11, 0.4);
+            color: var(--accent-gold);
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-weight: 800;
+            font-size: 11px;
             font-family: 'JetBrains Mono', monospace;
         }
 
@@ -778,18 +824,19 @@
     <header>
         <div class="brand">
             <span>👑 MAZRION</span>
-            <span class="brand-badge"><span class="live-dot"></span>LIVE TRADINGVIEW FEED</span>
+            <span class="brand-badge"><span class="live-dot"></span>LIVE FEED</span>
         </div>
         
         <!-- Navigation Menu -->
         <div class="nav-tabs">
             <button class="nav-btn active" onclick="switchTab('chart')">📈 Chart</button>
-            <button class="nav-btn" onclick="switchTab('orderflow')">🌊 Order Flow</button>
-            <button class="nav-btn" onclick="switchTab('macro')">📰 Macro & News</button>
+            <button class="nav-btn" onclick="switchTab('orderflow')">🌊 Order Flow & Liquidity</button>
+            <button class="nav-btn" onclick="switchTab('macro')">📰 Macro & News (IST)</button>
             <button class="nav-btn" onclick="switchTab('plan')">🗺️ Trade Plan</button>
         </div>
 
-        <div style="font-family:'JetBrains Mono'; font-size:12px; display:flex; gap:16px;">
+        <div style="font-family:'JetBrains Mono'; font-size:12px; display:flex; gap:14px; align-items:center;">
+            <div>🇮🇳 <b style="color:var(--accent-gold)" id="hdr-ist-clock">03:51:20 PM IST</b></div>
             <div>ASSET: <b style="color:var(--accent-cyan)">XAUUSD</b></div>
             <div>BID: <b style="color:var(--accent-cyan)" id="hdr-bid">$4472.60</b></div>
             <div>ASK: <b style="color:var(--accent-red)" id="hdr-ask">$4473.14</b></div>
@@ -854,7 +901,7 @@
                         <div class="chart-overlay-layer" id="chart-overlay-layer">
                             <!-- PDH Line -->
                             <div class="overlay-line dashed" id="line-pdh" style="top: 14%; border-color: #F59E0B;">
-                                <span class="overlay-line-badge" style="background: rgba(245, 158, 11, 0.9); color: #000;">📅 PDH: $4491.23</span>
+                                <span class="overlay-line-badge" style="background: rgba(245, 158, 11, 0.9); color: #000;">📅 PDH BSL: $4491.23</span>
                             </div>
 
                             <!-- Sell Wall Line -->
@@ -884,7 +931,7 @@
 
                             <!-- PDL Line -->
                             <div class="overlay-line dashed" id="line-pdl" style="top: 85%; border-color: #F59E0B;">
-                                <span class="overlay-line-badge" style="background: rgba(245, 158, 11, 0.9); color: #000;">📅 PDL: $4460.00</span>
+                                <span class="overlay-line-badge" style="background: rgba(245, 158, 11, 0.9); color: #000;">📅 PDL SSL: $4460.00</span>
                             </div>
                         </div>
                     </div>
@@ -996,8 +1043,68 @@
             </div>
         </div>
 
-        <!-- ==================== TAB 2: ORDER FLOW & DOM ==================== -->
+        <!-- ==================== TAB 2: ORDER FLOW & LIQUIDITY POOLS ==================== -->
         <div id="tab-orderflow" class="tab-content">
+            
+            <!-- Liquidity Pools Matrix (BSL vs SSL) -->
+            <div class="data-card" style="margin-bottom:16px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                    <div style="font-family:'JetBrains Mono'; font-weight:800; font-size:15px;">💧 INSTITUTIONAL LIQUIDITY POOLS MATRIX (BSL & SSL)</div>
+                    <div style="font-size:11px; font-family:'JetBrains Mono'; color:var(--accent-cyan);">SMART MONEY SWEEP MAP</div>
+                </div>
+
+                <div class="liq-pool-grid">
+                    <!-- Buy-Side Liquidity (BSL) -->
+                    <div class="liq-pool-card">
+                        <div style="font-family:'JetBrains Mono'; font-weight:800; font-size:13px; color:var(--accent-cyan); margin-bottom:10px;">
+                            🎯 BUY-SIDE LIQUIDITY POOLS (BSL) — RESTING BUY STOPS
+                        </div>
+
+                        <div class="liq-item liq-bsl">
+                            <div><b>Equal Highs (EQH / Whale Resistance):</b> <span style="color:var(--accent-gold);">$4488.50</span></div>
+                            <span style="color:var(--accent-cyan); font-weight:800;">14,200 LOTS ($19.1M)</span>
+                        </div>
+                        <div class="liq-item liq-bsl">
+                            <div><b>Previous Day High (PDH):</b> <span style="color:var(--accent-gold);">$4491.23</span></div>
+                            <span style="color:var(--accent-cyan); font-weight:800;">8,900 LOTS ($11.8M)</span>
+                        </div>
+                        <div class="liq-item liq-bsl">
+                            <div><b>Previous Week High (PWH Swing High):</b> <span style="color:var(--accent-gold);">$4510.50</span></div>
+                            <span style="color:var(--accent-cyan); font-weight:800;">22,400 LOTS ($30.2M)</span>
+                        </div>
+                        <div class="liq-item liq-bsl">
+                            <div><b>Previous Month Peak (PMH Macro Ceiling):</b> <span style="color:var(--accent-gold);">$4545.00</span></div>
+                            <span style="color:var(--accent-cyan); font-weight:800;">38,000 LOTS ($51.5M)</span>
+                        </div>
+                    </div>
+
+                    <!-- Sell-Side Liquidity (SSL) -->
+                    <div class="liq-pool-card">
+                        <div style="font-family:'JetBrains Mono'; font-weight:800; font-size:13px; color:var(--accent-red); margin-bottom:10px;">
+                            🎯 SELL-SIDE LIQUIDITY POOLS (SSL) — RESTING SELL STOPS
+                        </div>
+
+                        <div class="liq-item liq-ssl">
+                            <div><b>Asian Session Low (Harvested & Swept):</b> <span style="color:var(--accent-green);">$4463.80</span></div>
+                            <span style="color:var(--accent-green); font-weight:800;">✅ 18,450 LOTS SWEPT</span>
+                        </div>
+                        <div class="liq-item liq-ssl">
+                            <div><b>Previous Day Low (PDL Major Trap):</b> <span style="color:var(--accent-gold);">$4460.00</span></div>
+                            <span style="color:var(--accent-red); font-weight:800;">12,800 LOTS ($17.1M)</span>
+                        </div>
+                        <div class="liq-item liq-ssl">
+                            <div><b>Previous Week Low (PWL Structural Floor):</b> <span style="color:var(--accent-gold);">$4432.00</span></div>
+                            <span style="color:var(--accent-red); font-weight:800;">25,600 LOTS ($34.2M)</span>
+                        </div>
+                        <div class="liq-item liq-ssl">
+                            <div><b>Previous Month Low (PML Macro Floor):</b> <span style="color:var(--accent-gold);">$4380.00</span></div>
+                            <span style="color:var(--accent-red); font-weight:800;">41,000 LOTS ($55.0M)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- DOM Ladder & Imbalance -->
             <div class="dom-grid">
                 
                 <!-- Left: L2 DOM Ladder -->
@@ -1056,18 +1163,20 @@
             </div>
         </div>
 
-        <!-- ==================== TAB 3: MACRO & NEWS ==================== -->
+        <!-- ==================== TAB 3: MACRO & NEWS (INDIAN TIME IST) ==================== -->
         <div id="tab-macro" class="tab-content">
             <div class="data-card">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-                    <div style="font-family:'JetBrains Mono'; font-weight:800; font-size:16px;">📰 LIVE HIGH-IMPACT MACRO CALENDAR & INTERMARKET MATRIX</div>
-                    <div style="background:rgba(239, 68, 68, 0.15); border:1px solid #EF4444; color:#EF4444; padding:4px 10px; border-radius:4px; font-family:'JetBrains Mono'; font-size:11px; font-weight:800;" id="macro-countdown">
-                        ⏳ US NFP EVENT IN: 02h 44m 15s
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:10px;">
+                    <div>
+                        <div style="font-family:'JetBrains Mono'; font-weight:800; font-size:16px;">📰 HIGH-IMPACT MACRO ECONOMIC CALENDAR</div>
+                        <div style="font-size:12px; color:var(--accent-gold); margin-top:3px;">
+                            🇮🇳 ALL TIMINGS CONVERTED TO INDIAN STANDARD TIME (IST — UTC+5:30)
+                        </div>
+                    </div>
+                    <div style="background:rgba(239, 68, 68, 0.15); border:1px solid #EF4444; color:#EF4444; padding:6px 12px; border-radius:6px; font-family:'JetBrains Mono'; font-size:12px; font-weight:800;" id="macro-countdown">
+                        ⏳ US NFP TODAY @ 06:00 PM IST (02h 08m)
                     </div>
                 </div>
-                <p style="font-size:12px; color:var(--text-secondary); margin-bottom:16px;">
-                    Monitors Federal Reserve policy, US CPI, Non-Farm Payrolls (NFP), DXY Dollar Index correlation, and 10-Year Treasury Yields.
-                </p>
 
                 <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:12px; margin-bottom:20px;">
                     <div class="pillar-box">
@@ -1087,11 +1196,12 @@
                     </div>
                 </div>
 
-                <div style="font-family:'JetBrains Mono'; font-weight:800; font-size:13px; margin-bottom:8px;">📅 TODAY'S HIGH-IMPACT ECONOMIC EVENTS</div>
+                <div style="font-family:'JetBrains Mono'; font-weight:800; font-size:13px; margin-bottom:8px;">📅 TODAY'S HIGH-IMPACT ECONOMIC EVENTS (INDIAN TIME)</div>
                 <table class="news-table">
                     <thead>
                         <tr>
-                            <th>TIME (UTC)</th>
+                            <th>TIME (IST 🇮🇳)</th>
+                            <th>TIME (UTC 🌐)</th>
                             <th>CURRENCY</th>
                             <th>EVENT</th>
                             <th>IMPACT</th>
@@ -1102,31 +1212,44 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td>12:30</td>
-                            <td>USD</td>
-                            <td>Non-Farm Employment Change (NFP)</td>
+                            <td><span class="time-ist-badge">06:00 PM IST</span></td>
+                            <td style="color:var(--text-muted); font-family:'JetBrains Mono';">12:30 UTC</td>
+                            <td><b>USD</b></td>
+                            <td><b>Non-Farm Employment Change (NFP)</b></td>
                             <td><span class="badge-red-news">🔴 HIGH IMPACT</span></td>
-                            <td>165K</td>
-                            <td>175K</td>
-                            <td style="color:var(--accent-green); font-weight:700;">BULLISH GOLD (Easing Job Growth)</td>
+                            <td style="font-family:'JetBrains Mono';">165K</td>
+                            <td style="font-family:'JetBrains Mono';">175K</td>
+                            <td style="color:var(--accent-green); font-weight:700;">BULLISH GOLD (Easing Jobs)</td>
                         </tr>
                         <tr>
-                            <td>12:30</td>
-                            <td>USD</td>
-                            <td>Unemployment Rate</td>
+                            <td><span class="time-ist-badge">06:00 PM IST</span></td>
+                            <td style="color:var(--text-muted); font-family:'JetBrains Mono';">12:30 UTC</td>
+                            <td><b>USD</b></td>
+                            <td><b>Unemployment Rate</b></td>
                             <td><span class="badge-red-news">🔴 HIGH IMPACT</span></td>
-                            <td>4.1%</td>
-                            <td>4.0%</td>
+                            <td style="font-family:'JetBrains Mono';">4.1%</td>
+                            <td style="font-family:'JetBrains Mono';">4.0%</td>
                             <td style="color:var(--accent-green); font-weight:700;">BULLISH GOLD</td>
                         </tr>
                         <tr>
-                            <td>14:00</td>
-                            <td>USD</td>
-                            <td>ISM Services PMI</td>
+                            <td><span class="time-ist-badge">07:30 PM IST</span></td>
+                            <td style="color:var(--text-muted); font-family:'JetBrains Mono';">14:00 UTC</td>
+                            <td><b>USD</b></td>
+                            <td><b>ISM Services PMI</b></td>
                             <td><span class="badge-red-news">🔴 HIGH IMPACT</span></td>
-                            <td>51.4</td>
-                            <td>51.8</td>
+                            <td style="font-family:'JetBrains Mono';">51.4</td>
+                            <td style="font-family:'JetBrains Mono';">51.8</td>
                             <td style="color:var(--accent-gold); font-weight:700;">NEUTRAL TO BULLISH</td>
+                        </tr>
+                        <tr>
+                            <td><span class="time-ist-badge">11:00 PM IST</span></td>
+                            <td style="color:var(--text-muted); font-family:'JetBrains Mono';">17:30 UTC</td>
+                            <td><b>USD</b></td>
+                            <td><b>Fed Member FOMC Policy Speech</b></td>
+                            <td><span class="badge-red-news" style="background:rgba(245,158,11,0.15); color:var(--accent-gold); border-color:rgba(245,158,11,0.4);">🟡 MED IMPACT</span></td>
+                            <td style="font-family:'JetBrains Mono';">--</td>
+                            <td style="font-family:'JetBrains Mono';">--</td>
+                            <td style="color:var(--accent-cyan); font-weight:700;">Rate Cut Dovish Guidance</td>
                         </tr>
                     </tbody>
                 </table>
@@ -1221,10 +1344,10 @@
             "autosize": true,
             "symbol": "OANDA:XAUUSD",
             "interval": "5",
-            "timezone": "Etc/UTC",
+            "timezone": "Asia/Kolkata",
             "theme": "dark",
             "style": "1",
-            "locale": "en",
+            "locale": "in",
             "toolbar_bg": "#06080C",
             "enable_publishing": false,
             "allow_symbol_change": true,
@@ -1487,9 +1610,24 @@
             checkAlerts(liveBid);
         }, 1000);
 
-        // Live Macro Countdown Clock
+        // Live Indian Time (IST) Clock & Macro Countdown
         setInterval(() => {
             const now = new Date();
+            
+            // Calculate IST
+            const istOffset = 5.5 * 60 * 60 * 1000;
+            const istDate = new Date(now.getTime() + (now.getTimezoneOffset() * 60000) + istOffset);
+            let hours = istDate.getHours();
+            const minutes = String(istDate.getMinutes()).padStart(2, '0');
+            const seconds = String(istDate.getSeconds()).padStart(2, '0');
+            const ampm = hours >= 12 ? 'PM' : 'AM';
+            hours = hours % 12 || 12;
+            const istStr = `${String(hours).padStart(2, '0')}:${minutes}:${seconds} ${ampm} IST`;
+            
+            const istEl = document.getElementById('hdr-ist-clock');
+            if (istEl) istEl.innerText = istStr;
+
+            // Target 18:00 IST (12:30 UTC)
             const target = new Date();
             target.setUTCHours(12, 30, 0, 0);
             if (now.getUTCHours() >= 12 && now.getUTCMinutes() >= 30) {
@@ -1500,7 +1638,7 @@
             const m = String(Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, '0');
             const s = String(Math.floor((diff % (1000 * 60)) / 1000)).padStart(2, '0');
             const cdEl = document.getElementById('macro-countdown');
-            if (cdEl) cdEl.innerText = `⏳ US NFP EVENT IN: ${h}h ${m}m ${s}s`;
+            if (cdEl) cdEl.innerText = `⏳ US NFP TODAY @ 06:00 PM IST (${h}h ${m}m ${s}s)`;
         }, 1000);
     </script>
 </body>
