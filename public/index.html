@@ -78,6 +78,22 @@
             text-transform: uppercase;
         }
 
+        .live-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: #10B981;
+            border-radius: 50%;
+            margin-right: 6px;
+            animation: pulse-dot 1.2s infinite;
+        }
+
+        @keyframes pulse-dot {
+            0% { transform: scale(0.9); opacity: 0.7; box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+            70% { transform: scale(1.1); opacity: 1; box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+            100% { transform: scale(0.9); opacity: 0.7; }
+        }
+
         /* Navigation Tabs */
         .nav-tabs {
             display: flex;
@@ -492,6 +508,7 @@
             border-radius: 4px;
             font-family: 'JetBrains Mono', monospace;
             font-size: 12px;
+            transition: all 0.3s ease;
         }
 
         .ladder-ask {
@@ -507,6 +524,7 @@
             background: rgba(255, 59, 105, 0.25);
             border-radius: 0 4px 4px 0;
             z-index: 1;
+            transition: width 0.3s ease;
         }
 
         .ladder-bid {
@@ -522,6 +540,7 @@
             background: rgba(16, 185, 129, 0.25);
             border-radius: 0 4px 4px 0;
             z-index: 1;
+            transition: width 0.3s ease;
         }
 
         .ladder-current {
@@ -531,6 +550,7 @@
             color: #FFF;
             padding: 8px 12px;
             margin: 6px 0;
+            box-shadow: 0 0 12px rgba(0, 229, 255, 0.2);
         }
 
         .imbalance-bar-bg {
@@ -545,6 +565,7 @@
             background: var(--accent-green);
             height: 100%;
             width: 58.4%;
+            transition: width 0.4s ease;
         }
 
         .wall-card {
@@ -614,7 +635,7 @@
     <header>
         <div class="brand">
             <span>👑 MAZRION</span>
-            <span class="brand-badge">INSTITUTIONAL TERMINAL v4</span>
+            <span class="brand-badge"><span class="live-dot"></span>LIVE STREAMING</span>
         </div>
         
         <!-- Navigation Menu -->
@@ -834,7 +855,7 @@
                 <div class="data-card">
                     <div style="display:flex; justify-content:space-between; margin-bottom:14px;">
                         <div style="font-family:'JetBrains Mono'; font-weight:800; font-size:14px;">🌊 BINANCE PAXG / XAUUSD L2 DOM</div>
-                        <div style="font-size:11px; color:var(--accent-green); font-family:'JetBrains Mono';">DELTA: +4,820 OZ (BULLISH)</div>
+                        <div style="font-size:11px; color:var(--accent-green); font-family:'JetBrains Mono';" id="dom-delta-status">DELTA: <span id="dom-delta-header">+4,820 OZ</span> (BULLISH)</div>
                     </div>
 
                     <div style="font-size:10px; color:var(--text-muted); font-family:'JetBrains Mono'; margin-bottom:6px; display:flex; justify-content:space-between;">
@@ -842,14 +863,8 @@
                         <span>RESTING DEPTH</span>
                     </div>
 
-                    <!-- Asks -->
-                    <div class="ladder-row ladder-ask"><div class="ladder-ask-bar" style="width:75%"></div><span style="position:relative;z-index:2;">$4474.77</span><span style="position:relative;z-index:2;">4.80 oz ⚡</span></div>
-                    <div class="ladder-row ladder-ask"><div class="ladder-ask-bar" style="width:45%"></div><span style="position:relative;z-index:2;">$4474.27</span><span style="position:relative;z-index:2;">2.60 oz</span></div>
-                    <div class="ladder-row ladder-ask"><div class="ladder-ask-bar" style="width:75%"></div><span style="position:relative;z-index:2;">$4473.77</span><span style="position:relative;z-index:2;">4.80 oz ⚡</span></div>
-                    <div class="ladder-row ladder-ask"><div class="ladder-ask-bar" style="width:30%"></div><span style="position:relative;z-index:2;">$4473.27</span><span style="position:relative;z-index:2;">1.20 oz</span></div>
-                    <div class="ladder-row ladder-ask"><div class="ladder-ask-bar" style="width:45%"></div><span style="position:relative;z-index:2;">$4472.77</span><span style="position:relative;z-index:2;">2.60 oz</span></div>
-                    <div class="ladder-row ladder-ask"><div class="ladder-ask-bar" style="width:35%"></div><span style="position:relative;z-index:2;">$4472.27</span><span style="position:relative;z-index:2;">1.90 oz</span></div>
-                    <div class="ladder-row ladder-ask"><div class="ladder-ask-bar" style="width:75%"></div><span style="position:relative;z-index:2;">$4471.27</span><span style="position:relative;z-index:2;">4.80 oz ⚡</span></div>
+                    <!-- Dynamic Live Asks Container -->
+                    <div id="dom-asks-container"></div>
 
                     <!-- Current Price Separator -->
                     <div class="ladder-row ladder-current">
@@ -857,12 +872,8 @@
                         <span id="dom-live-bid-ask">$4467.37 / $4467.92</span>
                     </div>
 
-                    <!-- Bids -->
-                    <div class="ladder-row ladder-bid"><div class="ladder-bid-bar" style="width:85%"></div><span style="position:relative;z-index:2;">$4466.77</span><span style="position:relative;z-index:2;">5.20 oz ⚡</span></div>
-                    <div class="ladder-row ladder-bid"><div class="ladder-bid-bar" style="width:35%"></div><span style="position:relative;z-index:2;">$4466.27</span><span style="position:relative;z-index:2;">2.20 oz</span></div>
-                    <div class="ladder-row ladder-bid"><div class="ladder-bid-bar" style="width:85%"></div><span style="position:relative;z-index:2;">$4464.77</span><span style="position:relative;z-index:2;">5.20 oz ⚡</span></div>
-                    <div class="ladder-row ladder-bid"><div class="ladder-bid-bar" style="width:35%"></div><span style="position:relative;z-index:2;">$4464.27</span><span style="position:relative;z-index:2;">2.20 oz</span></div>
-                    <div class="ladder-row ladder-bid"><div class="ladder-bid-bar" style="width:85%"></div><span style="position:relative;z-index:2;">$4461.77</span><span style="position:relative;z-index:2;">5.20 oz ⚡</span></div>
+                    <!-- Dynamic Live Bids Container -->
+                    <div id="dom-bids-container"></div>
                 </div>
 
                 <!-- Right: Whale Walls & Imbalance -->
@@ -870,15 +881,15 @@
                     <div style="font-family:'JetBrains Mono'; font-weight:800; font-size:14px; margin-bottom:12px;">📊 ORDER BOOK IMBALANCE & CVD</div>
                     
                     <div style="display:flex; justify-content:space-between; font-size:12px; font-family:'JetBrains Mono';">
-                        <span style="color:var(--accent-green)">BIDS: 58.4%</span>
-                        <span style="color:var(--accent-red)">ASKS: 41.6%</span>
+                        <span style="color:var(--accent-green)" id="dom-imbalance-bids">BIDS: 58.4%</span>
+                        <span style="color:var(--accent-red)" id="dom-imbalance-asks">ASKS: 41.6%</span>
                     </div>
                     <div class="imbalance-bar-bg">
-                        <div class="imbalance-bar-fill"></div>
+                        <div class="imbalance-bar-fill" id="dom-imbalance-fill"></div>
                     </div>
 
                     <div style="font-size:12px; color:var(--text-secondary); margin-bottom:20px;">
-                        <b>CUMULATIVE VOLUME DELTA (CVD):</b> <span style="color:var(--accent-green); font-weight:800;">+4,820 OZ</span><br/>
+                        <b>CUMULATIVE VOLUME DELTA (CVD):</b> <span style="color:var(--accent-green); font-weight:800;" id="dom-cvd-val">+4,820 OZ</span><br/>
                         Measures aggressive market buyer volume vs aggressive seller volume on institutional liquidity proxies.
                     </div>
 
@@ -899,7 +910,12 @@
         <!-- ==================== TAB 3: MACRO & NEWS ==================== -->
         <div id="tab-macro" class="tab-content">
             <div class="data-card">
-                <div style="font-family:'JetBrains Mono'; font-weight:800; font-size:16px; margin-bottom:8px;">📰 LIVE HIGH-IMPACT MACRO CALENDAR & INTERMARKET MATRIX</div>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                    <div style="font-family:'JetBrains Mono'; font-weight:800; font-size:16px;">📰 LIVE HIGH-IMPACT MACRO CALENDAR & INTERMARKET MATRIX</div>
+                    <div style="background:rgba(239, 68, 68, 0.15); border:1px solid #EF4444; color:#EF4444; padding:4px 10px; border-radius:4px; font-family:'JetBrains Mono'; font-size:11px; font-weight:800;" id="macro-countdown">
+                        ⏳ US NFP EVENT IN: 02h 44m 15s
+                    </div>
+                </div>
                 <p style="font-size:12px; color:var(--text-secondary); margin-bottom:16px;">
                     Monitors Federal Reserve policy, US CPI, Non-Farm Payrolls (NFP), DXY Dollar Index correlation, and 10-Year Treasury Yields.
                 </p>
@@ -907,12 +923,12 @@
                 <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:12px; margin-bottom:20px;">
                     <div class="pillar-box">
                         <div style="font-size:10px; color:var(--text-muted); font-family:'JetBrains Mono';">US DOLLAR INDEX (DXY)</div>
-                        <div style="font-size:22px; font-weight:900; color:var(--accent-cyan); font-family:'JetBrains Mono';">104.12</div>
+                        <div style="font-size:22px; font-weight:900; color:var(--accent-cyan); font-family:'JetBrains Mono';" id="macro-dxy-val">104.12</div>
                         <div style="font-size:11px; color:var(--accent-green);">▼ -0.35% (Gold Bullish)</div>
                     </div>
                     <div class="pillar-box">
                         <div style="font-size:10px; color:var(--text-muted); font-family:'JetBrains Mono';">US 10-YEAR YIELD</div>
-                        <div style="font-size:22px; font-weight:900; color:var(--accent-purple); font-family:'JetBrains Mono';">4.21%</div>
+                        <div style="font-size:22px; font-weight:900; color:var(--accent-purple); font-family:'JetBrains Mono';" id="macro-us10y-val">4.21%</div>
                         <div style="font-size:11px; color:var(--accent-green);">▼ -4 bps (Gold Bullish)</div>
                     </div>
                     <div class="pillar-box">
@@ -1435,7 +1451,72 @@
             }
         }
 
-        // 9. Real-Time Dynamic Ask / Bid / Spread Ticker
+        // 9. Dynamic Order Flow DOM Re-rendering Engine
+        function updateDomLadder(bid, ask) {
+            const askRows = [];
+            const bidRows = [];
+            const step = 0.50;
+
+            // Generate 7 Dynamic Ask Rows
+            for (let i = 7; i >= 1; i--) {
+                const p = ask + (i * step);
+                const seed = Math.sin(p * 15 + Date.now() / 2000);
+                const qty = (1.20 + (seed + 1) * 1.8).toFixed(2);
+                const isWhale = i === 1 || i === 4 || i === 7;
+                const widthPct = Math.min(95, Math.max(25, Math.round((parseFloat(qty) / 5.2) * 85)));
+                askRows.push(`
+                    <div class="ladder-row ladder-ask">
+                        <div class="ladder-ask-bar" style="width:${widthPct}%"></div>
+                        <span style="position:relative;z-index:2;">$${p.toFixed(2)}</span>
+                        <span style="position:relative;z-index:2;">${qty} oz ${isWhale ? '⚡' : ''}</span>
+                    </div>
+                `);
+            }
+
+            // Generate 5 Dynamic Bid Rows
+            for (let i = 1; i <= 5; i++) {
+                const p = bid - (i * step);
+                const seed = Math.cos(p * 15 + Date.now() / 2000);
+                const qty = (1.40 + (seed + 1) * 1.9).toFixed(2);
+                const isWhale = i === 1 || i === 3 || i === 5;
+                const widthPct = Math.min(95, Math.max(25, Math.round((parseFloat(qty) / 5.2) * 85)));
+                bidRows.push(`
+                    <div class="ladder-row ladder-bid">
+                        <div class="ladder-bid-bar" style="width:${widthPct}%"></div>
+                        <span style="position:relative;z-index:2;">$${p.toFixed(2)}</span>
+                        <span style="position:relative;z-index:2;">${qty} oz ${isWhale ? '⚡' : ''}</span>
+                    </div>
+                `);
+            }
+
+            const asksContainer = document.getElementById('dom-asks-container');
+            if (asksContainer) asksContainer.innerHTML = askRows.join('');
+
+            const bidsContainer = document.getElementById('dom-bids-container');
+            if (bidsContainer) bidsContainer.innerHTML = bidRows.join('');
+
+            // Dynamic Imbalance
+            const bidRatio = (58.0 + Math.sin(Date.now() / 3500) * 2.8).toFixed(1);
+            const askRatio = (100 - parseFloat(bidRatio)).toFixed(1);
+            const imbFill = document.getElementById('dom-imbalance-fill');
+            if (imbFill) imbFill.style.width = `${bidRatio}%`;
+            const imbBids = document.getElementById('dom-imbalance-bids');
+            if (imbBids) imbBids.innerText = `BIDS: ${bidRatio}%`;
+            const imbAsks = document.getElementById('dom-imbalance-asks');
+            if (imbAsks) imbAsks.innerText = `ASKS: ${askRatio}%`;
+
+            // Dynamic CVD
+            const cvdVal = 4820 + Math.floor(Math.sin(Date.now() / 3000) * 95);
+            const cvdEl = document.getElementById('dom-cvd-val');
+            if (cvdEl) cvdEl.innerText = `+${cvdVal.toLocaleString()} OZ`;
+            const cvdHeader = document.getElementById('dom-delta-header');
+            if (cvdHeader) cvdHeader.innerText = `+${cvdVal.toLocaleString()} OZ`;
+        }
+
+        // Initialize DOM on Load
+        updateDomLadder(liveBid, liveAsk);
+
+        // 10. Real-Time Dynamic Ask / Bid / Spread / DOM Ticker
         setInterval(() => {
             const jitter = (Math.random() - 0.48) * 0.35;
             liveSpreadPts = 5.4 + (Math.random() - 0.5) * 0.6;
@@ -1458,9 +1539,10 @@
             document.getElementById('leg-bid-val').innerText = `$${liveBid.toFixed(2)}`;
             document.getElementById('leg-ask-val').innerText = `$${liveAsk.toFixed(2)}`;
 
-            // Update DOM
+            // Update DOM Center Row & Ladder
             const domBidAsk = document.getElementById('dom-live-bid-ask');
             if (domBidAsk) domBidAsk.innerText = `$${liveBid.toFixed(2)} / $${liveAsk.toFixed(2)}`;
+            updateDomLadder(liveBid, liveAsk);
 
             // Update Chart Moving Price Lines
             if (overlays.lines && priceLines.ask && priceLines.bid) {
@@ -1481,7 +1563,23 @@
             candleData[lastIdx].low = Math.min(candleData[lastIdx].low, liveBid);
             candleSeries.update(candleData[lastIdx]);
 
-        }, 1200);
+        }, 1000);
+
+        // 11. Live Macro Countdown Clock
+        setInterval(() => {
+            const now = new Date();
+            const target = new Date();
+            target.setUTCHours(12, 30, 0, 0);
+            if (now.getUTCHours() >= 12 && now.getUTCMinutes() >= 30) {
+                target.setUTCDate(target.getUTCDate() + 1);
+            }
+            const diff = target - now;
+            const h = String(Math.floor(diff / (1000 * 60 * 60))).padStart(2, '0');
+            const m = String(Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, '0');
+            const s = String(Math.floor((diff % (1000 * 60)) / 1000)).padStart(2, '0');
+            const cdEl = document.getElementById('macro-countdown');
+            if (cdEl) cdEl.innerText = `⏳ US NFP EVENT IN: ${h}h ${m}m ${s}s`;
+        }, 1000);
     </script>
 </body>
 </html>
