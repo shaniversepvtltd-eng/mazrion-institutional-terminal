@@ -3,29 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MAZRION — Institutional Intelligence Terminal</title>
+    <title>MAZRION — Trading Intelligence Terminal v1.0</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=JetBrains+Mono:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
-    <!-- Official TradingView Widget Library -->
+    <!-- TradingView Lightweight Charts & Official Widget -->
+    <script src="https://unpkg.com/lightweight-charts@4.1.1/dist/lightweight-charts.standalone.production.js"></script>
     <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
 
     <style>
         :root {
-            --bg-primary: #06080C;
-            --bg-card: #0D111A;
-            --bg-card-hover: #121824;
-            --border-color: #1A2333;
-            --border-active: #2A364F;
+            --bg-body: #05070B;
+            --bg-panel: #0A0D14;
+            --bg-card: #0E121B;
+            --bg-card-hover: #141926;
+            --border-dark: #161C28;
+            --border-light: #222B3D;
             --accent-cyan: #00E5FF;
             --accent-green: #10B981;
             --accent-red: #FF3B69;
             --accent-gold: #F59E0B;
             --accent-purple: #A855F7;
-            --accent-blue: #3B82F6;
-            --text-primary: #F8FAFC;
-            --text-secondary: #94A3B8;
+            --text-main: #F1F5F9;
+            --text-sub: #94A3B8;
             --text-muted: #64748B;
         }
 
@@ -36,716 +37,529 @@
         }
 
         body {
-            background-color: var(--bg-primary);
-            color: var(--text-primary);
+            background-color: var(--bg-body);
+            color: var(--text-main);
             font-family: 'Inter', sans-serif;
             overflow-x: hidden;
             -webkit-font-smoothing: antialiased;
         }
 
-        /* Top Header */
+        /* Top Institutional Header */
         header {
-            background: #090D15;
-            border-bottom: 1px solid var(--border-color);
-            padding: 10px 24px;
+            background: #000000;
+            border-bottom: 1px solid var(--border-dark);
+            height: 48px;
+            padding: 0 16px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 10px;
         }
 
-        .brand {
+        .brand-section {
             display: flex;
             align-items: center;
             gap: 10px;
+        }
+
+        .brand-logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
             font-family: 'JetBrains Mono', monospace;
             font-weight: 900;
-            font-size: 17px;
+            font-size: 15px;
             letter-spacing: 1px;
-            color: var(--accent-cyan);
+            color: #FFF;
         }
 
         .brand-badge {
-            background: rgba(0, 229, 255, 0.12);
-            border: 1px solid rgba(0, 229, 255, 0.35);
-            color: var(--accent-cyan);
-            font-size: 9.5px;
-            padding: 2px 7px;
+            background: rgba(255, 255, 255, 0.06);
+            color: #94A3B8;
+            border: 1px solid var(--border-dark);
+            font-size: 9px;
+            font-weight: 700;
+            padding: 1px 6px;
+            border-radius: 3px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Top Nav Tabs */
+        .top-nav {
+            display: flex;
+            align-items: center;
+            gap: 2px;
+            height: 100%;
+        }
+
+        .nav-item {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10.5px;
+            font-weight: 700;
+            padding: 6px 12px;
+            cursor: pointer;
+            transition: all 0.15s;
             border-radius: 4px;
-            font-weight: 800;
             text-transform: uppercase;
         }
 
+        .nav-item.active {
+            background: #141926;
+            color: #FFF;
+            font-weight: 800;
+            border-top: 2px solid var(--accent-cyan);
+        }
+
+        .nav-item:hover:not(.active) {
+            color: #FFF;
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-hdr-badge {
+            background: rgba(16, 185, 129, 0.12);
+            border: 1px solid rgba(16, 185, 129, 0.35);
+            color: var(--accent-green);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            font-weight: 800;
+            padding: 3px 8px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
         .live-dot {
-            display: inline-block;
-            width: 8px;
-            height: 8px;
-            background: #10B981;
+            width: 6px;
+            height: 6px;
+            background: var(--accent-green);
             border-radius: 50%;
-            margin-right: 6px;
             animation: pulse-dot 1.2s infinite;
         }
 
         @keyframes pulse-dot {
-            0% { transform: scale(0.9); opacity: 0.7; box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
-            70% { transform: scale(1.1); opacity: 1; box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+            0% { transform: scale(0.9); opacity: 0.7; }
+            70% { transform: scale(1.1); opacity: 1; }
             100% { transform: scale(0.9); opacity: 0.7; }
         }
 
-        /* Navigation Tabs */
-        .nav-tabs {
+        /* Main 3-Column Terminal Layout */
+        .terminal-grid {
+            display: grid;
+            grid-template-columns: 210px 1fr 330px;
+            height: calc(100vh - 78px);
+            background: var(--bg-body);
+        }
+
+        @media (max-width: 1200px) {
+            .terminal-grid {
+                grid-template-columns: 1fr;
+                height: auto;
+            }
+        }
+
+        /* LEFT SIDEBAR: WATCHLIST */
+        .watchlist-pane {
+            background: #07090E;
+            border-right: 1px solid var(--border-dark);
+            padding: 10px 8px;
             display: flex;
+            flex-direction: column;
             gap: 4px;
-            background: #06080C;
-            padding: 3px 6px;
-            border-radius: 30px;
-            border: 1px solid var(--border-color);
         }
 
-        .nav-btn {
-            background: transparent;
-            border: none;
-            color: var(--text-secondary);
+        .watchlist-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             font-family: 'JetBrains Mono', monospace;
-            font-size: 11px;
-            font-weight: 700;
-            padding: 6px 14px;
-            border-radius: 20px;
-            cursor: pointer;
-            transition: all 0.2s;
-            text-transform: uppercase;
-        }
-
-        .nav-btn.active {
-            background: var(--accent-cyan);
-            color: #000;
+            font-size: 10px;
             font-weight: 800;
-            box-shadow: 0 0 12px rgba(0, 229, 255, 0.3);
+            color: var(--text-muted);
+            padding: 6px 8px;
+            margin-bottom: 4px;
         }
 
-        .nav-btn:hover:not(.active) {
-            background: rgba(255, 255, 255, 0.05);
-            color: #FFF;
+        .active-count-badge {
+            color: var(--accent-green);
         }
 
-        /* Asset Selector Pills */
-        .asset-pill {
-            background: #06080C;
-            border: 1px solid var(--border-color);
-            color: var(--text-secondary);
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 11px;
-            font-weight: 700;
-            padding: 5px 12px;
+        .watch-card {
+            background: transparent;
+            border: 1px solid transparent;
+            padding: 8px 10px;
             border-radius: 6px;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.15s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: 'JetBrains Mono', monospace;
         }
 
-        .asset-pill.active {
-            background: rgba(0, 229, 255, 0.15);
-            border-color: var(--accent-cyan);
-            color: var(--accent-cyan);
+        .watch-card.active {
+            background: #0E131E;
+            border-color: var(--border-light);
+            border-left: 3px solid var(--accent-cyan);
+        }
+
+        .watch-card:hover:not(.active) {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .watch-sym-title {
             font-weight: 800;
-        }
-
-        .asset-pill:hover:not(.active) {
-            background: rgba(255, 255, 255, 0.05);
+            font-size: 11.5px;
             color: #FFF;
-            border-color: #2A364F;
         }
 
-        /* Timeframe Buttons */
+        .watch-sym-desc {
+            font-size: 9px;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        .watch-sym-price {
+            text-align: right;
+            font-weight: 800;
+            font-size: 11.5px;
+            color: #FFF;
+        }
+
+        .watch-sym-tag {
+            font-size: 9px;
+            color: var(--accent-gold);
+            margin-top: 2px;
+        }
+
+        /* CENTER: CHART WORKSPACE */
+        .chart-pane {
+            background: #000000;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid var(--border-dark);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .chart-top-bar {
+            background: #07090E;
+            border-bottom: 1px solid var(--border-dark);
+            padding: 6px 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .symbol-badge-main {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 900;
+            font-size: 13px;
+            color: #FFF;
+            margin-right: 8px;
+        }
+
+        .tf-strip {
+            display: flex;
+            gap: 2px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
         .tf-btn {
             background: transparent;
             border: none;
             color: var(--text-muted);
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 11px;
+            font-size: 10.5px;
             font-weight: 700;
-            padding: 3px 8px;
-            border-radius: 4px;
+            padding: 3px 6px;
+            border-radius: 3px;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.15s;
         }
 
         .tf-btn.active {
-            background: var(--accent-cyan);
-            color: #000;
+            background: #1E2638;
+            color: #FFF;
             font-weight: 800;
         }
 
         .tf-btn:hover:not(.active) {
-            background: rgba(255, 255, 255, 0.08);
-            color: #FFF;
-        }
-
-        /* Workspace & Grid Layout */
-        .workspace {
-            padding: 16px 20px;
-            min-height: calc(100vh - 120px);
-        }
-
-        .tab-content {
-            display: none;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        .chart-layout {
-            display: grid;
-            grid-template-columns: 1.75fr 1.25fr;
-            gap: 16px;
-            transition: all 0.3s ease;
-        }
-
-        .chart-layout.full-chart-mode {
-            grid-template-columns: 1fr !important;
-        }
-
-        .chart-layout.full-chart-mode .intel-card {
-            margin-top: 16px;
-        }
-
-        @media (max-width: 1100px) {
-            .chart-layout {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .chart-card, .intel-card, .data-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-            padding: 16px;
-        }
-
-        .btn-action {
             background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--border-color);
             color: #FFF;
-            padding: 5px 10px;
+        }
+
+        /* DUAL CHART SWITCHER PILL BAR */
+        .chart-engine-switcher {
+            display: flex;
+            gap: 4px;
+            background: #05070B;
+            border: 1px solid var(--border-dark);
+            padding: 2px;
             border-radius: 6px;
-            font-size: 11px;
-            font-weight: 700;
             font-family: 'JetBrains Mono', monospace;
+        }
+
+        .engine-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-size: 10px;
+            font-weight: 800;
+            padding: 4px 10px;
+            border-radius: 4px;
             cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .engine-btn.active {
+            background: var(--accent-cyan);
+            color: #000;
+            font-weight: 900;
+            box-shadow: 0 0 10px rgba(0, 229, 255, 0.3);
+        }
+
+        .engine-btn:hover:not(.active) {
+            color: #FFF;
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        /* Institutional Level Markings HUD Bar */
+        .level-markings-bar {
+            background: #090D15;
+            border-bottom: 1px solid var(--border-dark);
+            padding: 5px 12px;
             display: flex;
             align-items: center;
             gap: 6px;
-            transition: all 0.2s;
+            flex-wrap: wrap;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10.5px;
         }
 
-        .btn-action:hover {
+        .marking-pill {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-dark);
+            padding: 3px 7px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+            user-select: none;
+            opacity: 0.8;
+        }
+
+        .marking-pill.active {
+            background: rgba(0, 229, 255, 0.15);
+            border-color: var(--accent-cyan);
+            color: var(--accent-cyan);
+            opacity: 1;
+            font-weight: 800;
+            box-shadow: 0 0 8px rgba(0, 229, 255, 0.2);
+        }
+
+        .marking-pill:hover {
+            opacity: 1;
+            border-color: var(--border-light);
+        }
+
+        .chart-hud-strip {
+            position: absolute;
+            top: 76px;
+            left: 14px;
+            z-index: 10;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            background: rgba(5, 7, 11, 0.85);
+            border: 1px solid var(--border-dark);
+            padding: 4px 10px;
+            border-radius: 4px;
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            pointer-events: none;
+        }
+
+        /* Dual Viewport Containers */
+        #mazrion_marked_container {
+            width: 100%;
+            height: calc(100% - 72px);
+            position: relative;
+            display: block;
+        }
+
+        #tradingview_pro_container {
+            width: 100%;
+            height: calc(100% - 36px);
+            position: relative;
+            display: none;
+        }
+
+        /* RIGHT: AI CONFLUENCE & TRADE PLAN SIDEBAR */
+        .intel-pane {
+            background: #07090E;
+            padding: 12px 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            overflow-y: auto;
+        }
+
+        .intel-section-card {
+            background: #0A0D15;
+            border: 1px solid var(--border-dark);
+            border-radius: 6px;
+            padding: 12px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .section-header-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 10.5px;
+            font-weight: 800;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+
+        .confluence-hero {
+            display: flex;
+            align-items: baseline;
+            gap: 4px;
+            margin-bottom: 10px;
+        }
+
+        .score-val {
+            font-size: 26px;
+            font-weight: 900;
+            color: var(--accent-green);
+        }
+
+        .score-total {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text-muted);
+        }
+
+        .bias-badge {
+            margin-left: auto;
+            font-size: 10px;
+            font-weight: 800;
+            color: var(--accent-green);
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 10px;
+            padding: 3px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+        }
+
+        .stat-row:last-child {
+            border-bottom: none;
+        }
+
+        .stat-label {
+            color: var(--text-muted);
+        }
+
+        .stat-val-green {
+            color: var(--accent-green);
+            font-weight: 800;
+        }
+
+        .stat-val-gold {
+            color: var(--accent-gold);
+            font-weight: 800;
+        }
+
+        .stat-val-dim {
+            color: #64748B;
+        }
+
+        /* Trade Plan Card */
+        .plan-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            font-size: 11px;
+            font-weight: 800;
+        }
+
+        .plan-rule-box {
+            font-size: 10px;
+            color: #CBD5E1;
+            line-height: 1.5;
+            margin-bottom: 8px;
+        }
+
+        .inval-box {
+            font-size: 9.5px;
+            color: var(--text-muted);
+            background: rgba(255, 255, 255, 0.02);
+            padding: 6px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+
+        /* DeepSeek Synthesis Card */
+        .btn-regenerate {
+            background: #0E121B;
+            border: 1px solid var(--border-dark);
+            color: #FFF;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 9.5px;
+            font-weight: 800;
+            padding: 3px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .btn-regenerate:hover {
             background: var(--accent-cyan);
             color: #000;
             border-color: var(--accent-cyan);
         }
 
-        .btn-alert {
-            background: rgba(245, 158, 11, 0.15);
-            border-color: rgba(245, 158, 11, 0.4);
-            color: var(--accent-gold);
+        .ai-story-text {
+            font-size: 10.5px;
+            color: #94A3B8;
+            line-height: 1.5;
+            font-family: 'Inter', sans-serif;
         }
 
-        .btn-alert:hover {
-            background: var(--accent-gold);
-            color: #000;
-        }
-
-        /* Key Levels Bar */
-        .key-levels-bar {
-            display: flex;
-            align-items: center;
-            justify-content: flex-start;
-            background: #090D15;
-            border: 1px solid var(--border-color);
-            padding: 8px 10px;
-            border-radius: 8px;
-            margin-bottom: 12px;
-            flex-wrap: wrap;
-            gap: 6px;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 11px;
-        }
-
-        .key-pill {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid var(--border-color);
-            padding: 4px 8px;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: all 0.2s;
-            user-select: none;
-            opacity: 0.85;
-        }
-
-        .key-pill.active {
-            background: rgba(0, 229, 255, 0.15);
-            border-color: var(--accent-cyan);
-            box-shadow: 0 0 10px rgba(0, 229, 255, 0.2);
-            opacity: 1;
-        }
-
-        .key-pill:hover {
-            border-color: var(--accent-cyan);
-            transform: translateY(-1px);
-            opacity: 1;
-        }
-
-        #chart-container {
-            width: 100%;
-            height: 600px;
-            border-radius: 8px;
-            overflow: hidden;
-            border: 1px solid var(--border-color);
-            background: #06080C;
-            position: relative;
-        }
-
-        /* 4-Pillar Grid */
-        .pillar-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin-top: 14px;
-        }
-
-        .pillar-box {
-            background: #090D15;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 12px;
-        }
-
-        .pillar-box-header {
-            display: flex;
-            justify-content: space-between;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 11px;
-            font-weight: 800;
-            margin-bottom: 6px;
-        }
-
-        .pillar-box-body {
-            font-size: 11px;
-            color: var(--text-secondary);
-            line-height: 1.6;
-        }
-
-        .bull { color: var(--accent-green); }
-        .bear { color: var(--accent-red); }
-
-        /* DeepSeek Intel Sidebar */
-        .verdict-banner {
-            background: rgba(16, 185, 129, 0.12);
-            border: 1px solid var(--accent-green);
-            border-radius: 8px;
-            padding: 14px;
-            margin-bottom: 12px;
-            font-family: 'JetBrains Mono', monospace;
-        }
-
-        .verdict-title {
-            font-size: 10px;
-            font-weight: 700;
-            text-transform: uppercase;
-            color: var(--accent-green);
-            letter-spacing: 1px;
-        }
-
-        .verdict-main {
-            font-size: 18px;
-            font-weight: 900;
-            color: #FFF;
-            margin: 4px 0;
-        }
-
-        .verdict-sub {
-            font-size: 11px;
-            color: var(--text-secondary);
-        }
-
-        .btn-synthesize {
-            width: 100%;
-            background: linear-gradient(135deg, #00E5FF 0%, #0077FF 100%);
-            border: none;
-            color: #000;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 12px;
-            font-weight: 800;
-            padding: 12px;
-            border-radius: 6px;
-            cursor: pointer;
-            margin-bottom: 12px;
-            transition: all 0.2s;
-            box-shadow: 0 4px 15px rgba(0, 229, 255, 0.25);
-            text-transform: uppercase;
-        }
-
-        .btn-synthesize:hover {
-            opacity: 0.9;
-            transform: translateY(-1px);
-        }
-
-        .story-box {
-            background: #06080C;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 12px;
-            font-size: 12px;
-            line-height: 1.6;
-            color: #CBD5E1;
-            margin-top: 6px;
-        }
-
-        .checklist-item {
-            background: #06080C;
-            border-left: 3px solid var(--accent-cyan);
-            padding: 8px 10px;
-            border-radius: 0 6px 6px 0;
-            margin-bottom: 6px;
-            font-size: 11px;
-            color: var(--text-secondary);
-        }
-
-        .checklist-item.wait {
-            border-left-color: var(--accent-gold);
-        }
-
-        .levels-table {
-            background: #06080C;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 10px;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 11px;
-        }
-
-        .level-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 4px 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
-        }
-
-        .level-row:last-child {
-            border-bottom: none;
-            margin-top: 4px;
-            padding-top: 6px;
-            border-top: 1px dashed var(--border-color);
-            font-weight: 800;
-            color: var(--accent-gold);
-        }
-
-        /* Order Flow DOM Ladder View */
-        .dom-grid {
-            display: grid;
-            grid-template-columns: 1fr 1.2fr;
-            gap: 16px;
-        }
-
-        .ladder-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 6px 12px;
-            position: relative;
-            margin-bottom: 2px;
-            border-radius: 4px;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 12px;
-            transition: all 0.3s ease;
-        }
-
-        .ladder-ask {
-            background: rgba(255, 59, 105, 0.08);
-            color: var(--accent-red);
-        }
-
-        .ladder-ask-bar {
-            position: absolute;
-            right: 0;
-            top: 0;
-            bottom: 0;
-            background: rgba(255, 59, 105, 0.25);
-            border-radius: 0 4px 4px 0;
-            z-index: 1;
-            transition: width 0.3s ease;
-        }
-
-        .ladder-bid {
-            background: rgba(16, 185, 129, 0.08);
-            color: var(--accent-green);
-        }
-
-        .ladder-bid-bar {
-            position: absolute;
-            right: 0;
-            top: 0;
-            bottom: 0;
-            background: rgba(16, 185, 129, 0.25);
-            border-radius: 0 4px 4px 0;
-            z-index: 1;
-            transition: width 0.3s ease;
-        }
-
-        .ladder-current {
-            background: #151C28;
-            border: 1px solid var(--accent-cyan);
-            font-weight: 800;
-            color: #FFF;
-            padding: 8px 12px;
-            margin: 6px 0;
-            box-shadow: 0 0 12px rgba(0, 229, 255, 0.2);
-        }
-
-        .imbalance-bar-bg {
-            background: var(--accent-red);
-            height: 12px;
-            border-radius: 6px;
-            overflow: hidden;
-            margin: 8px 0 16px 0;
-        }
-
-        .imbalance-bar-fill {
-            background: var(--accent-green);
-            height: 100%;
-            width: 58.4%;
-            transition: width 0.4s ease;
-        }
-
-        .wall-card {
-            background: #090D15;
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            padding: 8px 12px;
-            margin-bottom: 6px;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 11px;
-            display: flex;
-            justify-content: space-between;
-        }
-
-        /* Liquidity Pools Matrix Styling */
-        .liq-pool-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 14px;
-            margin-top: 12px;
-        }
-
-        .liq-pool-card {
-            background: #090D15;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 12px;
-        }
-
-        .liq-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 8px 10px;
-            margin-bottom: 6px;
-            border-radius: 6px;
-            background: rgba(255, 255, 255, 0.02);
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 11.5px;
-        }
-
-        .liq-bsl {
-            border-left: 3px solid var(--accent-cyan);
-        }
-
-        .liq-ssl {
-            border-left: 3px solid var(--accent-red);
-        }
-
-        /* News Table */
-        .news-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 12px;
-            margin-top: 10px;
-        }
-
-        .news-table th {
-            text-align: left;
-            padding: 10px 12px;
-            background: #090D15;
-            color: var(--text-muted);
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 11px;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .news-table td {
-            padding: 12px;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .badge-red-news {
-            background: rgba(255, 59, 105, 0.15);
-            color: var(--accent-red);
-            border: 1px solid rgba(255, 59, 105, 0.4);
-            padding: 3px 8px;
-            border-radius: 4px;
-            font-weight: 800;
-            font-size: 10px;
-            font-family: 'JetBrains Mono', monospace;
-        }
-
-        .time-ist-badge {
-            background: rgba(245, 158, 11, 0.15);
-            border: 1px solid rgba(245, 158, 11, 0.4);
-            color: var(--accent-gold);
-            padding: 3px 8px;
-            border-radius: 4px;
-            font-weight: 800;
-            font-size: 11px;
-            font-family: 'JetBrains Mono', monospace;
-        }
-
-        /* Alert Modal */
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.75);
-            backdrop-filter: blur(6px);
-            z-index: 1000;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .modal-overlay.open {
-            display: flex;
-        }
-
-        .modal-card {
-            background: #0D111A;
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            width: 460px;
-            max-width: 90vw;
-            padding: 24px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 16px;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 15px;
-            font-weight: 800;
-            color: var(--accent-gold);
-        }
-
-        .modal-close {
-            background: none;
-            border: none;
-            color: var(--text-muted);
-            font-size: 18px;
-            cursor: pointer;
-        }
-
-        .alert-input-group {
-            margin-bottom: 14px;
-        }
-
-        .alert-input-group label {
-            display: block;
-            font-size: 11px;
-            font-weight: 700;
-            color: var(--text-muted);
-            margin-bottom: 6px;
-            font-family: 'JetBrains Mono', monospace;
-            text-transform: uppercase;
-        }
-
-        .alert-input {
-            width: 100%;
-            background: #06080C;
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            padding: 10px 14px;
-            color: #FFF;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 14px;
-            font-weight: 700;
-            outline: none;
-        }
-
-        .preset-buttons {
-            display: flex;
-            gap: 6px;
-            flex-wrap: wrap;
-            margin-top: 8px;
-        }
-
-        .preset-btn {
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid var(--border-color);
-            color: var(--text-secondary);
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 10px;
-            font-family: 'JetBrains Mono', monospace;
-            cursor: pointer;
-        }
-
-        .preset-btn:hover {
-            background: var(--accent-gold);
-            color: #000;
-        }
-
-        .active-alerts-list {
-            max-height: 140px;
-            overflow-y: auto;
-            margin: 14px 0;
-            background: #06080C;
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            padding: 8px;
-        }
-
-        .alert-item-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 6px 8px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 11px;
-        }
-
-        .alert-item-row:last-child {
-            border-bottom: none;
-        }
-
-        /* Banner Notification */
+        /* Toast Banner */
         .toast-banner {
             position: fixed;
             top: 20px;
             right: 20px;
-            background: linear-gradient(135deg, #F59E0B 0%, #EF4444 100%);
+            background: linear-gradient(135deg, #00E5FF 0%, #0077FF 100%);
             color: #000;
             font-family: 'JetBrains Mono', monospace;
             font-weight: 900;
-            padding: 14px 20px;
-            border-radius: 8px;
-            box-shadow: 0 10px 30px rgba(245, 158, 11, 0.5);
+            padding: 12px 18px;
+            border-radius: 6px;
+            box-shadow: 0 10px 30px rgba(0, 229, 255, 0.4);
             z-index: 9999;
             display: none;
             animation: slideIn 0.3s ease;
@@ -756,589 +570,470 @@
             to { transform: translateX(0); opacity: 1; }
         }
 
+        /* Bottom Status Footer */
         footer {
-            border-top: 1px solid var(--border-color);
-            padding: 12px 24px;
-            background: #06080C;
+            background: #000000;
+            border-top: 1px solid var(--border-dark);
+            height: 30px;
+            padding: 0 16px;
             display: flex;
+            align-items: center;
             justify-content: space-between;
             font-family: 'JetBrains Mono', monospace;
             font-size: 10px;
             color: var(--text-muted);
-            flex-wrap: wrap;
-            gap: 10px;
         }
     </style>
 </head>
 <body>
 
-    <!-- Header -->
+    <!-- TOP HEADER -->
     <header>
-        <div class="brand">
-            <span>👑 MAZRION.AI</span>
-            <span class="brand-badge">INSTITUTIONAL v4.0</span>
-        </div>
-        
-        <!-- Center Pill Navigation -->
-        <div class="nav-tabs">
-            <button class="nav-btn active" onclick="switchTab('chart', event)">
-                📈 <b>CHARTS</b> <span style="font-size:9.5px; opacity:0.7; margin-left:4px;">Multi-Asset</span>
-            </button>
-            <button class="nav-btn" onclick="switchTab('orderflow', event)">
-                🌊 <b>ORDER FLOW</b> <span style="font-size:9.5px; opacity:0.7; margin-left:4px;">L2 Book</span>
-            </button>
-            <button class="nav-btn" onclick="switchTab('macro', event)">
-                📰 <b>MACRO RADAR</b> <span style="font-size:9.5px; opacity:0.7; margin-left:4px;">News IST</span>
-            </button>
-            <button class="nav-btn" onclick="switchTab('plan', event)">
-                🗺️ <b>STRATEGIES</b> <span style="font-size:9.5px; opacity:0.7; margin-left:4px;">SMC Plan</span>
-            </button>
+        <div class="brand-section">
+            <div class="brand-logo">
+                <span>🐺 MAZRION</span>
+                <span class="brand-badge">TERMINAL v1.0</span>
+            </div>
         </div>
 
-        <!-- Right Header Status Items -->
-        <div style="display:flex; align-items:center; gap:12px; font-family:'JetBrains Mono'; font-size:11px;">
-            <div style="display:flex; align-items:center; gap:6px; background:rgba(16,185,129,0.1); border:1px solid rgba(16,185,129,0.3); padding:4px 10px; border-radius:6px; color:#10B981; font-weight:800;">
-                <span class="live-dot"></span> LIVE FEED
-            </div>
-            <div>🇮🇳 <b style="color:var(--accent-gold)" id="hdr-ist-clock">04:30:00 PM IST</b></div>
-            <div style="background:rgba(0,229,255,0.08); border:1px solid rgba(0,229,255,0.25); color:var(--accent-cyan); padding:4px 10px; border-radius:6px; font-weight:800;">
-                🔒 PRIVATE MODE
-            </div>
+        <!-- CENTER NAVIGATION TABS -->
+        <div class="top-nav">
+            <button class="nav-item">MARKETS</button>
+            <button class="nav-item active">CHART</button>
+            <button class="nav-item">TRADE PLAN</button>
+            <button class="nav-item">HEATMAP</button>
+            <button class="nav-item">ORDER FLOW</button>
+            <button class="nav-item">STRATEGY LAB</button>
+            <button class="nav-item">BACKTEST</button>
+            <button class="nav-item">REPLAY</button>
+            <button class="nav-item">AUTOPSY</button>
+            <button class="nav-item">POSITIONS</button>
+            <button class="nav-item">AI ANALYSIS</button>
+        </div>
+
+        <!-- RIGHT STATUS -->
+        <div class="header-right">
+            <span class="btn-hdr-badge"><span class="live-dot"></span> CONNECTED</span>
+            <span style="font-family:'JetBrains Mono'; font-size:11px; color:var(--accent-gold); font-weight:700;" id="hdr-ist-clock">04:35:00 PM IST</span>
         </div>
     </header>
 
-    <!-- Main Workspace -->
-    <div class="workspace">
+    <!-- MAIN 3-COLUMN TERMINAL WORKSPACE -->
+    <div class="terminal-grid">
         
-        <!-- ==================== TAB 1: CHART & DEEPSEEK INTEL ==================== -->
-        <div id="tab-chart" class="tab-content active">
-            <div class="chart-layout">
-                
-                <!-- Left: Chart View & Controls -->
-                <div class="chart-card">
+        <!-- COLUMN 1: WATCHLIST (XM MT5) -->
+        <div class="watchlist-pane">
+            <div class="watchlist-header">
+                <span>WATCHLIST (XM MT5)</span>
+                <span class="active-count-badge">1 ACTIVE</span>
+            </div>
+
+            <div class="watch-card active" onclick="switchWatchlistAsset('XAUUSD', 'Gold / USD', '4476.64', 'LONG WATCH')">
+                <div>
+                    <div class="watch-sym-title">XAUUSD</div>
+                    <div class="watch-sym-desc">Gold / USD</div>
+                </div>
+                <div>
+                    <div class="watch-sym-price" id="watch-xauusd-price">4476.64</div>
+                    <div class="watch-sym-tag">LONG WATCH</div>
+                </div>
+            </div>
+
+            <div class="watch-card" onclick="switchWatchlistAsset('XAGUSD', 'Silver / USD', '38.42', 'PHASE 2')">
+                <div>
+                    <div class="watch-sym-title">XAGUSD</div>
+                    <div class="watch-sym-desc">Silver / USD</div>
+                </div>
+                <div>
+                    <div class="watch-sym-price">--</div>
+                    <div class="watch-sym-tag" style="color:var(--text-muted)">PHASE 2</div>
+                </div>
+            </div>
+
+            <div class="watch-card" onclick="switchWatchlistAsset('BTCUSD', 'Bitcoin / USD', '94250.00', 'PHASE 2')">
+                <div>
+                    <div class="watch-sym-title">BTCUSD</div>
+                    <div class="watch-sym-desc">Bitcoin / USD</div>
+                </div>
+                <div>
+                    <div class="watch-sym-price">--</div>
+                    <div class="watch-sym-tag" style="color:var(--text-muted)">PHASE 2</div>
+                </div>
+            </div>
+
+            <div class="watch-card" onclick="switchWatchlistAsset('EURUSD', 'Euro / USD', '1.0845', 'PHASE 2')">
+                <div>
+                    <div class="watch-sym-title">EURUSD</div>
+                    <div class="watch-sym-desc">Euro / USD</div>
+                </div>
+                <div>
+                    <div class="watch-sym-price">--</div>
+                    <div class="watch-sym-tag" style="color:var(--text-muted)">PHASE 2</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- COLUMN 2: CENTER CHART -->
+        <div class="chart-pane">
+            
+            <!-- Chart Top Bar -->
+            <div class="chart-top-bar">
+                <div style="display:flex; align-items:center; gap:6px;">
+                    <span class="symbol-badge-main" id="chart-active-symbol">XAUUSD</span>
                     
-                    <!-- Multi-Asset & Timeframe Controls Bar -->
-                    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:12px;">
-                        
-                        <!-- Asset Switcher Pills -->
-                        <div style="display:flex; gap:4px; flex-wrap:wrap;">
-                            <button class="asset-pill active" id="asset-xauusd" onclick="switchSymbol('OANDA:XAUUSD', 'XAUUSD (Spot Gold)', '4476.64', '55.5')">XAUUSD</button>
-                            <button class="asset-pill" id="asset-xagusd" onclick="switchSymbol('OANDA:XAGUSD', 'XAGUSD (Spot Silver)', '38.42', '58.2')">XAGUSD</button>
-                            <button class="asset-pill" id="asset-btcusd" onclick="switchSymbol('BINANCE:BTCUSDT', 'BTCUSDT (Bitcoin)', '94250.00', '62.4')">BTC</button>
-                            <button class="asset-pill" id="asset-ethusd" onclick="switchSymbol('BINANCE:ETHUSDT', 'ETHUSDT (Ethereum)', '2740.50', '59.1')">ETH</button>
-                            <button class="asset-pill" id="asset-solusd" onclick="switchSymbol('BINANCE:SOLUSDT', 'SOLUSDT (Solana)', '184.20', '64.8')">SOL</button>
-                            <button class="asset-pill" id="asset-eurusd" onclick="switchSymbol('FX:EURUSD', 'EURUSD (Euro / USD)', '1.0845', '48.3')">EURUSD</button>
-                            <button class="asset-pill" id="asset-dxy" onclick="switchSymbol('CAPITALCOM:DXY', 'DXY (US Dollar Index)', '104.12', '42.1')">DXY</button>
-                        </div>
-
-                        <!-- Timeframe Selector & Actions -->
-                        <div style="display:flex; align-items:center; gap:8px;">
-                            <div style="display:flex; gap:3px; background:#06080C; border:1px solid #1A2333; padding:2px 4px; border-radius:6px; font-family:'JetBrains Mono';">
-                                <button class="tf-btn" id="tf-1m" onclick="changeChartTimeframe('1m')">1M</button>
-                                <button class="tf-btn" id="tf-5m" onclick="changeChartTimeframe('5m')">5M</button>
-                                <button class="tf-btn" id="tf-15m" onclick="changeChartTimeframe('15m')">15M</button>
-                                <button class="tf-btn active" id="tf-1h" onclick="changeChartTimeframe('1h')">1H</button>
-                                <button class="tf-btn" id="tf-4h" onclick="changeChartTimeframe('4h')">4H</button>
-                                <button class="tf-btn" id="tf-1d" onclick="changeChartTimeframe('1d')">1D</button>
-                            </div>
-                            <button class="btn-action btn-alert" onclick="openAlertModal()">
-                                🔔 <span>ALERT</span>
-                            </button>
-                            <button class="btn-action" id="btn-full-chart" onclick="toggleFullChart()" title="Expand Full Chart View">
-                                ⛶ <span id="full-chart-text">FULL CHART</span>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Clean Institutional Key Levels HUD (All OFF by Default) -->
-                    <div class="key-levels-bar">
-                        <div class="key-pill" id="pill-pdh" onclick="toggleLevelLine('pdh')">📅 <b style="color:var(--accent-gold)">PDH:</b> $4491.23</div>
-                        <div class="key-pill" id="pill-sellwall" onclick="toggleLevelLine('sellwall')">🐳 <b style="color:var(--accent-red)">SELL WALL:</b> $4488.50</div>
-                        <div class="key-pill" id="pill-tp" onclick="toggleLevelLine('tp')">🎯 <b style="color:var(--accent-green)">TP:</b> $4478.00</div>
-                        <div class="key-pill" id="pill-bsl" onclick="toggleLevelLine('bsl')">💧 <b style="color:var(--accent-cyan)">BSL EQH:</b> $4478.20</div>
-                        <div class="key-pill" id="pill-poi15m" onclick="toggleLevelLine('poi15m')">📦 <b style="color:var(--accent-cyan)">15M POI:</b> $4468.5–$4471</div>
-                        <div class="key-pill" id="pill-poi1h" onclick="toggleLevelLine('poi1h')">📦 <b style="color:var(--accent-gold)">1H POI:</b> $4466.2–$4469</div>
-                        <div class="key-pill" id="pill-poi4h" onclick="toggleLevelLine('poi4h')">📦 <b style="color:var(--accent-green)">4H POI:</b> $4464–$4467.5</div>
-                        <div class="key-pill" id="pill-ssl" onclick="toggleLevelLine('ssl')">💧 <b style="color:var(--accent-gold)">SSL SWEEP:</b> $4463.80</div>
-                        <div class="key-pill" id="pill-buywall" onclick="toggleLevelLine('buywall')">🐳 <b style="color:var(--accent-cyan)">BUY WALL:</b> $4462.50</div>
-                        <div class="key-pill" id="pill-sl" onclick="toggleLevelLine('sl')">🛑 <b style="color:var(--accent-red)">SL:</b> $4461.80</div>
-                        <div class="key-pill" id="pill-pdl" onclick="toggleLevelLine('pdl')">📅 <b style="color:var(--accent-gold)">PDL:</b> $4460.00</div>
-                    </div>
-
-                    <!-- TradingView Official Pro Chart Canvas -->
-                    <div id="chart-container">
-                        <div id="tv_chart_wrapper" style="width:100%; height:100%;"></div>
-                    </div>
-
-                    <!-- 4-Pillar Grid -->
-                    <div class="pillar-grid">
-                        <div class="pillar-box">
-                            <div class="pillar-box-header"><span style="color:var(--accent-cyan)">1. TECHNICAL STRUCTURE</span><span class="bull">🟢 95% CONFLUENCE</span></div>
-                            <div class="pillar-box-body">
-                                • <b>4H Trend:</b> Bullish Expansion | 50% Equilibrium @ $4465.00<br/>
-                                • <b>1H Structure:</b> Bullish OB + FVG Retest @ $4466.20 - $4469.00<br/>
-                                • <b>15M Microstructure:</b> Bullish CHoCH Breakout Confirmed
-                            </div>
-                        </div>
-
-                        <div class="pillar-box">
-                            <div class="pillar-box-header"><span style="color:var(--accent-green)">2. ORDER FLOW & WHALE WALLS</span><span class="bull">🟢 ABSORPTION ACTIVE</span></div>
-                            <div class="pillar-box-body">
-                                • <b>Buy Wall Defense:</b> $24.6M (18,450 Lots) @ $4462.50<br/>
-                                • <b>Sell Wall Target:</b> $19.1M (14,200 Lots) @ $4488.50<br/>
-                                • <b>Delta Pressure:</b> Aggressive limit order buying (+4,820 Lots)
-                            </div>
-                        </div>
-
-                        <div class="pillar-box">
-                            <div class="pillar-box-header"><span style="color:var(--accent-gold)">3. NARRATIVE & LIQUIDITY</span><span class="bull">🟢 TRAP COMPLETED</span></div>
-                            <div class="pillar-box-body">
-                                • <b>Session Theme:</b> Asian Low Stop-Hunt harvested @ $4463.80<br/>
-                                • <b>Market Regime:</b> Manipulation ➔ Expansion Phase<br/>
-                                • <b>Retail Positioning:</b> Trapped early breakout shorts
-                            </div>
-                        </div>
-
-                        <div class="pillar-box">
-                            <div class="pillar-box-header"><span style="color:var(--accent-purple)">4. MACRO & INTERMARKET</span><span class="bull">🟢 RISK-ON BACKING</span></div>
-                            <div class="pillar-box-body">
-                                • <b>DXY (Dollar Index):</b> 104.12 (-0.35% Weakness ➔ Gold Tailwinds)<br/>
-                                • <b>US 10Y Yields:</b> 4.21% (Easing pressure)<br/>
-                                • <b>News Guard:</b> High-impact US NFP (06:00 PM IST)
-                            </div>
-                        </div>
+                    <!-- Timeframe Strip -->
+                    <div class="tf-strip">
+                        <button class="tf-btn" id="tf-1m" onclick="changeChartTimeframe('1m')">1M</button>
+                        <button class="tf-btn" id="tf-3m" onclick="changeChartTimeframe('3m')">3M</button>
+                        <button class="tf-btn active" id="tf-5m" onclick="changeChartTimeframe('5m')">5M</button>
+                        <button class="tf-btn" id="tf-15m" onclick="changeChartTimeframe('15m')">15M</button>
+                        <button class="tf-btn" id="tf-30m" onclick="changeChartTimeframe('30m')">30M</button>
+                        <button class="tf-btn" id="tf-1h" onclick="changeChartTimeframe('1h')">1H</button>
+                        <button class="tf-btn" id="tf-4h" onclick="changeChartTimeframe('4h')">4H</button>
+                        <button class="tf-btn" id="tf-1d" onclick="changeChartTimeframe('1d')">1D</button>
+                        <button class="tf-btn" id="tf-1w" onclick="changeChartTimeframe('1w')">1W</button>
+                        <button class="tf-btn" id="tf-1mn" onclick="changeChartTimeframe('1mn')">1MN</button>
                     </div>
                 </div>
 
-                <!-- Right: AI POSITION ANALYSIS (deeepr.ai Style Sidebar) -->
-                <div class="intel-card" style="display:flex; flex-direction:column; justify-content:space-between;">
-                    <div>
-                        <!-- Header -->
-                        <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px; font-family:'JetBrains Mono';">
-                            <span style="color:#00E5FF; font-size:14px;">✨</span>
-                            <span style="font-size:11px; font-weight:800; color:#00E5FF; letter-spacing:1px; text-transform:uppercase;">AI POSITION ANALYSIS</span>
-                        </div>
-                        <div style="font-size:16px; font-weight:900; color:#FFF; margin-bottom:12px;" id="ai-active-asset-title">
-                            XAUUSD (Spot Gold · 1h)
-                        </div>
-
-                        <!-- 4-Stat Metric Strip (deeepr.ai Style) -->
-                        <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap:6px; background:#06080C; border:1px solid #1A2333; border-radius:8px; padding:10px 8px; margin-bottom:16px; text-align:center; font-family:'JetBrains Mono';">
-                            <div>
-                                <div style="font-size:9.5px; color:#64748B; font-weight:700;">PRICE</div>
-                                <div style="font-size:12px; font-weight:800; color:#FFF; margin-top:2px;" id="stat-price">$4,476.64</div>
-                            </div>
-                            <div>
-                                <div style="font-size:9.5px; color:#64748B; font-weight:700;">24H Δ</div>
-                                <div style="font-size:12px; font-weight:800; color:#10B981; margin-top:2px;" id="stat-change">+0.96%</div>
-                            </div>
-                            <div>
-                                <div style="font-size:9.5px; color:#64748B; font-weight:700;">RSI 14</div>
-                                <div style="font-size:12px; font-weight:800; color:#CBD5E1; margin-top:2px;" id="stat-rsi">55.5</div>
-                            </div>
-                            <div>
-                                <div style="font-size:9.5px; color:#64748B; font-weight:700;">REGIME</div>
-                                <div style="font-size:10px; font-weight:800; color:var(--accent-gold); margin-top:3px;" id="stat-regime">EXPANSION</div>
-                            </div>
-                        </div>
-
-                        <!-- AI Hero Trigger Box -->
-                        <div id="ai-hero-box" style="text-align:center; background:#06080C; border:1px solid #1A2333; border-radius:12px; padding:20px 16px; margin-bottom:16px;">
-                            <div style="width:44px; height:44px; border-radius:50%; background:rgba(0,229,255,0.1); border:1px solid rgba(0,229,255,0.3); display:flex; align-items:center; justify-content:center; margin:0 auto 10px auto; box-shadow:0 0 15px rgba(0,229,255,0.2);">
-                                <span style="font-size:18px; color:#00E5FF;">✨</span>
-                            </div>
-                            <div style="font-size:14px; font-weight:800; color:#FFF; margin-bottom:4px;">Ready when you are</div>
-                            <div style="font-size:11px; color:#94A3B8; max-width:320px; margin:0 auto 14px auto; line-height:1.5;">
-                                Get an institutional AI read on direction, conviction, and dynamic missed-trade execution setups.
-                            </div>
-                            <button class="btn-synthesize" onclick="runAiSynthesis()">
-                                ⚡ ANALYZE WITH DEEPSEEK
-                            </button>
-                            <div style="font-size:10px; color:#64748B; font-family:'JetBrains Mono';">💎 Zero latency real-time institutional synthesis</div>
-                        </div>
-
-                        <!-- Dynamic AI Analysis Results Container -->
-                        <div id="ai-results-panel">
-                            
-                            <!-- Verdict Banner -->
-                            <div class="verdict-banner">
-                                <div class="verdict-title">EXECUTIVE TRADING VERDICT</div>
-                                <div class="verdict-main" id="ai-verdict">🟢 STRONG BUY (93% CONFLUENCE)</div>
-                                <div class="verdict-sub">Optimal Execution: 5M Retest of 1H/4H Discount Demand POI</div>
-                            </div>
-
-                            <!-- Missed Trade Real-Time Situation Protocol Box -->
-                            <div id="ai-missed-protocol" style="background:rgba(245, 158, 11, 0.08); border:1px solid rgba(245, 158, 11, 0.4); border-radius:8px; padding:12px; margin-bottom:12px; font-family:'JetBrains Mono';">
-                                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-                                    <span style="font-weight:900; font-size:11px; color:var(--accent-gold);">⚡ LIVE EXECUTION PROTOCOL</span>
-                                    <span id="ai-trade-state-badge" style="background:rgba(245, 158, 11, 0.2); color:var(--accent-gold); border:1px solid rgba(245, 158, 11, 0.5); padding:2px 8px; border-radius:4px; font-size:9.5px; font-weight:800;">PULLBACK ADVISORY</span>
-                                </div>
-                                <div id="ai-fomo-warning" style="font-size:11px; color:#F87171; font-weight:800; margin-bottom:6px;">
-                                    🚨 IF YOU MISSED THE $4466 ENTRY: DO NOT FOMO BUY AT CURRENT EXPANSION PRICE ($4476+)!
-                                </div>
-                                <div id="ai-action-rule" style="font-size:11px; color:#E2E8F0; line-height:1.6;">
-                                    • <b>Option 1:</b> Wait for 5M/15M pullback to $4470.00–$4471.20 with SL below $4467.00.<br/>
-                                    • <b>Option 2:</b> If price surges straight into $4478, <b>SIT IN CASH</b> and wait for liquidity sweep.
-                                </div>
-                            </div>
-
-                            <!-- Smart Money Narrative -->
-                            <div>
-                                <div style="font-size:11.5px; font-weight:800; text-transform:uppercase; margin-top:8px;">📖 Smart Money Narrative</div>
-                                <div class="story-box" id="ai-story">
-                                    Institutions spent the early Asian session engineering liquidity beneath Previous Day Low ($4460). Smart money executed a sweep down to $4463.80, absorbing 18,450+ lots into the <b>4H/1H Demand POI</b>. Price has expanded up to $4476+. Path of least resistance is targeting the $4478 BSL and $4488 Whale Sell Wall.
-                                </div>
-                            </div>
-
-                            <!-- Action Checklist -->
-                            <div style="margin-top:10px;">
-                                <div style="font-size:11.5px; font-weight:800; text-transform:uppercase; margin-bottom:6px;">⏳ Multi-Timeframe Checklist</div>
-                                <div id="ai-checklist-container">
-                                    <div class="checklist-item">
-                                        <b style="color:#FFF;">✅ 4H Macro Discount POI Tapped:</b> Price reached $4464.00 - $4467.50
-                                    </div>
-                                    <div class="checklist-item">
-                                        <b style="color:#FFF;">✅ 15M Bullish CHoCH Breakout:</b> Body close established above $4468.00
-                                    </div>
-                                    <div class="checklist-item wait">
-                                        <b style="color:var(--accent-gold);">⏳ Wait Condition:</b> Wait for 5M/15M pullback to $4470.00–$4471.20
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Precision Levels -->
-                            <div style="margin-top:10px;">
-                                <div style="font-size:11.5px; font-weight:800; text-transform:uppercase; margin-bottom:6px;">🎯 Precision Institutional Price Levels</div>
-                                <div class="levels-table" id="ai-levels-container">
-                                    <div class="level-row">
-                                        <span style="color:var(--text-secondary)">CURRENT PRICE:</span>
-                                        <span style="color:var(--accent-cyan); font-weight:800;">$4476.64</span>
-                                    </div>
-                                    <div class="level-row">
-                                        <span style="color:var(--text-secondary)">PULLBACK EXECUTION ZONE:</span>
-                                        <span style="color:var(--accent-gold); font-weight:700;">$4470.00 – $4471.20</span>
-                                    </div>
-                                    <div class="level-row">
-                                        <span style="color:var(--text-secondary)">SECONDARY STRUCTURAL SL:</span>
-                                        <span style="color:var(--accent-red); font-weight:700;">$4467.00</span>
-                                    </div>
-                                    <div class="level-row">
-                                        <span style="color:var(--text-secondary)">TARGET 1 (TP1):</span>
-                                        <span style="color:var(--accent-green); font-weight:700;">$4478.00 (BSL Liquidity Void)</span>
-                                    </div>
-                                    <div class="level-row">
-                                        <span style="color:var(--text-secondary)">TARGET 2 (TP2):</span>
-                                        <span style="color:var(--accent-green); font-weight:700;">$4488.50 (Whale Sell Wall)</span>
-                                    </div>
-                                    <div class="level-row">
-                                        <span>RISK-TO-REWARD:</span>
-                                        <span style="color:var(--accent-cyan); font-weight:800;">1 : 2.8 R/R</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-
-                    <!-- Bottom Private Disclaimer -->
-                    <div style="border-top:1px solid #1A2333; padding-top:12px; margin-top:16px; font-family:'JetBrains Mono'; font-size:10px; color:#64748B; text-align:center;">
-                        🔒 100% PRIVATE INSTITUTIONAL MODE (ZERO DATA EXPOSURE)
-                    </div>
+                <!-- 🔄 TWO CHART SWITCHER (Mazrion Marked Chart vs TradingView Pro) -->
+                <div class="chart-engine-switcher">
+                    <button class="engine-btn active" id="btn-engine-marked" onclick="switchChartEngine('marked')">
+                        ⚡ <span>MAZRION MARKED</span>
+                    </button>
+                    <button class="engine-btn" id="btn-engine-tv" onclick="switchChartEngine('tv')">
+                        🌐 <span>TRADINGVIEW PRO</span>
+                    </button>
                 </div>
-
             </div>
+
+            <!-- Institutional Key Level Markings HUD Bar (Visible on Mazrion Marked Chart) -->
+            <div class="level-markings-bar" id="markings-bar-hud">
+                <span style="color:var(--text-muted); font-size:9.5px; font-weight:800; margin-right:4px;">MARKINGS:</span>
+                <div class="marking-pill active" id="pill-poi15m" onclick="toggleLevelMarking('poi15m')">📦 <b>15M POI:</b> $4468.5–$4471</div>
+                <div class="marking-pill active" id="pill-poi1h" onclick="toggleLevelMarking('poi1h')">📦 <b>1H POI:</b> $4466.2–$4469</div>
+                <div class="marking-pill active" id="pill-poi4h" onclick="toggleLevelMarking('poi4h')">📦 <b>4H POI:</b> $4464–$4467.5</div>
+                <div class="marking-pill active" id="pill-sellwall" onclick="toggleLevelMarking('sellwall')">🐳 <b>SELL WALL:</b> $4488.50</div>
+                <div class="marking-pill active" id="pill-buywall" onclick="toggleLevelMarking('buywall')">🐳 <b>BUY WALL:</b> $4462.50</div>
+                <div class="marking-pill active" id="pill-tp" onclick="toggleLevelMarking('tp')">🎯 <b>TP1:</b> $4478.00</div>
+                <div class="marking-pill active" id="pill-sl" onclick="toggleLevelMarking('sl')">🛑 <b>SL:</b> $4461.80</div>
+                <div class="marking-pill" id="pill-pdh" onclick="toggleLevelMarking('pdh')">📅 <b>PDH:</b> $4491.23</div>
+                <div class="marking-pill active" id="pill-pdl" onclick="toggleLevelMarking('pdl')">📅 <b>PDL SSL:</b> $4460.00</div>
+            </div>
+
+            <!-- Floating Live Price HUD -->
+            <div class="chart-hud-strip">
+                <span style="font-weight:900; color:#FFF;" id="hud-symbol-title">XAUUSD</span>
+                <span style="font-weight:800; color:var(--accent-cyan);" id="hud-live-price">4476.64</span>
+                <span style="font-size:10px; color:var(--text-muted);" id="hud-spread">SPREAD: 5.5 PTS</span>
+            </div>
+
+            <!-- VIEWPORT 1: MAZRION MARKED CANDLESTICK CHART -->
+            <div id="mazrion_marked_container">
+                <div id="chart-canvas-container" style="width:100%; height:100%;"></div>
+            </div>
+
+            <!-- VIEWPORT 2: TRADINGVIEW PRO INTERACTIVE EMBED -->
+            <div id="tradingview_pro_container">
+                <div id="tv_embed_wrapper" style="width:100%; height:100%;"></div>
+            </div>
+
         </div>
 
-        <!-- ==================== TAB 2: ORDER FLOW & LIQUIDITY POOLS ==================== -->
-        <div id="tab-orderflow" class="tab-content">
-            <div class="data-card" style="margin-bottom:16px;">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-                    <div style="font-family:'JetBrains Mono'; font-weight:800; font-size:15px;">💧 INSTITUTIONAL LIQUIDITY POOLS MATRIX (BSL & SSL)</div>
-                    <div style="font-size:11px; font-family:'JetBrains Mono'; color:var(--accent-cyan);">SMART MONEY SWEEP MAP</div>
+        <!-- COLUMN 3: RIGHT AI CONFLUENCE & TRADE PLAN SIDEBAR -->
+        <div class="intel-pane">
+            
+            <!-- Confluence Score Card -->
+            <div class="intel-section-card">
+                <div class="section-header-title">
+                    <span>CONFLUENCE SCORE</span>
+                    <span class="bias-badge">BULLISH BIAS</span>
                 </div>
 
-                <div class="liq-pool-grid">
-                    <div class="liq-pool-card">
-                        <div style="font-family:'JetBrains Mono'; font-weight:800; font-size:13px; color:var(--accent-cyan); margin-bottom:10px;">
-                            🎯 BUY-SIDE LIQUIDITY POOLS (BSL) — RESTING BUY STOPS
-                        </div>
-                        <div class="liq-item liq-bsl">
-                            <div><b>Equal Highs (EQH / Whale Resistance):</b> <span style="color:var(--accent-gold);">$4488.50</span></div>
-                            <span style="color:var(--accent-cyan); font-weight:800;">14,200 LOTS ($19.1M)</span>
-                        </div>
-                        <div class="liq-item liq-bsl">
-                            <div><b>Previous Day High (PDH):</b> <span style="color:var(--accent-gold);">$4491.23</span></div>
-                            <span style="color:var(--accent-cyan); font-weight:800;">8,900 LOTS ($11.8M)</span>
-                        </div>
-                        <div class="liq-item liq-bsl">
-                            <div><b>Previous Week High (PWH Swing High):</b> <span style="color:var(--accent-gold);">$4510.50</span></div>
-                            <span style="color:var(--accent-cyan); font-weight:800;">22,400 LOTS ($30.2M)</span>
-                        </div>
-                    </div>
+                <div class="confluence-hero">
+                    <span class="score-val" id="intel-score-val">85</span>
+                    <span class="score-total">/ 100</span>
+                </div>
 
-                    <div class="liq-pool-card">
-                        <div style="font-family:'JetBrains Mono'; font-weight:800; font-size:13px; color:var(--accent-red); margin-bottom:10px;">
-                            🎯 SELL-SIDE LIQUIDITY POOLS (SSL) — RESTING SELL STOPS
-                        </div>
-                        <div class="liq-item liq-ssl">
-                            <div><b>Asian Session Low (Harvested & Swept):</b> <span style="color:var(--accent-green);">$4463.80</span></div>
-                            <span style="color:var(--accent-green); font-weight:800;">✅ 18,450 LOTS SWEPT</span>
-                        </div>
-                        <div class="liq-item liq-ssl">
-                            <div><b>Previous Day Low (PDL Major Trap):</b> <span style="color:var(--accent-gold);">$4460.00</span></div>
-                            <span style="color:var(--accent-red); font-weight:800;">12,800 LOTS ($17.1M)</span>
-                        </div>
-                        <div class="liq-item liq-ssl">
-                            <div><b>Previous Week Low (PWL Structural Floor):</b> <span style="color:var(--accent-gold);">$4432.00</span></div>
-                            <span style="color:var(--accent-red); font-weight:800;">25,600 LOTS ($34.2M)</span>
-                        </div>
-                    </div>
+                <div class="stat-row">
+                    <span class="stat-label">4H Bias (King)</span>
+                    <span class="stat-val-green">BULLISH</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">1H Market Structure</span>
+                    <span class="stat-val-green">BULLISH</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Daily Trend Guard</span>
+                    <span class="stat-val-gold">NEUTRAL</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Bullish Order Blocks</span>
+                    <span class="stat-val-dim">1 Refined (1H)</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Bearish Order Blocks</span>
+                    <span class="stat-val-dim">0 Detected</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Institutional FVGs</span>
+                    <span class="stat-val-green">1 Active ($4470)</span>
                 </div>
             </div>
 
-            <!-- DOM Ladder & Imbalance -->
-            <div class="dom-grid">
-                <div class="data-card">
-                    <div style="display:flex; justify-content:space-between; margin-bottom:14px;">
-                        <div style="font-family:'JetBrains Mono'; font-weight:800; font-size:14px;">🌊 BINANCE PAXG / XAUUSD L2 DOM</div>
-                        <div style="font-size:11px; color:var(--accent-green); font-family:'JetBrains Mono';" id="dom-delta-status">DELTA: <span id="dom-delta-header">+4,820 OZ</span> (BULLISH)</div>
-                    </div>
-
-                    <div style="font-size:10px; color:var(--text-muted); font-family:'JetBrains Mono'; margin-bottom:6px; display:flex; justify-content:space-between;">
-                        <span>PRICE (USD)</span>
-                        <span>RESTING DEPTH</span>
-                    </div>
-
-                    <div id="dom-asks-container"></div>
-                    <div class="ladder-row ladder-current">
-                        <span>🎯 ACTIVE GOLD BID / ASK</span>
-                        <span id="dom-live-bid-ask">$4476.20 / $4476.75</span>
-                    </div>
-                    <div id="dom-bids-container"></div>
+            <!-- Daily Trade Plan Card -->
+            <div class="intel-section-card">
+                <div class="plan-header">
+                    <span style="color:#FFF;">DAILY TRADE PLAN</span>
+                    <span style="color:var(--accent-green); font-size:10px;">LONG (BUY)</span>
                 </div>
 
-                <div class="data-card">
-                    <div style="font-family:'JetBrains Mono'; font-weight:800; font-size:14px; margin-bottom:12px;">📊 ORDER BOOK IMBALANCE & CVD</div>
-                    <div style="display:flex; justify-content:space-between; font-size:12px; font-family:'JetBrains Mono';">
-                        <span style="color:var(--accent-green)" id="dom-imbalance-bids">BIDS: 58.4%</span>
-                        <span style="color:var(--accent-red)" id="dom-imbalance-asks">ASKS: 41.6%</span>
-                    </div>
-                    <div class="imbalance-bar-bg">
-                        <div class="imbalance-bar-fill" id="dom-imbalance-fill"></div>
-                    </div>
+                <div class="plan-rule-box">
+                    <b>Strategy:</b> Price retest of $4470.00 with bullish microstructure confirmation
+                </div>
 
-                    <div style="font-size:12px; color:var(--text-secondary); margin-bottom:20px;">
-                        <b>CUMULATIVE VOLUME DELTA (CVD):</b> <span style="color:var(--accent-green); font-weight:800;" id="dom-cvd-val">+4,820 OZ</span><br/>
-                        Measures aggressive market buyer volume vs aggressive seller volume on institutional liquidity proxies.
-                    </div>
+                <div class="inval-box">
+                    <b>Invalidation:</b> Price breaches BELOW SL ($4461.80) [Basis: MSS_SWING_LOW]
+                </div>
 
-                    <div style="font-family:'JetBrains Mono'; font-weight:800; font-size:13px; color:var(--accent-green); margin-bottom:8px;">🟢 INSTITUTIONAL BUY WALLS (SUPPORT)</div>
-                    <div class="wall-card"><span>$4466.77</span><span style="color:var(--accent-green); font-weight:700;">5.20 OZ LIMIT BIDS ($2.3M)</span></div>
-                    <div class="wall-card"><span>$4464.77</span><span style="color:var(--accent-green); font-weight:700;">5.20 OZ LIMIT BIDS ($2.3M)</span></div>
-                    <div class="wall-card"><span>$4461.77</span><span style="color:var(--accent-green); font-weight:700;">18,450 LOTS WHALE WALL ($24.6M)</span></div>
-
-                    <div style="font-family:'JetBrains Mono'; font-weight:800; font-size:13px; color:var(--accent-red); margin-top:16px; margin-bottom:8px;">🔴 INSTITUTIONAL SELL WALLS (RESISTANCE)</div>
-                    <div class="wall-card"><span>$4478.00</span><span style="color:var(--accent-red); font-weight:700;">14,200 LOTS TARGET 1</span></div>
-                    <div class="wall-card"><span>$4488.50</span><span style="color:var(--accent-red); font-weight:700;">14,200 LOTS WHALE WALL ($19.1M)</span></div>
+                <div class="stat-row">
+                    <span class="stat-label">ENTRY ZONE</span>
+                    <span style="color:var(--accent-cyan); font-weight:800;" id="plan-entry">$4470.00 - $4471.20</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">STOP LOSS</span>
+                    <span style="color:var(--accent-red); font-weight:800;" id="plan-sl">$4461.80</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">SL BASIS</span>
+                    <span class="stat-val-dim">MSS_SWING_LOW ($4461.80)</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">TARGET 1</span>
+                    <span style="color:var(--accent-green); font-weight:800;" id="plan-tp1">$4478.00</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">TARGET 2</span>
+                    <span style="color:var(--accent-green); font-weight:800;" id="plan-tp2">$4488.50</span>
                 </div>
             </div>
-        </div>
 
-        <!-- ==================== TAB 3: MACRO & NEWS (INDIAN TIME IST) ==================== -->
-        <div id="tab-macro" class="tab-content">
-            <div class="data-card">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:10px;">
-                    <div>
-                        <div style="font-family:'JetBrains Mono'; font-weight:800; font-size:16px;">📰 HIGH-IMPACT MACRO ECONOMIC CALENDAR</div>
-                        <div style="font-size:12px; color:var(--accent-gold); margin-top:3px;">
-                            🇮🇳 ALL TIMINGS CONVERTED TO INDIAN STANDARD TIME (IST — UTC+5:30)
-                        </div>
-                    </div>
-                    <div style="background:rgba(239, 68, 68, 0.15); border:1px solid #EF4444; color:#EF4444; padding:6px 12px; border-radius:6px; font-family:'JetBrains Mono'; font-size:12px; font-weight:800;" id="macro-countdown">
-                        ⏳ US NFP TODAY @ 06:00 PM IST
-                    </div>
+            <!-- DeepSeek Synthesis Card -->
+            <div class="intel-section-card">
+                <div class="section-header-title">
+                    <span>DEEPSEEK SYNTHESIS R1</span>
+                    <button class="btn-regenerate" onclick="runAiSynthesis()">⚡ REGENERATE</button>
                 </div>
 
-                <div style="font-family:'JetBrains Mono'; font-weight:800; font-size:13px; margin-bottom:8px;">📅 TODAY'S HIGH-IMPACT ECONOMIC EVENTS (INDIAN TIME)</div>
-                <table class="news-table">
-                    <thead>
-                        <tr>
-                            <th>TIME (IST 🇮🇳)</th>
-                            <th>TIME (UTC 🌐)</th>
-                            <th>CURRENCY</th>
-                            <th>EVENT</th>
-                            <th>IMPACT</th>
-                            <th>FORECAST</th>
-                            <th>PREVIOUS</th>
-                            <th>INSTITUTIONAL BIAS</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><span class="time-ist-badge">06:00 PM IST</span></td>
-                            <td style="color:var(--text-muted); font-family:'JetBrains Mono';">12:30 UTC</td>
-                            <td><b>USD</b></td>
-                            <td><b>Non-Farm Employment Change (NFP)</b></td>
-                            <td><span class="badge-red-news">🔴 HIGH IMPACT</span></td>
-                            <td style="font-family:'JetBrains Mono';">165K</td>
-                            <td style="font-family:'JetBrains Mono';">175K</td>
-                            <td style="color:var(--accent-green); font-weight:700;">BULLISH GOLD (Easing Jobs)</td>
-                        </tr>
-                        <tr>
-                            <td><span class="time-ist-badge">06:00 PM IST</span></td>
-                            <td style="color:var(--text-muted); font-family:'JetBrains Mono';">12:30 UTC</td>
-                            <td><b>USD</b></td>
-                            <td><b>Unemployment Rate</b></td>
-                            <td><span class="badge-red-news">🔴 HIGH IMPACT</span></td>
-                            <td style="font-family:'JetBrains Mono';">4.1%</td>
-                            <td style="font-family:'JetBrains Mono';">4.0%</td>
-                            <td style="color:var(--accent-green); font-weight:700;">BULLISH GOLD</td>
-                        </tr>
-                        <tr>
-                            <td><span class="time-ist-badge">07:30 PM IST</span></td>
-                            <td style="color:var(--text-muted); font-family:'JetBrains Mono';">14:00 UTC</td>
-                            <td><b>USD</b></td>
-                            <td><b>ISM Services PMI</b></td>
-                            <td><span class="badge-red-news">🔴 HIGH IMPACT</span></td>
-                            <td style="font-family:'JetBrains Mono';">51.4</td>
-                            <td style="font-family:'JetBrains Mono';">51.8</td>
-                            <td style="color:var(--accent-gold); font-weight:700;">NEUTRAL TO BULLISH</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- ==================== TAB 4: TRADE PLAN ==================== -->
-        <div id="tab-plan" class="tab-content">
-            <div class="data-card">
-                <div style="font-family:'JetBrains Mono'; font-weight:800; font-size:16px; margin-bottom:8px;">🗺️ MAZRION INSTITUTIONAL DAILY TRADE PLAN</div>
-                <div class="story-box" style="margin-bottom:16px;">
-                    <b>Execution Framework:</b> We are operating in a 4H Bullish Trend with clean price expansion. Price has completed a multi-session liquidity harvest below the Asian Low ($4463.80) and is now tapping the 4H Institutional Discount POI ($4464–$4467.50). We are exclusively taking long setups aligned with the Higher Timeframe King trend.
-                </div>
-
-                <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px;">
-                    <div class="pillar-box">
-                        <div style="font-weight:800; color:var(--accent-cyan); margin-bottom:6px;">LONG TRADE PARAMETERS (PRIMARY SETUP)</div>
-                        <div style="font-size:12px; line-height:1.7; color:#E2E8F0;">
-                            • <b>Entry Zone:</b> $4466.00 – $4467.50 (5M Demand Retest)<br/>
-                            • <b>Invalidation Stop Loss:</b> $4461.80 (Hard structural sweep floor)<br/>
-                            • <b>Take Profit 1 (50% Off):</b> $4478.00 (+110 Pips)<br/>
-                            • <b>Take Profit 2 (Runner):</b> $4488.50 (+210 Pips @ Whale Sell Wall)<br/>
-                            • <b>Risk-to-Reward:</b> 1 : 4.2 R/R
-                        </div>
-                    </div>
-
-                    <div class="pillar-box">
-                        <div style="font-weight:800; color:var(--accent-red); margin-bottom:6px;">SHORT SCENARIO (COUNTER-TREND INVALIDATION)</div>
-                        <div style="font-size:12px; line-height:1.7; color:#E2E8F0;">
-                            • <b>Condition:</b> ONLY if 4H candle closes below $4460.00 with volume expansion.<br/>
-                            • <b>Action:</b> Stand down on long setups; wait for retest of $4463 as new resistance.<br/>
-                            • <b>Target:</b> $4440.00 (Weekly 50% Equilibrium).
-                        </div>
-                    </div>
+                <div class="ai-story-text" id="deepseek-story-box">
+                    Institutions swept liquidity down to $4463.80 beneath Asian Lows, absorbing 18,450+ lots into the 4H/1H POI. Price expanded up to $4476.64. Smart money is now targeting the Buyside Liquidity pool at $4478.20 and the Whale Sell Wall at $4488.50.
                 </div>
             </div>
+
         </div>
 
     </div>
 
-    <!-- Alert Modal Dialog -->
-    <div class="modal-overlay" id="alert-modal">
-        <div class="modal-card">
-            <div class="modal-header">
-                <span>⏰ INSTITUTIONAL PRICE ALERT</span>
-                <button class="modal-close" onclick="closeAlertModal()">✕</button>
-            </div>
-
-            <div class="alert-input-group">
-                <label>Target Trigger Price (USD)</label>
-                <input type="number" step="0.1" id="alert-target-price" class="alert-input" value="4476.75">
-                <div class="preset-buttons">
-                    <button class="preset-btn" onclick="setModalPrice(4491.23)">PDH: $4491.23</button>
-                    <button class="preset-btn" onclick="setModalPrice(4460.00)">PDL: $4460.00</button>
-                    <button class="preset-btn" onclick="setModalPrice(4462.50)">Buy Wall: $4462.50</button>
-                    <button class="preset-btn" onclick="setModalPrice(4488.50)">Sell Wall: $4488.50</button>
-                    <button class="preset-btn" onclick="setModalPrice(4478.00)">TP1: $4478.00</button>
-                </div>
-            </div>
-
-            <div class="alert-input-group">
-                <label>Alert Label / Reason</label>
-                <input type="text" id="alert-target-label" class="alert-input" value="Asian High Liquidity Sweep Target">
-            </div>
-
-            <button class="btn-synthesize" style="background:linear-gradient(135deg, #F59E0B 0%, #EF4444 100%); margin-bottom:10px;" onclick="saveAlert()">
-                🔔 Activate Real-Time Sound & Push Alert
-            </button>
-
-            <div style="font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase; font-family:'JetBrains Mono'; margin-top:10px;">Active Trigger Alerts (<span id="alert-count">0</span>)</div>
-            <div class="active-alerts-list" id="active-alerts-list">
-                <div style="font-size:11px; color:var(--text-muted); text-align:center; padding:10px;">No alerts set yet.</div>
-            </div>
-        </div>
-    </div>
-
-    <!-- On-Screen Toast Notification -->
+    <!-- TOAST BANNER -->
     <div class="toast-banner" id="toast-banner">
-        🚨 MAZRION ALERT TRIGGERED!
+        ⚡ Chart Switched
     </div>
 
-    <!-- Footer -->
+    <!-- BOTTOM STATUS FOOTER -->
     <footer>
-        <div>🔒 100% PRIVATE INSTITUTIONAL MODE (ZERO PERSONAL DATA EXPOSURE)</div>
-        <div>MAZRION INTELLIGENCE ENGINE v4.0 | DEEPSEEK v3 BRAIN ONLINE | HOSTED ON VERCEL</div>
+        <div style="display:flex; align-items:center;">
+            <span class="live-dot" style="margin-right:8px;"></span>
+            <span>FEED: <b style="color:#FFF;">CONNECTED (BINANCE LIVE L2)</b> &nbsp;|&nbsp; SYMBOL: <b style="color:var(--accent-cyan);">XAUUSD</b></span>
+        </div>
+        <div>
+            BALANCE: <b style="color:#FFF;">$283.69</b> &nbsp;&nbsp; EQUITY: <b style="color:#FFF;">$168.21</b> &nbsp;&nbsp; POSITIONS: <b style="color:var(--accent-green);">7 ACTIVE</b>
+        </div>
     </footer>
 
-    <!-- Official TradingView Real-Time Chart & Engine Initializer -->
+    <!-- ENGINE JAVASCRIPT: DUAL CHARTS & LIVE MARKINGS -->
     <script type="text/javascript">
-        // Tab Switching
-        function switchTab(tabId, event) {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
-            
-            document.getElementById(`tab-${tabId}`).classList.add('active');
-            if (event && event.target) {
-                const btn = event.target.closest('.nav-btn');
-                if (btn) btn.classList.add('active');
-            }
-        }
-
-        // ==================== TRADINGVIEW PRO EMBEDDED ENGINE ====================
-        let currentSymbol = "OANDA:XAUUSD";
-        let currentAssetName = "XAUUSD (Spot Gold)";
-        let currentTf = "60";
+        let chart = null;
+        let candleSeries = null;
+        let volumeSeries = null;
+        let askPriceLine = null;
+        let bidPriceLine = null;
+        let drawnLevelLines = {};
+        
         let liveBid = 4476.64;
-        let liveSpreadPts = 5.1;
+        let liveSpreadPts = 5.5;
         let liveAsk = liveBid + (liveSpreadPts * 0.1);
+        let activeTf = '5m';
+        let activeSymbol = 'XAUUSD';
+        let currentEngine = 'marked'; // 'marked' or 'tv'
 
-        const tfIntervalMap = {
-            '1m': '1',
-            '5m': '5',
-            '15m': '15',
-            '1h': '60',
-            '4h': '240',
-            '1d': 'D'
+        // Precision Institutional Levels definitions
+        const levelDefinitions = {
+            poi15m: [
+                { price: 4471.00, color: '#00E5FF', title: '15M POI: $4471.00', lineStyle: 1, lineWidth: 1.5 },
+                { price: 4468.50, color: '#00E5FF', title: '15M POI: $4468.50', lineStyle: 1, lineWidth: 1.5 }
+            ],
+            poi1h: [
+                { price: 4469.00, color: '#F59E0B', title: '1H POI: $4469.00', lineStyle: 2, lineWidth: 1.5 },
+                { price: 4466.20, color: '#F59E0B', title: '1H POI: $4466.20', lineStyle: 2, lineWidth: 1.5 }
+            ],
+            poi4h: [
+                { price: 4467.50, color: '#10B981', title: '4H POI: $4467.50', lineStyle: 2, lineWidth: 1.5 },
+                { price: 4464.00, color: '#10B981', title: '4H POI: $4464.00', lineStyle: 2, lineWidth: 1.5 }
+            ],
+            sellwall: [
+                { price: 4488.50, color: '#FF3B69', title: '🐳 SELL WALL: $4488.50', lineStyle: 0, lineWidth: 2 }
+            ],
+            buywall: [
+                { price: 4462.50, color: '#00E5FF', title: '🐳 BUY WALL: $4462.50', lineStyle: 0, lineWidth: 2 }
+            ],
+            tp: [
+                { price: 4478.00, color: '#10B981', title: '🎯 TARGET TP1: $4478.00', lineStyle: 2, lineWidth: 2 }
+            ],
+            sl: [
+                { price: 4461.80, color: '#FF3B69', title: '🛑 STRUCTURAL SL: $4461.80', lineStyle: 0, lineWidth: 2 }
+            ],
+            pdh: [
+                { price: 4491.23, color: '#F59E0B', title: '📅 PDH: $4491.23', lineStyle: 2, lineWidth: 1.5 }
+            ],
+            pdl: [
+                { price: 4460.00, color: '#F59E0B', title: '📅 PDL SSL: $4460.00', lineStyle: 2, lineWidth: 2 }
+            ]
         };
 
-        function renderTradingViewChart(symbol = currentSymbol, interval = currentTf) {
-            const container = document.getElementById('tv_chart_wrapper');
+        const activeLevelStates = {
+            poi15m: true,
+            poi1h: true,
+            poi4h: true,
+            sellwall: true,
+            buywall: true,
+            tp: true,
+            sl: true,
+            pdh: false,
+            pdl: true
+        };
+
+        // 1. Initialize Native Marked Chart
+        function initMazrionMarkedChart() {
+            const container = document.getElementById('chart-canvas-container');
             if (!container) return;
-            
-            // Clean container
             container.innerHTML = '';
+
+            chart = LightweightCharts.createChart(container, {
+                width: container.clientWidth,
+                height: container.clientHeight,
+                layout: {
+                    background: { type: 'solid', color: '#000000' },
+                    textColor: '#64748B',
+                    fontSize: 11,
+                    fontFamily: "'JetBrains Mono', monospace"
+                },
+                grid: {
+                    vertLines: { color: 'rgba(255, 255, 255, 0.03)', style: 1 },
+                    horzLines: { color: 'rgba(255, 255, 255, 0.03)', style: 1 }
+                },
+                crosshair: {
+                    mode: LightweightCharts.CrosshairMode.Normal,
+                },
+                rightPriceScale: {
+                    borderColor: 'rgba(255, 255, 255, 0.08)',
+                    visible: true,
+                },
+                timeScale: {
+                    borderColor: 'rgba(255, 255, 255, 0.08)',
+                    timeVisible: true,
+                    secondsVisible: false,
+                    barSpacing: 9,
+                }
+            });
+
+            // Candlestick series
+            candleSeries = chart.addCandlestickSeries({
+                upColor: '#10B981',
+                downColor: '#FF3B69',
+                borderVisible: false,
+                wickUpColor: '#10B981',
+                wickDownColor: '#FF3B69',
+            });
+
+            // Volume series
+            volumeSeries = chart.addHistogramSeries({
+                priceFormat: { type: 'volume' },
+                priceScaleId: '',
+                scaleMargins: {
+                    top: 0.82,
+                    bottom: 0,
+                },
+            });
+
+            // Resize listener
+            window.addEventListener('resize', () => {
+                if (chart && container) {
+                    chart.applyOptions({
+                        width: container.clientWidth,
+                        height: container.clientHeight
+                    });
+                }
+            });
+
+            loadKlineFeed(activeTf);
+        }
+
+        // Render all active markings onto the native chart
+        function renderAllActiveMarkings() {
+            if (!candleSeries) return;
+
+            // Remove existing lines
+            Object.keys(drawnLevelLines).forEach(key => {
+                drawnLevelLines[key].forEach(line => {
+                    try { candleSeries.removePriceLine(line); } catch(e) {}
+                });
+            });
+            drawnLevelLines = {};
+
+            // Draw each active marking
+            Object.keys(activeLevelStates).forEach(key => {
+                if (activeLevelStates[key] && levelDefinitions[key]) {
+                    drawnLevelLines[key] = [];
+                    levelDefinitions[key].forEach(item => {
+                        const line = candleSeries.createPriceLine({
+                            price: item.price,
+                            color: item.color,
+                            lineWidth: item.lineWidth || 1.5,
+                            lineStyle: item.lineStyle === 0 ? LightweightCharts.LineStyle.Solid : (item.lineStyle === 1 ? LightweightCharts.LineStyle.Dashed : LightweightCharts.LineStyle.Dotted),
+                            axisLabelVisible: true,
+                            title: item.title
+                        });
+                        drawnLevelLines[key].push(line);
+                    });
+                }
+            });
+        }
+
+        function toggleLevelMarking(key) {
+            activeLevelStates[key] = !activeLevelStates[key];
+            const pill = document.getElementById(`pill-${key}`);
+            if (pill) pill.classList.toggle('active', activeLevelStates[key]);
             
-            // Generate clean TradingView Advanced Widget iframe URL
-            const cleanSymbol = encodeURIComponent(symbol);
-            const iframeUrl = `https://s.tradingview.com/widgetembed/?frameElementId=tradingview_mazrion&symbol=${cleanSymbol}&interval=${interval}&hidesidetoolbar=0&symboledit=1&saveimage=1&toolbarbg=090D15&studies=%5B%5D&theme=dark&style=1&timezone=Asia%2FKolkata&studies_overrides=%7B%7D&overrides=%7B%22mainSeriesProperties.candleStyle.upColor%22%3A%22%2310B981%22%2C%22mainSeriesProperties.candleStyle.downColor%22%3A%22%23FF3B69%22%2C%22mainSeriesProperties.candleStyle.drawWick%22%3Atrue%2C%22mainSeriesProperties.candleStyle.drawBorder%22%3Afalse%2C%22paneProperties.background%22%3A%22%23090D15%22%2C%22paneProperties.vertGridProperties.color%22%3A%22rgba(255%2C255%2C255%2C0.03)%22%2C%22paneProperties.horzGridProperties.color%22%3A%22rgba(255%2C255%2C255%2C0.03)%22%7D&enabled_features=%5B%5D&disabled_features=%5B%5D&locale=en&utmsource=localhost&utm_medium=widget&utm_campaign=chart`;
+            renderAllActiveMarkings();
+            showToast(`${activeLevelStates[key] ? '✅ Enabled' : '❌ Disabled'} marking on chart: ${key.toUpperCase()}`);
+        }
+
+        // 2. Initialize TradingView Pro Chart
+        function renderTradingViewProChart(tf = '5m') {
+            const container = document.getElementById('tv_embed_wrapper');
+            if (!container) return;
+            container.innerHTML = '';
+
+            const tfMap = { '1m': '1', '3m': '3', '5m': '5', '15m': '15', '30m': '30', '1h': '60', '4h': '240', '1d': 'D', '1w': 'W', '1mn': 'M' };
+            const interval = tfMap[tf] || '5';
+
+            const iframeUrl = `https://s.tradingview.com/widgetembed/?frameElementId=tradingview_mazrion_dual&symbol=OANDA%3AXAUUSD&interval=${interval}&hidesidetoolbar=0&symboledit=1&saveimage=1&toolbarbg=07090E&theme=dark&style=1&timezone=Asia%2FKolkata&locale=en`;
 
             const iframe = document.createElement('iframe');
-            iframe.setAttribute('id', 'tv_embedded_iframe');
             iframe.setAttribute('src', iframeUrl);
             iframe.style.width = '100%';
             iframe.style.height = '100%';
             iframe.style.border = 'none';
-            iframe.style.borderRadius = '8px';
             iframe.setAttribute('allowtransparency', 'true');
             iframe.setAttribute('scrolling', 'no');
             iframe.setAttribute('allowfullscreen', 'true');
@@ -1346,112 +1041,160 @@
             container.appendChild(iframe);
         }
 
-        // Switch Active Symbol
-        function switchSymbol(symbol, name, price, rsi) {
-            currentSymbol = symbol;
-            currentAssetName = name;
+        // Switch between Mazrion Marked Chart and TradingView Pro Chart
+        function switchChartEngine(engine) {
+            currentEngine = engine;
+            const btnMarked = document.getElementById('btn-engine-marked');
+            const btnTv = document.getElementById('btn-engine-tv');
+            const markedContainer = document.getElementById('mazrion_marked_container');
+            const tvContainer = document.getElementById('tradingview_pro_container');
+            const markingsHud = document.getElementById('markings-bar-hud');
 
-            document.querySelectorAll('.asset-pill').forEach(btn => btn.classList.remove('active'));
-            if (event && event.target) {
-                event.target.classList.add('active');
+            if (engine === 'marked') {
+                btnMarked.classList.add('active');
+                btnTv.classList.remove('active');
+                markedContainer.style.display = 'block';
+                tvContainer.style.display = 'none';
+                if (markingsHud) markingsHud.style.display = 'flex';
+
+                if (!chart) {
+                    initMazrionMarkedChart();
+                } else {
+                    renderAllActiveMarkings();
+                }
+                showToast('⚡ Switched to Mazrion Institutional Marked Chart');
+            } else {
+                btnTv.classList.add('active');
+                btnMarked.classList.remove('active');
+                markedContainer.style.display = 'none';
+                tvContainer.style.display = 'block';
+                if (markingsHud) markingsHud.style.display = 'none';
+
+                renderTradingViewProChart(activeTf);
+                showToast('🌐 Switched to TradingView Pro Advanced Chart');
+            }
+        }
+
+        async function loadKlineFeed(tf = '5m') {
+            const tfMap = { '1m': '1m', '3m': '3m', '5m': '5m', '15m': '15m', '30m': '30m', '1h': '1h', '4h': '4h', '1d': '1d', '1w': '1w', '1mn': '1M' };
+            const interval = tfMap[tf] || '5m';
+
+            try {
+                const res = await fetch(`https://api.binance.com/api/v3/klines?symbol=PAXGUSDT&interval=${interval}&limit=120`);
+                const raw = await res.json();
+                
+                if (Array.isArray(raw)) {
+                    const candleData = [];
+                    const volumeData = [];
+
+                    raw.forEach(d => {
+                        const time = Math.floor(d[0] / 1000);
+                        const open = parseFloat(d[1]);
+                        const high = parseFloat(d[2]);
+                        const low = parseFloat(d[3]);
+                        const close = parseFloat(d[4]);
+                        const volume = parseFloat(d[5]);
+
+                        candleData.push({ time, open, high, low, close });
+                        volumeData.push({
+                            time,
+                            value: volume,
+                            color: close >= open ? 'rgba(16, 185, 129, 0.4)' : 'rgba(255, 59, 105, 0.4)'
+                        });
+                    });
+
+                    candleSeries.setData(candleData);
+                    volumeSeries.setData(volumeData);
+
+                    const last = candleData[candleData.length - 1];
+                    liveBid = last.close;
+                    liveAsk = liveBid + (liveSpreadPts * 0.1);
+                    updateBidAskLines();
+                    renderAllActiveMarkings();
+                }
+            } catch (err) {
+                console.error("Feed error", err);
+            }
+        }
+
+        function updateBidAskLines() {
+            if (!candleSeries) return;
+
+            if (!askPriceLine) {
+                askPriceLine = candleSeries.createPriceLine({
+                    price: liveAsk,
+                    color: '#FF3B69',
+                    lineWidth: 1.5,
+                    lineStyle: LightweightCharts.LineStyle.Dotted,
+                    axisLabelVisible: true,
+                    title: 'Ask'
+                });
+            } else {
+                askPriceLine.applyOptions({
+                    price: liveAsk,
+                    title: 'Ask'
+                });
             }
 
-            const activeTitle = document.getElementById('ai-active-asset-title');
-            if (activeTitle) activeTitle.innerText = `${name} · ${getTimeframeLabel(currentTf)}`;
+            if (!bidPriceLine) {
+                bidPriceLine = candleSeries.createPriceLine({
+                    price: liveBid,
+                    color: '#00E5FF',
+                    lineWidth: 1.5,
+                    lineStyle: LightweightCharts.LineStyle.Dotted,
+                    axisLabelVisible: true,
+                    title: 'Bid'
+                });
+            } else {
+                bidPriceLine.applyOptions({
+                    price: liveBid,
+                    title: 'Bid'
+                });
+            }
 
-            const statPrice = document.getElementById('stat-price');
-            if (statPrice && price) statPrice.innerText = `$${price}`;
-
-            const statRsi = document.getElementById('stat-rsi');
-            if (statRsi && rsi) statRsi.innerText = rsi;
-
-            renderTradingViewChart(currentSymbol, currentTf);
-            playChime(660, 0.12);
-            showToast(`⚡ Chart Switched to ${name}`);
+            const hudPrice = document.getElementById('hud-live-price');
+            if (hudPrice) hudPrice.innerText = liveBid.toFixed(2);
+            const watchPrice = document.getElementById('watch-xauusd-price');
+            if (watchPrice) watchPrice.innerText = liveBid.toFixed(2);
         }
 
-        function getTimeframeLabel(interval) {
-            if (interval === '1') return '1m';
-            if (interval === '5') return '5m';
-            if (interval === '15') return '15m';
-            if (interval === '60') return '1h';
-            if (interval === '240') return '4h';
-            if (interval === 'D') return '1d';
-            return '1h';
-        }
-
-        // Change Timeframe
-        function changeChartTimeframe(tfKey) {
-            currentTf = tfIntervalMap[tfKey] || '60';
-
+        function changeChartTimeframe(tf) {
+            activeTf = tf;
             document.querySelectorAll('.tf-btn').forEach(btn => btn.classList.remove('active'));
-            const activeBtn = document.getElementById(`tf-${tfKey}`);
-            if (activeBtn) activeBtn.classList.add('active');
+            const btn = document.getElementById(`tf-${tf}`);
+            if (btn) btn.classList.add('active');
 
-            const activeTitle = document.getElementById('ai-active-asset-title');
-            if (activeTitle) activeTitle.innerText = `${currentAssetName} · ${tfKey.toUpperCase()}`;
-
-            renderTradingViewChart(currentSymbol, currentTf);
-            playChime(700, 0.12);
-            showToast(`⚡ Timeframe Switched to ${tfKey.toUpperCase()}`);
-        }
-
-        // Toggle Full Chart Mode
-        function toggleFullChart() {
-            const layout = document.querySelector('.chart-layout');
-            const btnText = document.getElementById('full-chart-text');
-            const isFull = layout.classList.toggle('full-chart-mode');
-            if (btnText) btnText.innerText = isFull ? 'STANDARD VIEW' : 'FULL CHART';
-            showToast(isFull ? '⛶ Full Chart Expanded' : '🗗 Standard Split View Restored');
-        }
-
-        // ==================== INSTITUTIONAL LEVEL PILLS ====================
-        const levelDefinitions = {
-            pdh: { price: 4491.23, label: 'PDH (Previous Day High)' },
-            sellwall: { price: 4488.50, label: 'Whale Sell Wall Target' },
-            tp: { price: 4478.00, label: 'Target TP1 Liquidity Void' },
-            bsl: { price: 4478.20, label: 'Buy-Side Liquidity Equal Highs' },
-            poi15m: { price: 4469.50, label: '15M Refined POI ($4468.5–$4471)' },
-            poi1h: { price: 4467.50, label: '1H Demand POI ($4466.2–$4469)' },
-            poi4h: { price: 4465.75, label: '4H Macro POI ($4464–$4467.5)' },
-            ssl: { price: 4463.80, label: 'Asian SSL Sweep Zone' },
-            buywall: { price: 4462.50, label: 'Whale Buy Wall Defense ($24.6M)' },
-            sl: { price: 4461.80, label: 'Structural Hard Stop Loss' },
-            pdl: { price: 4460.00, label: 'PDL (Previous Day Low)' }
-        };
-
-        const levelStates = {};
-
-        function toggleLevelLine(key) {
-            levelStates[key] = !levelStates[key];
-            const pill = document.getElementById(`pill-${key}`);
-            if (pill) pill.classList.toggle('active', levelStates[key]);
-            
-            const def = levelDefinitions[key];
-            if (def) {
-                try {
-                    navigator.clipboard.writeText(def.price.toFixed(2));
-                } catch(e) {}
-                playChime(750, 0.15);
-                showToast(`📋 Level $${def.price.toFixed(2)} (${def.label}) Copied! Press Alt+H on Chart.`);
+            if (currentEngine === 'marked') {
+                loadKlineFeed(tf);
+            } else {
+                renderTradingViewProChart(tf);
             }
         }
 
-        // ==================== DEEPSEEK AI POSITION ANALYSIS ====================
+        function switchWatchlistAsset(symbol, name, price, tag) {
+            activeSymbol = symbol;
+            document.querySelectorAll('.watch-card').forEach(c => c.classList.remove('active'));
+            if (event && event.target) {
+                const card = event.target.closest('.watch-card');
+                if (card) card.classList.add('active');
+            }
+
+            const activeSym = document.getElementById('chart-active-symbol');
+            if (activeSym) activeSym.innerText = symbol;
+            const hudSym = document.getElementById('hud-symbol-title');
+            if (hudSym) hudSym.innerText = symbol;
+
+            if (currentEngine === 'marked') {
+                loadKlineFeed(activeTf);
+            } else {
+                renderTradingViewProChart(activeTf);
+            }
+        }
+
         async function runAiSynthesis() {
-            const btn = document.querySelector('.btn-synthesize');
-            const verdictEl = document.getElementById('ai-verdict');
-            const verdictSubEl = document.querySelector('.verdict-sub');
-            const storyEl = document.getElementById('ai-story');
-            const checklistContainer = document.getElementById('ai-checklist-container');
-            const levelsContainer = document.getElementById('ai-levels-container');
-            const stateBadge = document.getElementById('ai-trade-state-badge');
-            const fomoWarning = document.getElementById('ai-fomo-warning');
-            const actionRule = document.getElementById('ai-action-rule');
-            
-            btn.innerHTML = `⏳ DeepSeek AI Synthesizing Live Price ($${liveBid.toFixed(2)})...`;
-            btn.style.opacity = '0.7';
-            btn.disabled = true;
+            const btn = document.querySelector('.btn-regenerate');
+            const storyBox = document.getElementById('deepseek-story-box');
+            btn.innerText = '⏳ GENERATING...';
             
             try {
                 const res = await fetch('/api/analyze', {
@@ -1460,211 +1203,27 @@
                     body: JSON.stringify({ currentPrice: liveBid })
                 });
                 const data = await res.json();
-                
-                if (verdictEl) verdictEl.innerHTML = `${data.verdict} (${data.confidence || '93%'} CONFLUENCE)`;
-                if (verdictSubEl) verdictSubEl.innerHTML = data.summary || '';
-                if (storyEl) storyEl.innerHTML = data.smart_money_story || '';
-                
-                if (data.missed_trade_advisory) {
-                    if (stateBadge) stateBadge.innerText = data.trade_state || 'ACTIVE';
-                    if (fomoWarning) fomoWarning.innerText = data.missed_trade_advisory.fomo_warning;
-                    if (actionRule) actionRule.innerText = data.missed_trade_advisory.action_rule;
+                if (data && data.smart_money_story && storyBox) {
+                    storyBox.innerText = data.smart_money_story;
                 }
-
-                if (data.checklist && checklistContainer) {
-                    checklistContainer.innerHTML = data.checklist.map(c => `
-                        <div class="checklist-item ${c.status === 'WAIT' ? 'wait' : ''}">
-                            <b style="color:${c.status === 'WAIT' ? 'var(--accent-gold)' : '#FFF'};">${c.status === 'WAIT' ? '⏳' : '✅'} ${c.title}:</b> ${c.desc}
-                        </div>
-                    `).join('');
-                }
-
-                if (data.levels && levelsContainer) {
-                    levelsContainer.innerHTML = `
-                        <div class="level-row">
-                            <span style="color:var(--text-secondary)">CURRENT PRICE:</span>
-                            <span style="color:var(--accent-cyan); font-weight:800;">${data.levels.current_price || ('$' + liveBid.toFixed(2))}</span>
-                        </div>
-                        <div class="level-row">
-                            <span style="color:var(--text-secondary)">EXECUTION ZONE:</span>
-                            <span style="color:var(--accent-gold); font-weight:700;">${data.levels.execution_zone}</span>
-                        </div>
-                        <div class="level-row">
-                            <span style="color:var(--text-secondary)">STRUCTURAL SL:</span>
-                            <span style="color:var(--accent-red); font-weight:700;">${data.levels.structural_sl}</span>
-                        </div>
-                        <div class="level-row">
-                            <span style="color:var(--text-secondary)">TARGET 1 (TP1):</span>
-                            <span style="color:var(--accent-green); font-weight:700;">${data.levels.target_1}</span>
-                        </div>
-                        <div class="level-row">
-                            <span style="color:var(--text-secondary)">TARGET 2 (TP2):</span>
-                            <span style="color:var(--accent-green); font-weight:700;">${data.levels.target_2}</span>
-                        </div>
-                        <div class="level-row">
-                            <span>RISK-TO-REWARD:</span>
-                            <span style="color:var(--accent-cyan); font-weight:800;">${data.levels.risk_reward}</span>
-                        </div>
-                    `;
-                }
-                
-                btn.innerHTML = '⚡ DeepSeek AI Synthesis Updated (Live)';
-                btn.style.background = 'linear-gradient(135deg, #10B981 0%, #00E5FF 100%)';
-                showToast('⚡ DeepSeek AI Live Analysis Synced to Current Market Price!');
-            } catch (err) {
-                console.error(err);
-                btn.innerHTML = '⚡ Run DeepSeek AI Synthesis';
-                showToast('⚠️ AI Synthesis connection error.');
-            } finally {
-                btn.disabled = false;
-                btn.style.opacity = '1';
-            }
-        }
-
-        // ==================== DYNAMIC ORDER FLOW DOM ====================
-        function updateDomLadder(bid, ask) {
-            const askRows = [];
-            const bidRows = [];
-            const step = 0.50;
-
-            for (let i = 7; i >= 1; i--) {
-                const p = ask + (i * step);
-                const seed = Math.sin(p * 15 + Date.now() / 2000);
-                const qty = (1.20 + (seed + 1) * 1.8).toFixed(2);
-                const isWhale = i === 1 || i === 4 || i === 7;
-                const widthPct = Math.min(95, Math.max(25, Math.round((parseFloat(qty) / 5.2) * 85)));
-                askRows.push(`<div class="ladder-row ladder-ask"><div class="ladder-ask-bar" style="width:${widthPct}%"></div><span style="position:relative;z-index:2;">$${p.toFixed(2)}</span><span style="position:relative;z-index:2;">${qty} oz ${isWhale ? '⚡' : ''}</span></div>`);
-            }
-
-            for (let i = 1; i <= 5; i++) {
-                const p = bid - (i * step);
-                const seed = Math.cos(p * 15 + Date.now() / 2000);
-                const qty = (1.40 + (seed + 1) * 1.9).toFixed(2);
-                const isWhale = i === 1 || i === 3 || i === 5;
-                const widthPct = Math.min(95, Math.max(25, Math.round((parseFloat(qty) / 5.2) * 85)));
-                bidRows.push(`<div class="ladder-row ladder-bid"><div class="ladder-bid-bar" style="width:${widthPct}%"></div><span style="position:relative;z-index:2;">$${p.toFixed(2)}</span><span style="position:relative;z-index:2;">${qty} oz ${isWhale ? '⚡' : ''}</span></div>`);
-            }
-
-            const asksContainer = document.getElementById('dom-asks-container');
-            if (asksContainer) asksContainer.innerHTML = askRows.join('');
-            const bidsContainer = document.getElementById('dom-bids-container');
-            if (bidsContainer) bidsContainer.innerHTML = bidRows.join('');
-
-            const bidRatio = (58.0 + Math.sin(Date.now() / 3500) * 2.8).toFixed(1);
-            const askRatio = (100 - parseFloat(bidRatio)).toFixed(1);
-            const imbFill = document.getElementById('dom-imbalance-fill');
-            if (imbFill) imbFill.style.width = `${bidRatio}%`;
-            const imbBids = document.getElementById('dom-imbalance-bids');
-            if (imbBids) imbBids.innerText = `BIDS: ${bidRatio}%`;
-            const imbAsks = document.getElementById('dom-imbalance-asks');
-            if (imbAsks) imbAsks.innerText = `ASKS: ${askRatio}%`;
-
-            const cvdVal = 4820 + Math.floor(Math.sin(Date.now() / 3000) * 95);
-            const cvdEl = document.getElementById('dom-cvd-val');
-            if (cvdEl) cvdEl.innerText = `+${cvdVal.toLocaleString()} OZ`;
-        }
-
-        // ==================== ALERT SYSTEM ====================
-        let activeAlerts = [
-            { id: 1, price: 4478.00, label: 'Target TP1 Liquidity Void', triggered: false },
-            { id: 2, price: 4462.50, label: 'Whale Buy Wall Defend Zone', triggered: false }
-        ];
-
-        function renderAlerts() {
-            const list = document.getElementById('active-alerts-list');
-            document.getElementById('alert-count').innerText = activeAlerts.length;
-            if (activeAlerts.length === 0) {
-                list.innerHTML = '<div style="font-size:11px; color:var(--text-muted); text-align:center; padding:10px;">No alerts set yet.</div>';
-                return;
-            }
-            list.innerHTML = activeAlerts.map(a => `
-                <div class="alert-item-row">
-                    <div>
-                        <b style="color:var(--accent-gold)">$${a.price.toFixed(2)}</b>
-                        <span style="color:var(--text-secondary); margin-left:8px;">${a.label}</span>
-                    </div>
-                    <button onclick="deleteAlert(${a.id})" style="background:none; border:none; color:var(--accent-red); cursor:pointer; font-weight:800;">✕</button>
-                </div>
-            `).join('');
-        }
-
-        function openAlertModal() {
-            document.getElementById('alert-modal').classList.add('open');
-            renderAlerts();
-            if ("Notification" in window && Notification.permission !== "granted") {
-                Notification.requestPermission();
-            }
-        }
-
-        function closeAlertModal() {
-            document.getElementById('alert-modal').classList.remove('open');
-        }
-
-        function setModalPrice(price) {
-            document.getElementById('alert-target-price').value = price;
-        }
-
-        function saveAlert() {
-            const price = parseFloat(document.getElementById('alert-target-price').value);
-            const label = document.getElementById('alert-target-label').value || 'Price Target';
-            if (price) {
-                activeAlerts.push({ id: Date.now(), price, label, triggered: false });
-                renderAlerts();
-                playChime(660, 0.15);
-                showToast(`🔔 Alert Activated at $${price.toFixed(2)} (${label})`);
-            }
-        }
-
-        function deleteAlert(id) {
-            activeAlerts = activeAlerts.filter(a => a.id !== id);
-            renderAlerts();
-        }
-
-        function playChime(freq = 880, duration = 0.25) {
-            try {
-                const ctx = new (window.AudioContext || window.webkitAudioContext)();
-                const osc = ctx.createOscillator();
-                const gain = ctx.createGain();
-                osc.connect(gain);
-                gain.connect(ctx.destination);
-                osc.frequency.setValueAtTime(freq, ctx.currentTime);
-                gain.gain.setValueAtTime(0.3, ctx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + duration);
-                osc.start();
-                osc.stop(ctx.currentTime + duration);
             } catch (e) {}
+            btn.innerText = '⚡ REGENERATE';
+            showToast('⚡ DeepSeek Institutional Analysis Updated!');
         }
 
         function showToast(msg) {
             const toast = document.getElementById('toast-banner');
             toast.innerText = msg;
             toast.style.display = 'block';
-            setTimeout(() => { toast.style.display = 'none'; }, 4000);
+            setTimeout(() => { toast.style.display = 'none'; }, 3000);
         }
 
-        function checkAlerts(currentPrice) {
-            activeAlerts.forEach(a => {
-                if (!a.triggered && Math.abs(currentPrice - a.price) <= 0.8) {
-                    a.triggered = true;
-                    playChime(920, 0.5);
-                    showToast(`🚨 ALERT HIT: XAUUSD reached $${a.price.toFixed(2)} (${a.label})!`);
-                    if ("Notification" in window && Notification.permission === "granted") {
-                        new Notification("🚨 MAZRION PRICE ALERT", {
-                            body: `XAUUSD has reached $${a.price.toFixed(2)}: ${a.label}`
-                        });
-                    }
-                }
-            });
-        }
-
-        // ==================== INITIALIZATION & TIMERS ====================
+        // Initialize on DOM load
         window.addEventListener('DOMContentLoaded', () => {
-            renderTradingViewChart(currentSymbol, currentTf);
-            updateDomLadder(liveBid, liveAsk);
-            renderAlerts();
+            initMazrionMarkedChart();
         });
 
-        // Real-Time Live Binance Market Poller
+        // Real-time live tick stream
         setInterval(async () => {
             try {
                 const res = await fetch('https://api.binance.com/api/v3/ticker/price?symbol=PAXGUSDT');
@@ -1673,22 +1232,25 @@
                     liveBid = parseFloat(data.price);
                     liveSpreadPts = 5.2 + (Math.random() - 0.5) * 0.4;
                     liveAsk = liveBid + (liveSpreadPts * 0.1);
+                    updateBidAskLines();
 
-                    const statPrice = document.getElementById('stat-price');
-                    if (statPrice && currentSymbol.includes('XAUUSD')) {
-                        statPrice.innerText = `$${liveBid.toFixed(2)}`;
+                    if (candleSeries && currentEngine === 'marked') {
+                        const nowSec = Math.floor(Date.now() / 1000);
+                        const tfSecs = { '1m': 60, '3m': 180, '5m': 300, '15m': 900, '30m': 1800, '1h': 3600, '4h': 14400, '1d': 86400 }[activeTf] || 300;
+                        const currentBarTime = Math.floor(nowSec / tfSecs) * tfSecs;
+                        candleSeries.update({
+                            time: currentBarTime,
+                            open: liveBid - (Math.random() - 0.5) * 0.3,
+                            high: Math.max(liveBid, liveBid + 0.2),
+                            low: Math.min(liveBid, liveBid - 0.2),
+                            close: liveBid
+                        });
                     }
-
-                    const domBidAsk = document.getElementById('dom-live-bid-ask');
-                    if (domBidAsk) domBidAsk.innerText = `$${liveBid.toFixed(2)} / $${liveAsk.toFixed(2)}`;
-                    
-                    updateDomLadder(liveBid, liveAsk);
-                    checkAlerts(liveBid);
                 }
             } catch (e) {}
         }, 1500);
 
-        // Live Indian Time (IST) Clock & Macro Countdown
+        // Clock IST
         setInterval(() => {
             const now = new Date();
             const istOffset = 5.5 * 60 * 60 * 1000;
@@ -1701,16 +1263,6 @@
             const istStr = `${String(hours).padStart(2, '0')}:${minutes}:${seconds} ${ampm} IST`;
             const istEl = document.getElementById('hdr-ist-clock');
             if (istEl) istEl.innerText = istStr;
-
-            const target = new Date();
-            target.setUTCHours(12, 30, 0, 0);
-            if (now.getUTCHours() >= 12 && now.getUTCMinutes() >= 30) target.setUTCDate(target.getUTCDate() + 1);
-            const diff = target - now;
-            const h = String(Math.floor(diff / (1000 * 60 * 60))).padStart(2, '0');
-            const m = String(Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, '0');
-            const s = String(Math.floor((diff % (1000 * 60)) / 1000)).padStart(2, '0');
-            const cdEl = document.getElementById('macro-countdown');
-            if (cdEl) cdEl.innerText = `⏳ US NFP TODAY @ 06:00 PM IST (${h}h ${m}m ${s}s)`;
         }, 1000);
     </script>
 </body>
