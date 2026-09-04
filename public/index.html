@@ -371,6 +371,135 @@
             transform: translateY(-1px);
         }
 
+        /* Tier-1 Traffic Light Execution Shield */
+        .traffic-shield {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 14px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            font-family: 'JetBrains Mono', monospace;
+            border: 1px solid var(--accent-gold);
+            background: rgba(245, 158, 11, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .traffic-shield.green {
+            background: rgba(16, 185, 129, 0.12);
+            border-color: var(--accent-green);
+        }
+
+        .traffic-shield.yellow {
+            background: rgba(245, 158, 11, 0.12);
+            border-color: var(--accent-gold);
+        }
+
+        .traffic-shield.red {
+            background: rgba(255, 59, 105, 0.15);
+            border-color: var(--accent-red);
+        }
+
+        /* Tier-1 SMT & Derivatives Radar Strip */
+        .tier1-radar-strip {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 900px) {
+            .tier1-radar-strip {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .radar-box {
+            background: #090D15;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 8px 10px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            transition: border-color 0.2s;
+        }
+
+        .radar-box:hover {
+            border-color: var(--accent-cyan);
+        }
+
+        .radar-box-title {
+            font-size: 9.5px;
+            color: var(--text-muted);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 3px;
+        }
+
+        .radar-box-val {
+            font-size: 12px;
+            font-weight: 800;
+            color: #FFF;
+        }
+
+        .radar-box-sub {
+            font-size: 10px;
+            color: var(--text-secondary);
+            margin-top: 2px;
+        }
+
+        /* 1-Click MT5 Copy-Paste Order Ticket Card */
+        .mt5-ticket-card {
+            background: #080C14;
+            border: 1px solid rgba(0, 229, 255, 0.35);
+            border-radius: 8px;
+            padding: 14px;
+            margin-top: 14px;
+            font-family: 'JetBrains Mono', monospace;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .mt5-ticket-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 8px;
+            margin-bottom: 10px;
+        }
+
+        .btn-copy-ticket {
+            background: linear-gradient(135deg, #00E5FF 0%, #0077FF 100%);
+            border: none;
+            color: #000;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            font-weight: 900;
+            padding: 10px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s;
+            box-shadow: 0 4px 12px rgba(0, 229, 255, 0.25);
+            text-transform: uppercase;
+        }
+
+        .btn-copy-ticket:hover {
+            opacity: 0.92;
+            transform: translateY(-1px);
+        }
+
+        .btn-copy-ticket.copied {
+            background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+            color: #FFF;
+        }
+
         #chart-container {
             width: 100%;
             height: 540px;
@@ -929,6 +1058,20 @@
                 
                 <!-- Left: Chart & Level Lines Card -->
                 <div class="chart-card">
+                    <!-- TIER-1 INSTITUTIONAL TRAFFIC LIGHT EXECUTION SHIELD -->
+                    <div class="traffic-shield yellow" id="tier1-traffic-shield">
+                        <div style="display:flex; align-items:center; gap:10px;">
+                            <span class="live-dot" style="background:var(--accent-gold); box-shadow:0 0 10px rgba(245,158,11,0.5);" id="traffic-shield-dot"></span>
+                            <div>
+                                <div style="font-weight:900; font-size:12px; letter-spacing:0.5px; color:#FFF;" id="traffic-shield-badge">🟡 YELLOW LIGHT: PULLBACK WATCH ACTIVE</div>
+                                <div style="font-size:10.5px; color:var(--text-secondary); margin-top:2px;" id="traffic-shield-instruction">Price expanded +60 pts above $4466 base. Market orders LOCKED. Limit order pullback watch active @ $4470.00.</div>
+                            </div>
+                        </div>
+                        <div style="font-size:11px; font-weight:800; color:var(--accent-cyan); background:rgba(0,229,255,0.1); border:1px solid rgba(0,229,255,0.3); padding:4px 10px; border-radius:4px; text-align:right;">
+                            <span>INSTITUTIONAL GRADE: <b style="color:#10B981;">94%</b></span>
+                        </div>
+                    </div>
+
                     <div class="chart-header">
                         <div style="display:flex; align-items:center; gap:8px;">
                             <span style="font-family:'JetBrains Mono'; font-weight:800; font-size:15px; color:#FFF;" id="chart-symbol-title">XAUUSD</span>
@@ -984,6 +1127,30 @@
                         <div class="key-pill" id="pill-buywall" onclick="toggleLevelLine('buywall')">🐳 <b style="color:var(--accent-cyan)">BUY WALL:</b> <span id="lbl-buywall">$4462.50</span></div>
                         <div class="key-pill" id="pill-sl" onclick="toggleLevelLine('sl')">🛑 <b style="color:var(--accent-red)">SL:</b> <span id="lbl-sl">$4461.80</span></div>
                         <div class="key-pill" id="pill-pdl" onclick="toggleLevelLine('pdl')">📅 <b style="color:var(--accent-gold)">PDL:</b> <span id="lbl-pdl">$4460.00</span></div>
+                    </div>
+
+                    <!-- TIER-1 SMT DIVERGENCE & DERIVATIVES RADAR STRIP -->
+                    <div class="tier1-radar-strip" id="tier1-radar-strip">
+                        <div class="radar-box">
+                            <div class="radar-box-title">⚡ SMT DIVERGENCE RADAR</div>
+                            <div class="radar-box-val" style="color:var(--accent-green);" id="radar-smt-val">🟢 BULLISH SMT ALIGNED</div>
+                            <div class="radar-box-sub" id="radar-smt-sub">XAG swept lows | XAU held higher-low</div>
+                        </div>
+                        <div class="radar-box">
+                            <div class="radar-box-title">🎯 DEALER GAMMA MAGNET (GEX)</div>
+                            <div class="radar-box-val" style="color:var(--accent-cyan);" id="radar-gamma-val">$4488 / $4500 STRIKE</div>
+                            <div class="radar-box-sub" id="radar-gamma-sub">Net Gamma: +$185M (Sticky Pin)</div>
+                        </div>
+                        <div class="radar-box">
+                            <div class="radar-box-title">⚖️ WHOLESALE EQUILIBRIUM (50%)</div>
+                            <div class="radar-box-val" style="color:var(--accent-gold);" id="radar-eq-val">$4465.00 (50% MID)</div>
+                            <div class="radar-box-sub" id="radar-eq-sub">Discount Range (< $4465) = Safe Buy</div>
+                        </div>
+                        <div class="radar-box">
+                            <div class="radar-box-title">🏛️ US 10Y REAL YIELDS / DXY</div>
+                            <div class="radar-box-val" style="color:var(--accent-purple);" id="radar-macro-val">4.21% / 104.12</div>
+                            <div class="radar-box-sub" id="radar-macro-sub">Yield Easing ➔ Bullish Metals Flow</div>
+                        </div>
                     </div>
 
                     <!-- Dual Chart Canvas Container -->
@@ -1091,6 +1258,9 @@
                         <div style="font-size:12px; font-weight:800; text-transform:uppercase; margin-bottom:8px;">⏳ What To Wait For (Multi-Timeframe Checklist)</div>
                         <div id="ai-checklist-container">
                             <div class="checklist-item">
+                                <b style="color:#FFF;">✅ SMT Bullish Divergence Aligned:</b> Silver swept $37.85 while Gold held higher low
+                            </div>
+                            <div class="checklist-item">
                                 <b style="color:#FFF;">✅ 4H Macro Discount POI Tapped:</b> Price reached $4464.00 - $4467.50 equilibrium
                             </div>
                             <div class="checklist-item">
@@ -1098,9 +1268,6 @@
                             </div>
                             <div class="checklist-item">
                                 <b style="color:#FFF;">✅ 15M Bullish CHoCH Breakout:</b> Body close established above $4468.00
-                            </div>
-                            <div class="checklist-item">
-                                <b style="color:#FFF;">✅ Order Book Whale Buy Wall Active:</b> $24.6M resting bids defending $4462.50
                             </div>
                             <div class="checklist-item wait">
                                 <b style="color:var(--accent-gold);">⏳ Wait Condition:</b> Wait for 5M/15M pullback to $4470.00–$4471.20 (Do not FOMO chase)
@@ -1122,7 +1289,7 @@
                             </div>
                             <div class="level-row">
                                 <span style="color:var(--text-secondary)">STRUCTURAL SL:</span>
-                                <span style="color:var(--accent-red); font-weight:700;" id="ai-lvl-sl">$4467.00</span>
+                                <span style="color:var(--accent-red); font-weight:700;" id="ai-lvl-sl">$4466.80</span>
                             </div>
                             <div class="level-row">
                                 <span style="color:var(--text-secondary)">TARGET 1 (TP1):</span>
@@ -1138,6 +1305,35 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- 1-CLICK MT5 COPY-PASTE ORDER TICKET CARD (RETAIL SAFETY GUARD) -->
+                    <div class="mt5-ticket-card">
+                        <div class="mt5-ticket-header">
+                            <div style="display:flex; align-items:center; gap:6px;">
+                                <span style="font-size:13px;">📋</span>
+                                <span style="font-weight:900; color:var(--accent-cyan); font-size:12px;">1-CLICK MT5 ORDER TICKET</span>
+                            </div>
+                            <span style="background:rgba(16,185,129,0.15); border:1px solid var(--accent-green); color:var(--accent-green); font-size:9.5px; padding:2px 6px; border-radius:3px; font-weight:800;" id="mt5-risk-badge">STRICT 2% RISK CAP</span>
+                        </div>
+
+                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px; font-size:11px; margin-bottom:8px;">
+                            <div><span style="color:var(--text-muted)">SYMBOL:</span> <b style="color:#FFF;" id="mt5-sym">XAUUSD</b></div>
+                            <div><span style="color:var(--text-muted)">TYPE:</span> <b style="color:var(--accent-gold);" id="mt5-type">BUY LIMIT</b></div>
+                            <div><span style="color:var(--text-muted)">SAFE LOTS:</span> <b style="color:var(--accent-green);" id="mt5-lot">0.01 LOTS</b></div>
+                            <div><span style="color:var(--text-muted)">ENTRY:</span> <b style="color:var(--accent-cyan);" id="mt5-entry">$4470.00</b></div>
+                            <div><span style="color:var(--text-muted)">STOP LOSS:</span> <b style="color:var(--accent-red);" id="mt5-sl">$4466.80</b></div>
+                            <div><span style="color:var(--text-muted)">TARGET (TP1):</span> <b style="color:var(--accent-green);" id="mt5-tp1">$4478.00</b></div>
+                        </div>
+
+                        <div style="font-size:10px; color:var(--text-secondary); background:rgba(255,255,255,0.03); padding:6px; border-radius:4px; border-left:2px solid var(--accent-cyan);" id="mt5-risk-desc">
+                            💰 <b>Dollar Risk:</b> $3.20 (0.64% of $500 Capital). Stops placed safely behind session sweep.
+                        </div>
+
+                        <button class="btn-copy-ticket" id="btn-copy-ticket" onclick="copyMt5OrderTicket()">
+                            <span>📋</span> <span id="btn-copy-ticket-text">Copy MT5 Order Ticket</span>
+                        </button>
+                    </div>
+
                 </div>
 
             </div>
@@ -2096,6 +2292,71 @@
                             </div>
                         `;
                     }
+
+                    // Sync Tier-1 Traffic Light Execution Shield
+                    if (data.traffic_light) {
+                        const shield = document.getElementById('tier1-traffic-shield');
+                        const dot = document.getElementById('traffic-shield-dot');
+                        const badge = document.getElementById('traffic-shield-badge');
+                        const inst = document.getElementById('traffic-shield-instruction');
+                        const st = data.traffic_light.status.toLowerCase();
+                        
+                        if (shield) {
+                            shield.className = `traffic-shield ${st}`;
+                        }
+                        if (dot) {
+                            dot.style.background = st === 'green' ? '#10B981' : (st === 'red' ? '#FF3B69' : '#F59E0B');
+                            dot.style.boxShadow = st === 'green' ? '0 0 10px rgba(16,185,129,0.5)' : (st === 'red' ? '0 0 10px rgba(255,59,105,0.5)' : '0 0 10px rgba(245,158,11,0.5)');
+                        }
+                        if (badge) badge.innerText = data.traffic_light.badge;
+                        if (inst) inst.innerText = data.traffic_light.instruction;
+                    }
+
+                    // Sync Tier-1 SMT & Derivatives Radar Strip
+                    if (data.smt_radar) {
+                        const smtVal = document.getElementById('radar-smt-val');
+                        const smtSub = document.getElementById('radar-smt-sub');
+                        if (smtVal) smtVal.innerText = data.smt_radar.status;
+                        if (smtSub) smtSub.innerText = data.smt_radar.detail;
+                    }
+                    if (data.dealer_gamma) {
+                        const gVal = document.getElementById('radar-gamma-val');
+                        const gSub = document.getElementById('radar-gamma-sub');
+                        if (gVal) gVal.innerText = data.dealer_gamma.magnet_pin;
+                        if (gSub) gSub.innerText = `Net Gamma: ${data.dealer_gamma.net_gamma}`;
+                    }
+                    if (data.wholesale_grid) {
+                        const eqVal = document.getElementById('radar-eq-val');
+                        const eqSub = document.getElementById('radar-eq-sub');
+                        if (eqVal) eqVal.innerText = data.wholesale_grid.equilibrium;
+                        if (eqSub) eqSub.innerText = data.wholesale_grid.zone;
+                    }
+                    if (data.macro_yields) {
+                        const mVal = document.getElementById('radar-macro-val');
+                        const mSub = document.getElementById('radar-macro-sub');
+                        if (mVal) mVal.innerText = `${data.macro_yields.us10y_real} / ${data.macro_yields.dxy}`;
+                        if (mSub) mSub.innerText = data.macro_yields.cftc_positioning || data.macro_yields.gsr || 'Yield Easing ➔ Bullish Metals Flow';
+                    }
+
+                    // Sync 1-Click MT5 Order Ticket Card
+                    if (data.mt5_ticket) {
+                        const t = data.mt5_ticket;
+                        const sSym = document.getElementById('mt5-sym');
+                        const sType = document.getElementById('mt5-type');
+                        const sLot = document.getElementById('mt5-lot');
+                        const sEntry = document.getElementById('mt5-entry');
+                        const sSl = document.getElementById('mt5-sl');
+                        const sTp1 = document.getElementById('mt5-tp1');
+                        const sDesc = document.getElementById('mt5-risk-desc');
+
+                        if (sSym) sSym.innerText = t.symbol;
+                        if (sType) sType.innerText = t.order_type;
+                        if (sLot) sLot.innerText = t.lot_size;
+                        if (sEntry) sEntry.innerText = `$${t.entry}`;
+                        if (sSl) sSl.innerText = `$${t.sl}`;
+                        if (sTp1) sTp1.innerText = `$${t.tp1}`;
+                        if (sDesc) sDesc.innerHTML = `💰 <b>Dollar Risk:</b> ${t.dollar_risk} (${t.risk_pct}). Stops placed safely behind session sweep.`;
+                    }
                     
                     btn.innerHTML = '⚡ DeepSeek AI Synthesis Updated (Live)';
                     btn.style.background = 'linear-gradient(135deg, #10B981 0%, #00E5FF 100%)';
@@ -2109,6 +2370,47 @@
                 btn.disabled = false;
                 btn.style.opacity = '1';
             }
+        }
+
+        // ==================== 1-CLICK MT5 TICKET CLIPBOARD GENERATOR ====================
+        let currentMt5TicketText = "";
+        function copyMt5OrderTicket() {
+            const sym = document.getElementById('mt5-sym')?.innerText || activeSymbol;
+            const type = document.getElementById('mt5-type')?.innerText || 'BUY LIMIT';
+            const lot = document.getElementById('mt5-lot')?.innerText || '0.01';
+            const entry = document.getElementById('mt5-entry')?.innerText || `$${liveBid.toFixed(2)}`;
+            const sl = document.getElementById('mt5-sl')?.innerText || '$4466.80';
+            const tp = document.getElementById('mt5-tp1')?.innerText || '$4478.00';
+
+            const cleanEntry = entry.replace('$', '');
+            const cleanSl = sl.replace('$', '');
+            const cleanTp = tp.replace('$', '');
+
+            const ticketString = `MAZRION TIER-1 INSTITUTIONAL MT5 ORDER TICKET\n` +
+                                 `--------------------------------------------\n` +
+                                 `Symbol:       ${sym}\n` +
+                                 `Order Type:   ${type}\n` +
+                                 `Volume (Lots):${lot}\n` +
+                                 `Entry Price:  ${cleanEntry}\n` +
+                                 `Stop Loss:    ${cleanSl} (Structural Sweep Protection)\n` +
+                                 `Take Profit:  ${cleanTp}\n` +
+                                 `--------------------------------------------\n` +
+                                 `Risk Rule:    Strict 2% Small Account Guard (0.01 Lots Scale-Down)`;
+
+            navigator.clipboard.writeText(ticketString).then(() => {
+                const btn = document.getElementById('btn-copy-ticket');
+                const btnText = document.getElementById('btn-copy-ticket-text');
+                if (btn) btn.classList.add('copied');
+                if (btnText) btnText.innerText = '✅ Copied to Clipboard!';
+                showToast(`📋 MT5 Ticket for ${sym} Copied! Paste into MT5.`);
+
+                setTimeout(() => {
+                    if (btn) btn.classList.remove('copied');
+                    if (btnText) btnText.innerText = 'Copy MT5 Order Ticket';
+                }, 2500);
+            }).catch(err => {
+                showToast(`📋 Ticket: ${type} ${sym} @ ${cleanEntry} | SL: ${cleanSl} | TP: ${cleanTp}`);
+            });
         }
 
         // ==================== DYNAMIC ORDER FLOW DOM & LIVE TICKS ====================
