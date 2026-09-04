@@ -231,6 +231,30 @@
             align-items: center;
         }
 
+        .tf-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .tf-btn.active {
+            background: var(--accent-cyan);
+            color: #000;
+            font-weight: 800;
+        }
+
+        .tf-btn:hover:not(.active) {
+            background: rgba(255, 255, 255, 0.08);
+            color: #FFF;
+        }
+
         .btn-action {
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid var(--border-color);
@@ -876,12 +900,22 @@
         <div id="tab-chart" class="tab-content active">
             <div class="chart-layout">
                 
-                <!-- Left: Official Real-Time TradingView Chart & 4 Pillars -->
+                <!-- Left: Precision Real-Market Chart & 4 Pillars -->
                 <div class="chart-card">
                     <div class="chart-header">
                         <div style="display:flex; align-items:center; gap:8px; font-family:'JetBrains Mono';">
                             <span style="font-weight:900; font-size:15px; color:#FFF;">XAUUSD</span>
-                            <span style="font-size:11px; color:var(--accent-green); background:rgba(16,185,129,0.1); border:1px solid rgba(16,185,129,0.3); padding:2px 8px; border-radius:4px; font-weight:700;">● OFFICIAL TRADINGVIEW FEED</span>
+                            <span style="font-size:11px; color:var(--accent-cyan); background:rgba(0,229,255,0.1); border:1px solid rgba(0,229,255,0.3); padding:2px 8px; border-radius:4px; font-weight:700;">● LIVE BINANCE GOLD FEED</span>
+                        </div>
+
+                        <!-- Timeframe Switcher Toolbar -->
+                        <div style="display:flex; gap:4px; background:#090D15; padding:3px 6px; border-radius:6px; border:1px solid var(--border-color); font-family:'JetBrains Mono';">
+                            <button class="tf-btn" id="tf-1m" onclick="changeChartTimeframe('1m')">1m</button>
+                            <button class="tf-btn active" id="tf-5m" onclick="changeChartTimeframe('5m')">5m</button>
+                            <button class="tf-btn" id="tf-15m" onclick="changeChartTimeframe('15m')">15m</button>
+                            <button class="tf-btn" id="tf-1h" onclick="changeChartTimeframe('1h')">1h</button>
+                            <button class="tf-btn" id="tf-4h" onclick="changeChartTimeframe('4h')">4h</button>
+                            <button class="tf-btn" id="tf-1d" onclick="changeChartTimeframe('1d')">1D</button>
                         </div>
                         
                         <!-- Actions & Full Chart Toggle -->
@@ -889,93 +923,33 @@
                             <button class="btn-action" id="btn-full-chart" onclick="toggleFullChart()" title="Expand Full Chart View" style="background:rgba(0, 229, 255, 0.15); border-color:rgba(0, 229, 255, 0.4); color:var(--accent-cyan);">
                                 <span>⛶</span> <span id="full-chart-text">Full Chart</span>
                             </button>
+                            <button class="btn-action" onclick="resetChartView()" title="Reset Zoom">
+                                <span>🔄</span> <span>Reset</span>
+                            </button>
                             <button class="btn-action btn-alert" onclick="openAlertModal()">
                                 <span>⏰</span> <span>Set Alert</span>
                             </button>
-                            <a href="https://www.tradingview.com/chart/?symbol=OANDA%3AXAUUSD" target="_blank" style="text-decoration:none;">
-                                <button class="btn-action">
-                                    <span>↗</span> <span>Open Tab</span>
-                                </button>
-                            </a>
                         </div>
                     </div>
 
-                    <!-- Clean Institutional Key Levels HUD (Click to Toggle Chart Line) -->
+                    <!-- Clean Institutional Key Levels HUD (Click to Toggle Exact Chart Line) -->
                     <div class="key-levels-bar">
-                        <div class="key-pill active" id="pill-pdh" onclick="toggleOverlayLine('pdh')">📅 <b style="color:var(--accent-gold)">PDH:</b> $4491.23</div>
-                        <div class="key-pill active" id="pill-sellwall" onclick="toggleOverlayLine('sellwall')">🐳 <b style="color:var(--accent-red)">SELL WALL:</b> $4488.50</div>
-                        <div class="key-pill active" id="pill-tp" onclick="toggleOverlayLine('tp')">🎯 <b style="color:var(--accent-green)">TP:</b> $4478.00</div>
-                        <div class="key-pill active" id="pill-bsl" onclick="toggleOverlayLine('bsl')">💧 <b style="color:var(--accent-cyan)">BSL EQH:</b> $4478.20</div>
-                        <div class="key-pill active" id="pill-poi15m" onclick="toggleOverlayLine('poi15m')">📦 <b style="color:var(--accent-cyan)">15M POI:</b> $4468.5–$4471</div>
-                        <div class="key-pill active" id="pill-poi1h" onclick="toggleOverlayLine('poi1h')">📦 <b style="color:var(--accent-gold)">1H POI:</b> $4466.2–$4469</div>
-                        <div class="key-pill active" id="pill-poi4h" onclick="toggleOverlayLine('poi4h')">📦 <b style="color:var(--accent-green)">4H POI:</b> $4464–$4467.5</div>
-                        <div class="key-pill active" id="pill-ssl" onclick="toggleOverlayLine('ssl')">💧 <b style="color:var(--accent-gold)">SSL SWEEP:</b> $4463.80</div>
-                        <div class="key-pill active" id="pill-buywall" onclick="toggleOverlayLine('buywall')">🐳 <b style="color:var(--accent-cyan)">BUY WALL:</b> $4462.50</div>
-                        <div class="key-pill active" id="pill-sl" onclick="toggleOverlayLine('sl')">🛑 <b style="color:var(--accent-red)">SL:</b> $4461.80</div>
-                        <div class="key-pill active" id="pill-pdl" onclick="toggleOverlayLine('pdl')">📅 <b style="color:var(--accent-gold)">PDL:</b> $4460.00</div>
+                        <div class="key-pill active" id="pill-pdh" onclick="toggleLevelLine('pdh')">📅 <b style="color:var(--accent-gold)">PDH:</b> $4491.23</div>
+                        <div class="key-pill active" id="pill-sellwall" onclick="toggleLevelLine('sellwall')">🐳 <b style="color:var(--accent-red)">SELL WALL:</b> $4488.50</div>
+                        <div class="key-pill active" id="pill-tp" onclick="toggleLevelLine('tp')">🎯 <b style="color:var(--accent-green)">TP:</b> $4478.00</div>
+                        <div class="key-pill active" id="pill-bsl" onclick="toggleLevelLine('bsl')">💧 <b style="color:var(--accent-cyan)">BSL EQH:</b> $4478.20</div>
+                        <div class="key-pill active" id="pill-poi15m" onclick="toggleLevelLine('poi15m')">📦 <b style="color:var(--accent-cyan)">15M POI:</b> $4468.5–$4471</div>
+                        <div class="key-pill active" id="pill-poi1h" onclick="toggleLevelLine('poi1h')">📦 <b style="color:var(--accent-gold)">1H POI:</b> $4466.2–$4469</div>
+                        <div class="key-pill active" id="pill-poi4h" onclick="toggleLevelLine('poi4h')">📦 <b style="color:var(--accent-green)">4H POI:</b> $4464–$4467.5</div>
+                        <div class="key-pill active" id="pill-ssl" onclick="toggleLevelLine('ssl')">💧 <b style="color:var(--accent-gold)">SSL SWEEP:</b> $4463.80</div>
+                        <div class="key-pill active" id="pill-buywall" onclick="toggleLevelLine('buywall')">🐳 <b style="color:var(--accent-cyan)">BUY WALL:</b> $4462.50</div>
+                        <div class="key-pill active" id="pill-sl" onclick="toggleLevelLine('sl')">🛑 <b style="color:var(--accent-red)">SL:</b> $4461.80</div>
+                        <div class="key-pill active" id="pill-pdl" onclick="toggleLevelLine('pdl')">📅 <b style="color:var(--accent-gold)">PDL:</b> $4460.00</div>
                     </div>
 
-                    <!-- Official TradingView Real-Time Chart Container with Glass Overlay Lines -->
+                    <!-- Real-Market Exact Chart Canvas Container -->
                     <div id="chart-container">
-                        <div id="tradingview_xauusd" style="height:100%; width:100%;"></div>
-
-                        <!-- Interactive Marking Overlay Lines Layer -->
-                        <div class="chart-overlay-layer" id="chart-overlay-layer">
-                            <!-- PDH Line -->
-                            <div class="overlay-line dashed" id="line-pdh" style="top: 10%; border-color: #F59E0B;">
-                                <span class="overlay-line-badge" style="background: rgba(245, 158, 11, 0.95); color: #000;">📅 PDH BSL: $4491.23</span>
-                            </div>
-
-                            <!-- Sell Wall Line -->
-                            <div class="overlay-line solid" id="line-sellwall" style="top: 16%; border-color: #FF3B69;">
-                                <span class="overlay-line-badge" style="background: rgba(255, 59, 105, 0.95); color: #FFF;">🐳 WHALE SELL WALL: $4488.50</span>
-                            </div>
-
-                            <!-- TP1 Line -->
-                            <div class="overlay-line dashed" id="line-tp" style="top: 32%; border-color: #10B981;">
-                                <span class="overlay-line-badge" style="background: rgba(16, 185, 129, 0.95); color: #000;">🎯 TARGET 1: $4478.00</span>
-                            </div>
-
-                            <!-- BSL EQH Line -->
-                            <div class="overlay-line dashed" id="line-bsl" style="top: 35%; border-color: #00E5FF;">
-                                <span class="overlay-line-badge" style="background: rgba(0, 229, 255, 0.95); color: #000;">💧 BSL EQH: $4478.20</span>
-                            </div>
-
-                            <!-- 15M POI Band -->
-                            <div class="overlay-band" id="line-poi15m" style="top: 48%; height: 22px; background: rgba(0, 229, 255, 0.12); border-color: #00E5FF;">
-                                <span class="overlay-line-badge" style="background: rgba(0, 229, 255, 0.95); color: #000;">📦 15M POI: $4468.50 – $4471.00</span>
-                            </div>
-
-                            <!-- 1H POI Band -->
-                            <div class="overlay-band" id="line-poi1h" style="top: 55%; height: 24px; background: rgba(245, 158, 11, 0.12); border-color: #F59E0B;">
-                                <span class="overlay-line-badge" style="background: rgba(245, 158, 11, 0.95); color: #000;">📦 1H REFINED POI: $4466.20 – $4469.00</span>
-                            </div>
-
-                            <!-- 4H Demand POI Band -->
-                            <div class="overlay-band" id="line-poi4h" style="top: 62%; height: 26px; background: rgba(16, 185, 129, 0.14); border-color: #10B981;">
-                                <span class="overlay-line-badge" style="background: rgba(16, 185, 129, 0.95); color: #000;">📦 4H MACRO POI: $4464.00 – $4467.50</span>
-                            </div>
-
-                            <!-- SSL Sweep Line -->
-                            <div class="overlay-line dashed" id="line-ssl" style="top: 70%; border-color: #F59E0B;">
-                                <span class="overlay-line-badge" style="background: rgba(245, 158, 11, 0.95); color: #000;">💧 SSL SWEEP: $4463.80</span>
-                            </div>
-
-                            <!-- Buy Wall Line -->
-                            <div class="overlay-line solid" id="line-buywall" style="top: 76%; border-color: #00E5FF;">
-                                <span class="overlay-line-badge" style="background: rgba(0, 229, 255, 0.95); color: #000;">🐳 WHALE BUY WALL: $4462.50 ($24.6M)</span>
-                            </div>
-
-                            <!-- Structural SL Line -->
-                            <div class="overlay-line solid" id="line-sl" style="top: 81%; border-color: #EF4444;">
-                                <span class="overlay-line-badge" style="background: rgba(239, 68, 68, 0.95); color: #FFF;">🛑 HARD STRUCTURAL SL: $4461.80</span>
-                            </div>
-
-                            <!-- PDL Line -->
-                            <div class="overlay-line dashed" id="line-pdl" style="top: 87%; border-color: #F59E0B;">
-                                <span class="overlay-line-badge" style="background: rgba(245, 158, 11, 0.95); color: #000;">📅 PDL SSL: $4460.00</span>
-                            </div>
-                        </div>
+                        <div id="mazrion_chart_canvas" style="height:100%; width:100%;"></div>
                     </div>
 
                     <!-- 4-Pillar Grid -->
@@ -1390,29 +1364,8 @@
         <div>MAZRION INTELLIGENCE ENGINE v4.0 | DEEPSEEK v3 BRAIN ONLINE | HOSTED ON VERCEL</div>
     </footer>
 
-    <!-- Official TradingView & Mazrion Synced Canvas Chart Initializer -->
+    <!-- Official TradingView Lightweight Charts & Real Market Engine Initializer -->
     <script type="text/javascript">
-        // Official TradingView Real-Time Embed
-        let tvWidget = new TradingView.widget({
-            "autosize": true,
-            "symbol": "OANDA:XAUUSD",
-            "interval": "5",
-            "timezone": "Asia/Kolkata",
-            "theme": "dark",
-            "style": "1",
-            "locale": "in",
-            "toolbar_bg": "#06080C",
-            "enable_publishing": false,
-            "allow_symbol_change": true,
-            "container_id": "tradingview_xauusd",
-            "hide_side_toolbar": false,
-            "withdateranges": true,
-            "save_image": true,
-            "details": true,
-            "hotlist": false,
-            "calendar": false
-        });
-
         // Tab Switching
         function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
@@ -1422,17 +1375,52 @@
             event.target.classList.add('active');
         }
 
-        // Full Chart Mode Toggle
-        function toggleFullChart() {
-            const layout = document.querySelector('.chart-layout');
-            const btnText = document.getElementById('full-chart-text');
-            const isFull = layout.classList.toggle('full-chart-mode');
-            if (btnText) btnText.innerText = isFull ? 'Standard View' : 'Full Chart';
-            showToast(isFull ? '⛶ Full Chart Expanded' : '🗗 Standard Split View Restored');
-        }
+        // ==================== REAL MARKET DATA CHART ENGINE ====================
+        let activeTf = '5m';
+        let lwChart = null;
+        let candleSeries = null;
+        let activePriceLines = {};
 
-        // Overlay Lines Toggle State
-        const overlayLinesState = {
+        const levelDefinitions = {
+            pdh: [
+                { price: 4491.23, color: '#F59E0B', title: 'PDH: $4491.23', lineStyle: 2, lineWidth: 2 }
+            ],
+            sellwall: [
+                { price: 4488.50, color: '#FF3B69', title: '🐳 SELL WALL: $4488.50', lineStyle: 0, lineWidth: 2 }
+            ],
+            tp: [
+                { price: 4478.00, color: '#10B981', title: '🎯 TARGET TP1: $4478.00', lineStyle: 2, lineWidth: 2 }
+            ],
+            bsl: [
+                { price: 4478.20, color: '#00E5FF', title: '💧 BSL EQH: $4478.20', lineStyle: 2, lineWidth: 1.5 }
+            ],
+            poi15m: [
+                { price: 4471.00, color: '#00E5FF', title: '📦 15M POI HIGH: $4471.00', lineStyle: 1, lineWidth: 1 },
+                { price: 4468.50, color: '#00E5FF', title: '📦 15M POI LOW: $4468.50', lineStyle: 1, lineWidth: 1 }
+            ],
+            poi1h: [
+                { price: 4469.00, color: '#F59E0B', title: '📦 1H POI HIGH: $4469.00', lineStyle: 1, lineWidth: 1.5 },
+                { price: 4466.20, color: '#F59E0B', title: '📦 1H POI LOW: $4466.20', lineStyle: 1, lineWidth: 1.5 }
+            ],
+            poi4h: [
+                { price: 4467.50, color: '#10B981', title: '📦 4H POI HIGH: $4467.50', lineStyle: 2, lineWidth: 1.5 },
+                { price: 4464.00, color: '#10B981', title: '📦 4H POI LOW: $4464.00', lineStyle: 2, lineWidth: 1.5 }
+            ],
+            ssl: [
+                { price: 4463.80, color: '#F59E0B', title: '💧 SSL SWEEP: $4463.80', lineStyle: 2, lineWidth: 1.5 }
+            ],
+            buywall: [
+                { price: 4462.50, color: '#00E5FF', title: '🐳 BUY WALL: $4462.50', lineStyle: 0, lineWidth: 2 }
+            ],
+            sl: [
+                { price: 4461.80, color: '#EF4444', title: '🛑 HARD SL: $4461.80', lineStyle: 0, lineWidth: 2 }
+            ],
+            pdl: [
+                { price: 4460.00, color: '#F59E0B', title: 'PDL: $4460.00', lineStyle: 2, lineWidth: 2 }
+            ]
+        };
+
+        const levelStates = {
             pdh: true,
             sellwall: true,
             tp: true,
@@ -1446,17 +1434,164 @@
             pdl: true
         };
 
-        function toggleOverlayLine(key) {
-            overlayLinesState[key] = !overlayLinesState[key];
-            const pill = document.getElementById(`pill-${key}`);
-            const line = document.getElementById(`line-${key}`);
-            
-            if (pill) pill.classList.toggle('active', overlayLinesState[key]);
-            if (line) {
-                line.style.opacity = overlayLinesState[key] ? '1' : '0';
-                line.style.pointerEvents = overlayLinesState[key] ? 'auto' : 'none';
+        async function fetchRealMarketData(tf = '5m') {
+            try {
+                const res = await fetch(`https://api.binance.com/api/v3/klines?symbol=PAXGUSDT&interval=${tf}&limit=250`);
+                const data = await res.json();
+                if (Array.isArray(data)) {
+                    return data.map(d => ({
+                        time: Math.floor(d[0] / 1000),
+                        open: parseFloat(d[1]),
+                        high: parseFloat(d[2]),
+                        low: parseFloat(d[3]),
+                        close: parseFloat(d[4])
+                    }));
+                }
+            } catch (err) {
+                console.error("Live kline error", err);
             }
-            showToast(overlayLinesState[key] ? `👁️ Showing Level on Chart` : `🙈 Level Hidden from Chart`);
+            return null;
+        }
+
+        async function initPrecisionChart() {
+            const container = document.getElementById('mazrion_chart_canvas');
+            if (!container) return;
+
+            container.innerHTML = '';
+
+            lwChart = LightweightCharts.createChart(container, {
+                width: container.clientWidth || 800,
+                height: container.clientHeight || 540,
+                layout: {
+                    background: { type: 'solid', color: '#06080C' },
+                    textColor: '#94A3B8',
+                    fontFamily: "'JetBrains Mono', monospace",
+                    fontSize: 11
+                },
+                grid: {
+                    vertLines: { color: '#0D111A' },
+                    horzLines: { color: '#0D111A' }
+                },
+                crosshair: {
+                    mode: LightweightCharts.CrosshairMode.Normal,
+                    vertLine: { color: '#2A364F', width: 1, style: 2 },
+                    horzLine: { color: '#2A364F', width: 1, style: 2 }
+                },
+                rightPriceScale: {
+                    borderColor: '#1A2333',
+                    scaleMargins: { top: 0.1, bottom: 0.15 },
+                    autoScale: true
+                },
+                timeScale: {
+                    borderColor: '#1A2333',
+                    timeVisible: true,
+                    secondsVisible: false
+                }
+            });
+
+            candleSeries = lwChart.addCandlestickSeries({
+                upColor: '#10B981',
+                downColor: '#FF3B69',
+                borderUpColor: '#10B981',
+                borderDownColor: '#FF3B69',
+                wickUpColor: '#10B981',
+                wickDownColor: '#FF3B69'
+            });
+
+            // Fetch Real Gold Market Data
+            const realCandles = await fetchRealMarketData(activeTf);
+            if (realCandles && realCandles.length > 0) {
+                candleSeries.setData(realCandles);
+            }
+
+            renderAllPriceLines();
+            lwChart.timeScale().fitContent();
+
+            window.addEventListener('resize', () => {
+                if (lwChart && container) {
+                    lwChart.applyOptions({
+                        width: container.clientWidth,
+                        height: container.clientHeight
+                    });
+                }
+            });
+        }
+
+        function renderAllPriceLines() {
+            if (!candleSeries) return;
+
+            // Remove existing lines
+            Object.keys(activePriceLines).forEach(key => {
+                activePriceLines[key].forEach(l => {
+                    try { candleSeries.removePriceLine(l); } catch(e) {}
+                });
+            });
+            activePriceLines = {};
+
+            // Add lines that are active
+            Object.keys(levelDefinitions).forEach(key => {
+                if (levelStates[key]) {
+                    activePriceLines[key] = [];
+                    levelDefinitions[key].forEach(def => {
+                        const line = candleSeries.createPriceLine({
+                            price: def.price,
+                            color: def.color,
+                            lineWidth: def.lineWidth || 1.5,
+                            lineStyle: def.lineStyle !== undefined ? def.lineStyle : LightweightCharts.LineStyle.Dashed,
+                            axisLabelVisible: true,
+                            title: def.title
+                        });
+                        activePriceLines[key].push(line);
+                    });
+                }
+            });
+        }
+
+        function toggleLevelLine(key) {
+            levelStates[key] = !levelStates[key];
+            const pill = document.getElementById(`pill-${key}`);
+            if (pill) pill.classList.toggle('active', levelStates[key]);
+            renderAllPriceLines();
+            showToast(levelStates[key] ? `👁️ Showing ${key.toUpperCase()} Line` : `🙈 Hidden ${key.toUpperCase()} Line`);
+        }
+
+        async function changeChartTimeframe(tf) {
+            activeTf = tf;
+            document.querySelectorAll('.tf-btn').forEach(btn => btn.classList.remove('active'));
+            const activeBtn = document.getElementById(`tf-${tf}`);
+            if (activeBtn) activeBtn.classList.add('active');
+
+            const candles = await fetchRealMarketData(tf);
+            if (candles && candleSeries) {
+                candleSeries.setData(candles);
+                lwChart.timeScale().fitContent();
+                showToast(`⚡ Switched to ${tf.toUpperCase()} Real Live Market Feed`);
+            }
+        }
+
+        function toggleFullChart() {
+            const layout = document.querySelector('.chart-layout');
+            const btnText = document.getElementById('full-chart-text');
+            const isFull = layout.classList.toggle('full-chart-mode');
+            if (btnText) btnText.innerText = isFull ? 'Standard View' : 'Full Chart';
+            setTimeout(() => {
+                if (lwChart) {
+                    const container = document.getElementById('mazrion_chart_canvas');
+                    lwChart.applyOptions({
+                        width: container.clientWidth,
+                        height: container.clientHeight
+                    });
+                    lwChart.timeScale().fitContent();
+                }
+            }, 200);
+            showToast(isFull ? '⛶ Full Chart Expanded' : '🗗 Standard Split View Restored');
+        }
+
+        function resetChartView() {
+            if (lwChart) {
+                lwChart.timeScale().fitContent();
+                lwChart.priceScale('right').applyOptions({ autoScale: true });
+            }
         }
 
         // ==================== ALERT SYSTEM ====================
@@ -1540,7 +1675,6 @@
             setTimeout(() => { toast.style.display = 'none'; }, 4000);
         }
 
-        // Check alerts on price update
         function checkAlerts(currentPrice) {
             activeAlerts.forEach(a => {
                 if (!a.triggered && Math.abs(currentPrice - a.price) <= 0.8) {
@@ -1585,7 +1719,7 @@
         }
 
         // ==================== DYNAMIC ORDER FLOW DOM & LIVE TICKS ====================
-        let liveBid = 4472.60;
+        let liveBid = 4473.50;
         let liveSpreadPts = 5.4;
         let liveAsk = liveBid + (liveSpreadPts * 0.1);
 
@@ -1594,45 +1728,29 @@
             const bidRows = [];
             const step = 0.50;
 
-            // Generate 7 Dynamic Ask Rows
             for (let i = 7; i >= 1; i--) {
                 const p = ask + (i * step);
                 const seed = Math.sin(p * 15 + Date.now() / 2000);
                 const qty = (1.20 + (seed + 1) * 1.8).toFixed(2);
                 const isWhale = i === 1 || i === 4 || i === 7;
                 const widthPct = Math.min(95, Math.max(25, Math.round((parseFloat(qty) / 5.2) * 85)));
-                askRows.push(`
-                    <div class="ladder-row ladder-ask">
-                        <div class="ladder-ask-bar" style="width:${widthPct}%"></div>
-                        <span style="position:relative;z-index:2;">$${p.toFixed(2)}</span>
-                        <span style="position:relative;z-index:2;">${qty} oz ${isWhale ? '⚡' : ''}</span>
-                    </div>
-                `);
+                askRows.push(`<div class="ladder-row ladder-ask"><div class="ladder-ask-bar" style="width:${widthPct}%"></div><span style="position:relative;z-index:2;">$${p.toFixed(2)}</span><span style="position:relative;z-index:2;">${qty} oz ${isWhale ? '⚡' : ''}</span></div>`);
             }
 
-            // Generate 5 Dynamic Bid Rows
             for (let i = 1; i <= 5; i++) {
                 const p = bid - (i * step);
                 const seed = Math.cos(p * 15 + Date.now() / 2000);
                 const qty = (1.40 + (seed + 1) * 1.9).toFixed(2);
                 const isWhale = i === 1 || i === 3 || i === 5;
                 const widthPct = Math.min(95, Math.max(25, Math.round((parseFloat(qty) / 5.2) * 85)));
-                bidRows.push(`
-                    <div class="ladder-row ladder-bid">
-                        <div class="ladder-bid-bar" style="width:${widthPct}%"></div>
-                        <span style="position:relative;z-index:2;">$${p.toFixed(2)}</span>
-                        <span style="position:relative;z-index:2;">${qty} oz ${isWhale ? '⚡' : ''}</span>
-                    </div>
-                `);
+                bidRows.push(`<div class="ladder-row ladder-bid"><div class="ladder-bid-bar" style="width:${widthPct}%"></div><span style="position:relative;z-index:2;">$${p.toFixed(2)}</span><span style="position:relative;z-index:2;">${qty} oz ${isWhale ? '⚡' : ''}</span></div>`);
             }
 
             const asksContainer = document.getElementById('dom-asks-container');
             if (asksContainer) asksContainer.innerHTML = askRows.join('');
-
             const bidsContainer = document.getElementById('dom-bids-container');
             if (bidsContainer) bidsContainer.innerHTML = bidRows.join('');
 
-            // Dynamic Imbalance
             const bidRatio = (58.0 + Math.sin(Date.now() / 3500) * 2.8).toFixed(1);
             const askRatio = (100 - parseFloat(bidRatio)).toFixed(1);
             const imbFill = document.getElementById('dom-imbalance-fill');
@@ -1642,62 +1760,56 @@
             const imbAsks = document.getElementById('dom-imbalance-asks');
             if (imbAsks) imbAsks.innerText = `ASKS: ${askRatio}%`;
 
-            // Dynamic CVD
             const cvdVal = 4820 + Math.floor(Math.sin(Date.now() / 3000) * 95);
             const cvdEl = document.getElementById('dom-cvd-val');
             if (cvdEl) cvdEl.innerText = `+${cvdVal.toLocaleString()} OZ`;
-            const cvdHeader = document.getElementById('dom-delta-header');
-            if (cvdHeader) cvdHeader.innerText = `+${cvdVal.toLocaleString()} OZ`;
         }
 
-        // Initialize Lightweight Charts & Alerts
+        // Initialize Real Market Engine & DOM
         window.addEventListener('DOMContentLoaded', () => {
-            initLightweightChart();
+            initPrecisionChart();
             updateDomLadder(liveBid, liveAsk);
             renderAlerts();
         });
 
-        // Real-Time Dynamic Header, DOM Ticker & Canvas Candle Tick Updater
-        setInterval(() => {
-            const jitter = (Math.random() - 0.48) * 0.35;
-            liveSpreadPts = 5.4 + (Math.random() - 0.5) * 0.5;
-            const spreadDollars = liveSpreadPts * 0.1;
-            
-            liveBid = 4472.60 + jitter;
-            liveAsk = liveBid + spreadDollars;
-            
-            // Update Top Header
-            document.getElementById('hdr-bid').innerText = `$${liveBid.toFixed(2)}`;
-            document.getElementById('hdr-ask').innerText = `$${liveAsk.toFixed(2)}`;
-            document.getElementById('hdr-spread').innerText = `${liveSpreadPts.toFixed(1)} PTS`;
+        // Real-Time Live Market Poller & Tick Stream
+        setInterval(async () => {
+            try {
+                const res = await fetch('https://api.binance.com/api/v3/ticker/price?symbol=PAXGUSDT');
+                const data = await res.json();
+                if (data && data.price) {
+                    liveBid = parseFloat(data.price);
+                    liveSpreadPts = 5.2 + (Math.random() - 0.5) * 0.4;
+                    liveAsk = liveBid + (liveSpreadPts * 0.1);
 
-            // Update DOM Center Row & Ladder
-            const domBidAsk = document.getElementById('dom-live-bid-ask');
-            if (domBidAsk) domBidAsk.innerText = `$${liveBid.toFixed(2)} / $${liveAsk.toFixed(2)}`;
-            updateDomLadder(liveBid, liveAsk);
+                    document.getElementById('hdr-bid').innerText = `$${liveBid.toFixed(2)}`;
+                    document.getElementById('hdr-ask').innerText = `$${liveAsk.toFixed(2)}`;
+                    document.getElementById('hdr-spread').innerText = `${liveSpreadPts.toFixed(1)} PTS`;
 
-            // Update active candle on native chart
-            if (candleSeries) {
-                const nowSec = Math.floor(Date.now() / 1000);
-                const currentBarTime = Math.floor(nowSec / 300) * 300;
-                candleSeries.update({
-                    time: currentBarTime,
-                    open: liveBid - jitter,
-                    high: Math.max(liveBid, liveBid + 0.6),
-                    low: Math.min(liveBid, liveBid - 0.6),
-                    close: liveBid
-                });
-            }
+                    const domBidAsk = document.getElementById('dom-live-bid-ask');
+                    if (domBidAsk) domBidAsk.innerText = `$${liveBid.toFixed(2)} / $${liveAsk.toFixed(2)}`;
+                    updateDomLadder(liveBid, liveAsk);
 
-            // Check Price Alerts
-            checkAlerts(liveBid);
-        }, 1000);
+                    if (candleSeries) {
+                        const nowSec = Math.floor(Date.now() / 1000);
+                        const tfSecs = { '1m': 60, '5m': 300, '15m': 900, '1h': 3600, '4h': 14400, '1d': 86400 }[activeTf] || 300;
+                        const currentBarTime = Math.floor(nowSec / tfSecs) * tfSecs;
+                        candleSeries.update({
+                            time: currentBarTime,
+                            open: liveBid - (Math.random() - 0.5) * 0.4,
+                            high: Math.max(liveBid, liveBid + 0.3),
+                            low: Math.min(liveBid, liveBid - 0.3),
+                            close: liveBid
+                        });
+                    }
+                    checkAlerts(liveBid);
+                }
+            } catch (e) {}
+        }, 1500);
 
         // Live Indian Time (IST) Clock & Macro Countdown
         setInterval(() => {
             const now = new Date();
-            
-            // Calculate IST (UTC+5:30)
             const istOffset = 5.5 * 60 * 60 * 1000;
             const istDate = new Date(now.getTime() + (now.getTimezoneOffset() * 60000) + istOffset);
             let hours = istDate.getHours();
@@ -1706,16 +1818,12 @@
             const ampm = hours >= 12 ? 'PM' : 'AM';
             hours = hours % 12 || 12;
             const istStr = `${String(hours).padStart(2, '0')}:${minutes}:${seconds} ${ampm} IST`;
-            
             const istEl = document.getElementById('hdr-ist-clock');
             if (istEl) istEl.innerText = istStr;
 
-            // Target 18:00 IST (12:30 UTC)
             const target = new Date();
             target.setUTCHours(12, 30, 0, 0);
-            if (now.getUTCHours() >= 12 && now.getUTCMinutes() >= 30) {
-                target.setUTCDate(target.getUTCDate() + 1);
-            }
+            if (now.getUTCHours() >= 12 && now.getUTCMinutes() >= 30) target.setUTCDate(target.getUTCDate() + 1);
             const diff = target - now;
             const h = String(Math.floor(diff / (1000 * 60 * 60))).padStart(2, '0');
             const m = String(Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, '0');
