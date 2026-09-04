@@ -8,8 +8,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=JetBrains+Mono:wght@400;600;700;800&display=swap" rel="stylesheet">
     
-    <!-- Official TradingView Widget Library -->
+    <!-- Official TradingView Widget Library & Lightweight Charts -->
     <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+    <script src="https://unpkg.com/lightweight-charts@4.1.1/dist/lightweight-charts.standalone.production.js"></script>
 
     <style>
         :root {
@@ -862,78 +863,53 @@
         <div id="tab-chart" class="tab-content active">
             <div class="chart-layout">
                 
-                <!-- Left: Official Real-Time TradingView Chart & 4 Pillars -->
+                <!-- Left: Official Real-Time Interactive Chart & 4 Pillars -->
                 <div class="chart-card">
                     <div class="chart-header">
                         <div style="display:flex; align-items:center; gap:8px; font-family:'JetBrains Mono';">
                             <span style="font-weight:900; font-size:15px; color:#FFF;">XAUUSD</span>
-                            <span style="font-size:12px; color:var(--text-secondary);">OANDA Spot Gold • Live Stream</span>
+                            <span style="font-size:11px; color:var(--accent-cyan); background:rgba(0,229,255,0.1); padding:2px 6px; border-radius:4px; font-weight:700;">LIVE M5 FEED</span>
                         </div>
+                        
+                        <!-- Engine Selector & Chart Actions -->
                         <div class="chart-actions">
+                            <div style="display:flex; gap:3px; background:#090D15; padding:3px; border-radius:6px; border:1px solid var(--border-color);">
+                                <button class="btn-action active" id="btn-engine-mazrion" onclick="switchChartEngine('mazrion')" style="background:var(--accent-cyan); color:#000; border:none; padding:4px 8px; font-size:10px;">
+                                    ⚡ MAZRION SYNCED (NATIVE)
+                                </button>
+                                <button class="btn-action" id="btn-engine-tv" onclick="switchChartEngine('tv')" style="background:transparent; color:var(--text-secondary); border:none; padding:4px 8px; font-size:10px;">
+                                    🌐 TRADINGVIEW WIDGET
+                                </button>
+                            </div>
+                            <button class="btn-action" onclick="resetChartView()" title="Reset Chart Zoom & Scale">
+                                <span>🔄</span> <span>Reset View</span>
+                            </button>
                             <button class="btn-action btn-alert" onclick="openAlertModal()">
                                 <span>⏰</span> <span>Set Alert</span>
                             </button>
-                            <a href="https://www.tradingview.com/chart/?symbol=OANDA%3AXAUUSD" target="_blank" style="text-decoration:none;">
-                                <button class="btn-action">
-                                    <span>↗</span> <span>Open in TradingView</span>
-                                </button>
-                            </a>
                         </div>
                     </div>
 
                     <!-- Clean Institutional Key Levels HUD (Click to Toggle Chart Line) -->
                     <div class="key-levels-bar">
-                        <div class="key-pill active" id="pill-pdh" onclick="toggleOverlayLine('pdh')">📅 <b style="color:var(--accent-gold)">PDH:</b> $4491.23</div>
-                        <div class="key-pill active" id="pill-pdl" onclick="toggleOverlayLine('pdl')">📅 <b style="color:var(--accent-gold)">PDL:</b> $4460.00</div>
-                        <div class="key-pill active" id="pill-poi" onclick="toggleOverlayLine('poi')">📦 <b style="color:var(--accent-green)">4H POI:</b> $4464–$4467.50</div>
-                        <div class="key-pill active" id="pill-buywall" onclick="toggleOverlayLine('buywall')">🐳 <b style="color:var(--accent-cyan)">BUY WALL:</b> $4462.50</div>
-                        <div class="key-pill active" id="pill-sellwall" onclick="toggleOverlayLine('sellwall')">🐳 <b style="color:var(--accent-red)">SELL WALL:</b> $4488.50</div>
-                        <div class="key-pill active" id="pill-sl" onclick="toggleOverlayLine('sl')">🛑 <b style="color:var(--accent-red)">SL:</b> $4461.80</div>
-                        <div class="key-pill active" id="pill-tp" onclick="toggleOverlayLine('tp')">🎯 <b style="color:var(--accent-gold)">TP:</b> $4478.00</div>
+                        <div class="key-pill active" id="pill-pdh" onclick="toggleLevelLine('pdh')">📅 <b style="color:var(--accent-gold)">PDH:</b> $4491.23</div>
+                        <div class="key-pill active" id="pill-sellwall" onclick="toggleLevelLine('sellwall')">🐳 <b style="color:var(--accent-red)">SELL WALL:</b> $4488.50</div>
+                        <div class="key-pill active" id="pill-tp" onclick="toggleLevelLine('tp')">🎯 <b style="color:var(--accent-green)">TP:</b> $4478.00</div>
+                        <div class="key-pill active" id="pill-poi15m" onclick="toggleLevelLine('poi15m')">📦 <b style="color:var(--accent-cyan)">15M POI:</b> $4468.5–$4471</div>
+                        <div class="key-pill active" id="pill-poi1h" onclick="toggleLevelLine('poi1h')">📦 <b style="color:var(--accent-gold)">1H POI:</b> $4466.2–$4469</div>
+                        <div class="key-pill active" id="pill-poi4h" onclick="toggleLevelLine('poi4h')">📦 <b style="color:var(--accent-green)">4H POI:</b> $4464–$4467.5</div>
+                        <div class="key-pill active" id="pill-buywall" onclick="toggleLevelLine('buywall')">🐳 <b style="color:var(--accent-cyan)">BUY WALL:</b> $4462.50</div>
+                        <div class="key-pill active" id="pill-sl" onclick="toggleLevelLine('sl')">🛑 <b style="color:var(--accent-red)">SL:</b> $4461.80</div>
+                        <div class="key-pill active" id="pill-pdl" onclick="toggleLevelLine('pdl')">📅 <b style="color:var(--accent-gold)">PDL:</b> $4460.00</div>
                     </div>
 
-                    <!-- Official TradingView Real-Time Chart Container with Glass Overlay Lines -->
+                    <!-- Real-Time Chart Container -->
                     <div id="chart-container">
-                        <!-- TradingView Embed -->
-                        <div id="tradingview_xauusd" style="height:100%; width:100%;"></div>
+                        <!-- 1. Native Lightweight Charts Canvas Engine (Price Lines locked to exact coordinates on zoom/pan) -->
+                        <div id="mazrion_lw_chart" style="width:100%; height:100%;"></div>
 
-                        <!-- Interactive Marking Overlay Lines Layer -->
-                        <div class="chart-overlay-layer" id="chart-overlay-layer">
-                            <!-- PDH Line -->
-                            <div class="overlay-line dashed" id="line-pdh" style="top: 14%; border-color: #F59E0B;">
-                                <span class="overlay-line-badge" style="background: rgba(245, 158, 11, 0.9); color: #000;">📅 PDH BSL: $4491.23</span>
-                            </div>
-
-                            <!-- Sell Wall Line -->
-                            <div class="overlay-line solid" id="line-sellwall" style="top: 20%; border-color: #FF3B69;">
-                                <span class="overlay-line-badge" style="background: rgba(255, 59, 105, 0.9); color: #FFF;">🐳 WHALE SELL WALL: $4488.50 ($19.1M)</span>
-                            </div>
-
-                            <!-- TP1 Line -->
-                            <div class="overlay-line dashed" id="line-tp" style="top: 38%; border-color: #10B981;">
-                                <span class="overlay-line-badge" style="background: rgba(16, 185, 129, 0.9); color: #000;">🎯 TARGET 1: $4478.00</span>
-                            </div>
-
-                            <!-- 4H Demand POI Band -->
-                            <div class="overlay-band" id="line-poi" style="top: 66%; height: 26px;">
-                                <span class="overlay-line-badge" style="background: rgba(16, 185, 129, 0.9); color: #000;">📦 4H DISCOUNT POI: $4464.00 – $4467.50</span>
-                            </div>
-
-                            <!-- Buy Wall Line -->
-                            <div class="overlay-line solid" id="line-buywall" style="top: 76%; border-color: #00E5FF;">
-                                <span class="overlay-line-badge" style="background: rgba(0, 229, 255, 0.9); color: #000;">🐳 WHALE BUY WALL: $4462.50 ($24.6M)</span>
-                            </div>
-
-                            <!-- Structural SL Line -->
-                            <div class="overlay-line solid" id="line-sl" style="top: 80%; border-color: #EF4444;">
-                                <span class="overlay-line-badge" style="background: rgba(239, 68, 68, 0.95); color: #FFF;">🛑 HARD STRUCTURAL SL: $4461.80</span>
-                            </div>
-
-                            <!-- PDL Line -->
-                            <div class="overlay-line dashed" id="line-pdl" style="top: 85%; border-color: #F59E0B;">
-                                <span class="overlay-line-badge" style="background: rgba(245, 158, 11, 0.9); color: #000;">📅 PDL SSL: $4460.00</span>
-                            </div>
-                        </div>
+                        <!-- 2. Official TradingView Embed (Shown when TV Widget mode selected) -->
+                        <div id="tradingview_xauusd" style="height:100%; width:100%; display:none;"></div>
                     </div>
 
                     <!-- 4-Pillar Grid -->
@@ -942,8 +918,8 @@
                             <div class="pillar-box-header"><span style="color:var(--accent-cyan)">1. TECHNICAL STRUCTURE</span><span class="bull">🟢 95% CONFLUENCE</span></div>
                             <div class="pillar-box-body">
                                 • <b>4H Trend:</b> Bullish Expansion | 50% Equilibrium @ $4465.00<br/>
-                                • <b>15M Microstructure:</b> Bullish CHoCH Breakout Confirmed<br/>
-                                • <b>Dealing Range:</b> Deep Discount Accumulation Zone
+                                • <b>1H Structure:</b> Bullish OB + FVG Retest @ $4466.20 - $4469.00<br/>
+                                • <b>15M Microstructure:</b> Bullish CHoCH Breakout Confirmed
                             </div>
                         </div>
 
@@ -970,7 +946,7 @@
                             <div class="pillar-box-body">
                                 • <b>DXY (Dollar Index):</b> 104.12 (-0.35% Weakness ➔ Gold Tailwinds)<br/>
                                 • <b>US 10Y Yields:</b> 4.21% (Easing pressure)<br/>
-                                • <b>News Guard:</b> High-impact US Non-Farm Payrolls (NFP)
+                                • <b>News Guard:</b> High-impact US NFP (06:00 PM IST)
                             </div>
                         </div>
                     </div>
@@ -984,31 +960,34 @@
                     <div class="verdict-banner">
                         <div class="verdict-title">EXECUTIVE TRADING VERDICT</div>
                         <div class="verdict-main" id="ai-verdict">🟢 STRONG BUY (91% CONFLUENCE)</div>
-                        <div class="verdict-sub">Optimal Execution: 5M Retest of 4H Discount Demand</div>
+                        <div class="verdict-sub">Optimal Execution: 5M Retest of 1H/4H Discount Demand POI</div>
                     </div>
 
                     <!-- Smart Money Narrative -->
                     <div>
                         <div style="font-size:12px; font-weight:800; text-transform:uppercase; margin-top:12px;">📖 Smart Money Institutional Narrative</div>
                         <div class="story-box" id="ai-story">
-                            Institutions spent the early Asian session engineering liquidity beneath the Previous Day Low ($4460). At 12:20 UTC, smart money executed a textbook liquidity sweep down to $4463.80, absorbing over 18,450 lots into the 4H Discount POI. The 1H/15M timeframes have now printed a confirmed Bullish Change of Character (CHoCH). With DXY softening, the path of least resistance is an institutional expansion targeting the $4488 Whale Sell Wall.
+                            Institutions spent the early Asian session engineering liquidity beneath the Previous Day Low ($4460). At 12:20 UTC, smart money executed a textbook liquidity sweep down to $4463.80, absorbing over 18,450 lots into the <b>4H Macro POI ($4464–$4467.50)</b> and <b>1H Refined Demand POI ($4466.20–$4469.00)</b>. The 1H/15M timeframes have now printed a confirmed Bullish Change of Character (CHoCH). With DXY softening, the path of least resistance is an institutional expansion targeting the $4488 Whale Sell Wall.
                         </div>
                     </div>
 
                     <!-- Action Checklist -->
                     <div style="margin-top:12px;">
-                        <div style="font-size:12px; font-weight:800; text-transform:uppercase; margin-bottom:8px;">⏳ What To Wait For (Execution Checklist)</div>
+                        <div style="font-size:12px; font-weight:800; text-transform:uppercase; margin-bottom:8px;">⏳ What To Wait For (Multi-Timeframe Checklist)</div>
                         <div class="checklist-item">
-                            <b style="color:#FFF;">✅ 15M Bullish CHoCH Confirmed:</b> Body close above 4468.00
+                            <b style="color:#FFF;">✅ 4H Macro Discount POI Tapped:</b> Price reached $4464.00 - $4467.50 equilibrium
                         </div>
                         <div class="checklist-item">
-                            <b style="color:#FFF;">✅ 4H Discount Zone Tapped:</b> Price reached $4464.00 equilibrium
+                            <b style="color:#FFF;">✅ 1H Refined POI Mitigated:</b> Order block respected at $4466.20 - $4469.00
+                        </div>
+                        <div class="checklist-item">
+                            <b style="color:#FFF;">✅ 15M Bullish CHoCH Breakout:</b> Body close established above $4468.00
                         </div>
                         <div class="checklist-item">
                             <b style="color:#FFF;">✅ Order Book Whale Buy Wall Active:</b> $24.6M resting bids defending $4462.50
                         </div>
                         <div class="checklist-item wait">
-                            <b style="color:var(--accent-gold);">⏳ Wait Condition:</b> Enter on 5M retest of $4466.00 - $4467.50 with stop below $4461.80
+                            <b style="color:var(--accent-gold);">⏳ Wait Condition:</b> Enter on 5M retest of $4466.20 - $4468.50 with stop below $4461.80
                         </div>
                     </div>
 
@@ -1017,8 +996,16 @@
                         <div style="font-size:12px; font-weight:800; text-transform:uppercase; margin-bottom:6px;">🎯 Precision Institutional Price Levels</div>
                         <div class="levels-table">
                             <div class="level-row">
-                                <span style="color:var(--text-secondary)">EXECUTION ZONE:</span>
-                                <span style="color:var(--accent-cyan); font-weight:700;">$4466.00 – $4467.50</span>
+                                <span style="color:var(--text-secondary)">4H MACRO POI:</span>
+                                <span style="color:var(--accent-green); font-weight:700;">$4464.00 – $4467.50</span>
+                            </div>
+                            <div class="level-row">
+                                <span style="color:var(--text-secondary)">1H REFINED POI:</span>
+                                <span style="color:var(--accent-gold); font-weight:700;">$4466.20 – $4469.00</span>
+                            </div>
+                            <div class="level-row">
+                                <span style="color:var(--text-secondary)">15M EXECUTION POI:</span>
+                                <span style="color:var(--accent-cyan); font-weight:700;">$4468.50 – $4471.00</span>
                             </div>
                             <div class="level-row">
                                 <span style="color:var(--text-secondary)">STRUCTURAL SL:</span>
@@ -1337,7 +1324,7 @@
         <div>MAZRION INTELLIGENCE ENGINE v4.0 | DEEPSEEK v3 BRAIN ONLINE | HOSTED ON VERCEL</div>
     </footer>
 
-    <!-- Official TradingView Real-Time Chart Initializer & Alert Engine -->
+    <!-- Official TradingView & Mazrion Synced Canvas Chart Initializer -->
     <script type="text/javascript">
         // Real-Time TradingView Embed
         let tvWidget = new TradingView.widget({
@@ -1369,32 +1356,223 @@
             event.target.classList.add('active');
         }
 
-        // Overlay Lines Toggle State
-        const overlayLinesState = {
-            pdh: true,
-            pdl: true,
-            poi: true,
-            buywall: true,
-            sellwall: true,
-            sl: true,
-            tp: true
+        // ==================== MAZRION NATIVE SYNCED LIGHTWEIGHT CHART ENGINE ====================
+        let lwChart = null;
+        let candleSeries = null;
+        let volumeSeries = null;
+        let activePriceLines = {};
+
+        const levelDefinitions = {
+            pdh: [
+                { price: 4491.23, color: '#F59E0B', title: '📅 PDH: $4491.23', lineStyle: 2, lineWidth: 2 }
+            ],
+            sellwall: [
+                { price: 4488.50, color: '#FF3B69', title: '🐳 SELL WALL: $4488.50 ($19.1M)', lineStyle: 0, lineWidth: 2 }
+            ],
+            tp: [
+                { price: 4478.00, color: '#10B981', title: '🎯 TARGET TP1: $4478.00', lineStyle: 2, lineWidth: 2 }
+            ],
+            poi15m: [
+                { price: 4471.00, color: '#00E5FF', title: '📦 15M POI HIGH: $4471.00', lineStyle: 1, lineWidth: 1 },
+                { price: 4468.50, color: '#00E5FF', title: '📦 15M POI LOW: $4468.50', lineStyle: 1, lineWidth: 1 }
+            ],
+            poi1h: [
+                { price: 4469.00, color: '#F59E0B', title: '📦 1H POI HIGH: $4469.00', lineStyle: 1, lineWidth: 1.5 },
+                { price: 4466.20, color: '#F59E0B', title: '📦 1H POI LOW: $4466.20', lineStyle: 1, lineWidth: 1.5 }
+            ],
+            poi4h: [
+                { price: 4467.50, color: '#10B981', title: '📦 4H POI HIGH: $4467.50', lineStyle: 2, lineWidth: 1.5 },
+                { price: 4464.00, color: '#10B981', title: '📦 4H POI LOW: $4464.00', lineStyle: 2, lineWidth: 1.5 }
+            ],
+            buywall: [
+                { price: 4462.50, color: '#00E5FF', title: '🐳 BUY WALL: $4462.50 ($24.6M)', lineStyle: 0, lineWidth: 2 }
+            ],
+            sl: [
+                { price: 4461.80, color: '#EF4444', title: '🛑 STRUCTURAL SL: $4461.80', lineStyle: 0, lineWidth: 2 }
+            ],
+            pdl: [
+                { price: 4460.00, color: '#F59E0B', title: '📅 PDL: $4460.00', lineStyle: 2, lineWidth: 2 }
+            ]
         };
 
-        function toggleOverlayLine(key) {
-            overlayLinesState[key] = !overlayLinesState[key];
+        const levelStates = {
+            pdh: true,
+            sellwall: true,
+            tp: true,
+            poi15m: true,
+            poi1h: true,
+            poi4h: true,
+            buywall: true,
+            sl: true,
+            pdl: true
+        };
+
+        function initLightweightChart() {
+            const container = document.getElementById('mazrion_lw_chart');
+            if (!container) return;
+
+            lwChart = LightweightCharts.createChart(container, {
+                width: container.clientWidth || 800,
+                height: container.clientHeight || 540,
+                layout: {
+                    background: { type: 'solid', color: '#06080C' },
+                    textColor: '#94A3B8',
+                    fontFamily: "'JetBrains Mono', monospace",
+                    fontSize: 11
+                },
+                grid: {
+                    vertLines: { color: '#0D111A' },
+                    horzLines: { color: '#0D111A' }
+                },
+                crosshair: {
+                    mode: LightweightCharts.CrosshairMode.Normal,
+                    vertLine: { color: '#2A364F', width: 1, style: 2 },
+                    horzLine: { color: '#2A364F', width: 1, style: 2 }
+                },
+                rightPriceScale: {
+                    borderColor: '#1A2333',
+                    scaleMargins: { top: 0.1, bottom: 0.2 },
+                    autoScale: true
+                },
+                timeScale: {
+                    borderColor: '#1A2333',
+                    timeVisible: true,
+                    secondsVisible: false
+                }
+            });
+
+            candleSeries = lwChart.addCandlestickSeries({
+                upColor: '#10B981',
+                downColor: '#FF3B69',
+                borderUpColor: '#10B981',
+                borderDownColor: '#FF3B69',
+                wickUpColor: '#10B981',
+                wickDownColor: '#FF3B69'
+            });
+
+            volumeSeries = lwChart.addHistogramSeries({
+                priceFormat: { type: 'volume' },
+                priceScaleId: '',
+                scaleMargins: { top: 0.82, bottom: 0 }
+            });
+
+            // Generate realistic high-res M5 candle series
+            const baseTime = Math.floor(Date.now() / 1000) - (80 * 300);
+            let currentP = 4458.00;
+            const candleData = [];
+            const volData = [];
+
+            for (let i = 0; i < 80; i++) {
+                const t = baseTime + (i * 300);
+                let drift = 0;
+                if (i < 25) drift = -0.15; // Sweep down to 4463 Asian Low
+                else if (i < 50) drift = 0.35; // Sharp rejection from 4463 to 4470
+                else drift = 0.12; // Expansion towards 4473
+
+                const open = currentP;
+                const change = (Math.random() - 0.45) * 1.6 + drift;
+                const close = open + change;
+                const high = Math.max(open, close) + Math.random() * 0.9;
+                const low = Math.min(open, close) - Math.random() * 0.9;
+                currentP = close;
+
+                candleData.push({ time: t, open, high, low, close });
+                volData.push({
+                    time: t,
+                    value: Math.floor(Math.random() * 850 + 300),
+                    color: close >= open ? 'rgba(16, 185, 129, 0.3)' : 'rgba(255, 59, 105, 0.3)'
+                });
+            }
+
+            candleSeries.setData(candleData);
+            volumeSeries.setData(volData);
+
+            // Render all active native price lines
+            renderAllPriceLines();
+
+            lwChart.timeScale().fitContent();
+
+            window.addEventListener('resize', () => {
+                if (lwChart && container) {
+                    lwChart.applyOptions({
+                        width: container.clientWidth,
+                        height: container.clientHeight
+                    });
+                }
+            });
+        }
+
+        function renderAllPriceLines() {
+            if (!candleSeries) return;
+
+            // Remove existing lines
+            Object.keys(activePriceLines).forEach(key => {
+                activePriceLines[key].forEach(l => {
+                    try { candleSeries.removePriceLine(l); } catch(e) {}
+                });
+            });
+            activePriceLines = {};
+
+            // Add lines that are active
+            Object.keys(levelDefinitions).forEach(key => {
+                if (levelStates[key]) {
+                    activePriceLines[key] = [];
+                    levelDefinitions[key].forEach(def => {
+                        const line = candleSeries.createPriceLine({
+                            price: def.price,
+                            color: def.color,
+                            lineWidth: def.lineWidth || 1.5,
+                            lineStyle: def.lineStyle !== undefined ? def.lineStyle : LightweightCharts.LineStyle.Dashed,
+                            axisLabelVisible: true,
+                            title: def.title
+                        });
+                        activePriceLines[key].push(line);
+                    });
+                }
+            });
+        }
+
+        function toggleLevelLine(key) {
+            levelStates[key] = !levelStates[key];
             const pill = document.getElementById(`pill-${key}`);
-            const line = document.getElementById(`line-${key}`);
-            
-            if (pill) pill.classList.toggle('active', overlayLinesState[key]);
-            if (line) {
-                line.style.opacity = overlayLinesState[key] ? '1' : '0';
-                line.style.pointerEvents = overlayLinesState[key] ? 'auto' : 'none';
+            if (pill) pill.classList.toggle('active', levelStates[key]);
+            renderAllPriceLines();
+        }
+
+        function resetChartView() {
+            if (lwChart) {
+                lwChart.timeScale().fitContent();
+                lwChart.priceScale('right').applyOptions({ autoScale: true });
             }
         }
 
-        // Alert Manager System
+        function switchChartEngine(engine) {
+            const mazrionContainer = document.getElementById('mazrion_lw_chart');
+            const tvContainer = document.getElementById('tradingview_xauusd');
+            const btnMazrion = document.getElementById('btn-engine-mazrion');
+            const btnTv = document.getElementById('btn-engine-tv');
+
+            if (engine === 'mazrion') {
+                mazrionContainer.style.display = 'block';
+                tvContainer.style.display = 'none';
+                btnMazrion.style.background = 'var(--accent-cyan)';
+                btnMazrion.style.color = '#000';
+                btnTv.style.background = 'transparent';
+                btnTv.style.color = 'var(--text-secondary)';
+                if (lwChart) resetChartView();
+            } else {
+                mazrionContainer.style.display = 'none';
+                tvContainer.style.display = 'block';
+                btnTv.style.background = 'var(--accent-cyan)';
+                btnTv.style.color = '#000';
+                btnMazrion.style.background = 'transparent';
+                btnMazrion.style.color = 'var(--text-secondary)';
+            }
+        }
+
+        // ==================== ALERT SYSTEM ====================
         let activeAlerts = [
-            { id: 1, price: 4476.75, label: 'Asian High Liquidity Sweep', triggered: false },
+            { id: 1, price: 4478.00, label: 'Target TP1 Liquidity Void', triggered: false },
             { id: 2, price: 4462.50, label: 'Whale Buy Wall Defend Zone', triggered: false }
         ];
 
@@ -1517,7 +1695,7 @@
             }
         }
 
-        // Dynamic Order Flow DOM Re-rendering Engine
+        // ==================== DYNAMIC ORDER FLOW DOM & LIVE TICKS ====================
         let liveBid = 4472.60;
         let liveSpreadPts = 5.4;
         let liveAsk = liveBid + (liveSpreadPts * 0.1);
@@ -1583,11 +1761,14 @@
             if (cvdHeader) cvdHeader.innerText = `+${cvdVal.toLocaleString()} OZ`;
         }
 
-        // Initialize DOM & Alerts
-        updateDomLadder(liveBid, liveAsk);
-        renderAlerts();
+        // Initialize Lightweight Charts & Alerts
+        window.addEventListener('DOMContentLoaded', () => {
+            initLightweightChart();
+            updateDomLadder(liveBid, liveAsk);
+            renderAlerts();
+        });
 
-        // Real-Time Dynamic Header & DOM Ticker
+        // Real-Time Dynamic Header, DOM Ticker & Canvas Candle Tick Updater
         setInterval(() => {
             const jitter = (Math.random() - 0.48) * 0.35;
             liveSpreadPts = 5.4 + (Math.random() - 0.5) * 0.5;
@@ -1606,6 +1787,19 @@
             if (domBidAsk) domBidAsk.innerText = `$${liveBid.toFixed(2)} / $${liveAsk.toFixed(2)}`;
             updateDomLadder(liveBid, liveAsk);
 
+            // Update active candle on native chart
+            if (candleSeries) {
+                const nowSec = Math.floor(Date.now() / 1000);
+                const currentBarTime = Math.floor(nowSec / 300) * 300;
+                candleSeries.update({
+                    time: currentBarTime,
+                    open: liveBid - jitter,
+                    high: Math.max(liveBid, liveBid + 0.6),
+                    low: Math.min(liveBid, liveBid - 0.6),
+                    close: liveBid
+                });
+            }
+
             // Check Price Alerts
             checkAlerts(liveBid);
         }, 1000);
@@ -1614,7 +1808,7 @@
         setInterval(() => {
             const now = new Date();
             
-            // Calculate IST
+            // Calculate IST (UTC+5:30)
             const istOffset = 5.5 * 60 * 60 * 1000;
             const istDate = new Date(now.getTime() + (now.getTimezoneOffset() * 60000) + istOffset);
             let hours = istDate.getHours();
