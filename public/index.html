@@ -905,7 +905,7 @@
                     <div class="chart-header">
                         <div style="display:flex; align-items:center; gap:8px; font-family:'JetBrains Mono';">
                             <span style="font-weight:900; font-size:15px; color:#FFF;">XAUUSD</span>
-                            <span style="font-size:11px; color:var(--accent-cyan); background:rgba(0,229,255,0.1); border:1px solid rgba(0,229,255,0.3); padding:2px 8px; border-radius:4px; font-weight:700;">● LIVE BINANCE GOLD FEED</span>
+                            <span style="font-size:11px; color:var(--accent-cyan); background:rgba(0,229,255,0.1); border:1px solid rgba(0,229,255,0.3); padding:2px 8px; border-radius:4px; font-weight:700;">● TRADINGVIEW PRO (SPOT GOLD — ZERO GAPS)</span>
                         </div>
 
                         <!-- Timeframe Switcher Toolbar -->
@@ -923,7 +923,7 @@
                             <button class="btn-action" id="btn-full-chart" onclick="toggleFullChart()" title="Expand Full Chart View" style="background:rgba(0, 229, 255, 0.15); border-color:rgba(0, 229, 255, 0.4); color:var(--accent-cyan);">
                                 <span>⛶</span> <span id="full-chart-text">Full Chart</span>
                             </button>
-                            <button class="btn-action" onclick="resetChartView()" title="Reset Zoom">
+                            <button class="btn-action" onclick="resetChartView()" title="Reset Chart">
                                 <span>🔄</span> <span>Reset</span>
                             </button>
                             <button class="btn-action btn-alert" onclick="openAlertModal()">
@@ -932,7 +932,7 @@
                         </div>
                     </div>
 
-                    <!-- Clean Institutional Key Levels HUD (Click to Toggle Exact Chart Line) -->
+                    <!-- Clean Institutional Key Levels HUD (Click to Select & Copy Level for TradingView Marking) -->
                     <div class="key-levels-bar">
                         <div class="key-pill" id="pill-pdh" onclick="toggleLevelLine('pdh')">📅 <b style="color:var(--accent-gold)">PDH:</b> $4491.23</div>
                         <div class="key-pill" id="pill-sellwall" onclick="toggleLevelLine('sellwall')">🐳 <b style="color:var(--accent-red)">SELL WALL:</b> $4488.50</div>
@@ -947,15 +947,9 @@
                         <div class="key-pill" id="pill-pdl" onclick="toggleLevelLine('pdl')">📅 <b style="color:var(--accent-gold)">PDL:</b> $4460.00</div>
                     </div>
 
-                    <!-- Real-Market Exact Chart Canvas Container -->
-                    <div id="chart-container">
-                        <!-- Live Floating Watermark HUD like MT5 / Institutional Terminal -->
-                        <div id="chart-live-hud" style="position:absolute; top:12px; left:16px; z-index:5; background:rgba(9, 13, 21, 0.88); backdrop-filter:blur(6px); border:1px solid var(--border-color); padding:5px 12px; border-radius:6px; font-family:'JetBrains Mono', monospace; font-size:12px; display:flex; align-items:center; gap:10px; pointer-events:none; box-shadow:0 4px 15px rgba(0,0,0,0.6);">
-                            <span style="font-weight:900; color:#FFF; letter-spacing:0.5px;">XAUUSD</span>
-                            <span id="chart-hud-price" style="font-weight:800; color:var(--accent-cyan);">$4472.38</span>
-                            <span id="chart-hud-spread" style="font-size:10px; font-weight:700; color:var(--text-muted); background:rgba(255,255,255,0.06); padding:2px 6px; border-radius:3px;">SPREAD: 5.4 PTS</span>
-                        </div>
-                        <div id="mazrion_chart_canvas" style="height:100%; width:100%;"></div>
+                    <!-- TradingView Official Pro Real-Time Chart Container -->
+                    <div id="chart-container" style="height: 560px; position: relative;">
+                        <div id="tradingview_chart_canvas" style="height:100%; width:100%;"></div>
                     </div>
 
                     <!-- 4-Pillar Grid -->
@@ -1511,122 +1505,69 @@
             return null;
         }
 
-        async function initPrecisionChart() {
-            const container = document.getElementById('mazrion_chart_canvas');
-            if (!container) return;
+        let activeTf = '5m';
+        let tvWidget = null;
 
+        function initTradingViewChart(interval = '5') {
+            const container = document.getElementById('tradingview_chart_canvas');
+            if (!container) return;
             container.innerHTML = '';
 
-            lwChart = LightweightCharts.createChart(container, {
-                width: container.clientWidth || 800,
-                height: container.clientHeight || 540,
-                layout: {
-                    background: { type: 'solid', color: '#06080C' },
-                    textColor: '#94A3B8',
-                    fontFamily: "'JetBrains Mono', monospace",
-                    fontSize: 11
-                },
-                grid: {
-                    vertLines: { color: '#0D111A' },
-                    horzLines: { color: '#0D111A' }
-                },
-                crosshair: {
-                    mode: LightweightCharts.CrosshairMode.Normal,
-                    vertLine: { color: '#2A364F', width: 1, style: 2 },
-                    horzLine: { color: '#2A364F', width: 1, style: 2 }
-                },
-                rightPriceScale: {
-                    borderColor: '#1A2333',
-                    scaleMargins: { top: 0.1, bottom: 0.15 },
-                    autoScale: true
-                },
-                timeScale: {
-                    borderColor: '#1A2333',
-                    timeVisible: true,
-                    secondsVisible: false
-                }
-            });
-
-            candleSeries = lwChart.addCandlestickSeries({
-                upColor: '#10B981',
-                downColor: '#FF3B69',
-                borderUpColor: '#10B981',
-                borderDownColor: '#FF3B69',
-                wickUpColor: '#10B981',
-                wickDownColor: '#FF3B69'
-            });
-
-            // Fetch Real Gold Market Data
-            const realCandles = await fetchRealMarketData(activeTf);
-            if (realCandles && realCandles.length > 0) {
-                candleSeries.setData(realCandles);
-            }
-
-            renderAllPriceLines();
-            updateBidAskPriceLines();
-            lwChart.timeScale().fitContent();
-
-            window.addEventListener('resize', () => {
-                if (lwChart && container) {
-                    lwChart.applyOptions({
-                        width: container.clientWidth,
-                        height: container.clientHeight
-                    });
-                }
-            });
-        }
-
-        function renderAllPriceLines() {
-            if (!candleSeries) return;
-
-            // Remove existing lines
-            Object.keys(activePriceLines).forEach(key => {
-                activePriceLines[key].forEach(l => {
-                    try { candleSeries.removePriceLine(l); } catch(e) {}
+            if (typeof TradingView !== 'undefined') {
+                tvWidget = new TradingView.widget({
+                    "autosize": true,
+                    "symbol": "OANDA:XAUUSD",
+                    "interval": interval,
+                    "timezone": "Asia/Kolkata",
+                    "theme": "dark",
+                    "style": "1",
+                    "locale": "en",
+                    "toolbar_bg": "#06080C",
+                    "enable_publishing": false,
+                    "hide_top_toolbar": false,
+                    "hide_legend": false,
+                    "hide_side_toolbar": false,
+                    "withdateranges": true,
+                    "allow_symbol_change": true,
+                    "save_image": true,
+                    "details": false,
+                    "hotlist": false,
+                    "calendar": false,
+                    "studies": [
+                        "STD;Volume"
+                    ],
+                    "container_id": "tradingview_chart_canvas"
                 });
-            });
-            activePriceLines = {};
-
-            // Add lines that are active
-            Object.keys(levelDefinitions).forEach(key => {
-                if (levelStates[key]) {
-                    activePriceLines[key] = [];
-                    levelDefinitions[key].forEach(def => {
-                        const line = candleSeries.createPriceLine({
-                            price: def.price,
-                            color: def.color,
-                            lineWidth: def.lineWidth || 1.5,
-                            lineStyle: def.lineStyle !== undefined ? def.lineStyle : LightweightCharts.LineStyle.Dashed,
-                            axisLabelVisible: true,
-                            title: def.title
-                        });
-                        activePriceLines[key].push(line);
-                    });
-                }
-            });
+            }
         }
 
         function toggleLevelLine(key) {
             levelStates[key] = !levelStates[key];
             const pill = document.getElementById(`pill-${key}`);
             if (pill) pill.classList.toggle('active', levelStates[key]);
-            renderAllPriceLines();
-            showToast(levelStates[key] ? `👁️ Showing ${key.toUpperCase()} Line` : `🙈 Hidden ${key.toUpperCase()} Line`);
+            
+            const def = levelDefinitions[key];
+            if (def && def.length > 0) {
+                const priceVal = def[0].price;
+                try {
+                    navigator.clipboard.writeText(priceVal.toFixed(2));
+                } catch(e) {}
+                playChime(750, 0.15);
+                showToast(`📋 ${key.toUpperCase()} ($${priceVal.toFixed(2)}) copied! Draw on TradingView with Horizontal Line [Alt+H].`);
+            }
         }
 
-        async function changeChartTimeframe(tf) {
+        function changeChartTimeframe(tf) {
             activeTf = tf;
+            const tfMap = { '1m': '1', '5m': '5', '15m': '15', '1h': '60', '4h': '240', '1d': 'D' };
+            const interval = tfMap[tf] || '5';
+            
             document.querySelectorAll('.tf-btn').forEach(btn => btn.classList.remove('active'));
             const activeBtn = document.getElementById(`tf-${tf}`);
             if (activeBtn) activeBtn.classList.add('active');
 
-            const candles = await fetchRealMarketData(tf);
-            if (candles && candleSeries) {
-                candleSeries.setData(candles);
-                updateBidAskPriceLines();
-                lwChart.timeScale().fitContent();
-                showToast(`⚡ Switched to ${tf.toUpperCase()} Real Live Market Feed`);
-            }
+            initTradingViewChart(interval);
+            showToast(`⚡ TradingView Switched to ${tf.toUpperCase()} Spot Gold Feed`);
         }
 
         function toggleFullChart() {
@@ -1634,24 +1575,17 @@
             const btnText = document.getElementById('full-chart-text');
             const isFull = layout.classList.toggle('full-chart-mode');
             if (btnText) btnText.innerText = isFull ? 'Standard View' : 'Full Chart';
+            const tfMap = { '1m': '1', '5m': '5', '15m': '15', '1h': '60', '4h': '240', '1d': 'D' };
             setTimeout(() => {
-                if (lwChart) {
-                    const container = document.getElementById('mazrion_chart_canvas');
-                    lwChart.applyOptions({
-                        width: container.clientWidth,
-                        height: container.clientHeight
-                    });
-                    lwChart.timeScale().fitContent();
-                }
+                initTradingViewChart(tfMap[activeTf] || '5');
             }, 200);
             showToast(isFull ? '⛶ Full Chart Expanded' : '🗗 Standard Split View Restored');
         }
 
         function resetChartView() {
-            if (lwChart) {
-                lwChart.timeScale().fitContent();
-                lwChart.priceScale('right').applyOptions({ autoScale: true });
-            }
+            const tfMap = { '1m': '1', '5m': '5', '15m': '15', '1h': '60', '4h': '240', '1d': 'D' };
+            initTradingViewChart(tfMap[activeTf] || '5');
+            showToast('🔄 TradingView Chart Reloaded');
         }
 
         // ==================== ALERT SYSTEM ====================
@@ -1883,7 +1817,7 @@
 
         // Initialize Real Market Engine & DOM
         window.addEventListener('DOMContentLoaded', () => {
-            initPrecisionChart();
+            initTradingViewChart();
             updateDomLadder(liveBid, liveAsk);
             renderAlerts();
         });
