@@ -185,6 +185,19 @@
             display: grid;
             grid-template-columns: 1.75fr 1.25fr;
             gap: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .chart-layout.full-chart-mode {
+            grid-template-columns: 1fr !important;
+        }
+
+        .chart-layout.full-chart-mode .intel-card {
+            margin-top: 16px;
+        }
+
+        .chart-layout.full-chart-mode #chart-container {
+            height: 680px;
         }
 
         @media (max-width: 1100px) {
@@ -873,6 +886,9 @@
                         
                         <!-- Engine Selector & Chart Actions -->
                         <div class="chart-actions">
+                            <button class="btn-action" id="btn-full-chart" onclick="toggleFullChart()" title="Expand Full Chart View" style="background:rgba(0, 229, 255, 0.15); border-color:rgba(0, 229, 255, 0.4); color:var(--accent-cyan);">
+                                <span>⛶</span> <span id="full-chart-text">Full Chart</span>
+                            </button>
                             <div style="display:flex; gap:3px; background:#090D15; padding:3px; border-radius:6px; border:1px solid var(--border-color);">
                                 <button class="btn-action active" id="btn-engine-mazrion" onclick="switchChartEngine('mazrion')" style="background:var(--accent-cyan); color:#000; border:none; padding:4px 8px; font-size:10px;">
                                     ⚡ MAZRION SYNCED (NATIVE)
@@ -895,9 +911,11 @@
                         <div class="key-pill active" id="pill-pdh" onclick="toggleLevelLine('pdh')">📅 <b style="color:var(--accent-gold)">PDH:</b> $4491.23</div>
                         <div class="key-pill active" id="pill-sellwall" onclick="toggleLevelLine('sellwall')">🐳 <b style="color:var(--accent-red)">SELL WALL:</b> $4488.50</div>
                         <div class="key-pill active" id="pill-tp" onclick="toggleLevelLine('tp')">🎯 <b style="color:var(--accent-green)">TP:</b> $4478.00</div>
+                        <div class="key-pill active" id="pill-bsl" onclick="toggleLevelLine('bsl')">💧 <b style="color:var(--accent-cyan)">BSL EQH:</b> $4478.20</div>
                         <div class="key-pill active" id="pill-poi15m" onclick="toggleLevelLine('poi15m')">📦 <b style="color:var(--accent-cyan)">15M POI:</b> $4468.5–$4471</div>
                         <div class="key-pill active" id="pill-poi1h" onclick="toggleLevelLine('poi1h')">📦 <b style="color:var(--accent-gold)">1H POI:</b> $4466.2–$4469</div>
                         <div class="key-pill active" id="pill-poi4h" onclick="toggleLevelLine('poi4h')">📦 <b style="color:var(--accent-green)">4H POI:</b> $4464–$4467.5</div>
+                        <div class="key-pill active" id="pill-ssl" onclick="toggleLevelLine('ssl')">💧 <b style="color:var(--accent-gold)">SSL SWEEP:</b> $4463.80</div>
                         <div class="key-pill active" id="pill-buywall" onclick="toggleLevelLine('buywall')">🐳 <b style="color:var(--accent-cyan)">BUY WALL:</b> $4462.50</div>
                         <div class="key-pill active" id="pill-sl" onclick="toggleLevelLine('sl')">🛑 <b style="color:var(--accent-red)">SL:</b> $4461.80</div>
                         <div class="key-pill active" id="pill-pdl" onclick="toggleLevelLine('pdl')">📅 <b style="color:var(--accent-gold)">PDL:</b> $4460.00</div>
@@ -1364,34 +1382,40 @@
 
         const levelDefinitions = {
             pdh: [
-                { price: 4491.23, color: '#F59E0B', title: '📅 PDH: $4491.23', lineStyle: 2, lineWidth: 2 }
+                { price: 4491.23, color: '#F59E0B', title: 'PDH: $4491.23', lineStyle: 2, lineWidth: 2 }
             ],
             sellwall: [
-                { price: 4488.50, color: '#FF3B69', title: '🐳 SELL WALL: $4488.50 ($19.1M)', lineStyle: 0, lineWidth: 2 }
+                { price: 4488.50, color: '#FF3B69', title: '🐳 Sell Wall: $4488.50', lineStyle: 0, lineWidth: 2 }
             ],
             tp: [
-                { price: 4478.00, color: '#10B981', title: '🎯 TARGET TP1: $4478.00', lineStyle: 2, lineWidth: 2 }
+                { price: 4478.00, color: '#10B981', title: '🎯 Target TP: $4478.00', lineStyle: 2, lineWidth: 2 }
+            ],
+            bsl: [
+                { price: 4478.20, color: '#00E5FF', title: '💧 BSL EQH: $4478.20', lineStyle: 2, lineWidth: 1.5 }
             ],
             poi15m: [
-                { price: 4471.00, color: '#00E5FF', title: '📦 15M POI HIGH: $4471.00', lineStyle: 1, lineWidth: 1 },
-                { price: 4468.50, color: '#00E5FF', title: '📦 15M POI LOW: $4468.50', lineStyle: 1, lineWidth: 1 }
+                { price: 4471.00, color: '#00E5FF', title: '15M POI: $4471.00', lineStyle: 1, lineWidth: 1 },
+                { price: 4468.50, color: '#00E5FF', title: '15M POI: $4468.50', lineStyle: 1, lineWidth: 1 }
             ],
             poi1h: [
-                { price: 4469.00, color: '#F59E0B', title: '📦 1H POI HIGH: $4469.00', lineStyle: 1, lineWidth: 1.5 },
-                { price: 4466.20, color: '#F59E0B', title: '📦 1H POI LOW: $4466.20', lineStyle: 1, lineWidth: 1.5 }
+                { price: 4469.00, color: '#F59E0B', title: '1H POI: $4469.00', lineStyle: 1, lineWidth: 1.5 },
+                { price: 4466.20, color: '#F59E0B', title: '1H POI: $4466.20', lineStyle: 1, lineWidth: 1.5 }
             ],
             poi4h: [
-                { price: 4467.50, color: '#10B981', title: '📦 4H POI HIGH: $4467.50', lineStyle: 2, lineWidth: 1.5 },
-                { price: 4464.00, color: '#10B981', title: '📦 4H POI LOW: $4464.00', lineStyle: 2, lineWidth: 1.5 }
+                { price: 4467.50, color: '#10B981', title: '4H POI: $4467.50', lineStyle: 2, lineWidth: 1.5 },
+                { price: 4464.00, color: '#10B981', title: '4H POI: $4464.00', lineStyle: 2, lineWidth: 1.5 }
+            ],
+            ssl: [
+                { price: 4463.80, color: '#F59E0B', title: '💧 SSL Sweep: $4463.80', lineStyle: 2, lineWidth: 1.5 }
             ],
             buywall: [
-                { price: 4462.50, color: '#00E5FF', title: '🐳 BUY WALL: $4462.50 ($24.6M)', lineStyle: 0, lineWidth: 2 }
+                { price: 4462.50, color: '#00E5FF', title: '🐳 Buy Wall: $4462.50', lineStyle: 0, lineWidth: 2 }
             ],
             sl: [
-                { price: 4461.80, color: '#EF4444', title: '🛑 STRUCTURAL SL: $4461.80', lineStyle: 0, lineWidth: 2 }
+                { price: 4461.80, color: '#EF4444', title: '🛑 Hard SL: $4461.80', lineStyle: 0, lineWidth: 2 }
             ],
             pdl: [
-                { price: 4460.00, color: '#F59E0B', title: '📅 PDL: $4460.00', lineStyle: 2, lineWidth: 2 }
+                { price: 4460.00, color: '#F59E0B', title: 'PDL: $4460.00', lineStyle: 2, lineWidth: 2 }
             ]
         };
 
@@ -1399,9 +1423,11 @@
             pdh: true,
             sellwall: true,
             tp: true,
+            bsl: true,
             poi15m: true,
             poi1h: true,
             poi4h: true,
+            ssl: true,
             buywall: true,
             sl: true,
             pdl: true
@@ -1431,7 +1457,7 @@
                 },
                 rightPriceScale: {
                     borderColor: '#1A2333',
-                    scaleMargins: { top: 0.1, bottom: 0.2 },
+                    scaleMargins: { top: 0.1, bottom: 0.25 },
                     autoScale: true
                 },
                 timeScale: {
@@ -1450,10 +1476,17 @@
                 wickDownColor: '#FF3B69'
             });
 
+            // Volume strictly isolated to the bottom 14% of the chart
             volumeSeries = lwChart.addHistogramSeries({
                 priceFormat: { type: 'volume' },
-                priceScaleId: '',
-                scaleMargins: { top: 0.82, bottom: 0 }
+                priceScaleId: 'volume',
+            });
+
+            lwChart.priceScale('volume').applyOptions({
+                scaleMargins: {
+                    top: 0.86,
+                    bottom: 0,
+                },
             });
 
             // Generate realistic high-res M5 candle series
@@ -1480,7 +1513,7 @@
                 volData.push({
                     time: t,
                     value: Math.floor(Math.random() * 850 + 300),
-                    color: close >= open ? 'rgba(16, 185, 129, 0.3)' : 'rgba(255, 59, 105, 0.3)'
+                    color: close >= open ? 'rgba(16, 185, 129, 0.25)' : 'rgba(255, 59, 105, 0.25)'
                 });
             }
 
@@ -1537,6 +1570,23 @@
             const pill = document.getElementById(`pill-${key}`);
             if (pill) pill.classList.toggle('active', levelStates[key]);
             renderAllPriceLines();
+        }
+
+        function toggleFullChart() {
+            const layout = document.querySelector('.chart-layout');
+            const btnText = document.getElementById('full-chart-text');
+            const isFull = layout.classList.toggle('full-chart-mode');
+            if (btnText) btnText.innerText = isFull ? 'Standard View' : 'Full Chart';
+            setTimeout(() => {
+                if (lwChart) {
+                    const container = document.getElementById('mazrion_lw_chart');
+                    lwChart.applyOptions({
+                        width: container.clientWidth,
+                        height: container.clientHeight
+                    });
+                    lwChart.timeScale().fitContent();
+                }
+            }, 200);
         }
 
         function resetChartView() {
