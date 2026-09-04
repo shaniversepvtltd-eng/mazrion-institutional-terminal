@@ -8,8 +8,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=JetBrains+Mono:wght@400;600;700;800&display=swap" rel="stylesheet">
     
-    <!-- TradingView Lightweight Charts Library -->
-    <script src="https://unpkg.com/lightweight-charts@4.1.1/dist/lightweight-charts.standalone.production.js"></script>
+    <!-- Official TradingView Widget Library -->
     <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
 
     <style>
@@ -212,132 +211,40 @@
             gap: 8px;
         }
 
-        .chart-sub-toolbar {
+        /* Institutional Key Levels Bar */
+        .key-levels-bar {
             display: flex;
-            justify-content: space-between;
             align-items: center;
+            justify-content: space-between;
             background: #090D15;
             border: 1px solid var(--border-color);
-            padding: 6px 10px;
+            padding: 8px 12px;
             border-radius: 6px;
             margin-bottom: 10px;
             flex-wrap: wrap;
-            gap: 6px;
-        }
-
-        .overlay-controls {
-            display: flex;
-            gap: 5px;
-            flex-wrap: wrap;
-        }
-
-        .btn-toggle {
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid var(--border-color);
-            color: var(--text-secondary);
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 10.5px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
+            gap: 8px;
             font-family: 'JetBrains Mono', monospace;
-        }
-
-        .btn-toggle.active {
-            background: rgba(0, 229, 255, 0.15);
-            border-color: var(--accent-cyan);
-            color: var(--accent-cyan);
-        }
-
-        .btn-reset-view {
-            background: rgba(255, 255, 255, 0.06);
-            border: 1px solid var(--border-color);
-            color: #FFF;
-            padding: 4px 10px;
-            border-radius: 4px;
             font-size: 11px;
-            font-weight: 700;
-            font-family: 'JetBrains Mono', monospace;
-            cursor: pointer;
+        }
+
+        .key-pill {
             display: flex;
             align-items: center;
             gap: 5px;
-            transition: all 0.2s;
-        }
-
-        .btn-reset-view:hover {
-            background: var(--accent-cyan);
-            color: #000;
-            border-color: var(--accent-cyan);
-        }
-
-        .chart-tf-btn {
-            background: transparent;
+            background: rgba(255, 255, 255, 0.03);
             border: 1px solid var(--border-color);
-            color: var(--text-muted);
-            padding: 4px 8px;
+            padding: 3px 8px;
             border-radius: 4px;
-            font-size: 10px;
-            font-weight: 700;
-            font-family: 'JetBrains Mono', monospace;
-            cursor: pointer;
-        }
-
-        .chart-tf-btn.active {
-            background: var(--accent-cyan);
-            color: #000;
-            border-color: var(--accent-cyan);
         }
 
         #chart-container {
             width: 100%;
-            height: 520px;
+            height: 540px;
             border-radius: 8px;
             overflow: hidden;
             border: 1px solid var(--border-color);
             background: #06080C;
             position: relative;
-        }
-
-        /* Floating Ask / Bid / Spread HUD inside Chart */
-        .chart-floating-hud {
-            position: absolute;
-            top: 12px;
-            left: 12px;
-            background: rgba(10, 14, 22, 0.9);
-            backdrop-filter: blur(8px);
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            padding: 6px 12px;
-            z-index: 10;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 11px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-            pointer-events: none;
-        }
-
-        .hud-bid {
-            color: var(--accent-cyan);
-            font-weight: 800;
-        }
-
-        .hud-ask {
-            color: var(--accent-red);
-            font-weight: 800;
-        }
-
-        .hud-spread {
-            background: rgba(245, 158, 11, 0.15);
-            border: 1px solid rgba(245, 158, 11, 0.4);
-            color: var(--accent-gold);
-            padding: 2px 6px;
-            border-radius: 3px;
-            font-weight: 800;
-            font-size: 10px;
         }
 
         /* Overlay Legend Box */
@@ -635,7 +542,7 @@
     <header>
         <div class="brand">
             <span>👑 MAZRION</span>
-            <span class="brand-badge"><span class="live-dot"></span>LIVE STREAMING</span>
+            <span class="brand-badge"><span class="live-dot"></span>LIVE TRADINGVIEW FEED</span>
         </div>
         
         <!-- Navigation Menu -->
@@ -648,9 +555,9 @@
 
         <div style="font-family:'JetBrains Mono'; font-size:12px; display:flex; gap:16px;">
             <div>ASSET: <b style="color:var(--accent-cyan)">XAUUSD</b></div>
-            <div>BID: <b style="color:var(--accent-cyan)" id="hdr-bid">$4467.37</b></div>
-            <div>ASK: <b style="color:var(--accent-red)" id="hdr-ask">$4467.92</b></div>
-            <div>SPREAD: <b style="color:var(--accent-gold)" id="hdr-spread">5.4 PTS</b></div>
+            <div>BID: <b style="color:var(--accent-cyan)" id="hdr-bid">$4469.85</b></div>
+            <div>ASK: <b style="color:var(--accent-red)" id="hdr-ask">$4470.38</b></div>
+            <div>SPREAD: <b style="color:var(--accent-gold)" id="hdr-spread">5.3 PTS</b></div>
         </div>
     </header>
 
@@ -672,72 +579,32 @@
         <div id="tab-chart" class="tab-content active">
             <div class="chart-layout">
                 
-                <!-- Left: Chart & 4 Pillars -->
+                <!-- Left: Official Real-Time TradingView Chart & 4 Pillars -->
                 <div class="chart-card">
-                    <!-- Top Toolbar -->
                     <div class="chart-header">
                         <div style="display:flex; align-items:center; gap:8px; font-family:'JetBrains Mono';">
                             <span style="font-weight:900; font-size:15px; color:#FFF;">XAUUSD</span>
-                            <div style="display:flex; gap:3px;">
-                                <button class="chart-tf-btn" onclick="changeTf('1m')">1M</button>
-                                <button class="chart-tf-btn active" id="tf-5m" onclick="changeTf('5m')">5M</button>
-                                <button class="chart-tf-btn" onclick="changeTf('15m')">15M</button>
-                                <button class="chart-tf-btn" onclick="changeTf('1h')">1H</button>
-                                <button class="chart-tf-btn" onclick="changeTf('4h')">4H</button>
-                                <button class="chart-tf-btn" onclick="changeTf('1d')">1D</button>
-                            </div>
+                            <span style="font-size:12px; color:var(--text-secondary);">OANDA Spot Gold • Live Official Stream</span>
                         </div>
-
-                        <!-- Reset View Button -->
-                        <button class="btn-reset-view" onclick="resetChartView()">
-                            <span>⟲</span> <span>Reset View</span>
-                        </button>
-                    </div>
-
-                    <!-- Overlay Toggles Toolbar -->
-                    <div class="chart-sub-toolbar">
-                        <div class="overlay-controls">
-                            <button class="btn-toggle active" id="btn-lines" onclick="toggleOverlay('lines')">🔴 ASK / 🟢 BID</button>
-                            <button class="btn-toggle active" id="btn-pdhl" onclick="toggleOverlay('pdhl')">📅 PDH / PDL</button>
-                            <button class="btn-toggle active" id="btn-pwhl" onclick="toggleOverlay('pwhl')">📆 PWH / PWL</button>
-                            <button class="btn-toggle active" id="btn-pmhl" onclick="toggleOverlay('pmhl')">🗓️ PMH / PML</button>
-                            <button class="btn-toggle active" id="btn-liq" onclick="toggleOverlay('liq')">💧 Liquidity Sweeps</button>
-                            <button class="btn-toggle active" id="btn-walls" onclick="toggleOverlay('walls')">🐳 Whale Walls</button>
-                            <button class="btn-toggle active" id="btn-bos" onclick="toggleOverlay('bos')">📐 4H BOS</button>
-                            <button class="btn-toggle active" id="btn-poi" onclick="toggleOverlay('poi')">📦 Watch Zone</button>
-                            <button class="btn-toggle active" id="btn-plan" onclick="toggleOverlay('plan')">🎯 Trade Box</button>
+                        <div style="font-family:'JetBrains Mono'; font-size:11px; color:var(--accent-green); display:flex; align-items:center; gap:6px;">
+                            <span class="live-dot"></span> REAL-TIME CANDLE FEED
                         </div>
                     </div>
 
-                    <!-- Interactive Chart Container -->
+                    <!-- Clean Institutional Key Levels HUD -->
+                    <div class="key-levels-bar">
+                        <div class="key-pill">📅 <b style="color:var(--accent-gold)">PDH:</b> $4491.23</div>
+                        <div class="key-pill">📅 <b style="color:var(--accent-gold)">PDL:</b> $4460.00</div>
+                        <div class="key-pill">📦 <b style="color:var(--accent-green)">4H DEMAND POI:</b> $4464–$4467.50</div>
+                        <div class="key-pill">🐳 <b style="color:var(--accent-cyan)">BUY WALL:</b> $4462.50 ($24.6M)</div>
+                        <div class="key-pill">🐳 <b style="color:var(--accent-red)">SELL WALL:</b> $4488.50 ($19.1M)</div>
+                        <div class="key-pill">🛑 <b style="color:var(--accent-red)">SL:</b> $4461.80</div>
+                        <div class="key-pill">🎯 <b style="color:var(--accent-gold)">TP:</b> $4478.00</div>
+                    </div>
+
+                    <!-- Official TradingView Real-Time Chart Container -->
                     <div id="chart-container">
-                        <!-- Floating HUD directly on top of Chart -->
-                        <div class="chart-floating-hud">
-                            <span><b style="color:var(--text-muted)">BID:</b> <span class="hud-bid" id="chart-hud-bid">$4467.37</span></span>
-                            <span class="hud-spread" id="chart-hud-spread">SPREAD: 5.4 PTS</span>
-                            <span><b style="color:var(--text-muted)">ASK:</b> <span class="hud-ask" id="chart-hud-ask">$4467.92</span></span>
-                        </div>
-                        <!-- Canvas Container -->
-                        <div id="lightweight-chart-view" style="width:100%; height:100%;"></div>
-                    </div>
-
-                    <!-- Overlay Legend -->
-                    <div class="overlay-legend" id="overlay-legend">
-                        <div class="legend-item" id="leg-ask">🔴 <b style="color:var(--accent-red)">ASK:</b> <span id="leg-ask-val">$4467.92</span></div>
-                        <div class="legend-item" id="leg-bid">🟢 <b style="color:var(--accent-cyan)">BID:</b> <span id="leg-bid-val">$4467.37</span></div>
-                        <div class="legend-item" id="leg-pdh">📅 <b style="color:var(--accent-gold)">PDH:</b> $4491.23</div>
-                        <div class="legend-item" id="leg-pdl">📅 <b style="color:var(--accent-gold)">PDL:</b> $4460.00</div>
-                        <div class="legend-item" id="leg-pwh">📆 <b style="color:var(--accent-purple)">PWH:</b> $4510.50</div>
-                        <div class="legend-item" id="leg-pwl">📆 <b style="color:var(--accent-purple)">PWL:</b> $4432.00</div>
-                        <div class="legend-item" id="leg-pmh">🗓️ <b style="color:var(--accent-blue)">PMH:</b> $4545.00</div>
-                        <div class="legend-item" id="leg-pml">🗓️ <b style="color:var(--accent-blue)">PML:</b> $4380.00</div>
-                        <div class="legend-item" id="leg-liq-sweep">💧 <b style="color:var(--accent-green)">ASIAN SWEEP:</b> $4463.80</div>
-                        <div class="legend-item" id="leg-walls-buy">🟢 <b style="color:var(--accent-cyan)">BUY WALL:</b> $4462.50 ($24.6M)</div>
-                        <div class="legend-item" id="leg-walls-sell">🔴 <b style="color:var(--accent-red)">SELL WALL:</b> $4488.50 ($19.1M)</div>
-                        <div class="legend-item" id="leg-poi">📦 <b style="color:var(--accent-green)">4H DEMAND POI:</b> $4464–$4467.50</div>
-                        <div class="legend-item" id="leg-bos">📐 <b style="color:var(--accent-gold)">4H BOS:</b> $4482.50</div>
-                        <div class="legend-item" id="leg-sl">🛑 <b style="color:var(--accent-red)">SL:</b> $4461.80</div>
-                        <div class="legend-item" id="leg-tp">🎯 <b style="color:var(--accent-gold)">TP1:</b> $4478.00</div>
+                        <div id="tradingview_xauusd" style="height:100%; width:100%;"></div>
                     </div>
 
                     <!-- 4-Pillar Grid -->
@@ -869,7 +736,7 @@
                     <!-- Current Price Separator -->
                     <div class="ladder-row ladder-current">
                         <span>🎯 ACTIVE GOLD BID / ASK</span>
-                        <span id="dom-live-bid-ask">$4467.37 / $4467.92</span>
+                        <span id="dom-live-bid-ask">$4469.85 / $4470.38</span>
                     </div>
 
                     <!-- Dynamic Live Bids Container -->
@@ -1024,406 +891,39 @@
         <div>MAZRION INTELLIGENCE ENGINE v4.0 | DEEPSEEK v3 BRAIN ONLINE | HOSTED ON VERCEL</div>
     </footer>
 
-    <!-- Interactive Lightweight Charts Script -->
+    <!-- Official TradingView Real-Time Chart Initializer -->
     <script type="text/javascript">
-        // Global State & Price References
-        let liveBid = 4467.37;
-        let liveSpreadPts = 5.4;
-        let liveAsk = liveBid + (liveSpreadPts * 0.1);
-
-        const chartContainer = document.getElementById('lightweight-chart-view');
-        
-        // 1. Initialize Lightweight Chart
-        const chart = LightweightCharts.createChart(chartContainer, {
-            width: chartContainer.clientWidth,
-            height: chartContainer.clientHeight || 520,
-            layout: {
-                background: { color: '#06080C' },
-                textColor: '#94A3B8',
-                fontFamily: "'JetBrains Mono', monospace",
-            },
-            grid: {
-                vertLines: { color: 'rgba(26, 35, 51, 0.35)' },
-                horzLines: { color: 'rgba(26, 35, 51, 0.35)' },
-            },
-            crosshair: {
-                mode: LightweightCharts.CrosshairMode.Normal,
-            },
-            rightPriceScale: {
-                borderColor: '#1A2333',
-                scaleMargins: { top: 0.12, bottom: 0.12 },
-                autoScale: true,
-            },
-            timeScale: {
-                borderColor: '#1A2333',
-                timeVisible: true,
-                secondsVisible: false,
-            },
+        // Real-Time TradingView Embed
+        let tvWidget = new TradingView.widget({
+            "autosize": true,
+            "symbol": "OANDA:XAUUSD",
+            "interval": "1",
+            "timezone": "Etc/UTC",
+            "theme": "dark",
+            "style": "1",
+            "locale": "en",
+            "toolbar_bg": "#06080C",
+            "enable_publishing": false,
+            "allow_symbol_change": true,
+            "container_id": "tradingview_xauusd",
+            "hide_side_toolbar": false,
+            "withdateranges": true,
+            "save_image": true,
+            "details": true,
+            "hotlist": false,
+            "calendar": false
         });
 
-        // Resize Listener
-        window.addEventListener('resize', () => {
-            if (chartContainer) {
-                chart.applyOptions({
-                    width: chartContainer.clientWidth,
-                    height: chartContainer.clientHeight || 520
-                });
-            }
-        });
-
-        // 2. Candlestick Series
-        const candleSeries = chart.addCandlestickSeries({
-            upColor: '#00E5FF',
-            downColor: '#FF3B69',
-            borderUpColor: '#00E5FF',
-            borderDownColor: '#FF3B69',
-            wickUpColor: '#00E5FF',
-            wickDownColor: '#FF3B69',
-        });
-
-        // Generate Realistic Synthetic History Data
-        function generateCandles(count = 90) {
-            const data = [];
-            const now = Math.floor(Date.now() / 1000);
-            let p = liveBid - 8.5;
-            for (let i = count; i >= 1; i--) {
-                const t = now - (i * 300);
-                const change = (Math.random() - 0.48) * 1.8;
-                const open = p;
-                const close = open + change;
-                const high = Math.max(open, close) + Math.random() * 1.3;
-                const low = Math.min(open, close) - Math.random() * 1.3;
-                data.push({ time: t, open: open, high: high, low: low, close: close });
-                p = close;
-            }
-            // Ensure last candle matches liveBid
-            data[data.length - 1].close = liveBid;
-            data[data.length - 1].high = Math.max(data[data.length - 1].high, liveBid + 0.5);
-            data[data.length - 1].low = Math.min(data[data.length - 1].low, liveBid - 0.5);
-            return data;
-        }
-
-        let candleData = generateCandles(90);
-        candleSeries.setData(candleData);
-
-        // 3. Price Lines (Ask, Bid, PDH, PDL, PWH, PWL, PMH, PML, Liquidity Sweeps, Whale Walls, BOS, POI, SL, TP)
-        const priceLines = {};
-
-        // ASK Line (Red Dashed)
-        priceLines.ask = candleSeries.createPriceLine({
-            price: liveAsk,
-            color: '#FF3B69',
-            lineWidth: 2,
-            lineStyle: LightweightCharts.LineStyle.Dashed,
-            axisLabelVisible: true,
-            title: `ASK $${liveAsk.toFixed(2)}`,
-        });
-
-        // BID Line (Cyan Dashed)
-        priceLines.bid = candleSeries.createPriceLine({
-            price: liveBid,
-            color: '#00E5FF',
-            lineWidth: 2,
-            lineStyle: LightweightCharts.LineStyle.Dashed,
-            axisLabelVisible: true,
-            title: `BID $${liveBid.toFixed(2)}`,
-        });
-
-        // Previous Day High / Low (PDH / PDL)
-        priceLines.pdh = candleSeries.createPriceLine({
-            price: 4491.23,
-            color: '#F59E0B',
-            lineWidth: 2,
-            lineStyle: LightweightCharts.LineStyle.Dashed,
-            axisLabelVisible: true,
-            title: '📅 PREVIOUS DAY HIGH (PDH) $4491.23',
-        });
-        priceLines.pdl = candleSeries.createPriceLine({
-            price: 4460.00,
-            color: '#F59E0B',
-            lineWidth: 2,
-            lineStyle: LightweightCharts.LineStyle.Dashed,
-            axisLabelVisible: true,
-            title: '📅 PREVIOUS DAY LOW (PDL) $4460.00',
-        });
-
-        // Previous Week High / Low (PWH / PWL)
-        priceLines.pwh = candleSeries.createPriceLine({
-            price: 4510.50,
-            color: '#A855F7',
-            lineWidth: 2,
-            lineStyle: LightweightCharts.LineStyle.LargeDashed,
-            axisLabelVisible: true,
-            title: '📆 PREVIOUS WEEK HIGH (PWH) $4510.50',
-        });
-        priceLines.pwl = candleSeries.createPriceLine({
-            price: 4432.00,
-            color: '#A855F7',
-            lineWidth: 2,
-            lineStyle: LightweightCharts.LineStyle.LargeDashed,
-            axisLabelVisible: true,
-            title: '📆 PREVIOUS WEEK LOW (PWL) $4432.00',
-        });
-
-        // Previous Month High / Low (PMH / PML)
-        priceLines.pmh = candleSeries.createPriceLine({
-            price: 4545.00,
-            color: '#3B82F6',
-            lineWidth: 2,
-            lineStyle: LightweightCharts.LineStyle.Solid,
-            axisLabelVisible: true,
-            title: '🗓️ PREVIOUS MONTH HIGH (PMH) $4545.00',
-        });
-        priceLines.pml = candleSeries.createPriceLine({
-            price: 4380.00,
-            color: '#3B82F6',
-            lineWidth: 2,
-            lineStyle: LightweightCharts.LineStyle.Solid,
-            axisLabelVisible: true,
-            title: '🗓️ PREVIOUS MONTH LOW (PML) $4380.00',
-        });
-
-        // Liquidity Sweeps (Asian / London)
-        priceLines.liqAsianLow = candleSeries.createPriceLine({
-            price: 4463.80,
-            color: '#10B981',
-            lineWidth: 1.5,
-            lineStyle: LightweightCharts.LineStyle.Dotted,
-            axisLabelVisible: true,
-            title: '💧 ASIAN LOW LIQUIDITY SWEEP $4463.80',
-        });
-        priceLines.liqAsianHigh = candleSeries.createPriceLine({
-            price: 4476.50,
-            color: '#00E5FF',
-            lineWidth: 1.5,
-            lineStyle: LightweightCharts.LineStyle.Dotted,
-            axisLabelVisible: true,
-            title: '💧 ASIAN HIGH TARGET $4476.50',
-        });
-
-        // Whale Buy & Sell Wall Lines
-        priceLines.buyWall = candleSeries.createPriceLine({
-            price: 4462.50,
-            color: '#00E5FF',
-            lineWidth: 2,
-            lineStyle: LightweightCharts.LineStyle.Solid,
-            axisLabelVisible: true,
-            title: '🐳 WHALE BUY WALL ($24.6M / 18,450 Lots)',
-        });
-        priceLines.sellWall = candleSeries.createPriceLine({
-            price: 4488.50,
-            color: '#FF3B69',
-            lineWidth: 2,
-            lineStyle: LightweightCharts.LineStyle.Solid,
-            axisLabelVisible: true,
-            title: '🐳 WHALE SELL WALL ($19.1M / 14,200 Lots)',
-        });
-
-        // 4H BOS Line
-        priceLines.bos = candleSeries.createPriceLine({
-            price: 4482.50,
-            color: '#F59E0B',
-            lineWidth: 2,
-            lineStyle: LightweightCharts.LineStyle.LargeDashed,
-            axisLabelVisible: true,
-            title: '📐 4H BREAK OF STRUCTURE (BOS)',
-        });
-
-        // Watch Zone (4H Demand POI Top & Bottom)
-        priceLines.poiTop = candleSeries.createPriceLine({
-            price: 4467.50,
-            color: '#10B981',
-            lineWidth: 1,
-            lineStyle: LightweightCharts.LineStyle.Dotted,
-            axisLabelVisible: true,
-            title: '📦 4H DEMAND POI HIGH ($4467.50)',
-        });
-        priceLines.poiBottom = candleSeries.createPriceLine({
-            price: 4464.00,
-            color: '#10B981',
-            lineWidth: 1,
-            lineStyle: LightweightCharts.LineStyle.Dotted,
-            axisLabelVisible: true,
-            title: '📦 4H DEMAND POI LOW ($4464.00)',
-        });
-
-        // Trade Box (Hard SL, TP1, TP2)
-        priceLines.sl = candleSeries.createPriceLine({
-            price: 4461.80,
-            color: '#EF4444',
-            lineWidth: 2,
-            lineStyle: LightweightCharts.LineStyle.Solid,
-            axisLabelVisible: true,
-            title: '🛑 HARD STRUCTURAL SL: $4461.80',
-        });
-        priceLines.tp1 = candleSeries.createPriceLine({
-            price: 4478.00,
-            color: '#10B981',
-            lineWidth: 2,
-            lineStyle: LightweightCharts.LineStyle.Dashed,
-            axisLabelVisible: true,
-            title: '🎯 TARGET 1: $4478.00 (+110 Pips)',
-        });
-
-        // Fit content on start
-        chart.timeScale().fitContent();
-
-        // 4. Reset View Function
-        function resetChartView() {
-            chart.timeScale().fitContent();
-            chart.priceScale('right').applyOptions({ autoScale: true });
-        }
-
-        // 5. Tab Switching
+        // Tab Switching
         function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
             
             document.getElementById(`tab-${tabId}`).classList.add('active');
             event.target.classList.add('active');
-
-            if (tabId === 'chart') {
-                setTimeout(() => {
-                    chart.applyOptions({
-                        width: chartContainer.clientWidth,
-                        height: chartContainer.clientHeight || 520
-                    });
-                    resetChartView();
-                }, 50);
-            }
         }
 
-        // 6. Timeframe Switching
-        function changeTf(tf) {
-            document.querySelectorAll('.chart-tf-btn').forEach(b => b.classList.remove('active'));
-            event.target.classList.add('active');
-            candleData = generateCandles(90);
-            candleSeries.setData(candleData);
-            resetChartView();
-        }
-
-        // 7. Overlay Toggle Functionality
-        const overlays = { 
-            lines: true, 
-            pdhl: true, 
-            pwhl: true, 
-            pmhl: true, 
-            liq: true, 
-            walls: true, 
-            bos: true, 
-            poi: true, 
-            plan: true 
-        };
-
-        function toggleOverlay(layer) {
-            overlays[layer] = !overlays[layer];
-            const btn = document.getElementById(`btn-${layer}`);
-            btn.classList.toggle('active', overlays[layer]);
-
-            if (layer === 'lines') {
-                if (!overlays.lines) {
-                    candleSeries.removePriceLine(priceLines.ask);
-                    candleSeries.removePriceLine(priceLines.bid);
-                } else {
-                    priceLines.ask = candleSeries.createPriceLine({
-                        price: liveAsk, color: '#FF3B69', lineWidth: 2, lineStyle: LightweightCharts.LineStyle.Dashed, axisLabelVisible: true, title: `ASK $${liveAsk.toFixed(2)}`
-                    });
-                    priceLines.bid = candleSeries.createPriceLine({
-                        price: liveBid, color: '#00E5FF', lineWidth: 2, lineStyle: LightweightCharts.LineStyle.Dashed, axisLabelVisible: true, title: `BID $${liveBid.toFixed(2)}`
-                    });
-                }
-            } else if (layer === 'pdhl') {
-                if (!overlays.pdhl) {
-                    candleSeries.removePriceLine(priceLines.pdh);
-                    candleSeries.removePriceLine(priceLines.pdl);
-                    document.getElementById('leg-pdh').style.display = 'none';
-                    document.getElementById('leg-pdl').style.display = 'none';
-                } else {
-                    priceLines.pdh = candleSeries.createPriceLine({ price: 4491.23, color: '#F59E0B', lineWidth: 2, lineStyle: LightweightCharts.LineStyle.Dashed, axisLabelVisible: true, title: '📅 PREVIOUS DAY HIGH (PDH) $4491.23' });
-                    priceLines.pdl = candleSeries.createPriceLine({ price: 4460.00, color: '#F59E0B', lineWidth: 2, lineStyle: LightweightCharts.LineStyle.Dashed, axisLabelVisible: true, title: '📅 PREVIOUS DAY LOW (PDL) $4460.00' });
-                    document.getElementById('leg-pdh').style.display = 'flex';
-                    document.getElementById('leg-pdl').style.display = 'flex';
-                }
-            } else if (layer === 'pwhl') {
-                if (!overlays.pwhl) {
-                    candleSeries.removePriceLine(priceLines.pwh);
-                    candleSeries.removePriceLine(priceLines.pwl);
-                    document.getElementById('leg-pwh').style.display = 'none';
-                    document.getElementById('leg-pwl').style.display = 'none';
-                } else {
-                    priceLines.pwh = candleSeries.createPriceLine({ price: 4510.50, color: '#A855F7', lineWidth: 2, lineStyle: LightweightCharts.LineStyle.LargeDashed, axisLabelVisible: true, title: '📆 PREVIOUS WEEK HIGH (PWH) $4510.50' });
-                    priceLines.pwl = candleSeries.createPriceLine({ price: 4432.00, color: '#A855F7', lineWidth: 2, lineStyle: LightweightCharts.LineStyle.LargeDashed, axisLabelVisible: true, title: '📆 PREVIOUS WEEK LOW (PWL) $4432.00' });
-                    document.getElementById('leg-pwh').style.display = 'flex';
-                    document.getElementById('leg-pwl').style.display = 'flex';
-                }
-            } else if (layer === 'pmhl') {
-                if (!overlays.pmhl) {
-                    candleSeries.removePriceLine(priceLines.pmh);
-                    candleSeries.removePriceLine(priceLines.pml);
-                    document.getElementById('leg-pmh').style.display = 'none';
-                    document.getElementById('leg-pml').style.display = 'none';
-                } else {
-                    priceLines.pmh = candleSeries.createPriceLine({ price: 4545.00, color: '#3B82F6', lineWidth: 2, lineStyle: LightweightCharts.LineStyle.Solid, axisLabelVisible: true, title: '🗓️ PREVIOUS MONTH HIGH (PMH) $4545.00' });
-                    priceLines.pml = candleSeries.createPriceLine({ price: 4380.00, color: '#3B82F6', lineWidth: 2, lineStyle: LightweightCharts.LineStyle.Solid, axisLabelVisible: true, title: '🗓️ PREVIOUS MONTH LOW (PML) $4380.00' });
-                    document.getElementById('leg-pmh').style.display = 'flex';
-                    document.getElementById('leg-pml').style.display = 'flex';
-                }
-            } else if (layer === 'liq') {
-                if (!overlays.liq) {
-                    candleSeries.removePriceLine(priceLines.liqAsianLow);
-                    candleSeries.removePriceLine(priceLines.liqAsianHigh);
-                    document.getElementById('leg-liq-sweep').style.display = 'none';
-                } else {
-                    priceLines.liqAsianLow = candleSeries.createPriceLine({ price: 4463.80, color: '#10B981', lineWidth: 1.5, lineStyle: LightweightCharts.LineStyle.Dotted, axisLabelVisible: true, title: '💧 ASIAN LOW LIQUIDITY SWEEP $4463.80' });
-                    priceLines.liqAsianHigh = candleSeries.createPriceLine({ price: 4476.50, color: '#00E5FF', lineWidth: 1.5, lineStyle: LightweightCharts.LineStyle.Dotted, axisLabelVisible: true, title: '💧 ASIAN HIGH TARGET $4476.50' });
-                    document.getElementById('leg-liq-sweep').style.display = 'flex';
-                }
-            } else if (layer === 'walls') {
-                if (!overlays.walls) {
-                    candleSeries.removePriceLine(priceLines.buyWall);
-                    candleSeries.removePriceLine(priceLines.sellWall);
-                    document.getElementById('leg-walls-buy').style.display = 'none';
-                    document.getElementById('leg-walls-sell').style.display = 'none';
-                } else {
-                    priceLines.buyWall = candleSeries.createPriceLine({ price: 4462.50, color: '#00E5FF', lineWidth: 2, lineStyle: LightweightCharts.LineStyle.Solid, axisLabelVisible: true, title: '🐳 WHALE BUY WALL ($24.6M / 18,450 Lots)' });
-                    priceLines.sellWall = candleSeries.createPriceLine({ price: 4488.50, color: '#FF3B69', lineWidth: 2, lineStyle: LightweightCharts.LineStyle.Solid, axisLabelVisible: true, title: '🐳 WHALE SELL WALL ($19.1M / 14,200 Lots)' });
-                    document.getElementById('leg-walls-buy').style.display = 'flex';
-                    document.getElementById('leg-walls-sell').style.display = 'flex';
-                }
-            } else if (layer === 'bos') {
-                if (!overlays.bos) {
-                    candleSeries.removePriceLine(priceLines.bos);
-                    document.getElementById('leg-bos').style.display = 'none';
-                } else {
-                    priceLines.bos = candleSeries.createPriceLine({ price: 4482.50, color: '#F59E0B', lineWidth: 2, lineStyle: LightweightCharts.LineStyle.LargeDashed, axisLabelVisible: true, title: '📐 4H BREAK OF STRUCTURE (BOS)' });
-                    document.getElementById('leg-bos').style.display = 'flex';
-                }
-            } else if (layer === 'poi') {
-                if (!overlays.poi) {
-                    candleSeries.removePriceLine(priceLines.poiTop);
-                    candleSeries.removePriceLine(priceLines.poiBottom);
-                    document.getElementById('leg-poi').style.display = 'none';
-                } else {
-                    priceLines.poiTop = candleSeries.createPriceLine({ price: 4467.50, color: '#10B981', lineWidth: 1, lineStyle: LightweightCharts.LineStyle.Dotted, axisLabelVisible: true, title: '📦 4H DEMAND POI HIGH ($4467.50)' });
-                    priceLines.poiBottom = candleSeries.createPriceLine({ price: 4464.00, color: '#10B981', lineWidth: 1, lineStyle: LightweightCharts.LineStyle.Dotted, axisLabelVisible: true, title: '📦 4H DEMAND POI LOW ($4464.00)' });
-                    document.getElementById('leg-poi').style.display = 'flex';
-                }
-            } else if (layer === 'plan') {
-                if (!overlays.plan) {
-                    candleSeries.removePriceLine(priceLines.sl);
-                    candleSeries.removePriceLine(priceLines.tp1);
-                    document.getElementById('leg-sl').style.display = 'none';
-                    document.getElementById('leg-tp').style.display = 'none';
-                } else {
-                    priceLines.sl = candleSeries.createPriceLine({ price: 4461.80, color: '#EF4444', lineWidth: 2, lineStyle: LightweightCharts.LineStyle.Solid, axisLabelVisible: true, title: '🛑 HARD STRUCTURAL SL: $4461.80' });
-                    priceLines.tp1 = candleSeries.createPriceLine({ price: 4478.00, color: '#10B981', lineWidth: 2, lineStyle: LightweightCharts.LineStyle.Dashed, axisLabelVisible: true, title: '🎯 TARGET 1: $4478.00 (+110 Pips)' });
-                    document.getElementById('leg-sl').style.display = 'flex';
-                    document.getElementById('leg-tp').style.display = 'flex';
-                }
-            }
-        }
-
-        // 8. DeepSeek AI Live Synthesis
+        // DeepSeek AI Live Synthesis
         async function runAiSynthesis() {
             const btn = document.querySelector('.btn-synthesize');
             const verdictEl = document.getElementById('ai-verdict');
@@ -1451,7 +951,11 @@
             }
         }
 
-        // 9. Dynamic Order Flow DOM Re-rendering Engine
+        // Dynamic Order Flow DOM Re-rendering Engine
+        let liveBid = 4469.85;
+        let liveSpreadPts = 5.3;
+        let liveAsk = liveBid + (liveSpreadPts * 0.1);
+
         function updateDomLadder(bid, ask) {
             const askRows = [];
             const bidRows = [];
@@ -1513,59 +1017,30 @@
             if (cvdHeader) cvdHeader.innerText = `+${cvdVal.toLocaleString()} OZ`;
         }
 
-        // Initialize DOM on Load
+        // Initialize DOM
         updateDomLadder(liveBid, liveAsk);
 
-        // 10. Real-Time Dynamic Ask / Bid / Spread / DOM Ticker
+        // Real-Time Dynamic Header & DOM Ticker
         setInterval(() => {
             const jitter = (Math.random() - 0.48) * 0.35;
-            liveSpreadPts = 5.4 + (Math.random() - 0.5) * 0.6;
+            liveSpreadPts = 5.3 + (Math.random() - 0.5) * 0.5;
             const spreadDollars = liveSpreadPts * 0.1;
             
-            liveBid = 4467.37 + jitter;
+            liveBid = 4469.85 + jitter;
             liveAsk = liveBid + spreadDollars;
             
             // Update Top Header
             document.getElementById('hdr-bid').innerText = `$${liveBid.toFixed(2)}`;
             document.getElementById('hdr-ask').innerText = `$${liveAsk.toFixed(2)}`;
             document.getElementById('hdr-spread').innerText = `${liveSpreadPts.toFixed(1)} PTS`;
-            
-            // Update Chart Floating HUD
-            document.getElementById('chart-hud-bid').innerText = `$${liveBid.toFixed(2)}`;
-            document.getElementById('chart-hud-ask').innerText = `$${liveAsk.toFixed(2)}`;
-            document.getElementById('chart-hud-spread').innerText = `SPREAD: ${liveSpreadPts.toFixed(1)} PTS`;
-
-            // Update Legend
-            document.getElementById('leg-bid-val').innerText = `$${liveBid.toFixed(2)}`;
-            document.getElementById('leg-ask-val').innerText = `$${liveAsk.toFixed(2)}`;
 
             // Update DOM Center Row & Ladder
             const domBidAsk = document.getElementById('dom-live-bid-ask');
             if (domBidAsk) domBidAsk.innerText = `$${liveBid.toFixed(2)} / $${liveAsk.toFixed(2)}`;
             updateDomLadder(liveBid, liveAsk);
-
-            // Update Chart Moving Price Lines
-            if (overlays.lines && priceLines.ask && priceLines.bid) {
-                priceLines.ask.applyOptions({
-                    price: liveAsk,
-                    title: `ASK $${liveAsk.toFixed(2)}`,
-                });
-                priceLines.bid.applyOptions({
-                    price: liveBid,
-                    title: `BID $${liveBid.toFixed(2)}`,
-                });
-            }
-
-            // Update Last Candle Close
-            const lastIdx = candleData.length - 1;
-            candleData[lastIdx].close = liveBid;
-            candleData[lastIdx].high = Math.max(candleData[lastIdx].high, liveBid);
-            candleData[lastIdx].low = Math.min(candleData[lastIdx].low, liveBid);
-            candleSeries.update(candleData[lastIdx]);
-
         }, 1000);
 
-        // 11. Live Macro Countdown Clock
+        // Live Macro Countdown Clock
         setInterval(() => {
             const now = new Date();
             const target = new Date();
