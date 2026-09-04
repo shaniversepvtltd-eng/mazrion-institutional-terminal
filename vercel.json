@@ -1,16 +1,7 @@
 {
-  "version": 2,
-  "name": "mazrion-institutional-terminal",
-  "builds": [
-    {
-      "src": "public/**/*",
-      "use": "@vercel/static"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "/public/$1"
-    }
+  "rewrites": [
+    { "source": "/api/:path*", "destination": "/api/:path*" },
+    { "source": "/", "destination": "/public/index.html" },
+    { "source": "/:path*", "destination": "/public/:path*" }
   ]
 }
