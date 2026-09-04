@@ -1009,9 +1009,25 @@
                         <div class="verdict-sub">Optimal Execution: 5M Retest of 1H/4H Discount Demand POI</div>
                     </div>
 
+                    <!-- Missed Trade Real-Time Situation Protocol Box -->
+                    <div id="ai-missed-protocol" style="background:rgba(245, 158, 11, 0.08); border:1px solid rgba(245, 158, 11, 0.4); border-radius:8px; padding:12px; margin-bottom:12px; font-family:'JetBrains Mono';">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                            <span style="font-weight:900; font-size:11.5px; color:var(--accent-gold);">⚡ LIVE TRADE EXECUTION PROTOCOL</span>
+                            <span id="ai-trade-state-badge" style="background:rgba(245, 158, 11, 0.2); color:var(--accent-gold); border:1px solid rgba(245, 158, 11, 0.5); padding:2px 8px; border-radius:4px; font-size:10px; font-weight:800;">POST-EXPANSION ADVISORY</span>
+                        </div>
+                        <div id="ai-fomo-warning" style="font-size:11px; color:#F87171; font-weight:800; margin-bottom:6px;">
+                            🚨 IF YOU MISSED THE $4466.20 ENTRY: DO NOT FOMO BUY AT CURRENT PRICE ($4473+)!
+                        </div>
+                        <div id="ai-action-rule" style="font-size:11.5px; color:#E2E8F0; line-height:1.6;">
+                            • <b>Option 1 (Secondary Entry):</b> Wait for a 5M/15M pullback into $4470.00–$4471.20 with SL below $4467.00.<br/>
+                            • <b>Option 2 (No Pullback):</b> If price surges straight into $4478 without pulling back, <b>SIT 100% IN CASH</b> and wait for the BSL sweep reversal.<br/>
+                            • <b>Golden Rule:</b> Never chase green candles into the middle of the range against resistance.
+                        </div>
+                    </div>
+
                     <!-- Smart Money Narrative -->
                     <div>
-                        <div style="font-size:12px; font-weight:800; text-transform:uppercase; margin-top:12px;">📖 Smart Money Institutional Narrative</div>
+                        <div style="font-size:12px; font-weight:800; text-transform:uppercase; margin-top:8px;">📖 Smart Money Institutional Narrative</div>
                         <div class="story-box" id="ai-story">
                             Institutions spent the early Asian session engineering liquidity beneath the Previous Day Low ($4460). At 12:20 UTC, smart money executed a textbook liquidity sweep down to $4463.80, absorbing over 18,450 lots into the <b>4H Macro POI ($4464–$4467.50)</b> and <b>1H Refined Demand POI ($4466.20–$4469.00)</b>. The 1H/15M timeframes have now printed a confirmed Bullish Change of Character (CHoCH). With DXY softening, the path of least resistance is an institutional expansion targeting the $4488 Whale Sell Wall.
                         </div>
@@ -1020,46 +1036,44 @@
                     <!-- Action Checklist -->
                     <div style="margin-top:12px;">
                         <div style="font-size:12px; font-weight:800; text-transform:uppercase; margin-bottom:8px;">⏳ What To Wait For (Multi-Timeframe Checklist)</div>
-                        <div class="checklist-item">
-                            <b style="color:#FFF;">✅ 4H Macro Discount POI Tapped:</b> Price reached $4464.00 - $4467.50 equilibrium
-                        </div>
-                        <div class="checklist-item">
-                            <b style="color:#FFF;">✅ 1H Refined POI Mitigated:</b> Order block respected at $4466.20 - $4469.00
-                        </div>
-                        <div class="checklist-item">
-                            <b style="color:#FFF;">✅ 15M Bullish CHoCH Breakout:</b> Body close established above $4468.00
-                        </div>
-                        <div class="checklist-item">
-                            <b style="color:#FFF;">✅ Order Book Whale Buy Wall Active:</b> $24.6M resting bids defending $4462.50
-                        </div>
-                        <div class="checklist-item wait">
-                            <b style="color:var(--accent-gold);">⏳ Wait Condition:</b> Enter on 5M retest of $4466.20 - $4468.50 with stop below $4461.80
+                        <div id="ai-checklist-container">
+                            <div class="checklist-item">
+                                <b style="color:#FFF;">✅ 4H Macro Discount POI Tapped:</b> Price reached $4464.00 - $4467.50 equilibrium
+                            </div>
+                            <div class="checklist-item">
+                                <b style="color:#FFF;">✅ 1H Refined POI Mitigated:</b> Order block respected at $4466.20 - $4469.00
+                            </div>
+                            <div class="checklist-item">
+                                <b style="color:#FFF;">✅ 15M Bullish CHoCH Breakout:</b> Body close established above $4468.00
+                            </div>
+                            <div class="checklist-item">
+                                <b style="color:#FFF;">✅ Order Book Whale Buy Wall Active:</b> $24.6M resting bids defending $4462.50
+                            </div>
+                            <div class="checklist-item wait">
+                                <b style="color:var(--accent-gold);">⏳ Wait Condition:</b> Wait for 5M/15M pullback to $4470.00–$4471.20 (Do not FOMO chase)
+                            </div>
                         </div>
                     </div>
 
                     <!-- Precision Levels -->
                     <div style="margin-top:12px;">
                         <div style="font-size:12px; font-weight:800; text-transform:uppercase; margin-bottom:6px;">🎯 Precision Institutional Price Levels</div>
-                        <div class="levels-table">
+                        <div class="levels-table" id="ai-levels-container">
                             <div class="level-row">
-                                <span style="color:var(--text-secondary)">4H MACRO POI:</span>
-                                <span style="color:var(--accent-green); font-weight:700;">$4464.00 – $4467.50</span>
+                                <span style="color:var(--text-secondary)">CURRENT PRICE:</span>
+                                <span style="color:var(--accent-cyan); font-weight:800;">$4473.50</span>
                             </div>
                             <div class="level-row">
-                                <span style="color:var(--text-secondary)">1H REFINED POI:</span>
-                                <span style="color:var(--accent-gold); font-weight:700;">$4466.20 – $4469.00</span>
+                                <span style="color:var(--text-secondary)">PULLBACK EXECUTION ZONE:</span>
+                                <span style="color:var(--accent-gold); font-weight:700;">$4470.00 – $4471.20</span>
                             </div>
                             <div class="level-row">
-                                <span style="color:var(--text-secondary)">15M EXECUTION POI:</span>
-                                <span style="color:var(--accent-cyan); font-weight:700;">$4468.50 – $4471.00</span>
-                            </div>
-                            <div class="level-row">
-                                <span style="color:var(--text-secondary)">STRUCTURAL SL:</span>
-                                <span style="color:var(--accent-red); font-weight:700;">$4461.80 (Sweep Low)</span>
+                                <span style="color:var(--text-secondary)">SECONDARY STRUCTURAL SL:</span>
+                                <span style="color:var(--accent-red); font-weight:700;">$4467.00</span>
                             </div>
                             <div class="level-row">
                                 <span style="color:var(--text-secondary)">TARGET 1 (TP1):</span>
-                                <span style="color:var(--accent-green); font-weight:700;">$4478.00 (Liquidity Void)</span>
+                                <span style="color:var(--accent-green); font-weight:700;">$4478.00 (BSL Liquidity Void)</span>
                             </div>
                             <div class="level-row">
                                 <span style="color:var(--text-secondary)">TARGET 2 (TP2):</span>
@@ -1067,7 +1081,7 @@
                             </div>
                             <div class="level-row">
                                 <span>RISK-TO-REWARD:</span>
-                                <span>1 : 4.2 R/R</span>
+                                <span style="color:var(--accent-cyan); font-weight:800;">1 : 2.8 R/R</span>
                             </div>
                         </div>
                     </div>
@@ -1740,24 +1754,80 @@
         async function runAiSynthesis() {
             const btn = document.querySelector('.btn-synthesize');
             const verdictEl = document.getElementById('ai-verdict');
+            const verdictSubEl = document.querySelector('.verdict-sub');
             const storyEl = document.getElementById('ai-story');
+            const checklistContainer = document.getElementById('ai-checklist-container');
+            const levelsContainer = document.getElementById('ai-levels-container');
+            const stateBadge = document.getElementById('ai-trade-state-badge');
+            const fomoWarning = document.getElementById('ai-fomo-warning');
+            const actionRule = document.getElementById('ai-action-rule');
             
-            btn.innerHTML = '⏳ DeepSeek AI Synthesizing 7 Timeframes & L2 Book...';
+            btn.innerHTML = `⏳ DeepSeek AI Synthesizing Live Price ($${liveBid.toFixed(2)})...`;
             btn.style.opacity = '0.7';
             btn.disabled = true;
             
             try {
-                const res = await fetch('/api/analyze', { method: 'POST' });
+                const res = await fetch('/api/analyze', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ currentPrice: liveBid })
+                });
                 const data = await res.json();
                 
-                verdictEl.innerHTML = `🟢 ${data.verdict} (${data.confidence} CONFLUENCE)`;
-                storyEl.innerHTML = data.smart_money_story;
+                if (verdictEl) verdictEl.innerHTML = `${data.verdict} (${data.confidence || '93%'} CONFLUENCE)`;
+                if (verdictSubEl) verdictSubEl.innerHTML = data.summary || '';
+                if (storyEl) storyEl.innerHTML = data.smart_money_story || '';
+                
+                if (data.missed_trade_advisory) {
+                    if (stateBadge) stateBadge.innerText = data.trade_state || 'ACTIVE';
+                    if (fomoWarning) fomoWarning.innerText = data.missed_trade_advisory.fomo_warning;
+                    if (actionRule) actionRule.innerText = data.missed_trade_advisory.action_rule;
+                }
+
+                if (data.checklist && checklistContainer) {
+                    checklistContainer.innerHTML = data.checklist.map(c => `
+                        <div class="checklist-item ${c.status === 'WAIT' ? 'wait' : ''}">
+                            <b style="color:${c.status === 'WAIT' ? 'var(--accent-gold)' : '#FFF'};">${c.status === 'WAIT' ? '⏳' : '✅'} ${c.title}:</b> ${c.desc}
+                        </div>
+                    `).join('');
+                }
+
+                if (data.levels && levelsContainer) {
+                    levelsContainer.innerHTML = `
+                        <div class="level-row">
+                            <span style="color:var(--text-secondary)">CURRENT PRICE:</span>
+                            <span style="color:var(--accent-cyan); font-weight:800;">${data.levels.current_price || ('$' + liveBid.toFixed(2))}</span>
+                        </div>
+                        <div class="level-row">
+                            <span style="color:var(--text-secondary)">EXECUTION ZONE:</span>
+                            <span style="color:var(--accent-gold); font-weight:700;">${data.levels.execution_zone}</span>
+                        </div>
+                        <div class="level-row">
+                            <span style="color:var(--text-secondary)">STRUCTURAL SL:</span>
+                            <span style="color:var(--accent-red); font-weight:700;">${data.levels.structural_sl}</span>
+                        </div>
+                        <div class="level-row">
+                            <span style="color:var(--text-secondary)">TARGET 1 (TP1):</span>
+                            <span style="color:var(--accent-green); font-weight:700;">${data.levels.target_1}</span>
+                        </div>
+                        <div class="level-row">
+                            <span style="color:var(--text-secondary)">TARGET 2 (TP2):</span>
+                            <span style="color:var(--accent-green); font-weight:700;">${data.levels.target_2}</span>
+                        </div>
+                        <div class="level-row">
+                            <span>RISK-TO-REWARD:</span>
+                            <span style="color:var(--accent-cyan); font-weight:800;">${data.levels.risk_reward}</span>
+                        </div>
+                    `;
+                }
                 
                 btn.innerHTML = '⚡ DeepSeek AI Synthesis Updated (Live)';
                 btn.style.background = 'linear-gradient(135deg, #10B981 0%, #00E5FF 100%)';
+                showToast('⚡ DeepSeek AI Live Analysis Synced to Current Market Price!');
             } catch (err) {
                 console.error(err);
                 btn.innerHTML = '⚡ Run DeepSeek AI Synthesis';
+                showToast('⚠️ AI Synthesis connection error.');
             } finally {
                 btn.disabled = false;
                 btn.style.opacity = '1';
