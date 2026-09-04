@@ -2104,13 +2104,13 @@
                 liveSpreadPts = 12.0;
                 liveAsk = 94862.0;
             } else if (symbol === 'EURUSD') {
-                liveBid = 1.0832;
+                liveBid = 1.0825;
                 liveSpreadPts = 0.0001;
-                liveAsk = 1.0833;
+                liveAsk = 1.0826;
             } else {
-                liveBid = 4473.50;
+                liveBid = 4436.50;
                 liveSpreadPts = 5.4;
-                liveAsk = 4474.04;
+                liveAsk = 4437.04;
             }
 
             const decimals = asset.decimals || 2;
@@ -2147,23 +2147,15 @@
                 });
             }
 
-            // Update Direction Call Banner
-            const dirCall = document.getElementById('ai-verdict-direction');
-            if (dirCall && asset.directionCall) {
-                dirCall.innerHTML = `🎯 CALL: <span style="color:#10B981;">${asset.directionCall}</span>`;
-            }
-
             updatePillarGrid(symbol);
             updateDomLadder(liveBid, liveAsk);
+            runAiSynthesis(); // Auto run live AI synthesis for the selected symbol
 
             if (currentChartMode === 'tradingview') {
                 initTradingViewWidget();
             } else {
                 initPrecisionChart();
             }
-
-            // Automatically trigger DeepSeek AI Synthesis for selected asset
-            runAiSynthesis();
         }
 
         let isFullChart = false;
@@ -2190,12 +2182,14 @@
             }, 320);
         }
 
-        // ==================== DEEPSEEK AI SENIOR STRATEGIST API ====================
+        // ==================== REAL-TIME DEEPSEEK AI SYNTHESIS ENGINE ====================
         async function runAiSynthesis() {
             const btn = document.getElementById('btn-run-synthesis');
-            btn.innerHTML = '⏳ Querying DeepSeek v3 Institutional Model...';
-            btn.disabled = true;
-            btn.style.opacity = '0.7';
+            if (btn) {
+                btn.disabled = true;
+                btn.style.opacity = '0.7';
+                btn.innerHTML = '🔄 Synthesizing Live Market State...';
+            }
 
             try {
                 const res = await fetch(`/api/analyze?symbol=${activeSymbol}&price=${liveBid}`);
@@ -2211,14 +2205,17 @@
                     }
 
                     const verdictPrefix = isBuy ? '🟢 WILL BUY' : (isSell ? '🔴 WILL SELL' : '🟡 NEUTRAL');
-                    document.getElementById('ai-verdict').innerText = `${verdictPrefix} (${data.confidence || '93%'})`;
+                    const aiVerdictEl = document.getElementById('ai-verdict');
+                    if (aiVerdictEl) aiVerdictEl.innerText = `${verdictPrefix} (${data.confidence || '95%'})`;
                     
                     const assetName = activeSymbol === 'XAUUSD' ? 'GOLD' : (activeSymbol === 'XAGUSD' ? 'SILVER' : (activeSymbol === 'BTCUSD' ? 'BITCOIN' : 'EURO'));
                     const callColor = isBuy ? '#10B981' : (isSell ? '#FF3B69' : '#F59E0B');
-                    const callAction = isBuy ? 'WILL BUY (LONG EXPANSION)' : (isSell ? 'WILL SELL (SHORT REVERSAL)' : 'NEUTRAL (SIT IN CASH)');
+                    const callAction = isBuy ? 'REBOUND ACCUMULATION (BUY DIPS)' : (isSell ? 'WILL SELL (SHORT REVERSAL)' : 'PULLBACK PROTOCOL ACTIVE');
                     
-                    document.getElementById('ai-verdict-direction').innerHTML = `🎯 PREDICTION: <span style="color:${callColor};">${assetName} ${callAction}</span>`;
-                    document.getElementById('ai-verdict-sub').innerText = data.summary || 'Optimal Execution Strategy Active';
+                    const aiDirEl = document.getElementById('ai-verdict-direction');
+                    if (aiDirEl) aiDirEl.innerHTML = `🎯 PREDICTION: <span style="color:${callColor};">${assetName} ${callAction}</span>`;
+                    const aiSubEl = document.getElementById('ai-verdict-sub');
+                    if (aiSubEl) aiSubEl.innerText = data.summary || 'Optimal Execution Strategy Active';
 
                     if (data.missed_trade_advisory) {
                         const adv = data.missed_trade_advisory;
@@ -2239,46 +2236,82 @@
                     }
 
                     if (data.smart_money_story) {
-                        document.getElementById('ai-story').innerHTML = data.smart_money_story;
+                        const storyEl = document.getElementById('ai-story');
+                        if (storyEl) storyEl.innerHTML = data.smart_money_story;
                     }
 
                     if (data.checklist && Array.isArray(data.checklist)) {
                         const chkContainer = document.getElementById('ai-checklist-container');
-                        chkContainer.innerHTML = data.checklist.map(c => `
-                            <div class="checklist-item ${c.status === 'WAIT' ? 'wait' : ''}">
-                                <b style="color:${c.status === 'WAIT' ? 'var(--accent-gold)' : '#FFF'};">${c.status === 'WAIT' ? '⏳' : '✅'} ${c.title}:</b> ${c.desc}
-                            </div>
-                        `).join('');
+                        if (chkContainer) {
+                            chkContainer.innerHTML = data.checklist.map(c => `
+                                <div class="checklist-item ${c.status === 'WAIT' ? 'wait' : ''}">
+                                    <b style="color:${c.status === 'WAIT' ? 'var(--accent-gold)' : '#FFF'};">${c.status === 'WAIT' ? '⏳' : '✅'} ${c.title}:</b> ${c.desc}
+                                </div>
+                            `).join('');
+                        }
                     }
 
                     if (data.levels) {
                         const lvlContainer = document.getElementById('ai-levels-container');
-                        lvlContainer.innerHTML = `
-                            <div class="level-row">
-                                <span style="color:var(--text-secondary)">CURRENT PRICE:</span>
-                                <span style="color:var(--accent-cyan); font-weight:800;">${data.levels.current_price || `$${liveBid.toFixed(2)}`}</span>
-                            </div>
-                            <div class="level-row">
-                                <span style="color:var(--text-secondary)">PULLBACK EXECUTION ZONE:</span>
-                                <span style="color:var(--accent-gold); font-weight:700;">${data.levels.execution_zone}</span>
-                            </div>
-                            <div class="level-row">
-                                <span style="color:var(--text-secondary)">STRUCTURAL SL:</span>
-                                <span style="color:var(--accent-red); font-weight:700;">${data.levels.structural_sl}</span>
-                            </div>
-                            <div class="level-row">
-                                <span style="color:var(--text-secondary)">TARGET 1 (TP1):</span>
-                                <span style="color:var(--accent-green); font-weight:700;">${data.levels.target_1}</span>
-                            </div>
-                            <div class="level-row">
-                                <span style="color:var(--text-secondary)">TARGET 2 (TP2):</span>
-                                <span style="color:var(--accent-green); font-weight:700;">${data.levels.target_2}</span>
-                            </div>
-                            <div class="level-row">
-                                <span>RISK-TO-REWARD:</span>
-                                <span style="color:var(--accent-cyan); font-weight:800;">${data.levels.risk_reward}</span>
-                            </div>
-                        `;
+                        if (lvlContainer) {
+                            lvlContainer.innerHTML = `
+                                <div class="level-row">
+                                    <span style="color:var(--text-secondary)">CURRENT PRICE:</span>
+                                    <span style="color:var(--accent-cyan); font-weight:800;">${data.levels.current_price || `$${liveBid.toFixed(2)}`}</span>
+                                </div>
+                                <div class="level-row">
+                                    <span style="color:var(--text-secondary)">PULLBACK EXECUTION ZONE:</span>
+                                    <span style="color:var(--accent-gold); font-weight:700;">${data.levels.execution_zone}</span>
+                                </div>
+                                <div class="level-row">
+                                    <span style="color:var(--text-secondary)">STRUCTURAL SL:</span>
+                                    <span style="color:var(--accent-red); font-weight:700;">${data.levels.structural_sl}</span>
+                                </div>
+                                <div class="level-row">
+                                    <span style="color:var(--text-secondary)">TARGET 1 (TP1):</span>
+                                    <span style="color:var(--accent-green); font-weight:700;">${data.levels.target_1}</span>
+                                </div>
+                                <div class="level-row">
+                                    <span style="color:var(--text-secondary)">TARGET 2 (TP2):</span>
+                                    <span style="color:var(--accent-green); font-weight:700;">${data.levels.target_2}</span>
+                                </div>
+                                <div class="level-row">
+                                    <span>RISK-TO-REWARD:</span>
+                                    <span style="color:var(--accent-cyan); font-weight:800;">${data.levels.risk_reward}</span>
+                                </div>
+                            `;
+                        }
+                    }
+
+                    // Dynamic Sync for Quick Key Level Pills
+                    if (data.key_pills) {
+                        Object.keys(data.key_pills).forEach(k => {
+                            const el = document.getElementById(`lbl-${k}`);
+                            if (el) el.innerText = data.key_pills[k];
+                        });
+                    }
+
+                    // Dynamic Sync for 4-Pillar Grid
+                    if (data.pillars) {
+                        const techEl = document.getElementById('pillar-tech-body');
+                        if (techEl && data.pillars.technical_structure) techEl.innerHTML = data.pillars.technical_structure;
+                        const ofEl = document.getElementById('pillar-of-body');
+                        if (ofEl && data.pillars.order_flow) ofEl.innerHTML = data.pillars.order_flow;
+                        const narEl = document.getElementById('pillar-narrative-body');
+                        if (narEl && data.pillars.narrative) narEl.innerHTML = data.pillars.narrative;
+                        const macroEl = document.getElementById('pillar-macro-body');
+                        if (macroEl && data.pillars.macro) macroEl.innerHTML = data.pillars.macro;
+                    }
+
+                    // Dynamic Sync for 7-Timeframe Ribbon
+                    if (data.timeframes) {
+                        ['1m', '5m', '15m', '1h', '4h', '1d', '1w'].forEach(tf => {
+                            const chip = document.getElementById(`tf-chip-${tf}`);
+                            if (chip && data.timeframes[tf]) {
+                                chip.innerText = data.timeframes[tf].status;
+                                chip.className = `tf-chip-status ${data.timeframes[tf].cls}`;
+                            }
+                        });
                     }
 
                     // Sync Tier-1 Traffic Light Execution Shield
@@ -2346,8 +2379,10 @@
                         if (sDesc) sDesc.innerHTML = `💰 <b>Dollar Risk:</b> ${t.dollar_risk} (${t.risk_pct}). Stops placed safely behind session sweep.`;
                     }
                     
-                    btn.innerHTML = '⚡ DeepSeek AI Synthesis Updated (Live)';
-                    btn.style.background = 'linear-gradient(135deg, #10B981 0%, #00E5FF 100%)';
+                    if (btn) {
+                        btn.innerHTML = '⚡ DeepSeek AI Synthesis Live (Synced)';
+                        btn.style.background = 'linear-gradient(135deg, #10B981 0%, #00E5FF 100%)';
+                    }
                     showToast(`⚡ DeepSeek AI Live Analysis Synced for ${activeSymbol}!`);
                 }
             } catch (err) {
@@ -2668,7 +2703,13 @@
             initPrecisionChart();
             updateDomLadder(liveBid, liveAsk);
             renderAlerts();
+            runAiSynthesis(); // Auto-run initial AI synthesis on startup
         });
+
+        // Auto-refresh DeepSeek AI Synthesis every 25 seconds with live ticking price
+        setInterval(() => {
+            runAiSynthesis();
+        }, 25000);
 
         // Real-Time Live Market Poller & Tick Stream
         setInterval(async () => {

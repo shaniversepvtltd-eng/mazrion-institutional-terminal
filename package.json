@@ -1,6 +1,7 @@
 {
   "name": "mazrion-institutional-terminal",
   "version": "4.0.0",
+  "type": "module",
   "description": "Mazrion Institutional Market Intelligence Terminal",
   "scripts": {
     "start": "serve public"
