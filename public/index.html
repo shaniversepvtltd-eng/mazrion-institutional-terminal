@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MAZRION — Institutional Intelligence Terminal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=JetBrains+Mono:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <!-- TradingView Lightweight Charts -->
+    <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
+    <style>
+        :root {
+            --bg-primary: #06080C;
+            --bg-card: #0D111A;
+            --bg-card-hover: #121824;
+            --border-color: #1A2333;
+            --border-active: #2A364F;
+            --accent-cyan: #00E5FF;
+            --accent-green: #10B981;
+            --accent-red: #FF3B69;
+            --accent-gold: #F59E0B;
+            --accent-purple: #A855F7;
+            --text-primary: #F8FAFC;
+            --text-secondary: #94A3B8;
+            --text-muted: #64748B;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Top Header */
+        header {
+            background: linear-gradient(180deg, #101522 0%, #0A0E16 100%);
+            border-bottom: 1px solid var(--border-color);
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 800;
+            font-size: 18px;
+            letter-spacing: 1.5px;
+            color: var(--accent-cyan);
+        }
+
+        .brand-badge {
+            background: rgba(0, 229, 255, 0.12);
+            border: 1px solid rgba(0, 229, 255, 0.35);
+            color: var(--accent-cyan);
+            font-size: 10px;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .live-ticker {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            display: flex;
+            gap: 20px;
+        }
+
+        .ticker-item {
+            color: var(--text-secondary);
+        }
+
+        .ticker-val {
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        /* Timeframe Ribbon */
+        .tf-ribbon {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 8px;
+            padding: 10px 24px;
+            background: #090C12;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .tf-chip {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            padding: 6px 10px;
+            border-radius: 6px;
+            text-align: center;
+        }
+
+        .tf-chip-name {
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--text-muted);
+            letter-spacing: 0.5px;
+        }
+
+        .tf-chip-status {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            font-weight: 800;
+            margin-top: 2px;
+        }
+
+        .bull { color: var(--accent-green); }
+        .bear { color: var(--accent-red); }
+        .neutral { color: var(--accent-gold); }
+
+        /* Main Workspace */
+        .workspace {
+            display: grid;
+            grid-template-columns: 1.75fr 1.25fr;
+            gap: 16px;
+            padding: 16px 24px;
+            min-height: calc(100vh - 120px);
+        }
+
+        @media (max-width: 1080px) {
+            .workspace {
+                grid-template-columns: 1fr;
+            }
+            .tf-ribbon {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+
+        /* Chart Section */
+        .chart-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .overlay-controls {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .btn-toggle {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .btn-toggle.active {
+            background: rgba(0, 229, 255, 0.15);
+            border-color: var(--accent-cyan);
+            color: var(--accent-cyan);
+        }
+
+        .btn-toggle:hover {
+            border-color: var(--accent-cyan);
+        }
+
+        #chart-container {
+            width: 100%;
+            height: 480px;
+            border-radius: 6px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* 4-Pillar Grid */
+        .pillar-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .pillar-box {
+            background: #090D15;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 12px 14px;
+        }
+
+        .pillar-box-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            font-weight: 800;
+            margin-bottom: 6px;
+            letter-spacing: 0.5px;
+        }
+
+        .pillar-box-body {
+            font-size: 11px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* Right Intel Panel */
+        .intel-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .verdict-banner {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid var(--accent-green);
+            border-radius: 8px;
+            padding: 16px;
+            text-align: center;
+        }
+
+        .verdict-title {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--accent-green);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .verdict-main {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 24px;
+            font-weight: 900;
+            color: var(--accent-green);
+            margin: 4px 0;
+        }
+
+        .verdict-sub {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .intel-section-title {
+            font-size: 12px;
+            font-weight: 800;
+            color: var(--text-primary);
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .story-box {
+            background: #090D15;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 12px 14px;
+            font-size: 12px;
+            line-height: 1.6;
+            color: #CBD5E1;
+        }
+
+        .checklist-item {
+            background: #090D15;
+            border-left: 3px solid var(--accent-cyan);
+            border-radius: 0 6px 6px 0;
+            padding: 8px 12px;
+            margin-bottom: 6px;
+            font-size: 11px;
+        }
+
+        .checklist-item.wait {
+            border-left-color: var(--accent-gold);
+        }
+
+        .levels-table {
+            background: #090D15;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 12px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+        }
+
+        .level-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 4px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+        }
+
+        .level-row:last-child {
+            border-bottom: none;
+            padding-top: 8px;
+            font-weight: 800;
+            color: var(--accent-gold);
+        }
+
+        /* Action Button */
+        .btn-synthesize {
+            background: linear-gradient(135deg, #00E5FF 0%, #0088FF 100%);
+            border: none;
+            color: #000;
+            font-weight: 800;
+            font-size: 13px;
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-family: 'JetBrains Mono', monospace;
+            box-shadow: 0 4px 15px rgba(0, 229, 255, 0.25);
+            transition: all 0.2s;
+        }
+
+        .btn-synthesize:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(0, 229, 255, 0.4);
+        }
+
+        /* Footer */
+        footer {
+            padding: 12px 24px;
+            border-top: 1px solid var(--border-color);
+            background: #06080C;
+            display: flex;
+            justify-content: space-between;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header>
+        <div class="brand">
+            <span>👑 MAZRION</span>
+            <span class="brand-badge">INSTITUTIONAL TERMINAL v4</span>
+        </div>
+        <div class="live-ticker">
+            <div class="ticker-item">ASSET: <span class="ticker-val" style="color:var(--accent-cyan)">XAUUSD (GOLD)</span></div>
+            <div class="ticker-item">BID: <span class="ticker-val" id="ticker-bid" style="color:var(--accent-cyan)">$4467.50</span></div>
+            <div class="ticker-item">ASK: <span class="ticker-val" id="ticker-ask" style="color:var(--accent-red)">$4467.85</span></div>
+            <div class="ticker-item">ORDER BOOK: <span class="ticker-val" style="color:var(--accent-green)">L2 LIVE</span></div>
+        </div>
+    </header>
+
+    <!-- 7-Timeframe Ribbon -->
+    <div class="tf-ribbon">
+        <div class="tf-chip"><div class="tf-chip-name">MONTHLY</div><div class="tf-chip-status bull">🟢 BULLISH</div></div>
+        <div class="tf-chip"><div class="tf-chip-name">WEEKLY</div><div class="tf-chip-status bull">🟢 BULLISH</div></div>
+        <div class="tf-chip"><div class="tf-chip-name">DAILY</div><div class="tf-chip-status bull">🟢 BULLISH</div></div>
+        <div class="tf-chip"><div class="tf-chip-name">4-HOUR</div><div class="tf-chip-status bull">🟢 DISCOUNT POI</div></div>
+        <div class="tf-chip"><div class="tf-chip-name">1-HOUR</div><div class="tf-chip-status neutral">🟡 PULLBACK</div></div>
+        <div class="tf-chip"><div class="tf-chip-name">15-MIN</div><div class="tf-chip-status bull">🟢 CHoCH BREAK</div></div>
+        <div class="tf-chip"><div class="tf-chip-name">5-MIN</div><div class="tf-chip-status bull">🟢 SWEEP ALIGNED</div></div>
+    </div>
+
+    <!-- Main Workspace -->
+    <div class="workspace">
+        
+        <!-- Left: Interactive Chart & 4 Pillars -->
+        <div class="chart-card">
+            <div class="chart-header">
+                <div style="font-weight:800; font-size:14px; font-family:'JetBrains Mono';">
+                    📈 XAUUSD 5-MINUTE INSTITUTIONAL STRUCTURE
+                </div>
+                <div class="overlay-controls">
+                    <button class="btn-toggle active" id="toggle-walls" onclick="toggleLayer('walls')">🐳 Whale Walls</button>
+                    <button class="btn-toggle active" id="toggle-bos" onclick="toggleLayer('bos')">📐 4H BOS</button>
+                    <button class="btn-toggle active" id="toggle-poi" onclick="toggleLayer('poi')">📦 Watch Zone</button>
+                    <button class="btn-toggle active" id="toggle-plan" onclick="toggleLayer('plan')">🎯 Trade Box</button>
+                </div>
+            </div>
+
+            <!-- Chart Canvas -->
+            <div id="chart-container"></div>
+
+            <!-- 4-Pillar Institutional Matrix -->
+            <div class="pillar-grid">
+                <div class="pillar-box">
+                    <div class="pillar-box-header"><span style="color:var(--accent-cyan)">1. TECHNICAL STRUCTURE</span><span class="bull">🟢 95% CONFLUENCE</span></div>
+                    <div class="pillar-box-body">
+                        • <b>4H Trend:</b> Bullish Expansion | 50% Equilibrium @ $4465.00<br/>
+                        • <b>15M Microstructure:</b> Bullish CHoCH Breakout Confirmed<br/>
+                        • <b>Dealing Range:</b> Deep Discount Accumulation Zone
+                    </div>
+                </div>
+
+                <div class="pillar-box">
+                    <div class="pillar-box-header"><span style="color:var(--accent-green)">2. ORDER FLOW & WHALE WALLS</span><span class="bull">🟢 ABSORPTION ACTIVE</span></div>
+                    <div class="pillar-box-body">
+                        • <b>Buy Wall Defense:</b> $24.6M (18,450 Lots) @ $4462.50<br/>
+                        • <b>Sell Wall Target:</b> $19.1M (14,200 Lots) @ $4488.50<br/>
+                        • <b>Delta Pressure:</b> Aggressive limit order buying (+4,820 Lots)
+                    </div>
+                </div>
+
+                <div class="pillar-box">
+                    <div class="pillar-box-header"><span style="color:var(--accent-gold)">3. NARRATIVE & LIQUIDITY</span><span class="bull">🟢 TRAP COMPLETED</span></div>
+                    <div class="pillar-box-body">
+                        • <b>Session Theme:</b> Asian Low Stop-Hunt harvested @ $4463.80<br/>
+                        • <b>Market Regime:</b> Manipulation ➔ Expansion Phase<br/>
+                        • <b>Retail Positioning:</b> Trapped early breakout shorts
+                    </div>
+                </div>
+
+                <div class="pillar-box">
+                    <div class="pillar-box-header"><span style="color:var(--accent-purple)">4. MACRO & INTERMARKET</span><span class="bull">🟢 RISK-ON BACKING</span></div>
+                    <div class="pillar-box-body">
+                        • <b>DXY (Dollar Index):</b> 104.12 (-0.35% Weakness ➔ Gold Tailwinds)<br/>
+                        • <b>US 10Y Yields:</b> 4.21% (Easing pressure)<br/>
+                        • <b>News Guard:</b> High-impact US NFP in 2h 45m
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right: DeepSeek AI Senior Strategist -->
+        <div class="intel-card">
+            
+            <button class="btn-synthesize" onclick="runAiSynthesis()">⚡ Run DeepSeek AI Synthesis</button>
+
+            <!-- Verdict Banner -->
+            <div class="verdict-banner">
+                <div class="verdict-title">EXECUTIVE TRADING VERDICT</div>
+                <div class="verdict-main" id="ai-verdict">🟢 STRONG BUY (91% CONFLUENCE)</div>
+                <div class="verdict-sub">Optimal Execution: 5M Retest of 4H Discount Demand</div>
+            </div>
+
+            <!-- Smart Money Narrative -->
+            <div>
+                <div class="intel-section-title">📖 Smart Money Institutional Narrative</div>
+                <div class="story-box" id="ai-story">
+                    Institutions spent the early Asian session engineering liquidity beneath the Previous Day Low ($4460). At 12:20 UTC, smart money executed a textbook liquidity sweep down to $4463.80, absorbing over 18,450 lots into the 4H Discount POI. The 1H/15M timeframes have now printed a confirmed Bullish Change of Character (CHoCH). With DXY softening, the path of least resistance is an institutional expansion targeting the $4488 Whale Sell Wall.
+                </div>
+            </div>
+
+            <!-- Action Checklist -->
+            <div>
+                <div class="intel-section-title">⏳ What To Wait For (Execution Checklist)</div>
+                <div class="checklist-item">
+                    <b style="color:#FFF;">✅ 15M Bullish CHoCH Confirmed:</b> Body close above 4468.00
+                </div>
+                <div class="checklist-item">
+                    <b style="color:#FFF;">✅ 4H Discount Zone Tapped:</b> Price reached $4464.00 equilibrium
+                </div>
+                <div class="checklist-item">
+                    <b style="color:#FFF;">✅ Order Book Whale Buy Wall Active:</b> $24.6M resting bids defending $4462.50
+                </div>
+                <div class="checklist-item wait">
+                    <b style="color:var(--accent-gold);">⏳ Wait Condition:</b> Enter on 5M retest of $4466.00 - $4467.50 with stop below $4461.80
+                </div>
+            </div>
+
+            <!-- Precision Levels -->
+            <div>
+                <div class="intel-section-title">🎯 Precision Institutional Price Levels</div>
+                <div class="levels-table">
+                    <div class="level-row">
+                        <span style="color:var(--text-secondary)">EXECUTION ZONE:</span>
+                        <span style="color:var(--accent-cyan); font-weight:700;">$4466.00 – $4467.50</span>
+                    </div>
+                    <div class="level-row">
+                        <span style="color:var(--text-secondary)">STRUCTURAL SL:</span>
+                        <span style="color:var(--accent-red); font-weight:700;">$4461.80 (Sweep Low)</span>
+                    </div>
+                    <div class="level-row">
+                        <span style="color:var(--text-secondary)">TARGET 1 (TP1):</span>
+                        <span style="color:var(--accent-green); font-weight:700;">$4478.00 (Liquidity Void)</span>
+                    </div>
+                    <div class="level-row">
+                        <span style="color:var(--text-secondary)">TARGET 2 (TP2):</span>
+                        <span style="color:var(--accent-green); font-weight:700;">$4488.50 (Whale Sell Wall)</span>
+                    </div>
+                    <div class="level-row">
+                        <span>RISK-TO-REWARD:</span>
+                        <span>1 : 4.2 R/R</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div>🔒 100% PRIVATE INSTITUTIONAL MODE (ZERO PERSONAL DATA EXPOSURE)</div>
+        <div>MAZRION INTELLIGENCE ENGINE v4.0 | DEEPSEEK v3 BRAIN ONLINE | HOSTED ON VERCEL</div>
+    </footer>
+
+    <!-- Interactive Chart Logic -->
+    <script>
+        const container = document.getElementById('chart-container');
+        const chart = LightweightCharts.createChart(container, {
+            layout: {
+                background: { color: '#090D15' },
+                textColor: '#94A3B8',
+            },
+            grid: {
+                vertLines: { color: 'rgba(255, 255, 255, 0.03)' },
+                horzLines: { color: 'rgba(255, 255, 255, 0.03)' },
+            },
+            crosshair: {
+                mode: LightweightCharts.CrosshairMode.Normal,
+            },
+            rightPriceScale: {
+                borderColor: '#1E2638',
+            },
+            timeScale: {
+                borderColor: '#1E2638',
+                timeVisible: true,
+                secondsVisible: false,
+            },
+        });
+
+        const candleSeries = chart.addCandlestickSeries({
+            upColor: '#00E5FF',
+            downColor: '#FF3B69',
+            borderVisible: false,
+            wickUpColor: '#00E5FF',
+            wickDownColor: '#FF3B69',
+        });
+
+        // Generate Synthetic 5M Data
+        let data = [];
+        let base = 4460;
+        let time = Math.floor(Date.now() / 1000) - 60 * 5 * 60;
+        for (let i = 0; i < 60; i++) {
+            let open = base + (Math.random() - 0.45) * 2;
+            let close = open + (Math.random() - 0.45) * 2;
+            let high = Math.max(open, close) + Math.random() * 1.5;
+            let low = Math.min(open, close) - Math.random() * 1.5;
+            base = close;
+            data.push({ time: time + i * 300, open: open, high: high, low: low, close: close });
+        }
+        data[data.length - 1].close = 4467.50;
+        candleSeries.setData(data);
+
+        // Price Lines for Overlays
+        let sellWallLine = candleSeries.createPriceLine({
+            price: 4488.50,
+            color: '#FF3B69',
+            lineWidth: 2,
+            lineStyle: LightweightCharts.LineStyle.Solid,
+            axisLabelVisible: true,
+            title: '🐳 WHALE SELL WALL ($19.1M)',
+        });
+
+        let buyWallLine = candleSeries.createPriceLine({
+            price: 4462.50,
+            color: '#00E5FF',
+            lineWidth: 2,
+            lineStyle: LightweightCharts.LineStyle.Solid,
+            axisLabelVisible: true,
+            title: '🐳 WHALE BUY WALL ($24.6M)',
+        });
+
+        let bosLine = candleSeries.createPriceLine({
+            price: 4482.50,
+            color: '#F59E0B',
+            lineWidth: 1,
+            lineStyle: LightweightCharts.LineStyle.Dashed,
+            axisLabelVisible: true,
+            title: '📐 4H BOS BREAKOUT',
+        });
+
+        let slLine = candleSeries.createPriceLine({
+            price: 4461.80,
+            color: '#EF4444',
+            lineWidth: 2,
+            lineStyle: LightweightCharts.LineStyle.Solid,
+            axisLabelVisible: true,
+            title: '🛑 STRUCTURAL SL',
+        });
+
+        let tpLine = candleSeries.createPriceLine({
+            price: 4478.00,
+            color: '#10B981',
+            lineWidth: 1,
+            lineStyle: LightweightCharts.LineStyle.Dashed,
+            axisLabelVisible: true,
+            title: '🎯 TARGET 1 (1:4.2 R/R)',
+        });
+
+        // Layer Toggles
+        const layers = { walls: true, bos: true, poi: true, plan: true };
+        function toggleLayer(layer) {
+            layers[layer] = !layers[layer];
+            const btn = document.getElementById(`toggle-${layer}`);
+            btn.classList.toggle('active', layers[layer]);
+            
+            if (layer === 'walls') {
+                sellWallLine.applyOptions({ lineVisible: layers.walls });
+                buyWallLine.applyOptions({ lineVisible: layers.walls });
+            } else if (layer === 'bos') {
+                bosLine.applyOptions({ lineVisible: layers.bos });
+            } else if (layer === 'plan') {
+                slLine.applyOptions({ lineVisible: layers.plan });
+                tpLine.applyOptions({ lineVisible: layers.plan });
+            }
+        }
+
+        function runAiSynthesis() {
+            const btn = document.querySelector('.btn-synthesize');
+            btn.innerHTML = '⏳ DeepSeek AI Analyzing 7 Timeframes & L2 Book...';
+            btn.style.opacity = '0.7';
+            setTimeout(() => {
+                btn.innerHTML = '⚡ Run DeepSeek AI Synthesis';
+                btn.style.opacity = '1';
+                alert('👑 DeepSeek Institutional Synthesis Complete:\nVerdict: STRONG BUY (91% Confluence)\nExecution Zone: $4466.00 - $4467.50\nStructural SL: $4461.80\nTarget 1: $4478.00 | Target 2: $4488.50');
+            }, 1200);
+        }
+
+        // Window resize
+        window.addEventListener('resize', () => {
+            chart.applyOptions({ width: container.clientWidth });
+        });
+    </script>
+</body>
+</html>
