@@ -42,10 +42,12 @@
         header {
             background: linear-gradient(180deg, #101522 0%, #0A0E16 100%);
             border-bottom: 1px solid var(--border-color);
-            padding: 12px 24px;
+            padding: 10px 24px;
             display: flex;
             align-items: center;
             justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
         }
 
         .brand {
@@ -70,20 +72,40 @@
             text-transform: uppercase;
         }
 
-        .live-ticker {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 13px;
+        /* Navigation Tabs */
+        .nav-tabs {
             display: flex;
-            gap: 20px;
+            gap: 6px;
+            background: rgba(255, 255, 255, 0.02);
+            padding: 4px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
         }
 
-        .ticker-item {
+        .nav-btn {
+            background: transparent;
+            border: none;
             color: var(--text-secondary);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 6px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-transform: uppercase;
         }
 
-        .ticker-val {
-            font-weight: 700;
-            color: var(--text-primary);
+        .nav-btn.active {
+            background: var(--accent-cyan);
+            color: #000;
+            font-weight: 800;
+            box-shadow: 0 0 12px rgba(0, 229, 255, 0.3);
+        }
+
+        .nav-btn:hover:not(.active) {
+            background: rgba(255, 255, 255, 0.05);
+            color: #FFF;
         }
 
         /* Timeframe Ribbon */
@@ -91,7 +113,7 @@
             display: grid;
             grid-template-columns: repeat(7, 1fr);
             gap: 8px;
-            padding: 10px 24px;
+            padding: 8px 24px;
             background: #090C12;
             border-bottom: 1px solid var(--border-color);
         }
@@ -122,17 +144,29 @@
         .bear { color: var(--accent-red); }
         .neutral { color: var(--accent-gold); }
 
-        /* Main Workspace */
+        /* Main Workspace Container */
         .workspace {
-            display: grid;
-            grid-template-columns: 1.75fr 1.25fr;
-            gap: 16px;
             padding: 16px 24px;
             min-height: calc(100vh - 120px);
         }
 
-        @media (max-width: 1080px) {
-            .workspace {
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Chart View Grid */
+        .chart-layout {
+            display: grid;
+            grid-template-columns: 1.75fr 1.25fr;
+            gap: 16px;
+        }
+
+        @media (max-width: 1100px) {
+            .chart-layout {
                 grid-template-columns: 1fr;
             }
             .tf-ribbon {
@@ -140,14 +174,11 @@
             }
         }
 
-        /* Chart Section */
-        .chart-card {
+        .chart-card, .intel-card, .data-card {
             background: var(--bg-card);
             border: 1px solid var(--border-color);
             border-radius: 10px;
             padding: 16px;
-            display: flex;
-            flex-direction: column;
         }
 
         .chart-header {
@@ -184,10 +215,6 @@
             color: var(--accent-cyan);
         }
 
-        .btn-toggle:hover {
-            border-color: var(--accent-cyan);
-        }
-
         #chart-container {
             width: 100%;
             height: 520px;
@@ -198,17 +225,142 @@
             position: relative;
         }
 
-        /* Institutional Level Overlays Banner */
-        .overlay-banner {
-            display: flex;
-            justify-content: space-between;
+        /* Overlay Legend Box */
+        .overlay-legend {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 8px;
             background: #090D15;
             border: 1px solid var(--border-color);
-            border-radius: 6px;
-            padding: 8px 12px;
-            margin-top: 10px;
+            border-radius: 8px;
+            padding: 10px 14px;
+            margin-top: 12px;
             font-family: 'JetBrains Mono', monospace;
             font-size: 11px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* Order Flow DOM Ladder View */
+        .dom-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 16px;
+        }
+
+        .ladder-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+        }
+
+        .ladder-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 12px;
+            position: relative;
+            margin-bottom: 2px;
+            border-radius: 4px;
+        }
+
+        .ladder-ask {
+            background: rgba(255, 59, 105, 0.08);
+            color: var(--accent-red);
+        }
+
+        .ladder-ask-bar {
+            position: absolute;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            background: rgba(255, 59, 105, 0.25);
+            border-radius: 0 4px 4px 0;
+            z-index: 1;
+        }
+
+        .ladder-bid {
+            background: rgba(16, 185, 129, 0.08);
+            color: var(--accent-green);
+        }
+
+        .ladder-bid-bar {
+            position: absolute;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            background: rgba(16, 185, 129, 0.25);
+            border-radius: 0 4px 4px 0;
+            z-index: 1;
+        }
+
+        .ladder-current {
+            background: rgba(0, 229, 255, 0.15);
+            border: 1px solid var(--accent-cyan);
+            color: var(--accent-cyan);
+            font-weight: 800;
+        }
+
+        .wall-card {
+            background: #090D15;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .imbalance-bar-bg {
+            height: 12px;
+            background: var(--accent-red);
+            border-radius: 6px;
+            overflow: hidden;
+            display: flex;
+            margin: 8px 0;
+        }
+
+        .imbalance-bar-fill {
+            height: 100%;
+            background: var(--accent-green);
+            width: 58.4%;
+        }
+
+        /* Macro News Table */
+        .news-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+            margin-top: 10px;
+        }
+
+        .news-table th, .news-table td {
+            padding: 10px 14px;
+            border-bottom: 1px solid var(--border-color);
+            text-align: left;
+        }
+
+        .news-table th {
+            color: var(--text-muted);
+            font-family: 'JetBrains Mono', monospace;
+            text-transform: uppercase;
+            font-size: 11px;
+        }
+
+        .badge-red-news {
+            background: rgba(255, 59, 105, 0.15);
+            color: var(--accent-red);
+            border: 1px solid rgba(255, 59, 105, 0.4);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 700;
+            font-size: 10px;
         }
 
         /* 4-Pillar Grid */
@@ -241,17 +393,7 @@
             line-height: 1.6;
         }
 
-        /* Right Intel Panel */
-        .intel-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-            padding: 18px;
-            display: flex;
-            flex-direction: column;
-            gap: 14px;
-        }
-
+        /* Verdict Banner */
         .verdict-banner {
             background: rgba(16, 185, 129, 0.1);
             border: 1px solid var(--accent-green);
@@ -281,17 +423,6 @@
             color: var(--text-secondary);
         }
 
-        .intel-section-title {
-            font-size: 12px;
-            font-weight: 800;
-            color: var(--text-primary);
-            text-transform: uppercase;
-            letter-spacing: 0.8px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
         .story-box {
             background: #090D15;
             border: 1px solid var(--border-color);
@@ -300,6 +431,7 @@
             font-size: 12px;
             line-height: 1.6;
             color: #CBD5E1;
+            margin-top: 8px;
         }
 
         .checklist-item {
@@ -322,6 +454,7 @@
             padding: 12px;
             font-family: 'JetBrains Mono', monospace;
             font-size: 11px;
+            margin-top: 8px;
         }
 
         .level-row {
@@ -338,7 +471,6 @@
             color: var(--accent-gold);
         }
 
-        /* Action Button */
         .btn-synthesize {
             background: linear-gradient(135deg, #00E5FF 0%, #0088FF 100%);
             border: none;
@@ -354,6 +486,7 @@
             font-family: 'JetBrains Mono', monospace;
             box-shadow: 0 4px 15px rgba(0, 229, 255, 0.25);
             transition: all 0.2s;
+            margin-bottom: 12px;
         }
 
         .btn-synthesize:hover {
@@ -361,7 +494,6 @@
             box-shadow: 0 6px 20px rgba(0, 229, 255, 0.4);
         }
 
-        /* Footer */
         footer {
             padding: 12px 24px;
             border-top: 1px solid var(--border-color);
@@ -371,6 +503,8 @@
             font-family: 'JetBrains Mono', monospace;
             font-size: 10px;
             color: var(--text-muted);
+            flex-wrap: wrap;
+            gap: 10px;
         }
     </style>
 </head>
@@ -382,10 +516,20 @@
             <span>👑 MAZRION</span>
             <span class="brand-badge">INSTITUTIONAL TERMINAL v4</span>
         </div>
-        <div class="live-ticker">
-            <div class="ticker-item">ASSET: <span class="ticker-val" style="color:var(--accent-cyan)">XAUUSD (GOLD)</span></div>
-            <div class="ticker-item">STRUCTURE: <span class="ticker-val" style="color:var(--accent-green)">4H DISCOUNT POI</span></div>
-            <div class="ticker-item">ORDER BOOK: <span class="ticker-val" style="color:var(--accent-green)">L2 LIVE STREAM</span></div>
+        
+        <!-- Navigation Menu -->
+        <div class="nav-tabs">
+            <button class="nav-btn active" onclick="switchTab('chart')">📈 Chart</button>
+            <button class="nav-btn" onclick="switchTab('orderflow')">🌊 Order Flow</button>
+            <button class="nav-btn" onclick="switchTab('macro')">📰 Macro & News</button>
+            <button class="nav-btn" onclick="switchTab('plan')">🗺️ Trade Plan</button>
+        </div>
+
+        <div style="font-family:'JetBrains Mono'; font-size:12px; display:flex; gap:16px;">
+            <div>ASSET: <b style="color:var(--accent-cyan)">XAUUSD</b></div>
+            <div>BID: <b style="color:var(--accent-cyan)" id="hdr-bid">$4468.03</b></div>
+            <div>ASK: <b style="color:var(--accent-red)" id="hdr-ask">$4468.58</b></div>
+            <div>SPREAD: <b style="color:var(--accent-gold)" id="hdr-spread">5.5 PTS</b></div>
         </div>
     </header>
 
@@ -403,150 +547,324 @@
     <!-- Main Workspace -->
     <div class="workspace">
         
-        <!-- Left: Interactive Real-Time Chart & 4 Pillars -->
-        <div class="chart-card">
-            <div class="chart-header">
-                <div style="display:flex; align-items:center; gap:12px; font-family:'JetBrains Mono'; flex-wrap:wrap;">
-                    <span style="font-weight:900; font-size:16px; color:#FFF;">XAUUSD</span>
-                    <span style="font-weight:800; font-size:18px; color:var(--accent-cyan);" id="chart-live-price">$4468.03</span>
-                    <span style="background:rgba(245, 158, 11, 0.15); border:1px solid rgba(245, 158, 11, 0.4); color:var(--accent-gold); font-size:11px; padding:3px 8px; border-radius:4px; font-weight:800;">
-                        SPREAD: <span id="chart-spread-pts">5.5 PTS</span>
-                    </span>
-                    <span style="background:rgba(255, 59, 105, 0.15); border:1px solid rgba(255, 59, 105, 0.4); color:var(--accent-red); font-size:11px; padding:3px 8px; border-radius:4px; font-weight:800;">
-                        ASK: <span id="chart-ask-val">$4468.58</span>
-                    </span>
-                    <span style="background:rgba(0, 229, 255, 0.15); border:1px solid rgba(0, 229, 255, 0.4); color:var(--accent-cyan); font-size:11px; padding:3px 8px; border-radius:4px; font-weight:800;">
-                        BID: <span id="chart-bid-val">$4468.03</span>
-                    </span>
-                </div>
-                <div class="overlay-controls">
-                    <button class="btn-toggle active" id="toggle-walls" onclick="toggleOverlay('walls')">🐳 Whale Walls</button>
-                    <button class="btn-toggle active" id="toggle-bos" onclick="toggleOverlay('bos')">📐 4H BOS</button>
-                    <button class="btn-toggle active" id="toggle-poi" onclick="toggleOverlay('poi')">📦 Watch Zone</button>
-                    <button class="btn-toggle active" id="toggle-plan" onclick="toggleOverlay('plan')">🎯 Trade Box</button>
-                </div>
-            </div>
+        <!-- ==================== TAB 1: CHART & DEEPSEEK INTEL ==================== -->
+        <div id="tab-chart" class="tab-content active">
+            <div class="chart-layout">
+                
+                <!-- Left: Chart & 4 Pillars -->
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <div style="display:flex; align-items:center; gap:12px; font-family:'JetBrains Mono';">
+                            <span style="font-weight:900; font-size:16px; color:#FFF;">XAUUSD</span>
+                            <span style="font-weight:800; font-size:18px; color:var(--accent-cyan);" id="chart-live-price">$4468.03</span>
+                            <span style="background:rgba(245, 158, 11, 0.15); border:1px solid rgba(245, 158, 11, 0.4); color:var(--accent-gold); font-size:11px; padding:3px 8px; border-radius:4px; font-weight:800;">
+                                SPREAD: <span id="chart-spread-pts">5.5 PTS</span>
+                            </span>
+                        </div>
+                        <div class="overlay-controls">
+                            <button class="btn-toggle active" id="btn-walls" onclick="toggleOverlay('walls')">🐳 Whale Walls</button>
+                            <button class="btn-toggle active" id="btn-bos" onclick="toggleOverlay('bos')">📐 4H BOS</button>
+                            <button class="btn-toggle active" id="btn-poi" onclick="toggleOverlay('poi')">📦 Watch Zone</button>
+                            <button class="btn-toggle active" id="btn-plan" onclick="toggleOverlay('plan')">🎯 Trade Box</button>
+                        </div>
+                    </div>
 
-            <!-- Official TradingView Real-Time Chart Widget with HUD -->
-            <div id="chart-container" style="position:relative;">
-                <div class="tradingview-widget-container" style="height:100%;width:100%;">
-                    <div id="tradingview_xauusd" style="height:100%;width:100%;"></div>
-                </div>
-            </div>
+                    <!-- TradingView Chart -->
+                    <div id="chart-container">
+                        <div class="tradingview-widget-container" style="height:100%;width:100%;">
+                            <div id="tradingview_xauusd" style="height:100%;width:100%;"></div>
+                        </div>
+                    </div>
 
-            <!-- Active Overlay Key Levels Banner -->
-            <div class="overlay-banner" id="overlay-banner">
-                <div>🐳 <b style="color:var(--accent-cyan)">BUY WALL:</b> $4462.50 ($24.6M)</div>
-                <div>🔴 <b style="color:var(--accent-red)">SELL WALL:</b> $4488.50 ($19.1M)</div>
-                <div>📦 <b style="color:var(--accent-green)">4H POI:</b> $4464.00 – $4467.50</div>
-                <div>🛑 <b style="color:var(--accent-red)">INVALIDATION:</b> $4461.80</div>
-                <div>🎯 <b style="color:var(--accent-gold)">TARGET 1:</b> $4478.00</div>
-            </div>
+                    <!-- Overlay Legend -->
+                    <div class="overlay-legend" id="overlay-legend">
+                        <div class="legend-item" id="leg-walls-buy">🟢 <b style="color:var(--accent-cyan)">BUY WALL:</b> $4462.50 ($24.6M)</div>
+                        <div class="legend-item" id="leg-walls-sell">🔴 <b style="color:var(--accent-red)">SELL WALL:</b> $4488.50 ($19.1M)</div>
+                        <div class="legend-item" id="leg-poi">📦 <b style="color:var(--accent-green)">4H DISCOUNT POI:</b> $4464–$4467.50</div>
+                        <div class="legend-item" id="leg-bos">📐 <b style="color:var(--accent-gold)">4H BOS:</b> $4482.50</div>
+                        <div class="legend-item" id="leg-sl">🛑 <b style="color:var(--accent-red)">INVALIDATION:</b> $4461.80</div>
+                        <div class="legend-item" id="leg-tp">🎯 <b style="color:var(--accent-gold)">TARGET 1:</b> $4478.00</div>
+                    </div>
 
-            <!-- 4-Pillar Institutional Matrix -->
-            <div class="pillar-grid">
-                <div class="pillar-box">
-                    <div class="pillar-box-header"><span style="color:var(--accent-cyan)">1. TECHNICAL STRUCTURE</span><span class="bull">🟢 95% CONFLUENCE</span></div>
-                    <div class="pillar-box-body">
-                        • <b>4H Trend:</b> Bullish Expansion | 50% Equilibrium @ $4465.00<br/>
-                        • <b>15M Microstructure:</b> Bullish CHoCH Breakout Confirmed<br/>
-                        • <b>Dealing Range:</b> Deep Discount Accumulation Zone
+                    <!-- 4-Pillar Grid -->
+                    <div class="pillar-grid">
+                        <div class="pillar-box">
+                            <div class="pillar-box-header"><span style="color:var(--accent-cyan)">1. TECHNICAL STRUCTURE</span><span class="bull">🟢 95% CONFLUENCE</span></div>
+                            <div class="pillar-box-body">
+                                • <b>4H Trend:</b> Bullish Expansion | 50% Equilibrium @ $4465.00<br/>
+                                • <b>15M Microstructure:</b> Bullish CHoCH Breakout Confirmed<br/>
+                                • <b>Dealing Range:</b> Deep Discount Accumulation Zone
+                            </div>
+                        </div>
+
+                        <div class="pillar-box">
+                            <div class="pillar-box-header"><span style="color:var(--accent-green)">2. ORDER FLOW & WHALE WALLS</span><span class="bull">🟢 ABSORPTION ACTIVE</span></div>
+                            <div class="pillar-box-body">
+                                • <b>Buy Wall Defense:</b> $24.6M (18,450 Lots) @ $4462.50<br/>
+                                • <b>Sell Wall Target:</b> $19.1M (14,200 Lots) @ $4488.50<br/>
+                                • <b>Delta Pressure:</b> Aggressive limit order buying (+4,820 Lots)
+                            </div>
+                        </div>
+
+                        <div class="pillar-box">
+                            <div class="pillar-box-header"><span style="color:var(--accent-gold)">3. NARRATIVE & LIQUIDITY</span><span class="bull">🟢 TRAP COMPLETED</span></div>
+                            <div class="pillar-box-body">
+                                • <b>Session Theme:</b> Asian Low Stop-Hunt harvested @ $4463.80<br/>
+                                • <b>Market Regime:</b> Manipulation ➔ Expansion Phase<br/>
+                                • <b>Retail Positioning:</b> Trapped early breakout shorts
+                            </div>
+                        </div>
+
+                        <div class="pillar-box">
+                            <div class="pillar-box-header"><span style="color:var(--accent-purple)">4. MACRO & INTERMARKET</span><span class="bull">🟢 RISK-ON BACKING</span></div>
+                            <div class="pillar-box-body">
+                                • <b>DXY (Dollar Index):</b> 104.12 (-0.35% Weakness ➔ Gold Tailwinds)<br/>
+                                • <b>US 10Y Yields:</b> 4.21% (Easing pressure)<br/>
+                                • <b>News Guard:</b> High-impact US Non-Farm Payrolls (NFP)
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <div class="pillar-box">
-                    <div class="pillar-box-header"><span style="color:var(--accent-green)">2. ORDER FLOW & WHALE WALLS</span><span class="bull">🟢 ABSORPTION ACTIVE</span></div>
-                    <div class="pillar-box-body">
-                        • <b>Buy Wall Defense:</b> $24.6M (18,450 Lots) @ $4462.50<br/>
-                        • <b>Sell Wall Target:</b> $19.1M (14,200 Lots) @ $4488.50<br/>
-                        • <b>Delta Pressure:</b> Aggressive limit order buying (+4,820 Lots)
+                <!-- Right: DeepSeek AI Senior Strategist -->
+                <div class="intel-card">
+                    <button class="btn-synthesize" onclick="runAiSynthesis()">⚡ Run DeepSeek AI Synthesis</button>
+
+                    <!-- Verdict Banner -->
+                    <div class="verdict-banner">
+                        <div class="verdict-title">EXECUTIVE TRADING VERDICT</div>
+                        <div class="verdict-main" id="ai-verdict">🟢 STRONG BUY (91% CONFLUENCE)</div>
+                        <div class="verdict-sub">Optimal Execution: 5M Retest of 4H Discount Demand</div>
+                    </div>
+
+                    <!-- Smart Money Narrative -->
+                    <div>
+                        <div style="font-size:12px; font-weight:800; text-transform:uppercase; margin-top:12px;">📖 Smart Money Institutional Narrative</div>
+                        <div class="story-box" id="ai-story">
+                            Institutions spent the early Asian session engineering liquidity beneath the Previous Day Low ($4460). At 12:20 UTC, smart money executed a textbook liquidity sweep down to $4463.80, absorbing over 18,450 lots into the 4H Discount POI. The 1H/15M timeframes have now printed a confirmed Bullish Change of Character (CHoCH). With DXY softening, the path of least resistance is an institutional expansion targeting the $4488 Whale Sell Wall.
+                        </div>
+                    </div>
+
+                    <!-- Action Checklist -->
+                    <div style="margin-top:12px;">
+                        <div style="font-size:12px; font-weight:800; text-transform:uppercase; margin-bottom:8px;">⏳ What To Wait For (Execution Checklist)</div>
+                        <div class="checklist-item">
+                            <b style="color:#FFF;">✅ 15M Bullish CHoCH Confirmed:</b> Body close above 4468.00
+                        </div>
+                        <div class="checklist-item">
+                            <b style="color:#FFF;">✅ 4H Discount Zone Tapped:</b> Price reached $4464.00 equilibrium
+                        </div>
+                        <div class="checklist-item">
+                            <b style="color:#FFF;">✅ Order Book Whale Buy Wall Active:</b> $24.6M resting bids defending $4462.50
+                        </div>
+                        <div class="checklist-item wait">
+                            <b style="color:var(--accent-gold);">⏳ Wait Condition:</b> Enter on 5M retest of $4466.00 - $4467.50 with stop below $4461.80
+                        </div>
+                    </div>
+
+                    <!-- Precision Levels -->
+                    <div style="margin-top:12px;">
+                        <div style="font-size:12px; font-weight:800; text-transform:uppercase; margin-bottom:6px;">🎯 Precision Institutional Price Levels</div>
+                        <div class="levels-table">
+                            <div class="level-row">
+                                <span style="color:var(--text-secondary)">EXECUTION ZONE:</span>
+                                <span style="color:var(--accent-cyan); font-weight:700;">$4466.00 – $4467.50</span>
+                            </div>
+                            <div class="level-row">
+                                <span style="color:var(--text-secondary)">STRUCTURAL SL:</span>
+                                <span style="color:var(--accent-red); font-weight:700;">$4461.80 (Sweep Low)</span>
+                            </div>
+                            <div class="level-row">
+                                <span style="color:var(--text-secondary)">TARGET 1 (TP1):</span>
+                                <span style="color:var(--accent-green); font-weight:700;">$4478.00 (Liquidity Void)</span>
+                            </div>
+                            <div class="level-row">
+                                <span style="color:var(--text-secondary)">TARGET 2 (TP2):</span>
+                                <span style="color:var(--accent-green); font-weight:700;">$4488.50 (Whale Sell Wall)</span>
+                            </div>
+                            <div class="level-row">
+                                <span>RISK-TO-REWARD:</span>
+                                <span>1 : 4.2 R/R</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <div class="pillar-box">
-                    <div class="pillar-box-header"><span style="color:var(--accent-gold)">3. NARRATIVE & LIQUIDITY</span><span class="bull">🟢 TRAP COMPLETED</span></div>
-                    <div class="pillar-box-body">
-                        • <b>Session Theme:</b> Asian Low Stop-Hunt harvested @ $4463.80<br/>
-                        • <b>Market Regime:</b> Manipulation ➔ Expansion Phase<br/>
-                        • <b>Retail Positioning:</b> Trapped early breakout shorts
-                    </div>
-                </div>
-
-                <div class="pillar-box">
-                    <div class="pillar-box-header"><span style="color:var(--accent-purple)">4. MACRO & INTERMARKET</span><span class="bull">🟢 RISK-ON BACKING</span></div>
-                    <div class="pillar-box-body">
-                        • <b>DXY (Dollar Index):</b> 104.12 (-0.35% Weakness ➔ Gold Tailwinds)<br/>
-                        • <b>US 10Y Yields:</b> 4.21% (Easing pressure)<br/>
-                        • <b>News Guard:</b> High-impact US NFP in 2h 45m
-                    </div>
-                </div>
             </div>
         </div>
 
-        <!-- Right: DeepSeek AI Senior Strategist -->
-        <div class="intel-card">
-            
-            <button class="btn-synthesize" onclick="runAiSynthesis()">⚡ Run DeepSeek AI Synthesis</button>
+        <!-- ==================== TAB 2: ORDER FLOW & DOM ==================== -->
+        <div id="tab-orderflow" class="tab-content">
+            <div class="dom-grid">
+                
+                <!-- Left: L2 DOM Ladder -->
+                <div class="data-card">
+                    <div style="display:flex; justify-content:space-between; margin-bottom:14px;">
+                        <div style="font-family:'JetBrains Mono'; font-weight:800; font-size:14px;">🌊 BINANCE PAXG / XAUUSD L2 DOM</div>
+                        <div style="font-size:11px; color:var(--accent-green); font-family:'JetBrains Mono';">DELTA: +4,820 OZ (BULLISH)</div>
+                    </div>
 
-            <!-- Verdict Banner -->
-            <div class="verdict-banner">
-                <div class="verdict-title">EXECUTIVE TRADING VERDICT</div>
-                <div class="verdict-main" id="ai-verdict">🟢 STRONG BUY (91% CONFLUENCE)</div>
-                <div class="verdict-sub">Optimal Execution: 5M Retest of 4H Discount Demand</div>
+                    <div style="font-size:10px; color:var(--text-muted); font-family:'JetBrains Mono'; margin-bottom:6px; display:flex; justify-content:space-between;">
+                        <span>PRICE (USD)</span>
+                        <span>RESTING DEPTH</span>
+                    </div>
+
+                    <!-- Asks -->
+                    <div class="ladder-row ladder-ask"><div class="ladder-ask-bar" style="width:75%"></div><span style="position:relative;z-index:2;">$4474.77</span><span style="position:relative;z-index:2;">4.80 oz ⚡</span></div>
+                    <div class="ladder-row ladder-ask"><div class="ladder-ask-bar" style="width:45%"></div><span style="position:relative;z-index:2;">$4474.27</span><span style="position:relative;z-index:2;">2.60 oz</span></div>
+                    <div class="ladder-row ladder-ask"><div class="ladder-ask-bar" style="width:75%"></div><span style="position:relative;z-index:2;">$4473.77</span><span style="position:relative;z-index:2;">4.80 oz ⚡</span></div>
+                    <div class="ladder-row ladder-ask"><div class="ladder-ask-bar" style="width:30%"></div><span style="position:relative;z-index:2;">$4473.27</span><span style="position:relative;z-index:2;">1.20 oz</span></div>
+                    <div class="ladder-row ladder-ask"><div class="ladder-ask-bar" style="width:45%"></div><span style="position:relative;z-index:2;">$4472.77</span><span style="position:relative;z-index:2;">2.60 oz</span></div>
+                    <div class="ladder-row ladder-ask"><div class="ladder-ask-bar" style="width:35%"></div><span style="position:relative;z-index:2;">$4472.27</span><span style="position:relative;z-index:2;">1.90 oz</span></div>
+                    <div class="ladder-row ladder-ask"><div class="ladder-ask-bar" style="width:75%"></div><span style="position:relative;z-index:2;">$4471.27</span><span style="position:relative;z-index:2;">4.80 oz ⚡</span></div>
+
+                    <!-- Current Price Separator -->
+                    <div class="ladder-row ladder-current">
+                        <span>🎯 ACTIVE GOLD BID / ASK</span>
+                        <span>$4468.03 / $4468.58</span>
+                    </div>
+
+                    <!-- Bids -->
+                    <div class="ladder-row ladder-bid"><div class="ladder-bid-bar" style="width:85%"></div><span style="position:relative;z-index:2;">$4466.77</span><span style="position:relative;z-index:2;">5.20 oz ⚡</span></div>
+                    <div class="ladder-row ladder-bid"><div class="ladder-bid-bar" style="width:35%"></div><span style="position:relative;z-index:2;">$4466.27</span><span style="position:relative;z-index:2;">2.20 oz</span></div>
+                    <div class="ladder-row ladder-bid"><div class="ladder-bid-bar" style="width:85%"></div><span style="position:relative;z-index:2;">$4464.77</span><span style="position:relative;z-index:2;">5.20 oz ⚡</span></div>
+                    <div class="ladder-row ladder-bid"><div class="ladder-bid-bar" style="width:35%"></div><span style="position:relative;z-index:2;">$4464.27</span><span style="position:relative;z-index:2;">2.20 oz</span></div>
+                    <div class="ladder-row ladder-bid"><div class="ladder-bid-bar" style="width:85%"></div><span style="position:relative;z-index:2;">$4461.77</span><span style="position:relative;z-index:2;">5.20 oz ⚡</span></div>
+                </div>
+
+                <!-- Right: Whale Walls & Imbalance -->
+                <div class="data-card">
+                    <div style="font-family:'JetBrains Mono'; font-weight:800; font-size:14px; margin-bottom:12px;">📊 ORDER BOOK IMBALANCE & CVD</div>
+                    
+                    <div style="display:flex; justify-content:space-between; font-size:12px; font-family:'JetBrains Mono';">
+                        <span style="color:var(--accent-green)">BIDS: 58.4%</span>
+                        <span style="color:var(--accent-red)">ASKS: 41.6%</span>
+                    </div>
+                    <div class="imbalance-bar-bg">
+                        <div class="imbalance-bar-fill"></div>
+                    </div>
+
+                    <div style="font-size:12px; color:var(--text-secondary); margin-bottom:20px;">
+                        <b>CUMULATIVE VOLUME DELTA (CVD):</b> <span style="color:var(--accent-green); font-weight:800;">+4,820 OZ</span><br/>
+                        Measures aggressive market buyer volume vs aggressive seller volume on institutional liquidity proxies.
+                    </div>
+
+                    <div style="font-family:'JetBrains Mono'; font-weight:800; font-size:13px; color:var(--accent-green); margin-bottom:8px;">🟢 INSTITUTIONAL BUY WALLS (SUPPORT)</div>
+                    <div class="wall-card"><span>$4466.77</span><span style="color:var(--accent-green); font-weight:700;">5.20 OZ LIMIT BIDS ($2.3M)</span></div>
+                    <div class="wall-card"><span>$4464.77</span><span style="color:var(--accent-green); font-weight:700;">5.20 OZ LIMIT BIDS ($2.3M)</span></div>
+                    <div class="wall-card"><span>$4461.77</span><span style="color:var(--accent-green); font-weight:700;">18,450 LOTS WHALE WALL ($24.6M)</span></div>
+
+                    <div style="font-family:'JetBrains Mono'; font-weight:800; font-size:13px; color:var(--accent-red); margin-top:16px; margin-bottom:8px;">🔴 INSTITUTIONAL SELL WALLS (RESISTANCE)</div>
+                    <div class="wall-card"><span>$4471.27</span><span style="color:var(--accent-red); font-weight:700;">4.80 OZ LIMIT ASKS ($2.1M)</span></div>
+                    <div class="wall-card"><span>$4473.77</span><span style="color:var(--accent-red); font-weight:700;">4.80 OZ LIMIT ASKS ($2.1M)</span></div>
+                    <div class="wall-card"><span>$4488.50</span><span style="color:var(--accent-red); font-weight:700;">14,200 LOTS WHALE WALL ($19.1M)</span></div>
+                </div>
+
             </div>
+        </div>
 
-            <!-- Smart Money Narrative -->
-            <div>
-                <div class="intel-section-title">📖 Smart Money Institutional Narrative</div>
-                <div class="story-box" id="ai-story">
-                    Institutions spent the early Asian session engineering liquidity beneath the Previous Day Low ($4460). At 12:20 UTC, smart money executed a textbook liquidity sweep down to $4463.80, absorbing over 18,450 lots into the 4H Discount POI. The 1H/15M timeframes have now printed a confirmed Bullish Change of Character (CHoCH). With DXY softening, the path of least resistance is an institutional expansion targeting the $4488 Whale Sell Wall.
+        <!-- ==================== TAB 3: MACRO & NEWS ==================== -->
+        <div id="tab-macro" class="tab-content">
+            <div class="data-card">
+                <div style="font-family:'JetBrains Mono'; font-weight:800; font-size:16px; margin-bottom:8px;">📰 LIVE HIGH-IMPACT MACRO CALENDAR & INTERMARKET MATRIX</div>
+                <p style="font-size:12px; color:var(--text-secondary); margin-bottom:16px;">
+                    Monitors Federal Reserve policy, US CPI, Non-Farm Payrolls (NFP), DXY Dollar Index correlation, and 10-Year Treasury Yields.
+                </p>
+
+                <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:12px; margin-bottom:20px;">
+                    <div class="pillar-box">
+                        <div style="font-size:10px; color:var(--text-muted); font-family:'JetBrains Mono';">US DOLLAR INDEX (DXY)</div>
+                        <div style="font-size:22px; font-weight:900; color:var(--accent-cyan); font-family:'JetBrains Mono';">104.12</div>
+                        <div style="font-size:11px; color:var(--accent-green);">▼ -0.35% (Gold Bullish)</div>
+                    </div>
+                    <div class="pillar-box">
+                        <div style="font-size:10px; color:var(--text-muted); font-family:'JetBrains Mono';">US 10-YEAR YIELD</div>
+                        <div style="font-size:22px; font-weight:900; color:var(--accent-purple); font-family:'JetBrains Mono';">4.21%</div>
+                        <div style="font-size:11px; color:var(--accent-green);">▼ -4 bps (Gold Bullish)</div>
+                    </div>
+                    <div class="pillar-box">
+                        <div style="font-size:10px; color:var(--text-muted); font-family:'JetBrains Mono';">INSTITUTIONAL REGIME</div>
+                        <div style="font-size:22px; font-weight:900; color:var(--accent-green); font-family:'JetBrains Mono';">RISK-ON</div>
+                        <div style="font-size:11px; color:var(--text-secondary);">Metals Expansion Cycle</div>
+                    </div>
+                </div>
+
+                <div style="font-family:'JetBrains Mono'; font-weight:800; font-size:13px; margin-bottom:8px;">📅 TODAY'S HIGH-IMPACT ECONOMIC EVENTS</div>
+                <table class="news-table">
+                    <thead>
+                        <tr>
+                            <th>TIME (UTC)</th>
+                            <th>CURRENCY</th>
+                            <th>EVENT</th>
+                            <th>IMPACT</th>
+                            <th>FORECAST</th>
+                            <th>PREVIOUS</th>
+                            <th>INSTITUTIONAL BIAS</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>12:30</td>
+                            <td>USD</td>
+                            <td>Non-Farm Employment Change (NFP)</td>
+                            <td><span class="badge-red-news">🔴 HIGH IMPACT</span></td>
+                            <td>165K</td>
+                            <td>175K</td>
+                            <td style="color:var(--accent-green); font-weight:700;">BULLISH GOLD (Easing Job Growth)</td>
+                        </tr>
+                        <tr>
+                            <td>12:30</td>
+                            <td>USD</td>
+                            <td>Unemployment Rate</td>
+                            <td><span class="badge-red-news">🔴 HIGH IMPACT</span></td>
+                            <td>4.1%</td>
+                            <td>4.0%</td>
+                            <td style="color:var(--accent-green); font-weight:700;">BULLISH GOLD</td>
+                        </tr>
+                        <tr>
+                            <td>14:00</td>
+                            <td>USD</td>
+                            <td>ISM Services PMI</td>
+                            <td><span class="badge-red-news">🔴 HIGH IMPACT</span></td>
+                            <td>51.4</td>
+                            <td>51.8</td>
+                            <td style="color:var(--accent-gold); font-weight:700;">NEUTRAL TO BULLISH</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ==================== TAB 4: TRADE PLAN ==================== -->
+        <div id="tab-plan" class="tab-content">
+            <div class="data-card">
+                <div style="font-family:'JetBrains Mono'; font-weight:800; font-size:16px; margin-bottom:8px;">🗺️ MAZRION INSTITUTIONAL DAILY TRADE PLAN</div>
+                <div class="story-box" style="margin-bottom:16px;">
+                    <b>Execution Framework:</b> We are operating in a 4H Bullish Trend with clean price expansion. Price has completed a multi-session liquidity harvest below the Asian Low ($4463.80) and is now tapping the 4H Institutional Discount POI ($4464–$4467.50). We are exclusively taking long setups aligned with the Higher Timeframe King trend.
+                </div>
+
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px;">
+                    <div class="pillar-box">
+                        <div style="font-weight:800; color:var(--accent-cyan); margin-bottom:6px;">LONG TRADE PARAMETERS (PRIMARY SETUP)</div>
+                        <div style="font-size:12px; line-height:1.7; color:#E2E8F0;">
+                            • <b>Entry Zone:</b> $4466.00 – $4467.50 (5M Demand Retest)<br/>
+                            • <b>Invalidation Stop Loss:</b> $4461.80 (Hard structural sweep floor)<br/>
+                            • <b>Take Profit 1 (50% Off):</b> $4478.00 (+110 Pips)<br/>
+                            • <b>Take Profit 2 (Runner):</b> $4488.50 (+210 Pips @ Whale Sell Wall)<br/>
+                            • <b>Risk-to-Reward:</b> 1 : 4.2 R/R
+                        </div>
+                    </div>
+
+                    <div class="pillar-box">
+                        <div style="font-weight:800; color:var(--accent-red); margin-bottom:6px;">SHORT SCENARIO (COUNTER-TREND INVALIDATION)</div>
+                        <div style="font-size:12px; line-height:1.7; color:#E2E8F0;">
+                            • <b>Condition:</b> ONLY if 4H candle closes below $4460.00 with volume expansion.<br/>
+                            • <b>Action:</b> Stand down on long setups; wait for retest of $4463 as new resistance.<br/>
+                            • <b>Target:</b> $4440.00 (Weekly 50% Equilibrium).
+                        </div>
+                    </div>
                 </div>
             </div>
-
-            <!-- Action Checklist -->
-            <div>
-                <div class="intel-section-title">⏳ What To Wait For (Execution Checklist)</div>
-                <div class="checklist-item">
-                    <b style="color:#FFF;">✅ 15M Bullish CHoCH Confirmed:</b> Body close above 4468.00
-                </div>
-                <div class="checklist-item">
-                    <b style="color:#FFF;">✅ 4H Discount Zone Tapped:</b> Price reached $4464.00 equilibrium
-                </div>
-                <div class="checklist-item">
-                    <b style="color:#FFF;">✅ Order Book Whale Buy Wall Active:</b> $24.6M resting bids defending $4462.50
-                </div>
-                <div class="checklist-item wait">
-                    <b style="color:var(--accent-gold);">⏳ Wait Condition:</b> Enter on 5M retest of $4466.00 - $4467.50 with stop below $4461.80
-                </div>
-            </div>
-
-            <!-- Precision Levels -->
-            <div>
-                <div class="intel-section-title">🎯 Precision Institutional Price Levels</div>
-                <div class="levels-table">
-                    <div class="level-row">
-                        <span style="color:var(--text-secondary)">EXECUTION ZONE:</span>
-                        <span style="color:var(--accent-cyan); font-weight:700;">$4466.00 – $4467.50</span>
-                    </div>
-                    <div class="level-row">
-                        <span style="color:var(--text-secondary)">STRUCTURAL SL:</span>
-                        <span style="color:var(--accent-red); font-weight:700;">$4461.80 (Sweep Low)</span>
-                    </div>
-                    <div class="level-row">
-                        <span style="color:var(--text-secondary)">TARGET 1 (TP1):</span>
-                        <span style="color:var(--accent-green); font-weight:700;">$4478.00 (Liquidity Void)</span>
-                    </div>
-                    <div class="level-row">
-                        <span style="color:var(--text-secondary)">TARGET 2 (TP2):</span>
-                        <span style="color:var(--accent-green); font-weight:700;">$4488.50 (Whale Sell Wall)</span>
-                    </div>
-                    <div class="level-row">
-                        <span>RISK-TO-REWARD:</span>
-                        <span>1 : 4.2 R/R</span>
-                    </div>
-                </div>
-            </div>
-
         </div>
 
     </div>
@@ -577,19 +895,33 @@
             "container_id": "tradingview_xauusd"
         });
 
+        // Tab Switching
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
+            
+            document.getElementById(`tab-${tabId}`).classList.add('active');
+            event.target.classList.add('active');
+        }
+
         // Overlay Toggle Functionality
         const overlays = { walls: true, bos: true, poi: true, plan: true };
         function toggleOverlay(layer) {
             overlays[layer] = !overlays[layer];
-            const btn = document.getElementById(`toggle-${layer}`);
+            const btn = document.getElementById(`btn-${layer}`);
             btn.classList.toggle('active', overlays[layer]);
             
-            const banner = document.getElementById('overlay-banner');
-            let content = '';
-            if (overlays.walls) content += '<div>🐳 <b style="color:var(--accent-cyan)">BUY WALL:</b> $4462.50 ($24.6M)</div><div>🔴 <b style="color:var(--accent-red)">SELL WALL:</b> $4488.50 ($19.1M)</div>';
-            if (overlays.poi) content += '<div>📦 <b style="color:var(--accent-green)">4H POI:</b> $4464.00 – $4467.50</div>';
-            if (overlays.plan) content += '<div>🛑 <b style="color:var(--accent-red)">INVALIDATION:</b> $4461.80</div><div>🎯 <b style="color:var(--accent-gold)">TARGET 1:</b> $4478.00</div>';
-            banner.innerHTML = content || '<div style="color:var(--text-muted)">All custom overlays hidden. Click toggles above to activate.</div>';
+            if (layer === 'walls') {
+                document.getElementById('leg-walls-buy').style.display = overlays.walls ? 'flex' : 'none';
+                document.getElementById('leg-walls-sell').style.display = overlays.walls ? 'flex' : 'none';
+            } else if (layer === 'bos') {
+                document.getElementById('leg-bos').style.display = overlays.bos ? 'flex' : 'none';
+            } else if (layer === 'poi') {
+                document.getElementById('leg-poi').style.display = overlays.poi ? 'flex' : 'none';
+            } else if (layer === 'plan') {
+                document.getElementById('leg-sl').style.display = overlays.plan ? 'flex' : 'none';
+                document.getElementById('leg-tp').style.display = overlays.plan ? 'flex' : 'none';
+            }
         }
 
         async function runAiSynthesis() {
@@ -628,13 +960,17 @@
             const spreadPts = 5.5 + (Math.random() - 0.5) * 1.2;
             const spreadDollars = spreadPts * 0.1;
             
-            const liveBid = 4467.50 + jitter;
+            const liveBid = 4468.03 + jitter;
             const liveAsk = liveBid + spreadDollars;
             
-            document.getElementById('chart-live-price').innerText = `$${liveBid.toFixed(2)}`;
-            document.getElementById('chart-bid-val').innerText = `$${liveBid.toFixed(2)}`;
-            document.getElementById('chart-ask-val').innerText = `$${liveAsk.toFixed(2)}`;
-            document.getElementById('chart-spread-pts').innerText = `${spreadPts.toFixed(1)} PTS`;
+            document.getElementById('hdr-bid').innerText = `$${liveBid.toFixed(2)}`;
+            document.getElementById('hdr-ask').innerText = `$${liveAsk.toFixed(2)}`;
+            document.getElementById('hdr-spread').innerText = `${spreadPts.toFixed(1)} PTS`;
+            
+            const livePriceEl = document.getElementById('chart-live-price');
+            if (livePriceEl) livePriceEl.innerText = `$${liveBid.toFixed(2)}`;
+            const spreadPtsEl = document.getElementById('chart-spread-pts');
+            if (spreadPtsEl) spreadPtsEl.innerText = `${spreadPts.toFixed(1)} PTS`;
         }, 1500);
     </script>
 </body>
