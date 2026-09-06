@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MAZRION // CINEMA DIRECTOR SUITE — HOLLYWOOD PRODUCTION DECK</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;600;700;800;900&family=JetBrains+Mono:wght@400;600;700;800;900&family=Cinzel:wght@700;900&family=Orbitron:wght@600;800;900&display=swap" rel="stylesheet">
+    <style>
+        /* Base Root Theme - TEAL & ORANGE by default */
+        :root {
+            --cinema-bg: #040A0F;
+            --cinema-metal: #0A161E;
+            --cinema-metal-2: #102432;
+            --cinema-border: #1B394E;
+            --gold-accent: #F59E0B;
+            --gold-glow: #FBBF24;
+            --red-carpet: #E11D48;
+            --film-cyan: #00E5FF;
+            --film-green: #10B981;
+            --film-purple: #A855F7;
+            --text-main: #F1F5F9;
+            --text-dim: #7EA1B8;
+            --card-glow: rgba(0, 229, 255, 0.15);
+            --viewfinder-bg: radial-gradient(circle at 50% 50%, rgba(6, 40, 56, 0.5) 0%, #03080D 90%);
+        }
+
+        /* 1. TEAL & ORANGE THEME */
+        body.theme-teal {
+            --cinema-bg: #030A0F;
+            --cinema-metal: #091722;
+            --cinema-metal-2: #102434;
+            --cinema-border: #1C3C54;
+            --gold-accent: #F59E0B;
+            --gold-glow: #FBBF24;
+            --red-carpet: #FF2E63;
+            --film-cyan: #00E5FF;
+            --film-green: #10B981;
+            --film-purple: #A855F7;
+            --text-main: #EAF4FC;
+            --text-dim: #79A3BF;
+            --card-glow: rgba(0, 229, 255, 0.18);
+            --viewfinder-bg: radial-gradient(circle at 50% 50%, rgba(6, 40, 56, 0.6) 0%, #02070B 90%);
+        }
+
+        /* 2. KODAK 2383 35MM VINTAGE GOLD THEME */
+        body.theme-kodak {
+            --cinema-bg: #0E0A04;
+            --cinema-metal: #1A1308;
+            --cinema-metal-2: #281D0D;
+            --cinema-border: #4A3716;
+            --gold-accent: #F59E0B;
+            --gold-glow: #FDE047;
+            --red-carpet: #DC2626;
+            --film-cyan: #FBBF24;
+            --film-green: #84CC16;
+            --film-purple: #D97706;
+            --text-main: #FEF3C7;
+            --text-dim: #A89060;
+            --card-glow: rgba(245, 158, 11, 0.22);
+            --viewfinder-bg: radial-gradient(circle at 50% 50%, rgba(60, 42, 12, 0.55) 0%, #080502 90%);
+        }
+
+        /* 3. FILM NOIR HIGH-CONTRAST B&W THEME */
+        body.theme-noir {
+            --cinema-bg: #000000;
+            --cinema-metal: #0A0A0A;
+            --cinema-metal-2: #141414;
+            --cinema-border: #333333;
+            --gold-accent: #FFFFFF;
+            --gold-glow: #E5E5E5;
+            --red-carpet: #FF0033;
+            --film-cyan: #D4D4D4;
+            --film-green: #E5E5E5;
+            --film-purple: #A3A3A3;
+            --text-main: #FFFFFF;
+            --text-dim: #888888;
+            --card-glow: rgba(255, 255, 255, 0.12);
+            --viewfinder-bg: radial-gradient(circle at 50% 50%, rgba(30, 30, 30, 0.7) 0%, #000000 90%);
+        }
+
+        /* 4. CYBERPUNK 2049 NEON THEME */
+        body.theme-cyber {
+            --cinema-bg: #070312;
+            --cinema-metal: #120826;
+            --cinema-metal-2: #1E0E3D;
+            --cinema-border: #401B78;
+            --gold-accent: #E879F9;
+            --gold-glow: #F472B6;
+            --red-carpet: #FF007F;
+            --film-cyan: #00FFFF;
+            --film-green: #00FF9D;
+            --film-purple: #A855F7;
+            --text-main: #FDF4FF;
+            --text-dim: #A882C7;
+            --card-glow: rgba(232, 121, 249, 0.25);
+            --viewfinder-bg: radial-gradient(circle at 50% 50%, rgba(60, 16, 95, 0.55) 0%, #04010A 90%);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+        }
+
+        body {
+            background: var(--cinema-bg);
+            color: var(--text-main);
+            font-family: 'JetBrains Mono', monospace;
+            min-height: 100vh;
+            width: 100vw;
+            overflow-x: hidden;
+            position: relative;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        /* 35mm Celluloid Film Grain Texture Overlay */
+        .film-grain-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: radial-gradient(circle at 50% 50%, transparent 45%, rgba(0,0,0,0.65) 100%);
+            z-index: 15;
+            pointer-events: none;
+        }
+
+        /* ==================== 1. TOP PRODUCTION HEADER ==================== */
+        .cinema-header {
+            background: var(--cinema-metal);
+            border-bottom: 2px solid var(--cinema-border);
+            padding: 10px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            position: relative;
+            z-index: 20;
+            box-shadow: 0 6px 30px rgba(0,0,0,0.85);
+            transition: all 0.3s ease;
+        }
+
+        .cinema-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .studio-title {
+            font-family: 'Cinzel', serif;
+            font-size: 15px;
+            font-weight: 900;
+            color: var(--gold-accent);
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-shadow: 0 0 14px var(--gold-glow);
+        }
+
+        .nav-switch-btn {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid var(--cinema-border);
+            color: var(--text-dim);
+            padding: 5px 12px;
+            border-radius: 6px;
+            font-size: 10.5px;
+            font-weight: 800;
+            text-decoration: none;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .nav-switch-btn:hover {
+            border-color: var(--gold-accent);
+            color: #FFF;
+            box-shadow: 0 0 10px var(--card-glow);
+        }
+
+        /* Role Switcher Toolbar (Director, Actor, Producer, Writer) */
+        .role-lens-selector {
+            display: flex;
+            gap: 6px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 4px 8px;
+            border-radius: 8px;
+            border: 1px solid var(--cinema-border);
+        }
+
+        .role-pill {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid transparent;
+            padding: 6px 14px;
+            border-radius: 5px;
+            font-size: 11px;
+            font-weight: 800;
+            cursor: pointer;
+            color: var(--text-dim);
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .role-pill:hover {
+            color: #FFF;
+        }
+        .role-pill.active {
+            background: var(--gold-accent);
+            color: #000;
+            font-weight: 900;
+            box-shadow: 0 0 14px var(--gold-glow);
+        }
+
+        /* 35mm LUT Preset Buttons (Crisp & High-Contrast) */
+        .lut-selector-group {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+            font-size: 10px;
+            color: var(--text-dim);
+            background: rgba(0,0,0,0.6);
+            padding: 4px 10px;
+            border-radius: 6px;
+            border: 1px solid var(--cinema-border);
+        }
+        .lut-tag {
+            background: rgba(255,255,255,0.08);
+            border: 1px solid var(--cinema-border);
+            padding: 4px 9px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 800;
+            color: #CBD5E1;
+            transition: all 0.2s;
+        }
+        .lut-tag:hover { color: #FFF; border-color: var(--gold-accent); }
+        .lut-tag.active {
+            background: var(--gold-accent);
+            color: #000;
+            font-weight: 900;
+            border-color: var(--gold-glow);
+            box-shadow: 0 0 12px var(--gold-glow);
+        }
+
+        /* Master Timecode */
+        .timecode-box {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            font-weight: 900;
+            color: var(--red-carpet);
+            background: rgba(0,0,0,0.85);
+            border: 1px solid var(--red-carpet);
+            padding: 5px 12px;
+            border-radius: 5px;
+            letter-spacing: 1px;
+            box-shadow: 0 0 12px rgba(225, 29, 72, 0.4);
+        }
+
+        /* ==================== 2. MAIN PRODUCTION WORKSPACE ==================== */
+        .studio-workspace {
+            padding: 16px 24px;
+            max-width: 1700px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1.25fr 1fr;
+            gap: 20px;
+            min-height: calc(100vh - 120px);
+        }
+
+        @media (max-width: 1150px) {
+            .studio-workspace { grid-template-columns: 1fr; }
+        }
+
+        /* ARRI 4K CAMERA VIEWFINDER (MONITOR) */
+        .camera-viewfinder-card {
+            background: var(--cinema-metal);
+            border: 2px solid var(--cinema-border);
+            border-radius: 12px;
+            position: relative;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 0 0 35px var(--card-glow);
+            min-height: 480px;
+            transition: all 0.3s ease;
+        }
+
+        /* 2.39:1 Anamorphic Framing Box */
+        .anamorphic-frame {
+            border: 1.5px solid var(--gold-accent);
+            border-radius: 6px;
+            height: 340px;
+            position: relative;
+            background: var(--viewfinder-bg);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 14px;
+            overflow: hidden;
+            box-shadow: inset 0 0 30px rgba(0,0,0,0.8);
+            transition: all 0.3s ease;
+        }
+
+        /* Rule of Thirds Grid */
+        .thirds-line-h1 { position: absolute; top: 33.33%; left: 0; width: 100%; height: 1px; background: rgba(255,255,255,0.08); }
+        .thirds-line-h2 { position: absolute; top: 66.66%; left: 0; width: 100%; height: 1px; background: rgba(255,255,255,0.08); }
+        .thirds-line-v1 { position: absolute; left: 33.33%; top: 0; height: 100%; width: 1px; background: rgba(255,255,255,0.08); }
+        .thirds-line-v2 { position: absolute; left: 66.66%; top: 0; height: 100%; width: 1px; background: rgba(255,255,255,0.08); }
+
+        /* Viewfinder Center Crosshair */
+        .viewfinder-crosshair {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 32px; height: 32px;
+            pointer-events: none;
+        }
+        .viewfinder-crosshair::before {
+            content: '';
+            position: absolute;
+            top: 15px; left: 0; width: 32px; height: 2px;
+            background: var(--gold-accent);
+            box-shadow: 0 0 8px var(--gold-accent);
+        }
+        .viewfinder-crosshair::after {
+            content: '';
+            position: absolute;
+            left: 15px; top: 0; height: 32px; width: 2px;
+            background: var(--gold-accent);
+            box-shadow: 0 0 8px var(--gold-accent);
+        }
+
+        /* Viewfinder OSD Telemetry */
+        .viewfinder-osd-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 11px;
+            font-weight: 800;
+            z-index: 2;
+        }
+
+        .viewfinder-price-hero {
+            position: absolute;
+            top: 48%; left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            z-index: 2;
+        }
+
+        .hero-price-number {
+            font-size: 36px;
+            font-weight: 900;
+            color: #FFF;
+            letter-spacing: 2px;
+            text-shadow: 0 0 24px var(--gold-glow);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .hero-scene-status {
+            font-size: 11.5px;
+            font-weight: 900;
+            color: var(--gold-accent);
+            letter-spacing: 1.5px;
+            margin-top: 4px;
+            text-transform: uppercase;
+        }
+
+        /* Audio VU Needle Meters */
+        .audio-vu-rack {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            background: rgba(0,0,0,0.85);
+            border: 1px solid var(--cinema-border);
+            padding: 8px 12px;
+            border-radius: 6px;
+            margin-top: 10px;
+        }
+
+        .vu-bar-track {
+            flex: 1;
+            height: 10px;
+            background: #000;
+            border: 1px solid var(--cinema-border);
+            border-radius: 3px;
+            overflow: hidden;
+            display: flex;
+        }
+        .vu-fill-left {
+            height: 100%;
+            width: 72%;
+            background: linear-gradient(90deg, var(--film-green) 0%, var(--gold-accent) 70%, var(--red-carpet) 95%);
+            transition: width 0.3s ease;
+        }
+
+        /* ==================== 3. ROLE DEDICATED WORKSTATIONS ==================== */
+        .role-workstation-card {
+            background: var(--cinema-metal);
+            border: 2px solid var(--cinema-border);
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 0 8px 30px var(--card-glow);
+            transition: all 0.3s ease;
+        }
+
+        .workstation-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--cinema-border);
+            padding-bottom: 8px;
+            margin-bottom: 12px;
+        }
+
+        .workstation-title {
+            font-size: 12.5px;
+            font-weight: 900;
+            color: var(--gold-accent);
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Screenplay Teleprompter Box */
+        .screenplay-teleprompter {
+            background: #000;
+            border: 1px solid var(--cinema-border);
+            border-radius: 8px;
+            padding: 14px;
+            font-family: 'Courier Prime', monospace;
+            font-size: 12px;
+            color: #E2E8F0;
+            line-height: 1.6;
+            min-height: 220px;
+            max-height: 260px;
+            overflow-y: auto;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.9);
+        }
+
+        .script-scene-slug {
+            color: var(--gold-accent);
+            font-weight: 700;
+            border-bottom: 1px dashed var(--cinema-border);
+            padding-bottom: 4px;
+            margin-bottom: 8px;
+        }
+
+        .script-char {
+            color: var(--film-cyan);
+            font-weight: 700;
+            margin-top: 8px;
+            text-align: center;
+        }
+
+        .script-dialogue {
+            color: #FFF;
+            margin-left: 20px;
+            margin-right: 20px;
+        }
+
+        /* ==================== 4. LOWER 4-ACT CINEMA SOUNDSTAGE CONSOLE ==================== */
+        .soundstage-console {
+            grid-column: 1 / -1;
+            background: var(--cinema-metal-2);
+            border: 2px solid var(--cinema-border);
+            border-radius: 12px;
+            padding: 16px 20px;
+            box-shadow: 0 0 35px var(--card-glow);
+            display: grid;
+            grid-template-columns: 1.2fr 1fr 1.3fr;
+            gap: 18px;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        @media (max-width: 1050px) {
+            .soundstage-console { grid-template-columns: 1fr; }
+        }
+
+        /* 4 Cinema Acts Progress Track */
+        .acts-tracker {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .act-step {
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid var(--cinema-border);
+            padding: 6px 10px;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 10.5px;
+        }
+        .act-step.active {
+            border-color: var(--gold-accent);
+            background: rgba(245, 158, 11, 0.15);
+            box-shadow: 0 0 12px var(--gold-glow);
+        }
+
+        /* Production Budget & Box Office Meter */
+        .budget-box {
+            background: var(--cinema-bg);
+            border: 1px solid var(--cinema-border);
+            border-radius: 8px;
+            padding: 10px 14px;
+        }
+
+        /* Hollywood Wooden Clapperboard Firing Slate */
+        .clapperboard-slate {
+            background: var(--cinema-bg);
+            border: 2px solid var(--cinema-border);
+            border-radius: 8px;
+            padding: 10px 14px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.9);
+        }
+
+        .clapper-stripes {
+            height: 18px;
+            background: repeating-linear-gradient(45deg, #FFF, #FFF 14px, #000 14px, #000 28px);
+            border-radius: 4px;
+            margin-bottom: 8px;
+            border: 1px solid #555;
+        }
+
+        .clapper-btn {
+            width: 100%;
+            background: linear-gradient(135deg, var(--gold-accent) 0%, var(--red-carpet) 100%);
+            color: #000;
+            border: none;
+            padding: 11px;
+            border-radius: 6px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11.5px;
+            font-weight: 900;
+            cursor: pointer;
+            letter-spacing: 1px;
+            box-shadow: 0 0 18px var(--gold-glow);
+            transition: all 0.2s;
+            text-transform: uppercase;
+            margin-top: 8px;
+        }
+        .clapper-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 0 25px var(--gold-glow);
+        }
+    </style>
+</head>
+<body class="theme-teal" id="cinema-body">
+
+    <!-- 35mm Celluloid Grain Texture -->
+    <div class="film-grain-overlay"></div>
+
+    <!-- ==================== 1. TOP PRODUCTION HEADER ==================== -->
+    <header class="cinema-header">
+        <div class="cinema-brand">
+            <div class="studio-title">
+                <span>🎬 MAZRION PICTURES // DIRECTOR SUITE V4.0</span>
+            </div>
+            
+            <a href="/" class="nav-switch-btn">
+                <span>🏛️ CLASSIC TERMINAL</span>
+            </a>
+            <a href="/cockpit.html" class="nav-switch-btn" style="border-color:var(--film-cyan); color:var(--film-cyan);">
+                <span>✈️ COCKPIT HUD</span>
+            </a>
+            <a href="/fractals.html" class="nav-switch-btn" style="border-color:#a855f7; color:#c084fc; box-shadow: 0 0 10px rgba(168, 85, 247, 0.3);">
+                <span>🧩 GHOST BLUEPRINT</span>
+            </a>
+        </div>
+
+        <!-- 4-Role Lens Selector (Director, Actor, Producer, Writer) -->
+        <div class="role-lens-selector">
+            <div class="role-pill active" id="pill-director" onclick="switchRole('DIRECTOR')">🎥 DIRECTOR</div>
+            <div class="role-pill" id="pill-actor" onclick="switchRole('ACTOR')">🎭 ACTOR</div>
+            <div class="role-pill" id="pill-producer" onclick="switchRole('PRODUCER')">💰 PRODUCER</div>
+            <div class="role-pill" id="pill-writer" onclick="switchRole('WRITER')">✍️ WRITER</div>
+        </div>
+
+        <!-- 35mm Film Color Grading LUTs -->
+        <div class="lut-selector-group">
+            <span style="font-weight:800;">35mm LUT:</span>
+            <span class="lut-tag active" id="lut-teal" onclick="setLut('TEAL')">🎞️ TEAL & ORANGE</span>
+            <span class="lut-tag" id="lut-kodak" onclick="setLut('KODAK')">🎥 KODAK 2383</span>
+            <span class="lut-tag" id="lut-noir" onclick="setLut('NOIR')">🕵️ NOIR B&W</span>
+            <span class="lut-tag" id="lut-cyber" onclick="setLut('CYBER')">🟣 CYBERPUNK</span>
+        </div>
+
+        <!-- Master Cinema Timecode -->
+        <div class="timecode-box" id="cinema-timecode">
+            TC 04:43:34:02 FPS
+        </div>
+    </header>
+
+    <!-- ==================== 2. MAIN PRODUCTION WORKSPACE ==================== -->
+    <div class="studio-workspace">
+
+        <!-- Left: ARRI 4K Cinema Viewfinder Monitor -->
+        <div class="camera-viewfinder-card">
+            
+            <!-- 2.39:1 Anamorphic Framing Box -->
+            <div class="anamorphic-frame">
+                <div class="thirds-line-h1"></div>
+                <div class="thirds-line-h2"></div>
+                <div class="thirds-line-v1"></div>
+                <div class="thirds-line-v2"></div>
+                <div class="viewfinder-crosshair"></div>
+
+                <!-- Top Camera OSD Telemetry -->
+                <div class="viewfinder-osd-top">
+                    <div>
+                        <span style="color:var(--red-carpet); font-weight:900;">● REC 4K RAW</span>
+                        <span style="color:var(--text-dim); margin-left:8px;">FPS: 24.00</span>
+                    </div>
+                    <div style="color:var(--gold-accent);" id="cam-shutter-iso">
+                        SHUTTER: 180.0° | ISO: 800 (50% EQ: $4434.60)
+                    </div>
+                    <div style="color:var(--film-cyan);" id="cam-lens-focal">
+                        LENS: 50mm ANAMORPHIC T1.5
+                    </div>
+                </div>
+
+                <!-- Center Price Timecode Hero -->
+                <div class="viewfinder-price-hero">
+                    <div style="font-size:10.5px; color:var(--text-dim); letter-spacing:2px; font-weight:800;">XAUUSD SPOT PRICE</div>
+                    <div class="hero-price-number" id="viewfinder-price">$4434.02</div>
+                    <div class="hero-scene-status" id="viewfinder-act-status">
+                        ACT 2: PRINCIPAL PHOTOGRAPHY // PULLBACK CUE @ $4424.00
+                    </div>
+                </div>
+
+                <!-- Bottom Viewfinder OSD Status -->
+                <div style="display:flex; justify-content:space-between; font-size:10px; z-index:2; border-top:1px dashed var(--cinema-border); padding-top:4px;">
+                    <span style="color:var(--text-dim);">FLOOR SUPPORT: <strong style="color:var(--red-carpet);" id="osd-floor">$4378.00 (DEFENDED)</strong></span>
+                    <span style="color:var(--text-dim);">BOX OFFICE TARGET: <strong style="color:var(--film-green);" id="osd-target">$4491.20 (BSL CEILING)</strong></span>
+                </div>
+            </div>
+
+            <!-- Audio VU Recording Level Meters -->
+            <div class="audio-vu-rack">
+                <span style="font-size:10px; font-weight:900; color:var(--text-dim);">AUDIO CH1/CH2 (INSTITUTIONAL VOLUME)</span>
+                <div class="vu-bar-track">
+                    <div class="vu-fill-left" id="vu-meter-bar"></div>
+                </div>
+                <span style="font-size:10px; font-weight:900; color:var(--film-green);" id="vu-db-text">-3.2 dB (ABSORPTION)</span>
+            </div>
+
+        </div>
+
+        <!-- Right: Dedicated Workstation Display (Director / Actor / Producer / Writer) -->
+        <div class="role-workstation-card" id="workstation-container">
+            
+            <div class="workstation-header">
+                <div class="workstation-title" id="workstation-main-title">
+                    <span>🎥 DIRECTOR'S SHOT COMPOSITION & FALSE COLOR</span>
+                </div>
+                <div style="font-size:10px; color:var(--film-green); font-weight:800;" id="workstation-badge">
+                    SCENE READY
+                </div>
+            </div>
+
+            <!-- Dynamic Workstation Content Body -->
+            <div id="workstation-dynamic-body">
+                
+                <!-- Screenplay Teleprompter Box -->
+                <div class="screenplay-teleprompter" id="script-teleprompter">
+                    <div class="script-scene-slug">SCENE 104 // EXT. LONDON GOLD VAULT - DAY</div>
+                    <p style="color:var(--text-dim); margin-bottom:6px;">The INSTITUTIONAL MARKET MAKER sweeps the Sell-Side liquidity pool at $4,378.</p>
+                    <div class="script-char">DIRECTOR (V.O.)</div>
+                    <div class="script-dialogue">"Hold your positions! Do not chase market orders. Wait for the institutional discount cue at $4,424.00!"</div>
+                    <div class="script-char">LEAD ACTOR (TRADER)</div>
+                    <div class="script-dialogue">"Limit order locked at $4,424. Stop loss placed below structural swing at $4,415.50. Ready for the breakout to $4,491.20!"</div>
+                </div>
+
+            </div>
+
+            <!-- Lower Workstation Meta -->
+            <div style="display:flex; justify-content:space-between; font-size:10px; color:var(--text-dim); border-top:1px solid var(--cinema-border); padding-top:8px; margin-top:10px;">
+                <span>DISCIPLINE PROTOCOL: <strong style="color:var(--gold-accent);">NO CHASE RULE ACTIVE</strong></span>
+                <span>METHOD: <strong style="color:var(--film-cyan);">FRACTAL LIQUIDITY SWEEP</strong></span>
+            </div>
+
+        </div>
+
+        <!-- ==================== 4. LOWER 4-ACT CINEMA SOUNDSTAGE CONSOLE ==================== -->
+        <div class="soundstage-console">
+            
+            <!-- 4 Cinema Acts Progression Tracker -->
+            <div class="acts-tracker">
+                <div style="font-size:11px; font-weight:900; color:var(--gold-accent); margin-bottom:4px;">
+                    🎬 THE 4 ACTS OF A BLOCKBUSTER TRADE
+                </div>
+                <div class="act-step" id="act-1">
+                    <span style="color:var(--film-purple); font-weight:800;">ACT 1: PRE-PRODUCTION</span>
+                    <span id="act-1-desc">Screenplay & Asian Range Locked</span>
+                </div>
+                <div class="act-step active" id="act-2">
+                    <span style="color:var(--gold-accent); font-weight:900;">ACT 2: PRINCIPAL PHOTOGRAPHY</span>
+                    <span id="act-2-desc">London Expansion & Pullback Retake @ $4424</span>
+                </div>
+                <div class="act-step" id="act-3">
+                    <span style="color:var(--film-cyan); font-weight:800;">ACT 3: POST-PRODUCTION & VFX</span>
+                    <span id="act-3-desc">New York Final Color Grade</span>
+                </div>
+                <div class="act-step" id="act-4">
+                    <span style="color:var(--film-green); font-weight:900;">ACT 4: BOX OFFICE PREMIERE</span>
+                    <span id="act-4-desc">Sweeping $4491 BSL (Oscar Hit)</span>
+                </div>
+            </div>
+
+            <!-- Studio Budget & Box Office Meter -->
+            <div class="budget-box">
+                <div style="font-size:11px; font-weight:900; color:var(--gold-accent); margin-bottom:6px;">
+                    💰 PRODUCER'S BUDGET & 2% RISK GUARD
+                </div>
+                <div style="font-size:10px; color:var(--text-dim); line-height:1.4;">
+                    STUDIO CAPITAL: <strong style="color:#FFF;">$500.00</strong><br/>
+                    SCENE COST (2% RISK): <strong style="color:var(--gold-accent);" id="prod-risk">$8.50 (0.01 LOTS)</strong><br/>
+                    BOX OFFICE TARGET: <strong style="color:var(--film-green);" id="prod-tp">$4456 / $4491.20</strong>
+                </div>
+                <div style="margin-top:6px; font-size:9.5px; color:var(--film-green); font-weight:800;">
+                    🛡️ 2% SMALL-CAPITAL PROTOCOL VERIFIED
+                </div>
+            </div>
+
+            <!-- Hollywood Clapperboard Firing Slate (MT5 Execution) -->
+            <div class="clapperboard-slate">
+                <div class="clapper-stripes"></div>
+                <div style="display:flex; justify-content:space-between; font-size:10px; font-weight:800;">
+                    <span>SCENE: <strong style="color:var(--film-cyan);" id="clap-entry">$4424.00</strong></span>
+                    <span>SL: <strong style="color:var(--red-carpet);" id="clap-sl">$4415.50</strong></span>
+                    <span>TP: <strong style="color:var(--film-green);" id="clap-tp">$4491.20</strong></span>
+                </div>
+                <button class="clapper-btn" id="btn-clap-ticket" onclick="snapClapperboard()">
+                    🎬 SNAP CLAPPERBOARD & COPY MT5 TICKET
+                </button>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ==================== CINEMA ENGINE SCRIPT ==================== -->
+    <script>
+        let livePrice = 4434.02;
+        let activeSymbol = "XAUUSD";
+        let currentRole = 'DIRECTOR';
+        let currentLut = 'TEAL';
+
+        // 1. Live Timecode Engine (HH:MM:SS:FF)
+        setInterval(() => {
+            const now = new Date();
+            const hrs = String(now.getHours()).padStart(2, '0');
+            const mins = String(now.getMinutes()).padStart(2, '0');
+            const secs = String(now.getSeconds()).padStart(2, '0');
+            const frames = String(Math.floor((now.getMilliseconds() / 1000) * 24)).padStart(2, '0');
+            document.getElementById('cinema-timecode').innerText = `TC ${hrs}:${mins}:${secs}:${frames} FPS`;
+        }, 1000 / 24);
+
+        // 2. Role Switcher Handler
+        function switchRole(role) {
+            currentRole = role;
+            ['pill-director', 'pill-actor', 'pill-producer', 'pill-writer'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.className = 'role-pill';
+            });
+
+            if (role === 'DIRECTOR') {
+                document.getElementById('pill-director').className = 'role-pill active';
+                document.getElementById('workstation-main-title').innerHTML = '<span>🎥 DIRECTOR\'S SHOT COMPOSITION & FALSE COLOR</span>';
+                document.getElementById('workstation-dynamic-body').innerHTML = `
+                    <div style="background:#000; border:1px solid var(--cinema-border); border-radius:8px; padding:14px; min-height:220px;">
+                        <div style="font-size:11px; font-weight:800; color:var(--gold-accent); margin-bottom:8px;">ARRI FALSE-COLOR EXPOSURE BREAKDOWN:</div>
+                        <div style="font-size:10.5px; line-height:1.6; color:#CBD5E1;">
+                            🟦 <strong>PREMIUM SKY (+25°)</strong>: High exposure fair value zone. Do not buy market breakout.<br/>
+                            🟨 <strong>50% EQUILIBRIUM ($4434.60)</strong>: Neutral exposure reference line.<br/>
+                            🟩 <strong>DISCOUNT GOLDEN HOUR ($4424.00)</strong>: Ideal cinematic composition for Buy Limit entry.<br/>
+                            🟥 <strong>SSL FLOOR ($4378.00)</strong>: Critical structural baseline. Scene ruined if breached.
+                        </div>
+                    </div>
+                `;
+            } else if (role === 'ACTOR') {
+                document.getElementById('pill-actor').className = 'role-pill active';
+                document.getElementById('workstation-main-title').innerHTML = '<span>🎭 ACTOR\'S METHOD DISCIPLINE & CHARACTER MOTIVATION</span>';
+                document.getElementById('workstation-dynamic-body').innerHTML = `
+                    <div style="background:#000; border:1px solid var(--cinema-border); border-radius:8px; padding:14px; min-height:220px;">
+                        <div style="font-size:11px; font-weight:800; color:var(--film-cyan); margin-bottom:8px;">CHARACTER MOTIVATION FOR THIS SCENE:</div>
+                        <p style="font-size:11px; font-style:italic; line-height:1.6; color:#E2E8F0;">
+                            "You are playing the role of a cold, disciplined institutional assassin. You never chase the victim when they run. You wait in the shadows at $4,424.00. The rookie actor panics and chases the green candle. You wait for the cue."
+                        </p>
+                        <div style="margin-top:12px; font-size:10px; color:var(--film-green); font-weight:800;">
+                            ✅ PSYCHOLOGY CHECK: ZERO FOMO // FULL PATIENCE ARMED
+                        </div>
+                    </div>
+                `;
+            } else if (role === 'PRODUCER') {
+                document.getElementById('pill-producer').className = 'role-pill active';
+                document.getElementById('workstation-main-title').innerHTML = '<span>💰 PRODUCER\'S P&L & BOX OFFICE PROJECTIONS</span>';
+                document.getElementById('workstation-dynamic-body').innerHTML = `
+                    <div style="background:#000; border:1px solid var(--cinema-border); border-radius:8px; padding:14px; min-height:220px;">
+                        <div style="font-size:11px; font-weight:800; color:var(--gold-accent); margin-bottom:8px;">BOX OFFICE P&L ANALYSIS:</div>
+                        <div style="font-size:10.5px; line-height:1.6; color:#CBD5E1;">
+                            🎬 <strong>PRODUCTION BUDGET</strong>: $500.00 Capital Allocation<br/>
+                            🛡️ <strong>SCENE RISK EXPOSURE</strong>: $8.50 Max Dollar Burn (Strict 2% Small Account Guard)<br/>
+                            🎟️ <strong>OPENING WEEKEND (TP1 $4456)</strong>: +$32.00 Gross Profit (Breakeven Locked)<br/>
+                            🏆 <strong>WORLDWIDE BLOCKBUSTER (TP2 $4491)</strong>: +$67.20 Gross Return (1:3+ Risk-to-Reward)
+                        </div>
+                    </div>
+                `;
+            } else if (role === 'WRITER') {
+                document.getElementById('pill-writer').className = 'role-pill active';
+                document.getElementById('workstation-main-title').innerHTML = '<span>✍️ WRITER\'S HOLLYWOOD SCREENPLAY TELEPROMPTER</span>';
+                document.getElementById('workstation-dynamic-body').innerHTML = `
+                    <div class="screenplay-teleprompter" id="script-teleprompter-dynamic">
+                        <div class="script-scene-slug">SCENE 104 // EXT. LONDON GOLD VAULT - DAY</div>
+                        <p style="color:var(--text-dim); margin-bottom:6px;">The INSTITUTIONAL MARKET MAKER sweeps the Sell-Side liquidity pool at $4,378.</p>
+                        <div class="script-char">DIRECTOR (V.O.)</div>
+                        <div class="script-dialogue">"Hold your positions! Do not chase market orders. Wait for the institutional discount cue at $4,424.00!"</div>
+                        <div class="script-char">LEAD ACTOR (TRADER)</div>
+                        <div class="script-dialogue">"Limit order locked at $4,424. Stop loss placed below structural swing at $4,415.50. Ready for the breakout to $4,491.20!"</div>
+                    </div>
+                `;
+            }
+        }
+
+        // 3. Dynamic 35mm LUT Color Grading Switcher (Full Theme Transformation)
+        function setLut(lut) {
+            currentLut = lut;
+            ['lut-teal', 'lut-kodak', 'lut-noir', 'lut-cyber'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.className = 'lut-tag';
+            });
+
+            const body = document.getElementById('cinema-body');
+            body.className = ''; // Clear existing theme classes
+
+            if (lut === 'TEAL') {
+                document.getElementById('lut-teal').className = 'lut-tag active';
+                body.classList.add('theme-teal');
+            } else if (lut === 'KODAK') {
+                document.getElementById('lut-kodak').className = 'lut-tag active';
+                body.classList.add('theme-kodak');
+            } else if (lut === 'NOIR') {
+                document.getElementById('lut-noir').className = 'lut-tag active';
+                body.classList.add('theme-noir');
+            } else if (lut === 'CYBER') {
+                document.getElementById('lut-cyber').className = 'lut-tag active';
+                body.classList.add('theme-cyber');
+            }
+        }
+
+        // 4. API Sync for Market Data
+        async function syncCinemaAvionics() {
+            try {
+                const res = await fetch(`/api/analyze?symbol=${activeSymbol}&price=${livePrice}`);
+                const data = await res.json();
+
+                if (data && data.fractal_radar) {
+                    const fr = data.fractal_radar;
+                    const stage = fr.active_stage || '';
+
+                    // 4 Acts Mapping
+                    ['act-1', 'act-2', 'act-3', 'act-4'].forEach(id => {
+                        const el = document.getElementById(id);
+                        if (el) el.className = 'act-step';
+                    });
+
+                    if (stage.includes('STAGE 1')) {
+                        document.getElementById('act-1').className = 'act-step active';
+                        document.getElementById('viewfinder-act-status').innerText = 'ACT 1: PRE-PRODUCTION // SCRIPT & ASIAN ACCUMULATION';
+                    } else if (stage.includes('STAGE 2')) {
+                        document.getElementById('act-2').className = 'act-step active';
+                        document.getElementById('viewfinder-act-status').innerText = 'ACT 2: PRINCIPAL PHOTOGRAPHY // PULLBACK CUE @ $4424.00';
+                    } else if (stage.includes('STAGE 3')) {
+                        document.getElementById('act-3').className = 'act-step active';
+                        document.getElementById('viewfinder-act-status').innerText = 'ACT 3: POST-PRODUCTION // NY FINAL EDIT & TRAIL SL';
+                    } else {
+                        document.getElementById('act-4').className = 'act-step active';
+                        document.getElementById('viewfinder-act-status').innerText = 'ACT 4: BOX OFFICE PREMIERE // TARGET SWEPT @ $4491.20';
+                    }
+
+                    // Price & OSD
+                    document.getElementById('viewfinder-price').innerText = `$${livePrice.toFixed(2)}`;
+                    if (data.levels) {
+                        document.getElementById('osd-floor').innerText = `${data.key_pills ? data.key_pills.ssl : '$4378.00'} (DEFENDED)`;
+                        document.getElementById('osd-target').innerText = `${data.levels.target_2} (BSL CEILING)`;
+
+                        document.getElementById('clap-entry').innerText = data.levels.execution_zone;
+                        document.getElementById('clap-sl').innerText = data.levels.structural_sl;
+                        document.getElementById('clap-tp').innerText = data.levels.target_2;
+                        document.getElementById('prod-tp').innerText = `${data.levels.target_1} / ${data.levels.target_2}`;
+                    }
+
+                    if (data.mt5_ticket) {
+                        document.getElementById('prod-risk').innerText = `${data.mt5_ticket.dollar_risk} (${data.mt5_ticket.lot_size})`;
+                    }
+                }
+            } catch (e) {}
+        }
+
+        // 5. Binance Price Poller
+        setInterval(async () => {
+            try {
+                const res = await fetch(`https://api.binance.com/api/v3/ticker/price?symbol=PAXGUSDT`);
+                const data = await res.json();
+                if (data && data.price) {
+                    livePrice = parseFloat(data.price);
+                    document.getElementById('viewfinder-price').innerText = `$${livePrice.toFixed(2)}`;
+                }
+            } catch (e) {}
+        }, 1500);
+
+        setInterval(() => {
+            syncCinemaAvionics();
+        }, 5000);
+
+        window.addEventListener('DOMContentLoaded', () => {
+            syncCinemaAvionics();
+            setLut('TEAL');
+        });
+
+        // 6. Clapperboard MT5 Copy Slate
+        function snapClapperboard() {
+            const entry = document.getElementById('clap-entry').innerText;
+            const sl = document.getElementById('clap-sl').innerText;
+            const tp = document.getElementById('clap-tp').innerText;
+            const risk = document.getElementById('prod-risk').innerText;
+
+            const ticket = `// MAZRION CINEMA PICTURES PRODUCTION ORDER\nScene: XAUUSD SPOT\nRole: BUY LIMIT\nEntry Cue: ${entry}\nFloor SL: ${sl}\nBox Office TP: ${tp}\nProducer Budget Risk: ${risk}`;
+            navigator.clipboard.writeText(ticket);
+
+            const btn = document.getElementById('btn-clap-ticket');
+            btn.innerText = '🎬 SCENE LOCKED & MT5 TICKET COPIED!';
+            btn.style.background = '#10B981';
+            setTimeout(() => {
+                btn.innerText = '🎬 SNAP CLAPPERBOARD & COPY MT5 TICKET';
+                btn.style.background = 'linear-gradient(135deg, var(--gold-accent) 0%, var(--red-carpet) 100%)';
+            }, 2500);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,1690 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MAZRION // AVIONICS COCKPIT HUD — FRACTAL RESET FLIGHT DECK</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700;800;900&family=Inter:wght@400;600;700;800;900&family=Orbitron:wght@600;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --cockpit-dark: #020407;
+            --cockpit-metal-1: #070B11;
+            --cockpit-metal-2: #121A26;
+            --cockpit-metal-3: #1B2737;
+            --cockpit-metal-edge: #2E415A;
+            --hud-green: #10B981;
+            --hud-cyan: #00E5FF;
+            --hud-amber: #F59E0B;
+            --hud-red: #FF3B69;
+            --hud-purple: #A855F7;
+            --hud-dim: #607B9B;
+            --hud-text: #E5EFF9;
+            --glareshield-rim: #223246;
+            --ambient-flood: rgba(0, 229, 255, 0.04);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+        }
+
+        body {
+            background: #000;
+            color: var(--hud-text);
+            font-family: 'JetBrains Mono', monospace;
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Ambient Cockpit Floodlight & CRT Scanline Sheen */
+        .cockpit-ambient-lighting {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: radial-gradient(circle at 50% 100%, rgba(0, 229, 255, 0.05) 0%, transparent 70%);
+            z-index: 15;
+            pointer-events: none;
+        }
+
+        .glass-scanlines {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.22) 50%);
+            background-size: 100% 3px;
+            z-index: 16;
+            pointer-events: none;
+            opacity: 0.3;
+        }
+
+        /* ==================== 1. FULL OUT-OF-WINDOW (OTW) SCENERY CANVAS ==================== */
+        #windshield-canvas {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* ==================== 2. HYPER-REALISTIC JET COCKPIT CANOPY FRAMEWORK ==================== */
+        .cockpit-canopy-structure {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: 5;
+            pointer-events: none;
+        }
+
+        .cockpit-svg-mask {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+        }
+
+        /* Overhead Roof & Flight Deck Switches */
+        .overhead-panel-roof {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 54px;
+            background: linear-gradient(180deg, #04070C 0%, #0B121C 70%, #16212E 100%);
+            border-bottom: 2px solid #28394E;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.95);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 14px;
+            pointer-events: auto;
+            z-index: 25;
+            gap: 10px;
+            white-space: nowrap;
+        }
+
+        /* Center Overhead Standby Compass Bracket */
+        .compass-mount-bracket {
+            position: absolute;
+            top: 64px; left: 50%;
+            transform: translateX(-50%);
+            width: 78px; height: 82px;
+            background: linear-gradient(180deg, #16212E 0%, #080D14 100%);
+            border-left: 2px solid #2B3D55;
+            border-right: 2px solid #2B3D55;
+            border-bottom: 2px solid #2B3D55;
+            border-radius: 0 0 10px 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.9);
+            z-index: 14;
+        }
+
+        .compass-dome {
+            width: 46px; height: 46px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 35% 35%, #22344B 0%, #05090F 85%);
+            border: 2px solid #3E5A7D;
+            box-shadow: inset 0 0 10px rgba(0,229,255,0.4), 0 0 12px rgba(0,0,0,0.9);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-size: 10.5px;
+            font-weight: 900;
+            color: var(--hud-cyan);
+            font-family: 'Orbitron', monospace;
+            letter-spacing: 0.5px;
+        }
+
+        /* Parked Windshield Wiper Assemblies */
+        .wiper-assembly-left {
+            position: absolute;
+            bottom: 345px; left: 14%;
+            width: 290px; height: 8px;
+            background: linear-gradient(90deg, #0A0F16 0%, #1A2636 50%, #0A0F16 100%);
+            border: 1px solid #2E4158;
+            transform-origin: left center;
+            transform: rotate(-7deg);
+            border-radius: 4px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.95);
+            z-index: 6;
+        }
+        .wiper-assembly-left::after {
+            content: '';
+            position: absolute;
+            left: -8px; top: -6px; width: 20px; height: 20px;
+            border-radius: 50%;
+            background: #111A26;
+            border: 2px solid #3A506B;
+        }
+
+        .wiper-assembly-right {
+            position: absolute;
+            bottom: 345px; right: 14%;
+            width: 290px; height: 8px;
+            background: linear-gradient(90deg, #0A0F16 0%, #1A2636 50%, #0A0F16 100%);
+            border: 1px solid #2E4158;
+            transform-origin: right center;
+            transform: rotate(7deg);
+            border-radius: 4px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.95);
+            z-index: 6;
+        }
+        .wiper-assembly-right::after {
+            content: '';
+            position: absolute;
+            right: -8px; top: -6px; width: 20px; height: 20px;
+            border-radius: 50%;
+            background: #111A26;
+            border: 2px solid #3A506B;
+        }
+
+        /* Window Anti-Ice Heater Wire Grid & Tint */
+        .window-glass-tint-left, .window-glass-tint-right {
+            position: absolute;
+            top: 64px;
+            height: calc(100vh - 400px);
+            pointer-events: none;
+            z-index: 3;
+            background: linear-gradient(135deg, rgba(0, 229, 255, 0.035) 0%, rgba(16, 185, 129, 0.015) 60%, rgba(0,0,0,0.12) 100%);
+            box-shadow: inset 0 0 50px rgba(0, 229, 255, 0.05);
+        }
+        .window-glass-tint-left {
+            left: 55px;
+            width: calc(50vw - 80px);
+            border-radius: 12px 0 0 0;
+        }
+        .window-glass-tint-right {
+            right: 55px;
+            width: calc(50vw - 80px);
+            border-radius: 0 12px 0 0;
+        }
+
+        /* ==================== 3. TOP GLARESHIELD & MODE CONTROL PANEL (MCP) ==================== */
+        .mcp-brand-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+
+        .mcp-callsign {
+            font-size: 11px;
+            font-weight: 900;
+            color: var(--hud-cyan);
+            letter-spacing: 1px;
+            font-family: 'Orbitron', monospace;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            white-space: nowrap;
+            text-shadow: 0 0 10px rgba(0, 229, 255, 0.6);
+        }
+
+        .nav-back-link {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--cockpit-metal-edge);
+            color: var(--hud-dim);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 9.5px;
+            font-weight: 800;
+            text-decoration: none;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            white-space: nowrap;
+        }
+        .nav-back-link:hover {
+            border-color: var(--hud-cyan);
+            color: #FFF;
+            box-shadow: 0 0 10px rgba(0, 229, 255, 0.4);
+        }
+
+        /* OTW Windshield View Selector Buttons */
+        .otw-selector-bar {
+            display: flex;
+            gap: 3px;
+            align-items: center;
+            font-size: 8.5px;
+            color: var(--hud-dim);
+            background: rgba(0,0,0,0.65);
+            padding: 3px 6px;
+            border-radius: 4px;
+            border: 1px solid #1C2B3E;
+            white-space: nowrap;
+        }
+
+        .otw-pill {
+            background: rgba(255,255,255,0.06);
+            border: 1px solid #203147;
+            padding: 2px 6px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 8.5px;
+            color: var(--hud-dim);
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+        .otw-pill:hover {
+            border-color: var(--hud-cyan);
+            color: #FFF;
+        }
+        .otw-pill.active {
+            background: rgba(0, 229, 255, 0.25);
+            border-color: var(--hud-cyan);
+            color: #FFF;
+            box-shadow: 0 0 8px rgba(0, 229, 255, 0.5);
+        }
+
+        /* Master Annunciators */
+        .master-annunciator-rack {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            flex-shrink: 0;
+        }
+
+        .mcp-annunc {
+            padding: 3px 7px;
+            border-radius: 3px;
+            font-size: 8.5px;
+            font-weight: 900;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            border: 1px solid transparent;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+
+        .annunc-toga {
+            background: rgba(16, 185, 129, 0.12);
+            color: var(--hud-green);
+            border-color: rgba(16, 185, 129, 0.3);
+        }
+        .annunc-toga.active {
+            background: var(--hud-green);
+            color: #000;
+            box-shadow: 0 0 14px rgba(16, 185, 129, 0.8);
+        }
+
+        .annunc-caution {
+            background: rgba(245, 158, 11, 0.12);
+            color: var(--hud-amber);
+            border-color: rgba(245, 158, 11, 0.3);
+        }
+        .annunc-caution.active {
+            background: var(--hud-amber);
+            color: #000;
+            box-shadow: 0 0 14px rgba(245, 158, 11, 0.8);
+        }
+        .annunc-warn {
+            background: rgba(255, 59, 105, 0.12);
+            color: var(--hud-red);
+            border-color: rgba(255, 59, 105, 0.3);
+        }
+        .annunc-warn.active {
+            background: var(--hud-red);
+            color: #FFF;
+            box-shadow: 0 0 20px rgba(255, 59, 105, 0.95);
+            animation: pulse-warn 0.8s infinite alternate;
+        }
+
+        @keyframes pulse-caution {
+            from { box-shadow: 0 0 8px rgba(245, 158, 11, 0.4); }
+            to { box-shadow: 0 0 22px rgba(245, 158, 11, 1); }
+        }
+        @keyframes pulse-warn {
+            from { box-shadow: 0 0 8px rgba(255, 59, 105, 0.5); }
+            to { box-shadow: 0 0 26px rgba(255, 59, 105, 1); }
+        }
+
+        /* ==================== 4. LEFT WINDOW: CAPTAIN'S DROP-DOWN HUD COMBINER ==================== */
+        .hud-combiner-bracket {
+            position: absolute;
+            top: 76px;
+            left: 7vw;
+            width: 38vw;
+            max-width: 580px;
+            height: 355px;
+            z-index: 10;
+            pointer-events: none;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .hud-bracket-hinge {
+            height: 14px;
+            width: 100%;
+            background: linear-gradient(180deg, #1C2A3C 0%, #0A1019 100%);
+            border: 2px solid #2F4460;
+            border-radius: 6px 6px 0 0;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.8);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+        .hud-bracket-bolt {
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            background: #476288;
+            box-shadow: inset 0 0 3px #000;
+        }
+
+        .hud-optical-glass {
+            flex: 1;
+            background: rgba(0, 229, 255, 0.02);
+            border-left: 2px solid rgba(0, 229, 255, 0.5);
+            border-right: 2px solid rgba(0, 229, 255, 0.5);
+            border-bottom: 3px solid rgba(0, 229, 255, 0.7);
+            border-radius: 0 0 16px 16px;
+            padding: 10px 14px;
+            box-shadow: 
+                0 0 30px rgba(0, 229, 255, 0.15),
+                inset 0 0 20px rgba(0, 229, 255, 0.06);
+            backdrop-filter: blur(0.5px);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .hud-header-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px dashed rgba(0, 229, 255, 0.35);
+            padding-bottom: 4px;
+        }
+
+        .hud-collimated-grid {
+            display: grid;
+            grid-template-columns: 75px 1fr 95px;
+            gap: 10px;
+            align-items: center;
+            height: 250px;
+            position: relative;
+        }
+
+        .hud-speed-tape {
+            height: 100%;
+            background: rgba(3, 7, 14, 0.45);
+            border: 1px solid rgba(0, 229, 255, 0.35);
+            border-radius: 6px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 8px 4px;
+            text-align: center;
+            font-size: 10px;
+        }
+
+        .hud-horizon-box {
+            height: 100%;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .hud-pitch-ladder {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0; left: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            align-items: center;
+            opacity: 0.7;
+        }
+
+        .ladder-rung {
+            width: 45px;
+            height: 1px;
+            background: var(--hud-cyan);
+            box-shadow: 0 0 8px var(--hud-cyan);
+        }
+        .ladder-rung.wide { width: 85px; }
+
+        .hud-eq-zero-line {
+            width: 90%;
+            height: 2px;
+            background: var(--hud-amber);
+            box-shadow: 0 0 14px var(--hud-amber);
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .hud-flight-reticle {
+            width: 44px;
+            height: 16px;
+            border-bottom: 3px solid var(--hud-green);
+            border-left: 3px solid var(--hud-green);
+            border-right: 3px solid var(--hud-green);
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 5;
+            box-shadow: 0 0 15px var(--hud-green);
+        }
+
+        .hud-alt-tape {
+            height: 100%;
+            background: rgba(3, 7, 14, 0.45);
+            border: 1px solid rgba(0, 229, 255, 0.35);
+            border-radius: 6px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 8px 6px;
+            text-align: right;
+        }
+
+        .hud-alt-bug {
+            font-size: 9px;
+            font-weight: 800;
+            padding: 2px 4px;
+            border-radius: 3px;
+            margin-bottom: 3px;
+        }
+
+        .hud-live-price-box {
+            background: rgba(0, 0, 0, 0.85);
+            border: 2px solid var(--hud-cyan);
+            color: var(--hud-cyan);
+            font-size: 13px;
+            font-weight: 900;
+            padding: 3px 5px;
+            border-radius: 4px;
+            text-align: center;
+            box-shadow: 0 0 14px rgba(0, 229, 255, 0.6);
+        }
+
+        /* ==================== 5. RIGHT WINDOW: FIRST OFFICER TACTICAL RADAR (ND) ==================== */
+        .copilot-radar-bracket {
+            position: absolute;
+            top: 76px;
+            right: 7vw;
+            width: 38vw;
+            max-width: 580px;
+            height: 355px;
+            z-index: 10;
+            pointer-events: none;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .copilot-optical-glass {
+            flex: 1;
+            background: rgba(0, 229, 255, 0.02);
+            border-left: 2px solid rgba(0, 229, 255, 0.4);
+            border-right: 2px solid rgba(0, 229, 255, 0.4);
+            border-bottom: 3px solid rgba(0, 229, 255, 0.6);
+            border-radius: 0 0 16px 16px;
+            padding: 10px 14px;
+            box-shadow: 
+                0 0 30px rgba(0, 229, 255, 0.15),
+                inset 0 0 20px rgba(0, 229, 255, 0.05);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .radar-compass-rose-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 250px;
+            position: relative;
+        }
+
+        .radar-sweep-circle {
+            width: 230px; height: 230px;
+            border-radius: 50%;
+            border: 1px dashed rgba(0, 229, 255, 0.35);
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: inset 0 0 25px rgba(0, 229, 255, 0.08);
+        }
+
+        .radar-inner-ring {
+            width: 140px; height: 140px;
+            border-radius: 50%;
+            border: 1px solid rgba(0, 229, 255, 0.25);
+            position: absolute;
+        }
+
+        .radar-crosshair-h {
+            width: 100%; height: 1px;
+            background: rgba(0, 229, 255, 0.2);
+            position: absolute;
+        }
+        .radar-crosshair-v {
+            height: 100%; width: 1px;
+            background: rgba(0, 229, 255, 0.2);
+            position: absolute;
+        }
+
+        /* Waypoints along flight path */
+        .radar-wpt {
+            position: absolute;
+            font-size: 8px;
+            font-weight: 800;
+            padding: 2px 4px;
+            border-radius: 3px;
+            display: flex;
+            align-items: center;
+            gap: 3px;
+        }
+        .wpt-asia { top: 25px; left: 30px; color: var(--hud-dim); border: 1px solid #1F3045; background: rgba(0,0,0,0.8); }
+        .wpt-ldn { top: 55px; right: 35px; color: var(--hud-amber); border: 1px solid var(--hud-amber); background: rgba(0,0,0,0.8); }
+        .wpt-poi { bottom: 65px; left: 45px; color: var(--hud-cyan); border: 1px solid var(--hud-cyan); background: rgba(0,0,0,0.8); }
+        .wpt-bsl { bottom: 25px; right: 30px; color: var(--hud-green); border: 1px solid var(--hud-green); background: rgba(0,0,0,0.8); }
+
+        .radar-beam-sweeper {
+            position: absolute;
+            width: 115px; height: 115px;
+            top: 0; left: 0;
+            transform-origin: 100% 100%;
+            background: linear-gradient(135deg, rgba(0, 229, 255, 0.4) 0%, transparent 70%);
+            animation: radar-sweep-anim 4s linear infinite;
+        }
+
+        @keyframes radar-sweep-anim {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* ==================== 6. LOWER INSTRUMENT DASHBOARD & PEDESTAL ==================== */
+        .flight-deck-dashboard {
+            position: fixed;
+            bottom: 0; left: 0; width: 100vw;
+            height: 335px;
+            background: linear-gradient(180deg, #101824 0%, #090F16 25%, #04070B 100%);
+            border-top: 5px solid var(--glareshield-rim);
+            box-shadow: 0 -15px 40px rgba(0, 0, 0, 0.95);
+            z-index: 20;
+            padding: 12px 24px;
+            display: grid;
+            grid-template-columns: 1.1fr 1fr 1.25fr;
+            gap: 16px;
+        }
+
+        .mfd-screen {
+            background: rgba(5, 10, 16, 0.92);
+            border: 2px solid #1A283B;
+            border-radius: 8px;
+            padding: 10px 12px;
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.85), 0 0 12px rgba(0, 0, 0, 0.7);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .mfd-bezel-title {
+            font-size: 10.5px;
+            font-weight: 900;
+            color: var(--hud-cyan);
+            letter-spacing: 1px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #172435;
+            padding-bottom: 4px;
+        }
+
+        .tcas-flight-ladder {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            margin-top: 5px;
+        }
+
+        .tcas-bar {
+            background: rgba(8, 14, 22, 0.9);
+            border: 1px solid #1C2B3E;
+            padding: 4px 7px;
+            border-radius: 4px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 9.5px;
+        }
+        .tcas-bar.active {
+            border-color: var(--hud-cyan);
+            background: rgba(0, 229, 255, 0.1);
+            box-shadow: 0 0 10px rgba(0, 229, 255, 0.3);
+        }
+
+        .thrust-track {
+            height: 15px;
+            background: #04070B;
+            border: 1px solid #1F3045;
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+            margin: 5px 0;
+        }
+        .thrust-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--hud-green) 0%, var(--hud-cyan) 60%, var(--hud-amber) 85%, var(--hud-red) 100%);
+            box-shadow: 0 0 12px var(--hud-cyan);
+            transition: width 0.5s ease;
+        }
+
+        .tactical-weapon-pod {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 7px;
+            margin-top: 5px;
+        }
+
+        .weapon-cell {
+            background: rgba(3, 7, 12, 0.95);
+            border: 1px solid #1E2D40;
+            border-radius: 5px;
+            padding: 4px 7px;
+        }
+
+        .launch-btn-deck {
+            grid-column: 1 / -1;
+            background: linear-gradient(135deg, #00E5FF 0%, #0077FF 100%);
+            color: #000;
+            border: none;
+            padding: 9px;
+            border-radius: 5px;
+            font-family: 'JetBrains Mono';
+            font-size: 10.5px;
+            font-weight: 900;
+            cursor: pointer;
+            letter-spacing: 1px;
+            box-shadow: 0 0 16px rgba(0, 229, 255, 0.55);
+            transition: all 0.2s;
+            text-transform: uppercase;
+        }
+        .launch-btn-deck:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 0 22px rgba(0, 229, 255, 0.85);
+        }
+
+        /* Cockpit Stability - 100% Rock-Solid & Stable across all phases */
+        .turbulent-vibe {
+            /* Zero screen shaking - static and sharp for pilot focus */
+        }
+
+        /* Captain's Flight Control Stick in Bottom Left */
+        .captain-side-stick {
+            position: absolute;
+            bottom: 12px; left: 16px;
+            width: 32px; height: 75px;
+            background: linear-gradient(90deg, #182330 0%, #2A3B4E 50%, #101924 100%);
+            border-radius: 8px 8px 4px 4px;
+            border: 1px solid #3B526F;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.9);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding-top: 6px;
+            z-index: 22;
+        }
+        .stick-ptt-btn {
+            width: 12px; height: 12px;
+            border-radius: 50%;
+            background: var(--hud-red);
+            box-shadow: 0 0 8px var(--hud-red);
+        }
+    </style>
+</head>
+<body id="cockpit-flight-deck">
+
+    <!-- 1. OUT-OF-WINDOW (OTW) SCENERY RENDER CANVAS -->
+    <canvas id="windshield-canvas"></canvas>
+
+    <!-- 2. PILOT WINDSHIELD CANOPY & TWIN-WINDOW CUTOUT MASK -->
+    <div class="cockpit-canopy-structure" id="canopy-overlay">
+        
+        <!-- SVG Cockpit Frame (Captain Left Window & Co-Pilot Right Window) -->
+        <svg class="cockpit-svg-mask" viewBox="0 0 1920 1080" preserveAspectRatio="none">
+            <defs>
+                <linearGradient id="metalPillarGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stop-color="#080D15" />
+                    <stop offset="30%" stop-color="#182333" />
+                    <stop offset="50%" stop-color="#28384E" />
+                    <stop offset="70%" stop-color="#182333" />
+                    <stop offset="100%" stop-color="#080D15" />
+                </linearGradient>
+            </defs>
+
+            <!-- Left A-Pillar (Left Corner) -->
+            <polygon points="0,0 70,0 90,745 0,745" fill="url(#metalPillarGrad)" stroke="#2B3D55" stroke-width="2" />
+            
+            <!-- Right A-Pillar (Right Corner) -->
+            <polygon points="1850,0 1920,0 1920,745 1830,745" fill="url(#metalPillarGrad)" stroke="#2B3D55" stroke-width="2" />
+
+            <!-- Massive Center Windshield Post (Mullion Separating Left Pilot Window & Right Co-Pilot Window) -->
+            <polygon points="930,0 990,0 985,745 935,745" fill="url(#metalPillarGrad)" stroke="#2F425C" stroke-width="2" />
+
+            <!-- Center Post Structural Rivets -->
+            <circle cx="960" cy="180" r="4" fill="#3E5474" stroke="#000" stroke-width="1" />
+            <circle cx="960" cy="280" r="4" fill="#3E5474" stroke="#000" stroke-width="1" />
+            <circle cx="960" cy="380" r="4" fill="#3E5474" stroke="#000" stroke-width="1" />
+            <circle cx="960" cy="480" r="4" fill="#3E5474" stroke="#000" stroke-width="1" />
+            <circle cx="960" cy="580" r="4" fill="#3E5474" stroke="#000" stroke-width="1" />
+            <circle cx="960" cy="680" r="4" fill="#3E5474" stroke="#000" stroke-width="1" />
+
+            <!-- Left & Right Pillar Rivets -->
+            <circle cx="45" cy="200" r="3.5" fill="#3E5474" stroke="#000" stroke-width="1" />
+            <circle cx="55" cy="400" r="3.5" fill="#3E5474" stroke="#000" stroke-width="1" />
+            <circle cx="65" cy="600" r="3.5" fill="#3E5474" stroke="#000" stroke-width="1" />
+            <circle cx="1875" cy="200" r="3.5" fill="#3E5474" stroke="#000" stroke-width="1" />
+            <circle cx="1865" cy="400" r="3.5" fill="#3E5474" stroke="#000" stroke-width="1" />
+            <circle cx="1855" cy="600" r="3.5" fill="#3E5474" stroke="#000" stroke-width="1" />
+        </svg>
+
+        <!-- Magnetic Standby Compass on Center Pillar -->
+        <div class="compass-mount-bracket">
+            <div class="compass-dome">
+                <span>N 360°</span>
+            </div>
+            <div style="font-size:7px; color:#5A7596; margin-top:3px; font-weight:800;">HEADING</div>
+        </div>
+
+        <!-- Tint & Anti-Ice Grid Layers -->
+        <div class="window-glass-tint-left"></div>
+        <div class="window-glass-tint-right"></div>
+
+        <!-- Parked Windshield Wipers -->
+        <div class="wiper-assembly-left"></div>
+        <div class="wiper-assembly-right"></div>
+    </div>
+
+    <!-- Ambient Glow & CRT Scanlines -->
+    <div class="cockpit-ambient-lighting"></div>
+    <div class="glass-scanlines"></div>
+
+    <!-- ==================== 3. OVERHEAD GLARESHIELD & MODE CONTROL PANEL (MCP) ==================== -->
+    <!-- ==================== 3. OVERHEAD GLARESHIELD & MODE CONTROL PANEL (MCP) ==================== -->
+    <div class="overhead-panel-roof">
+        <!-- Left: Callsign & Navigation Links -->
+        <div style="display:flex; align-items:center; gap:8px; flex-shrink:0;">
+            <div class="mcp-callsign">
+                <span>✈️ MAZRION HUD</span>
+            </div>
+            <a href="/" class="nav-back-link">
+                <span>🏠 TERMINAL</span>
+            </a>
+            <a href="/cinema.html" class="nav-back-link" style="border-color:var(--hud-amber); color:var(--hud-amber);">
+                <span>🎬 CINEMA</span>
+            </a>
+            <a href="/fractals.html" class="nav-back-link" style="border-color:#a855f7; color:#c084fc; box-shadow: 0 0 10px rgba(168, 85, 247, 0.3);">
+                <span>🧩 BLUEPRINT</span>
+            </a>
+        </div>
+
+        <!-- Center: Flight Controls & Timeframe Selector -->
+        <div style="display:flex; align-items:center; gap:8px;">
+            <!-- Avionics Flight Level (Timeframe) Selector -->
+            <div class="otw-selector-bar" style="border-color:rgba(0,229,255,0.4); background:rgba(0,15,30,0.85);">
+                <span style="color:var(--hud-cyan); font-weight:800; font-family:'Orbitron',monospace; font-size:8.5px;">FLIGHT LEVEL:</span>
+                <span class="otw-pill" id="btn-tf-1m" onclick="setCockpitTimeframe('1m')">1M</span>
+                <span class="otw-pill" id="btn-tf-5m" onclick="setCockpitTimeframe('5m')">5M</span>
+                <span class="otw-pill" id="btn-tf-15m" onclick="setCockpitTimeframe('15m')">15M</span>
+                <span class="otw-pill" id="btn-tf-1h" onclick="setCockpitTimeframe('1h')">1H</span>
+                <span class="otw-pill active" id="btn-tf-4h" onclick="setCockpitTimeframe('4h')">4H</span>
+                <span class="otw-pill" id="btn-tf-1d" onclick="setCockpitTimeframe('1d')">1D</span>
+                <span class="otw-pill" id="btn-tf-1w" onclick="setCockpitTimeframe('1w')">1W</span>
+            </div>
+
+            <!-- Windshield & Avionics Modes -->
+            <div class="otw-selector-bar">
+                <span class="otw-pill active" id="btn-otw-auto" onclick="setOtwMode('AUTO')">AUTO</span>
+                <span class="otw-pill" id="btn-solar-toggle" onclick="toggleSolarMode()" style="border-color:var(--hud-amber); color:var(--hud-amber);">☀️ SOLAR</span>
+                <span class="otw-pill" id="btn-stab-toggle" onclick="toggleStabMode()" style="border-color:var(--hud-green); color:var(--hud-green);">💺 STAB</span>
+                <span class="otw-pill" id="btn-audio-toggle" onclick="toggleAudio()" style="border-color:var(--hud-cyan); color:var(--hud-cyan);">🔊 AUDIO</span>
+            </div>
+        </div>
+
+        <!-- Right: Master Annunciators & Real-Time Clocks -->
+        <div style="display:flex; align-items:center; gap:10px; flex-shrink:0;">
+            <div class="master-annunciator-rack">
+                <div class="mcp-annunc annunc-toga" id="annunc-toga">TO/GA</div>
+                <div class="mcp-annunc annunc-caution active" id="annunc-caution">CAUTION</div>
+                <div class="mcp-annunc annunc-warn" id="annunc-warn">WARN</div>
+            </div>
+
+            <div style="font-size:9.5px; font-weight:800; color:var(--hud-dim); font-family:'JetBrains Mono',monospace;">
+                🇮🇳 <span style="color:var(--hud-cyan);" id="clock-ist">--:-- IST</span> | 🌐 <span style="color:#FFF;" id="clock-zulu">--:-- Z</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== 4. LEFT WINDOW: CAPTAIN'S DROP-DOWN HUD COMBINER ==================== -->
+    <div class="hud-combiner-bracket">
+        <div class="hud-bracket-hinge">
+            <div class="hud-bracket-bolt"></div>
+            <div style="font-size:8.5px; font-weight:900; color:var(--hud-cyan); letter-spacing:1px;">HEADS-UP DISPLAY // OPTICAL COMBINER</div>
+            <div class="hud-bracket-bolt"></div>
+        </div>
+
+        <div class="hud-optical-glass">
+            <div class="hud-header-bar">
+                <div style="font-size:10px; font-weight:900; color:var(--hud-cyan);" id="hud-directive-text">
+                    STAGE 2 // CONTINUATION PULLBACK
+                </div>
+                <div style="font-size:9.5px; color:var(--hud-green); font-weight:800;" id="hud-ils-lock">
+                    ILS $4424.00 ARMED
+                </div>
+            </div>
+
+            <div class="hud-collimated-grid">
+                <!-- Speed Tape -->
+                <div class="hud-speed-tape">
+                    <div style="color:var(--hud-cyan); font-weight:800; font-size:8.5px;">MACH</div>
+                    <div style="font-size:13.5px; font-weight:900; color:#FFF;" id="mach-speed-val">0.84</div>
+                    <div style="border-top:1px dashed rgba(0,229,255,0.3); border-bottom:1px dashed rgba(0,229,255,0.3); padding:3px 0;">
+                        <span style="color:var(--hud-dim); font-size:7.5px;">DELTA LIFT</span><br/>
+                        <span style="color:var(--hud-green); font-weight:800; font-size:9px;" id="hud-delta-lift">+4.8K LOTS</span>
+                    </div>
+                    <div style="color:var(--hud-green); font-size:8px; font-weight:800;">ABSORPTION<br/>ACTIVE</div>
+                </div>
+
+                <!-- Center Horizon Pitch Ladder -->
+                <div class="hud-horizon-box">
+                    <div class="hud-pitch-ladder">
+                        <div class="ladder-rung"></div>
+                        <div class="ladder-rung wide"></div>
+                        <div class="ladder-rung"></div>
+                        <div style="font-size:7.5px; color:var(--hud-cyan); letter-spacing:1px; margin-top:-6px;">PREMIUM SKY (+25°)</div>
+                        <div class="ladder-rung"></div>
+                        <div class="ladder-rung wide"></div>
+                        <div class="ladder-rung"></div>
+                    </div>
+
+                    <!-- 50% Equilibrium 0° Pitch Line -->
+                    <div class="hud-eq-zero-line">
+                        <span style="background:rgba(0,0,0,0.85); padding:1px 4px; font-size:8px; font-weight:800; border:1px solid var(--hud-amber);" id="lbl-eq-level">50% EQ: $4434.60</span>
+                        <span style="background:rgba(0,0,0,0.85); padding:1px 4px; font-size:8px; font-weight:800; border:1px solid var(--hud-amber);">0° HORIZON</span>
+                    </div>
+
+                    <!-- Reticle -->
+                    <div class="hud-flight-reticle"></div>
+
+                    <div style="position:absolute; bottom:4px; font-size:7.5px; color:var(--hud-amber); letter-spacing:1px;">
+                        DISCOUNT GROUND (-25°)
+                    </div>
+                </div>
+
+                <!-- Altimeter Tape -->
+                <div class="hud-alt-tape">
+                    <div>
+                        <div class="hud-alt-bug" style="background:rgba(16,185,129,0.3); color:var(--hud-green); border:1px solid var(--hud-green);" id="alt-target-ceiling">▲ $4491.20 CEIL</div>
+                    </div>
+
+                    <div class="hud-live-price-box" id="hud-live-alt">
+                        $4434.02
+                    </div>
+
+                    <div>
+                        <div class="hud-alt-bug" style="background:rgba(245,158,11,0.3); color:var(--hud-amber); border:1px solid var(--hud-amber);" id="alt-pullback-entry">◆ $4424.00 ILS</div>
+                        <div class="hud-alt-bug" style="background:rgba(255,59,105,0.3); color:var(--hud-red); border:1px solid var(--hud-red);" id="alt-floor-terrain">▼ $4378.00 SSL</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom HUD Status Line -->
+            <div style="display:flex; justify-content:space-between; font-size:9px; border-top:1px dashed rgba(0,229,255,0.35); padding-top:4px;">
+                <span style="color:var(--hud-dim);">TERRAIN: <strong style="color:var(--hud-red);" id="pfd-ssl">$4378.00 (DEFENDED)</strong></span>
+                <span style="color:var(--hud-dim);">MAGNET: <strong style="color:var(--hud-green);" id="pfd-bsl">$4491.20 (ACTIVE)</strong></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== 5. RIGHT WINDOW: FIRST OFFICER TACTICAL RADAR (ND) ==================== -->
+    <div class="copilot-radar-bracket">
+        <div class="hud-bracket-hinge">
+            <div class="hud-bracket-bolt"></div>
+            <div style="font-size:8.5px; font-weight:900; color:var(--hud-cyan); letter-spacing:1px;">NAVIGATION DISPLAY (ND) // LIQUIDITY RADAR</div>
+            <div class="hud-bracket-bolt"></div>
+        </div>
+
+        <div class="copilot-optical-glass">
+            <div class="hud-header-bar">
+                <div style="font-size:10px; font-weight:900; color:var(--hud-cyan);">
+                    HDG 360° MAG // WEATHER TILT +2°
+                </div>
+                <div style="font-size:9.5px; color:var(--hud-amber); font-weight:800;" id="radar-mode-text">
+                    RADAR: STORM ECHO (POI DIGESTION)
+                </div>
+            </div>
+
+            <!-- 360° Circular Radar Compass Rose -->
+            <div class="radar-compass-rose-container">
+                <div class="radar-sweep-circle">
+                    <div class="radar-inner-ring"></div>
+                    <div class="radar-crosshair-h"></div>
+                    <div class="radar-crosshair-v"></div>
+                    <div class="radar-beam-sweeper"></div>
+
+                    <!-- Flight Waypoints on Radar -->
+                    <div class="radar-wpt wpt-asia">● ASIA: ACCUM</div>
+                    <div class="radar-wpt wpt-ldn">◆ LDN: 4434 EQ</div>
+                    <div class="radar-wpt wpt-poi" id="wpt-poi-val">▲ POI: $4424.00</div>
+                    <div class="radar-wpt wpt-bsl">★ BSL: $4491.20</div>
+                </div>
+            </div>
+
+            <div style="display:flex; justify-content:space-between; font-size:9px; border-top:1px dashed rgba(0,229,255,0.35); padding-top:4px;">
+                <span style="color:var(--hud-dim);">RADAR RANGE: <strong style="color:var(--hud-cyan);">40 NM (4-HOUR CYCLE)</strong></span>
+                <span style="color:var(--hud-dim);">TCAS: <strong style="color:var(--hud-green);">NORMAL TRAFFIC CLEAR</strong></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== 6. LOWER INSTRUMENT DASHBOARD & PEDESTAL ==================== -->
+    <div class="flight-deck-dashboard" id="dashboard-deck">
+        
+        <!-- Captain's Side Stick -->
+        <div class="captain-side-stick">
+            <div class="stick-ptt-btn" title="Push-to-Talk / Autopilot Disconnect"></div>
+        </div>
+
+        <!-- Left MFD: Wave Propulsion -->
+        <div class="mfd-screen">
+            <div class="mfd-bezel-title">
+                <span>⚡ WAVE PROPULSION & EXHAUSTION</span>
+                <span style="color:var(--hud-green);" id="fuel-status-text">SYNCING RUNWAY...</span>
+            </div>
+            
+            <div style="margin:6px 0;">
+                <div class="thrust-track">
+                    <div class="thrust-fill" id="fuel-gauge-fill"></div>
+                </div>
+                <div style="display:flex; justify-content:space-between; font-size:10.5px; font-weight:900;">
+                    <span style="color:var(--hud-dim);">EXHAUSTION:</span>
+                    <span style="color:#FFF;" id="fuel-pct-val">--%</span>
+                </div>
+            </div>
+
+            <div style="font-size:9.5px; color:var(--hud-dim); line-height:1.3;" id="fuel-instruction-sub">
+                Price at mid-cycle expansion. Normal lift active toward $4491.20 target ceiling.
+            </div>
+
+            <div style="display:flex; justify-content:space-between; border-top:1px solid #1A283B; padding-top:4px; font-size:9px;">
+                <span style="color:var(--hud-dim);">FLIGHT DIRECTIVE:</span>
+                <span style="color:var(--hud-amber); font-weight:800;" id="fma-directive">STAGE 2 // CONTINUATION PULLBACK</span>
+            </div>
+        </div>
+
+        <!-- Center MFD: 5-Timeframe TCAS Ladder -->
+        <div class="mfd-screen">
+            <div class="mfd-bezel-title">
+                <span>📡 TCAS FRACTAL FLIGHT LEVELS</span>
+                <span style="color:var(--hud-cyan);">RADAR LOCK</span>
+            </div>
+
+            <div class="tcas-flight-ladder">
+                <div class="tcas-bar" id="tcas-bar-1w" onclick="setCockpitTimeframe('1w')" style="cursor:pointer;" title="Click to engage 1W Weekly Macro Flight Level">
+                    <span style="color:var(--hud-purple); font-weight:800;">FL400 (1W)</span>
+                    <span id="tcas-fl400">ATH MACRO BULLISH SUPER-CYCLE</span>
+                </div>
+                <div class="tcas-bar" id="tcas-bar-1d" onclick="setCockpitTimeframe('1d')" style="cursor:pointer;" title="Click to engage 1D Daily Trend Flight Level">
+                    <span style="color:var(--hud-cyan); font-weight:800;">FL240 (1D)</span>
+                    <span id="tcas-fl240">BULLISH BOS ➔ DEMAND BASE DEFENDED</span>
+                </div>
+                <div class="tcas-bar active" id="tcas-bar-4h" onclick="setCockpitTimeframe('4h')" style="cursor:pointer;" title="Click to engage 4H Structural Swing Flight Level">
+                    <span style="color:var(--hud-green); font-weight:900;">FL100 (4H)</span>
+                    <span id="tcas-fl100">$4378.00 SSL ──► $4491.20 BSL</span>
+                </div>
+                <div class="tcas-bar" id="tcas-bar-1h" onclick="setCockpitTimeframe('1h')" style="cursor:pointer;" title="Click to engage 1H Wholesale Equilibrium Flight Level">
+                    <span style="color:var(--hud-amber); font-weight:800;">FL030 (1H)</span>
+                    <span id="tcas-fl030">50% EQUILIBRIUM RETEST ($4434.60)</span>
+                </div>
+                <div class="tcas-bar" id="tcas-bar-1m" onclick="setCockpitTimeframe('1m')" style="cursor:pointer; border-color:rgba(245,158,11,0.4);" title="Click to engage 1M Micro Sniper Runway">
+                    <span style="color:var(--hud-amber); font-weight:900;">RUNWAY (1M)</span>
+                    <span id="tcas-runway" style="color:var(--hud-amber); font-weight:800;">🟡 PULLBACK LIMIT @ $4424.00</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right MFD: Tactical MT5 Weapon Pod -->
+        <div class="mfd-screen">
+            <div class="mfd-bezel-title">
+                <span>🚀 TACTICAL WEAPON LAUNCH POD</span>
+                <span style="color:var(--hud-green);">ARMED</span>
+            </div>
+
+            <div class="tactical-weapon-pod">
+                <div class="weapon-cell">
+                    <div style="font-size:8px; color:var(--hud-dim);">ILS TOUCHDOWN ENTRY</div>
+                    <div style="font-size:11.5px; font-weight:900; color:var(--hud-cyan);" id="wpn-entry">$4424.00</div>
+                </div>
+                <div class="weapon-cell">
+                    <div style="font-size:8px; color:var(--hud-dim);">EJECTION STOP LOSS</div>
+                    <div style="font-size:11.5px; font-weight:900; color:var(--hud-red);" id="wpn-sl">$4415.50</div>
+                </div>
+                <div class="weapon-cell">
+                    <div style="font-size:8px; color:var(--hud-dim);">PAYLOAD TARGETS</div>
+                    <div style="font-size:11px; font-weight:900; color:var(--hud-green);" id="wpn-tp">$4456 / $4491</div>
+                </div>
+                <div class="weapon-cell">
+                    <div style="font-size:8px; color:var(--hud-dim);">RISK GUARD (2%)</div>
+                    <div style="font-size:11px; font-weight:900; color:var(--hud-amber);" id="wpn-risk">0.01 LOTS ($8.50)</div>
+                </div>
+
+                <button class="launch-btn-deck" id="btn-copy-ticket" onclick="copyMt5Ticket()">
+                    🚀 COPY MT5 TICKET
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ==================== OUT-OF-WINDOW (OTW) SCENERY RENDER ENGINE ==================== -->
+    <script>
+        const canvas = document.getElementById('windshield-canvas');
+        const ctx = canvas.getContext('2d');
+        let width, height;
+
+        function resizeCanvas() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        let currentStageKey = 'STAGE2';
+        let manualOtwOverride = 'AUTO';
+        let solarMode = 'AUTO';
+        let stabMode = 'AUTO'; // 'AUTO', 'CALM'
+        let isPullbackTurbulent = true;
+        let animTick = 0;
+
+        function isDaytime() {
+            if (solarMode === 'DAY') return true;
+            if (solarMode === 'NIGHT') return false;
+            const now = new Date();
+            const istOffset = 5.5 * 60 * 60 * 1000;
+            const istDate = new Date(now.getTime() + (now.getTimezoneOffset() * 60000) + istOffset);
+            const hrs = istDate.getHours();
+            return hrs >= 6 && hrs < 19;
+        }
+
+        // Starfield
+        const stars = Array.from({length: 110}, () => ({
+            x: Math.random() * window.innerWidth,
+            y: Math.random() * (window.innerHeight * 0.65),
+            r: Math.random() * 1.5 + 0.5,
+            alpha: Math.random() * 0.8 + 0.2
+        }));
+
+        // Volumetric Clouds
+        const clouds = Array.from({length: 18}, () => ({
+            x: Math.random() * window.innerWidth,
+            y: window.innerHeight * 0.35 + Math.random() * 260,
+            w: Math.random() * 380 + 180,
+            h: Math.random() * 90 + 40,
+            speed: Math.random() * 1.1 + 0.4
+        }));
+
+        // Wind condensation streams
+        const windStreams = Array.from({length: 35}, () => ({
+            x: Math.random() * window.innerWidth,
+            y: Math.random() * window.innerHeight,
+            len: Math.random() * 110 + 50,
+            speed: Math.random() * 15 + 9,
+            alpha: Math.random() * 0.5 + 0.15
+        }));
+
+        function renderWindshield() {
+            animTick++;
+            ctx.clearRect(0, 0, width, height);
+
+            const activeView = manualOtwOverride === 'AUTO' ? currentStageKey : manualOtwOverride;
+            const isDay = isDaytime();
+
+            if (activeView === 'STAGE1') {
+                // STAGE 1: TAKEOFF RUNWAY PERSPECTIVE
+                const horizonY = height * 0.58;
+
+                if (isDay) {
+                    const skyGrad = ctx.createLinearGradient(0, 0, 0, horizonY);
+                    skyGrad.addColorStop(0, '#124174');
+                    skyGrad.addColorStop(0.6, '#3173B3');
+                    skyGrad.addColorStop(1, '#81B8E8');
+                    ctx.fillStyle = skyGrad;
+                    ctx.fillRect(0, 0, width, horizonY);
+
+                    const sunG = ctx.createRadialGradient(width * 0.75, height * 0.18, 5, width * 0.75, height * 0.18, 140);
+                    sunG.addColorStop(0, 'rgba(255, 255, 255, 0.95)');
+                    sunG.addColorStop(0.3, 'rgba(255, 235, 160, 0.45)');
+                    sunG.addColorStop(1, 'transparent');
+                    ctx.fillStyle = sunG;
+                    ctx.fillRect(0, 0, width, horizonY);
+
+                    const groundGrad = ctx.createLinearGradient(0, horizonY, 0, height);
+                    groundGrad.addColorStop(0, '#1D3B23');
+                    groundGrad.addColorStop(1, '#102214');
+                    ctx.fillStyle = groundGrad;
+                    ctx.fillRect(0, horizonY, width, height - horizonY);
+                } else {
+                    const skyGrad = ctx.createLinearGradient(0, 0, 0, horizonY);
+                    skyGrad.addColorStop(0, '#010408');
+                    skyGrad.addColorStop(1, '#071220');
+                    ctx.fillStyle = skyGrad;
+                    ctx.fillRect(0, 0, width, horizonY);
+
+                    stars.forEach(s => {
+                        ctx.fillStyle = `rgba(210, 235, 255, ${s.alpha})`;
+                        ctx.beginPath();
+                        ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+                        ctx.fill();
+                    });
+
+                    const groundGrad = ctx.createLinearGradient(0, horizonY, 0, height);
+                    groundGrad.addColorStop(0, '#060C14');
+                    groundGrad.addColorStop(1, '#010306');
+                    ctx.fillStyle = groundGrad;
+                    ctx.fillRect(0, horizonY, width, height - horizonY);
+                }
+
+                // Runway Asphalt Trapezoid
+                const vpX = width * 0.5;
+                const rwyNearW = width * 0.44;
+                const rwyFarW = 28;
+
+                ctx.fillStyle = isDay ? '#2A303A' : '#070E17';
+                ctx.beginPath();
+                ctx.moveTo(vpX - rwyFarW, horizonY);
+                ctx.lineTo(vpX + rwyFarW, horizonY);
+                ctx.lineTo(vpX + rwyNearW, height);
+                ctx.lineTo(vpX - rwyNearW, height);
+                ctx.closePath();
+                ctx.fill();
+
+                // Green Threshold Runway Lights
+                for (let i = 0; i <= 10; i++) {
+                    const lx = (vpX - rwyFarW) + (i / 10) * (rwyFarW * 2);
+                    ctx.fillStyle = '#10B981';
+                    ctx.shadowColor = '#10B981';
+                    ctx.shadowBlur = isDay ? 6 : 14;
+                    ctx.beginPath();
+                    ctx.arc(lx, horizonY, 3, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+                ctx.shadowBlur = 0;
+
+                // Runway Edge & Centerline
+                for (let t = 0.08; t <= 1; t += 0.06) {
+                    const py = horizonY + (height - horizonY) * (t * t);
+                    const hw = rwyFarW + (rwyNearW - rwyFarW) * t;
+                    const b = 0.3 + t * 0.7;
+
+                    ctx.fillStyle = isDay ? `rgba(255, 255, 255, ${b * 0.9})` : `rgba(255, 255, 255, ${b})`;
+                    ctx.fillRect(vpX - hw, py, 3 + t * 4, 3 + t * 4);
+                    ctx.fillRect(vpX + hw, py, 3 + t * 4, 3 + t * 4);
+
+                    if (Math.floor(t * 16) % 2 === 0) {
+                        ctx.fillStyle = isDay ? `rgba(245, 158, 11, ${b})` : `rgba(0, 229, 255, ${b})`;
+                        ctx.fillRect(vpX - (1.5 + t * 2), py, 3 + t * 4, 12 + t * 18);
+                    }
+                }
+
+            } else if (activeView === 'STAGE2') {
+                // STAGE 2: HIGH ALTITUDE SKY + CLOUDS & TURBULENCE
+                if (isDay) {
+                    const skyGrad = ctx.createLinearGradient(0, 0, 0, height * 0.75);
+                    skyGrad.addColorStop(0, '#0C325B');
+                    skyGrad.addColorStop(0.5, '#205E98');
+                    skyGrad.addColorStop(1, '#5397D4');
+                    ctx.fillStyle = skyGrad;
+                    ctx.fillRect(0, 0, width, height);
+
+                    const sunG = ctx.createRadialGradient(width * 0.25, height * 0.15, 10, width * 0.25, height * 0.15, 180);
+                    sunG.addColorStop(0, 'rgba(255, 255, 255, 0.95)');
+                    sunG.addColorStop(0.2, 'rgba(255, 245, 190, 0.55)');
+                    sunG.addColorStop(1, 'transparent');
+                    ctx.fillStyle = sunG;
+                    ctx.fillRect(0, 0, width, height);
+
+                    clouds.forEach(c => {
+                        c.x -= c.speed;
+                        if (c.x + c.w < 0) c.x = width + 50;
+
+                        const cg = ctx.createRadialGradient(c.x + c.w/2, c.y, 10, c.x + c.w/2, c.y, c.w/2);
+                        cg.addColorStop(0, 'rgba(255, 255, 255, 0.7)');
+                        cg.addColorStop(1, 'transparent');
+                        ctx.fillStyle = cg;
+                        ctx.beginPath();
+                        ctx.ellipse(c.x + c.w/2, c.y, c.w/2, c.h/2, 0, 0, Math.PI * 2);
+                        ctx.fill();
+                    });
+                } else {
+                    const skyGrad = ctx.createLinearGradient(0, 0, 0, height * 0.75);
+                    skyGrad.addColorStop(0, '#01050A');
+                    skyGrad.addColorStop(0.5, '#05182C');
+                    skyGrad.addColorStop(1, '#0A2D50');
+                    ctx.fillStyle = skyGrad;
+                    ctx.fillRect(0, 0, width, height);
+
+                    stars.forEach(s => {
+                        ctx.fillStyle = `rgba(255, 255, 255, ${s.alpha})`;
+                        ctx.beginPath();
+                        ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+                        ctx.fill();
+                    });
+
+                    clouds.forEach(c => {
+                        c.x -= c.speed;
+                        if (c.x + c.w < 0) c.x = width + 50;
+
+                        const cg = ctx.createRadialGradient(c.x + c.w/2, c.y, 10, c.x + c.w/2, c.y, c.w/2);
+                        cg.addColorStop(0, 'rgba(14, 34, 56, 0.55)');
+                        cg.addColorStop(1, 'transparent');
+                        ctx.fillStyle = cg;
+                        ctx.beginPath();
+                        ctx.ellipse(c.x + c.w/2, c.y, c.w/2, c.h/2, 0, 0, Math.PI * 2);
+                        ctx.fill();
+                    });
+                }
+
+                if (isPullbackTurbulent && stabMode !== 'CALM') {
+                    windStreams.forEach(w => {
+                        w.x -= w.speed;
+                        if (w.x + w.len < 0) {
+                            w.x = width + Math.random() * 100;
+                            w.y = Math.random() * height;
+                        }
+
+                        ctx.strokeStyle = isDay ? `rgba(255, 255, 255, ${w.alpha * 1.6})` : `rgba(0, 229, 255, ${w.alpha})`;
+                        ctx.lineWidth = 1.4;
+                        ctx.beginPath();
+                        ctx.moveTo(w.x, w.y);
+                        ctx.lineTo(w.x - w.len, w.y + (Math.sin(animTick * 0.05 + w.y) * 2.5));
+                        ctx.stroke();
+                    });
+                }
+
+            } else if (activeView === 'STAGE3') {
+                // STAGE 3: FL400 GOLDEN STRATOSPHERE / TWILIGHT
+                const sunsetGrad = ctx.createLinearGradient(0, 0, 0, height);
+                sunsetGrad.addColorStop(0, '#060A14');
+                sunsetGrad.addColorStop(0.32, '#2C133A');
+                sunsetGrad.addColorStop(0.54, '#E08008');
+                sunsetGrad.addColorStop(0.68, '#5C2208');
+                sunsetGrad.addColorStop(1, '#090D16');
+                ctx.fillStyle = sunsetGrad;
+                ctx.fillRect(0, 0, width, height);
+
+                stars.slice(0, 45).forEach(s => {
+                    ctx.fillStyle = `rgba(255, 235, 210, ${s.alpha * 0.85})`;
+                    ctx.beginPath();
+                    ctx.arc(s.x, s.y * 0.8, s.r, 0, Math.PI * 2);
+                    ctx.fill();
+                });
+
+            } else {
+                // STAGE 4: DESTINATION AIRPORT APPROACH (ALS & PAPI)
+                const horizonY = height * 0.58;
+
+                if (isDay) {
+                    const landSky = ctx.createLinearGradient(0, 0, 0, horizonY);
+                    landSky.addColorStop(0, '#205382');
+                    landSky.addColorStop(1, '#70A2CC');
+                    ctx.fillStyle = landSky;
+                    ctx.fillRect(0, 0, width, horizonY);
+
+                    const landGround = ctx.createLinearGradient(0, horizonY, 0, height);
+                    landGround.addColorStop(0, '#2B3B2E');
+                    landGround.addColorStop(1, '#182219');
+                    ctx.fillStyle = landGround;
+                    ctx.fillRect(0, horizonY, width, height - horizonY);
+                } else {
+                    const landSky = ctx.createLinearGradient(0, 0, 0, horizonY);
+                    landSky.addColorStop(0, '#020307');
+                    landSky.addColorStop(1, '#0D0B16');
+                    ctx.fillStyle = landSky;
+                    ctx.fillRect(0, 0, width, horizonY);
+
+                    const landGround = ctx.createLinearGradient(0, horizonY, 0, height);
+                    landGround.addColorStop(0, '#06050A');
+                    landGround.addColorStop(1, '#010204');
+                    ctx.fillStyle = landGround;
+                    ctx.fillRect(0, horizonY, width, height - horizonY);
+                }
+
+                const vpX = width * 0.5;
+                for (let i = 0; i < 22; i++) {
+                    const t = i / 22;
+                    const py = horizonY + (height - horizonY) * (t * t);
+                    const strobeOn = (Math.floor(animTick / 3) % 22) === i;
+
+                    ctx.fillStyle = strobeOn ? '#FFFFFF' : 'rgba(255, 59, 105, 0.75)';
+                    ctx.shadowColor = strobeOn ? '#FFFFFF' : '#FF3B69';
+                    ctx.shadowBlur = strobeOn ? 18 : 6;
+                    ctx.beginPath();
+                    ctx.arc(vpX, py, strobeOn ? 4.5 : 2, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+
+                // PAPI Glide Path Lights
+                ctx.fillStyle = '#FFFFFF';
+                ctx.shadowColor = '#FFFFFF';
+                ctx.fillRect(vpX - 44, horizonY - 2, 4, 4);
+                ctx.fillRect(vpX - 38, horizonY - 2, 4, 4);
+                ctx.fillStyle = '#FF3B69';
+                ctx.shadowColor = '#FF3B69';
+                ctx.fillRect(vpX - 32, horizonY - 2, 4, 4);
+                ctx.fillRect(vpX - 26, horizonY - 2, 4, 4);
+                ctx.shadowBlur = 0;
+            }
+
+            requestAnimationFrame(renderWindshield);
+        }
+
+        renderWindshield();
+
+        // OTW Manual Selector
+        function setOtwMode(mode) {
+            manualOtwOverride = mode;
+            ['btn-otw-auto', 'btn-otw-1', 'btn-otw-2', 'btn-otw-3', 'btn-otw-4'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.className = 'otw-pill';
+            });
+
+            if (mode === 'AUTO') document.getElementById('btn-otw-auto').className = 'otw-pill active';
+            else if (mode === 'STAGE1') document.getElementById('btn-otw-1').className = 'otw-pill active';
+            else if (mode === 'STAGE2') document.getElementById('btn-otw-2').className = 'otw-pill active';
+            else if (mode === 'STAGE3') document.getElementById('btn-otw-3').className = 'otw-pill active';
+            else if (mode === 'STAGE4') document.getElementById('btn-otw-4').className = 'otw-pill active';
+        }
+
+        // Solar Mode Toggle
+        function toggleSolarMode() {
+            if (solarMode === 'AUTO') {
+                solarMode = 'DAY';
+                document.getElementById('btn-solar-toggle').innerText = '☀️ SOLAR: DAY';
+                document.getElementById('btn-solar-toggle').style.borderColor = 'var(--hud-green)';
+                document.getElementById('btn-solar-toggle').style.color = 'var(--hud-green)';
+            } else if (solarMode === 'DAY') {
+                solarMode = 'NIGHT';
+                document.getElementById('btn-solar-toggle').innerText = '🌙 SOLAR: NIGHT';
+                document.getElementById('btn-solar-toggle').style.borderColor = 'var(--hud-cyan)';
+                document.getElementById('btn-solar-toggle').style.color = 'var(--hud-cyan)';
+            } else {
+                solarMode = 'AUTO';
+                document.getElementById('btn-solar-toggle').innerText = '🌐 SOLAR: AUTO';
+                document.getElementById('btn-solar-toggle').style.borderColor = 'var(--hud-amber)';
+                document.getElementById('btn-solar-toggle').style.color = 'var(--hud-amber)';
+            }
+        }
+
+        // Stabilizer Mode Toggle (Calm vs Dynamic)
+        function toggleStabMode() {
+            if (stabMode === 'AUTO') {
+                stabMode = 'CALM';
+                document.getElementById('btn-stab-toggle').innerText = '💺 STAB: CALM (LOCKED)';
+                document.getElementById('btn-stab-toggle').style.borderColor = 'var(--hud-cyan)';
+                document.getElementById('btn-stab-toggle').style.color = 'var(--hud-cyan)';
+                document.getElementById('cockpit-flight-deck').className = '';
+            } else {
+                stabMode = 'AUTO';
+                document.getElementById('btn-stab-toggle').innerText = '💺 STAB: AUTO';
+                document.getElementById('btn-stab-toggle').style.borderColor = 'var(--hud-green)';
+                document.getElementById('btn-stab-toggle').style.color = 'var(--hud-green)';
+                if (isPullbackTurbulent) {
+                    document.getElementById('cockpit-flight-deck').className = 'turbulent-vibe';
+                }
+            }
+        }
+
+        // Pure Web Audio Synth (Ambient Jet Turbine + Avionics)
+        let audioCtx = null;
+        let isAudioOn = false;
+        let turbineNode = null;
+
+        function toggleAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+
+            if (!isAudioOn) {
+                audioCtx.resume();
+                // Create ambient low-frequency turbine rumble
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(65, audioCtx.currentTime); // 65 Hz jet engine drone
+                gain.gain.setValueAtTime(0.04, audioCtx.currentTime);
+
+                // Low-pass filter for cabin sound isolation
+                const filter = audioCtx.createBiquadFilter();
+                filter.type = 'lowpass';
+                filter.frequency.setValueAtTime(140, audioCtx.currentTime);
+
+                osc.connect(filter);
+                filter.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                turbineNode = osc;
+
+                isAudioOn = true;
+                document.getElementById('btn-audio-toggle').innerText = '🔊 AUDIO: ON';
+                document.getElementById('btn-audio-toggle').style.borderColor = 'var(--hud-green)';
+                document.getElementById('btn-audio-toggle').style.color = 'var(--hud-green)';
+            } else {
+                if (turbineNode) {
+                    turbineNode.stop();
+                    turbineNode.disconnect();
+                }
+                isAudioOn = false;
+                document.getElementById('btn-audio-toggle').innerText = '🔊 AUDIO: OFF';
+                document.getElementById('btn-audio-toggle').style.borderColor = 'var(--hud-cyan)';
+                document.getElementById('btn-audio-toggle').style.color = 'var(--hud-cyan)';
+            }
+        }
+    </script>
+
+    <!-- ==================== REAL-TIME AVIONICS & API BINDINGS ==================== -->
+    <script>
+        let livePrice = 4434.02;
+        let activeSymbol = "XAUUSD";
+
+        // 1. Live Chronometers
+        setInterval(() => {
+            const now = new Date();
+            const zH = String(now.getUTCHours()).padStart(2, '0');
+            const zM = String(now.getUTCMinutes()).padStart(2, '0');
+            const zS = String(now.getUTCSeconds()).padStart(2, '0');
+            document.getElementById('clock-zulu').innerText = `${zH}:${zM}:${zS} Z`;
+
+            const istOffset = 5.5 * 60 * 60 * 1000;
+            const istDate = new Date(now.getTime() + (now.getTimezoneOffset() * 60000) + istOffset);
+            let hours = istDate.getHours();
+            const minutes = String(istDate.getMinutes()).padStart(2, '0');
+            const seconds = String(istDate.getSeconds()).padStart(2, '0');
+            const ampm = hours >= 12 ? 'PM' : 'AM';
+            hours = hours % 12 || 12;
+            document.getElementById('clock-ist').innerText = `${String(hours).padStart(2, '0')}:${minutes}:${seconds} ${ampm} IST`;
+        }, 1000);
+
+        let activeCockpitTf = (typeof localStorage !== 'undefined' && localStorage.getItem('mazrion_active_tf')) ? localStorage.getItem('mazrion_active_tf') : '4h';
+
+        function setCockpitTimeframe(tf, triggerSync = true) {
+            activeCockpitTf = tf.toLowerCase();
+            try { localStorage.setItem('mazrion_active_tf', activeCockpitTf); } catch (e) {}
+
+            // Update top MCP pills
+            ['1m', '5m', '15m', '1h', '4h', '1d', '1w'].forEach(t => {
+                const btn = document.getElementById(`btn-tf-${t}`);
+                if (btn) {
+                    if (t === activeCockpitTf) btn.classList.add('active');
+                    else btn.classList.remove('active');
+                }
+            });
+
+            // Update TCAS bars
+            ['1w', '1d', '4h', '1h', '1m'].forEach(t => {
+                const bar = document.getElementById(`tcas-bar-${t}`);
+                if (bar) {
+                    if (t === activeCockpitTf) bar.classList.add('active');
+                    else bar.classList.remove('active');
+                }
+            });
+
+            if (triggerSync) {
+                syncCockpitAvionics();
+            }
+        }
+
+        async function updateLivePrice() {
+            try {
+                const res = await fetch(`https://api.binance.com/api/v3/ticker/price?symbol=PAXGUSDT`);
+                const data = await res.json();
+                if (data && data.price) {
+                    livePrice = parseFloat(data.price);
+                    const hudAlt = document.getElementById('hud-live-alt');
+                    if (hudAlt) hudAlt.innerText = `$${livePrice.toFixed(2)}`;
+                }
+            } catch (e) {}
+        }
+
+        // 2. Flight Computer Sync
+        async function syncCockpitAvionics() {
+            try {
+                const res = await fetch(`/api/analyze?symbol=${activeSymbol}&price=${livePrice}&timeframe=${activeCockpitTf}`);
+                const data = await res.json();
+
+                if (data && data.fractal_radar) {
+                    const fr = data.fractal_radar;
+                    const stage = fr.active_stage || '';
+
+                    // Stage Scenery
+                    if (stage.includes('STAGE 1')) {
+                        currentStageKey = 'STAGE1';
+                        isPullbackTurbulent = false;
+                    } else if (stage.includes('STAGE 2')) {
+                        currentStageKey = 'STAGE2';
+                        isPullbackTurbulent = true;
+                    } else if (stage.includes('STAGE 3')) {
+                        currentStageKey = 'STAGE3';
+                        isPullbackTurbulent = false;
+                    } else {
+                        currentStageKey = 'STAGE4';
+                        isPullbackTurbulent = false;
+                    }
+                    document.getElementById('cockpit-flight-deck').className = '';
+
+                    // Master Annunciator LEDs
+                    const toga = document.getElementById('annunc-toga');
+                    const caution = document.getElementById('annunc-caution');
+                    const warn = document.getElementById('annunc-warn');
+
+                    if (stage.includes('STAGE 1')) {
+                        toga.className = 'mcp-annunc annunc-toga active';
+                        caution.className = 'mcp-annunc annunc-caution';
+                        warn.className = 'mcp-annunc annunc-warn';
+                    } else if (stage.includes('STAGE 2') || stage.includes('STAGE 3')) {
+                        toga.className = 'mcp-annunc annunc-toga';
+                        caution.className = 'mcp-annunc annunc-caution active';
+                        warn.className = 'mcp-annunc annunc-warn';
+                    } else {
+                        toga.className = 'mcp-annunc annunc-toga';
+                        caution.className = 'mcp-annunc annunc-caution';
+                        warn.className = 'mcp-annunc annunc-warn active';
+                    }
+
+                    // HUD Directives & Glideslope
+                    document.getElementById('hud-directive-text').innerText = `${stage.includes('STAGE 1') ? 'STAGE 1: RUNWAY TAKEOFF' : (stage.includes('STAGE 2') ? 'STAGE 2: CLIMB PULLBACK' : (stage.includes('STAGE 3') ? 'STAGE 3: CRUISE FL400' : 'STAGE 4: DESTINATION TOUCHDOWN'))}`;
+                    document.getElementById('fma-directive').innerText = `${fr.stage_badge || 'STAGE 2 // CONTINUATION'}`;
+                    document.getElementById('hud-ils-lock').innerText = `ILS ${data.levels ? data.levels.execution_zone : '$4424.00'} ARMED`;
+
+                    // Fuel Gauge
+                    const fuelPct = fr.exhaustion_pct || 16;
+                    document.getElementById('fuel-pct-val').innerText = `${fuelPct}%`;
+                    document.getElementById('fuel-gauge-fill').style.width = `${fuelPct}%`;
+                    document.getElementById('fuel-status-text').innerText = `${100 - fuelPct}% RUNWAY REMAINING`;
+                    document.getElementById('fuel-instruction-sub').innerText = fr.stage_desc || '';
+
+                    // HUD Altimeter & Bugs
+                    document.getElementById('hud-live-alt').innerText = `$${livePrice.toFixed(2)}`;
+                    if (data.wholesale_grid) {
+                        document.getElementById('lbl-eq-level').innerText = `50% EQ: ${data.wholesale_grid.equilibrium}`;
+                    }
+
+                    if (data.levels) {
+                        document.getElementById('alt-target-ceiling').innerText = `▲ ${data.levels.target_2} CEIL`;
+                        document.getElementById('alt-pullback-entry').innerText = `◆ ${data.levels.execution_zone}`;
+                        document.getElementById('alt-floor-terrain').innerText = `▼ ${data.key_pills ? data.key_pills.ssl : '$4378.00'} SSL`;
+
+                        document.getElementById('pfd-ssl').innerText = `${data.key_pills ? data.key_pills.ssl : '$4378.00'} (DEFENDED)`;
+                        document.getElementById('pfd-bsl').innerText = `${data.levels.target_2} (ACTIVE MAGNET)`;
+
+                        // Co-pilot Radar Waypoint
+                        document.getElementById('wpt-poi-val').innerText = `▲ POI: ${data.levels.execution_zone}`;
+
+                        // Tactical Weapon Pod
+                        document.getElementById('wpn-entry').innerText = data.levels.execution_zone;
+                        document.getElementById('wpn-sl').innerText = data.levels.structural_sl;
+                        document.getElementById('wpn-tp').innerText = `${data.levels.target_1} / ${data.levels.target_2}`;
+                        document.getElementById('wpn-risk').innerText = `${data.mt5_ticket ? data.mt5_ticket.lot_size : '0.01 LOTS'} ($${data.mt5_ticket ? data.mt5_ticket.dollar_risk : '8.50'})`;
+
+                        // TCAS Flight Level Ladder
+                        document.getElementById('tcas-fl400').innerText = fr.timeframe_stack.macro_yearly || '';
+                        document.getElementById('tcas-fl240').innerText = fr.timeframe_stack.daily || '';
+                        document.getElementById('tcas-fl100').innerText = fr.timeframe_stack.four_hour || '';
+                        document.getElementById('tcas-fl030').innerText = fr.timeframe_stack.one_hour || '';
+                        document.getElementById('tcas-runway').innerText = fr.timeframe_stack.one_minute || '';
+                    }
+                }
+            } catch (e) {}
+        }
+
+        // 3. Binance Live Price Poller
+        setInterval(async () => {
+            await updateLivePrice();
+        }, 1500);
+
+        // 4. Background Sync
+        setInterval(() => {
+            syncCockpitAvionics();
+        }, 5000);
+
+        window.addEventListener('DOMContentLoaded', async () => {
+            setCockpitTimeframe(activeCockpitTf, false);
+            await updateLivePrice();
+            await syncCockpitAvionics();
+        });
+
+        // 5. MT5 Ticket Copy
+        function copyMt5Ticket() {
+            const entry = document.getElementById('wpn-entry').innerText;
+            const sl = document.getElementById('wpn-sl').innerText;
+            const tp = document.getElementById('wpn-tp').innerText;
+            const risk = document.getElementById('wpn-risk').innerText;
+
+            const ticket = `// MAZRION AVIONICS COCKPIT FRACTAL ORDER\nSymbol: XAUUSD\nType: BUY LIMIT\nEntry: ${entry}\nSL: ${sl}\nTP: ${tp}\nRisk Guard: ${risk}`;
+            navigator.clipboard.writeText(ticket);
+
+            const btn = document.getElementById('btn-copy-ticket');
+            btn.innerText = '✅ TICKET LOCKED & COPIED!';
+            btn.style.background = '#10B981';
+            setTimeout(() => {
+                btn.innerText = '🚀 COPY MT5 TICKET';
+                btn.style.background = 'linear-gradient(135deg, #00E5FF 0%, #0077FF 100%)';
+            }, 2500);
+        }
+    </script>
+</body>
+</html>
