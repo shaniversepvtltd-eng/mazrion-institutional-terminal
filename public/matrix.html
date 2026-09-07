@@ -657,13 +657,13 @@
         <!-- 2. Timeframe Switcher Tabs -->
         <div class="tf-bar">
             <span style="font-size:10px; font-weight:800; color:var(--text-dim); text-transform:uppercase; margin-right:4px;">SELECT FRACTAL TIMEFRAME:</span>
-            <button class="tf-btn active" id="tf-btn-1m" onclick="switchTimeframe('1m')">1-MINUTE (1M) • 18 WAVES</button>
-            <button class="tf-btn" id="tf-btn-5m" onclick="switchTimeframe('5m')">5-MINUTE (5M) • 9 WAVES</button>
+            <button class="tf-btn active" id="tf-btn-1m" onclick="switchTimeframe('1m')">1-MINUTE (1M) • 4 WAVES</button>
+            <button class="tf-btn" id="tf-btn-5m" onclick="switchTimeframe('5m')">5-MINUTE (5M) • 4 WAVES</button>
             <button class="tf-btn" id="tf-btn-15m" onclick="switchTimeframe('15m')">15-MINUTE (15M) • 4 WAVES</button>
             <button class="tf-btn" id="tf-btn-1h" onclick="switchTimeframe('1h')">1-HOUR (1H) • 2 WAVES</button>
             <button class="tf-btn" id="tf-btn-4h" onclick="switchTimeframe('4h')">4-HOUR (4H) • 4 LAPS</button>
             <button class="tf-btn" id="tf-btn-1d" onclick="switchTimeframe('1d')">DAILY (1D) • 3 WAVES</button>
-            <button class="tf-btn" id="tf-btn-1w" onclick="switchTimeframe('1w')">WEEKLY (1W) • 4 LEGS</button>
+            <button class="tf-btn" id="tf-btn-1w" onclick="switchTimeframe('1w')">WEEKLY (1W) • 2 LEGS</button>
         </div>
 
         <!-- 3. Active Live Wave Radar Focus -->
@@ -794,33 +794,33 @@
         const tfWaveSpecs = {
             "1m": {
                 name: "1-MINUTE (1M)",
-                step: 7.50,
-                total: 18,
-                baseLow: active4hLow,
+                step: 25.00,
+                total: 4,
+                baseLow: activeRetestLow,
                 baseHigh: active4hHigh,
-                slOffset: 1.70,
-                tp1Offset: 3.20,
-                activeWaveOverride: 5,
-                sweepType: "IRL (Internal Range Liquidity)",
-                fuelGrade: "⛽ TIER 1: MICRO SCALP TANK (+$7.50 Step)",
-                fuelCap: "+$7.50 Step Fuel",
-                sweptPool: "Micro 1M Wick @ $4,406.00 Defended",
-                thesis: "Micro Sell-Side Liquidity (SSL) harvested below the 1M swing low. Algorithms refilled orders in the 1M Fair Value Gap (FVG); targeting immediate scalp high at $4,418.74."
+                slOffset: 10.50,
+                tp1Offset: 18.00,
+                activeWaveOverride: 2,
+                sweepType: "IRL (1M FVG Retest)",
+                fuelGrade: "⛽ TIER 1: MICRO EXPANSION TANK (+$25.00 Leg)",
+                fuelCap: "+$25.00 Micro Fuel",
+                sweptPool: "Asian High Swept ➔ FVG Retest @ $4,403–$4,406",
+                thesis: "Micro Sell-Side Liquidity (SSL) harvested in the 1M Fair Value Gap (FVG) discount retest; targeting immediate London High BSL at $4,448.74."
             },
             "5m": {
                 name: "5-MINUTE (5M)",
-                step: 16.00,
-                total: 9,
-                baseLow: active4hLow,
+                step: 25.00,
+                total: 4,
+                baseLow: activeRetestLow,
                 baseHigh: active4hHigh,
-                slOffset: 6.50,
-                tp1Offset: 7.00,
+                slOffset: 10.50,
+                tp1Offset: 18.00,
                 activeWaveOverride: 2,
                 sweepType: "IRL (5M Momentum FVG)",
-                fuelGrade: "⛽ TIER 1: FAST MOMENTUM TANK (+$16.00 Step)",
-                fuelCap: "+$16.00 Wave Fuel",
-                sweptPool: "5M Liquidity Pivot @ $4,395.12 Swept",
-                thesis: "5-Minute momentum pivot purged retail stop losses. Institutional limit orders absorbed sell volume; pushing to $4,427.00 Buy-Side Liquidity pool."
+                fuelGrade: "⛽ TIER 1: FAST MOMENTUM TANK (+$25.00 Leg)",
+                fuelCap: "+$25.00 Wave Fuel",
+                sweptPool: "5M Liquidity Sweep ➔ FVG Retest @ $4,403–$4,406 Defended",
+                thesis: "5-Minute momentum pivot purged retail stop losses. Institutional limit orders absorbed sell volume in the discount FVG; pushing to $4,448.74 London High BSL pool."
             },
             "15m": {
                 name: "15-MINUTE (15M)",
@@ -911,13 +911,19 @@
         function renderMatrixHUD() {
             const spec = tfWaveSpecs[selectedTf];
             
-            // Institutional Roadmaps for 4H, 15M, 1H, 1D, 1W
+            // Institutional Roadmaps for all 7 Timeframes (Directly Aligned to TradingView Swings)
             const institutionalRoadmaps = {
-                "4h": [
-                    { num: 1, swept: "Weekly Floor ($4,381.24) Defended", entry: 4381.25, sl: 4364.74, tp1: 4405.00, tp2: 4414.00, desc: "Liquidated short breakout stops; ignited highway.", status: "TP2 HIT 🎯", isWon: true },
-                    { num: 2, swept: "London Low Swept ➔ Retest @ $4,395.12 Defended", entry: 4395.15, sl: 4378.00, tp1: 4416.05, tp2: 4448.74, desc: "Retest defended in discount FVG; targeting London High BSL.", status: "ACTIVE 🟢", isActive: true },
-                    { num: 3, swept: "Wave #2 High Swept ➔ 50% Retest @ $4,422.00", entry: 4422.00, sl: 4408.00, tp1: 4445.00, tp2: 4480.00, desc: "50% equilibrium retest expansion toward Friday High.", status: "QUEUED ⏳" },
-                    { num: 4, swept: "Wave #3 High Swept ➔ 50% Retest @ $4,455.00", entry: 4455.00, sl: 4440.00, tp1: 4485.00, tp2: 4512.33, desc: "Final 4H Highway expansion to macro ceiling BSL.", status: "QUEUED ⏳" }
+                "1m": [
+                    { num: 1, swept: "London Low ($4,395.12) Swept & Defended", entry: 4395.15, sl: 4384.50, tp1: 4410.00, tp2: 4420.00, desc: "1M Expansion wave from London sweep low.", status: "TP2 HIT 🎯", isWon: true },
+                    { num: 2, swept: "Asian High Swept ➔ FVG Retest @ $4,403–$4,406", entry: 4403.50, sl: 4392.00, tp1: 4422.00, tp2: 4448.74, desc: "1M FVG discount retest; expanding toward London High BSL.", status: "ACTIVE 🟢", isActive: true },
+                    { num: 3, swept: "London High Swept ➔ 50% Retest @ $4,430.00", entry: 4430.00, sl: 4418.00, tp1: 4455.00, tp2: 4480.00, desc: "Inter-session continuation wave.", status: "QUEUED ⏳" },
+                    { num: 4, swept: "Friday High Swept ➔ 50% Retest @ $4,460.00", entry: 4460.00, sl: 4445.00, tp1: 4485.00, tp2: 4512.33, desc: "Final 1M micro-sprint into 4H highway ceiling.", status: "QUEUED ⏳" }
+                ],
+                "5m": [
+                    { num: 1, swept: "London Low ($4,395.12) Swept & Defended", entry: 4395.15, sl: 4381.00, tp1: 4410.00, tp2: 4420.00, desc: "5M Momentum ignition out of London double bottom.", status: "TP2 HIT 🎯", isWon: true },
+                    { num: 2, swept: "Asian High Swept ➔ 50% FVG Retest @ $4,403–$4,406", entry: 4403.50, sl: 4392.00, tp1: 4422.00, tp2: 4448.74, desc: "5M FVG discount retest; pushing to London High BSL.", status: "ACTIVE 🟢", isActive: true },
+                    { num: 3, swept: "London High Swept ➔ 50% Retest @ $4,430.00", entry: 4430.00, sl: 4416.00, tp1: 4455.00, tp2: 4480.00, desc: "Pre-NY momentum expansion.", status: "QUEUED ⏳" },
+                    { num: 4, swept: "Friday High Swept ➔ 50% Retest @ $4,460.00", entry: 4460.00, sl: 4445.00, tp1: 4485.00, tp2: 4512.33, desc: "Final 5M momentum drive into 4H BSL ceiling.", status: "QUEUED ⏳" }
                 ],
                 "15m": [
                     { num: 1, swept: "Asian Low Sweep @ $4,381.24 Defended", entry: 4381.25, sl: 4371.00, tp1: 4395.00, tp2: 4414.00, desc: "Session open liquidity sweep expansion.", status: "TP2 HIT 🎯", isWon: true },
@@ -928,6 +934,12 @@
                 "1h": [
                     { num: 1, swept: "Wholesale Equilibrium Floor ($4,381.24) Defended", entry: 4381.25, sl: 4367.24, tp1: 4418.00, tp2: 4454.00, desc: "Wholesale 1-hour demand accumulation wave.", status: "ACTIVE 🟢", isActive: true },
                     { num: 2, swept: "Intraday BSL Swept ➔ Retest Floor @ $4,428.00", entry: 4428.00, sl: 4414.00, tp1: 4465.00, tp2: 4512.33, desc: "Continuation through Friday ceiling to 4H BSL.", status: "QUEUED ⏳" }
+                ],
+                "4h": [
+                    { num: 1, swept: "Weekly Floor ($4,381.24) Defended", entry: 4381.25, sl: 4364.74, tp1: 4405.00, tp2: 4414.00, desc: "Liquidated short breakout stops; ignited highway.", status: "TP2 HIT 🎯", isWon: true },
+                    { num: 2, swept: "London Low Swept ➔ Retest @ $4,395.12 Defended", entry: 4395.15, sl: 4378.00, tp1: 4416.05, tp2: 4448.74, desc: "Retest defended in discount FVG; targeting London High BSL.", status: "ACTIVE 🟢", isActive: true },
+                    { num: 3, swept: "Wave #2 High Swept ➔ 50% Retest @ $4,422.00", entry: 4422.00, sl: 4408.00, tp1: 4445.00, tp2: 4480.00, desc: "50% equilibrium retest expansion toward Friday High.", status: "QUEUED ⏳" },
+                    { num: 4, swept: "Wave #3 High Swept ➔ 50% Retest @ $4,455.00", entry: 4455.00, sl: 4440.00, tp1: 4485.00, tp2: 4512.33, desc: "Final 4H Highway expansion to macro ceiling BSL.", status: "QUEUED ⏳" }
                 ],
                 "1d": [
                     { num: 1, swept: "Macro Institutional Base ($4,363.16) Swept", entry: 4365.00, sl: 4320.00, tp1: 4450.00, tp2: 4580.00, desc: "Daily Liquidity Sweep Mean-Reversion to 50% Drop EQ.", status: "ACTIVE 🟢", isActive: true },
