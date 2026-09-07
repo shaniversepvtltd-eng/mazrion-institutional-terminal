@@ -911,10 +911,10 @@
             } catch (e) {}
         }
 
-        // 5. Binance Price Poller
+        // 5. Live TradingView Spot Price Poller
         setInterval(async () => {
             try {
-                const res = await fetch(`https://api.binance.com/api/v3/ticker/price?symbol=PAXGUSDT`);
+                const res = await fetch(`/api/price`);
                 const data = await res.json();
                 if (data && data.price) {
                     livePrice = parseFloat(data.price);

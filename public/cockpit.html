@@ -1553,7 +1553,7 @@
 
         async function updateLivePrice() {
             try {
-                const res = await fetch(`https://api.binance.com/api/v3/ticker/price?symbol=PAXGUSDT`);
+                const res = await fetch(`/api/price`);
                 const data = await res.json();
                 if (data && data.price) {
                     livePrice = parseFloat(data.price);
