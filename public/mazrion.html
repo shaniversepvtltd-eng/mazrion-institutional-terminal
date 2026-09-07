@@ -641,19 +641,11 @@
 
         async function fetchLivePrice() {
             try {
-                const res = await fetch("https://scanner.tradingview.com/cfd/scan", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        symbols: { tickers: ["OANDA:XAUUSD"] },
-                        columns: ["close", "high", "low", "open", "change"]
-                    })
-                });
+                const res = await fetch("/api/price");
                 if (res.ok) {
                     const data = await res.json();
-                    if (data && Array.isArray(data.data) && data.data[0] && data.data[0].d) {
-                        const row = data.data[0].d;
-                        currentLivePrice = parseFloat(row[0]);
+                    if (data && data.price) {
+                        currentLivePrice = parseFloat(data.price);
                         const pEl = document.getElementById("chartLivePrice");
                         if (pEl) pEl.innerText = `$${currentLivePrice.toFixed(2)}`;
                         const wEl = document.getElementById("welcomePrice");

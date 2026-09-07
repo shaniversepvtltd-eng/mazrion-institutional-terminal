@@ -261,19 +261,10 @@
 
     async function fetchWidgetPrice() {
         try {
-            const res = await fetch('https://scanner.tradingview.com/cfd/scan', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    symbols: { tickers: ['OANDA:XAUUSD'] },
-                    columns: ['close', 'high', 'low', 'open', 'change']
-                })
-            });
+            const res = await fetch('/api/price');
             if (res.ok) {
                 const data = await res.json();
-                if (data && Array.isArray(data.data) && data.data[0] && data.data[0].d) {
-                    widgetLivePrice = parseFloat(data.data[0].d[0]);
-                }
+                if (data && data.price) widgetLivePrice = parseFloat(data.price);
             }
         } catch (e) {}
     }
