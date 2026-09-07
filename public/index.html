@@ -52,8 +52,8 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 10px;
+            flex-wrap: nowrap;
+            gap: 12px;
             position: sticky;
             top: 0;
             z-index: 10000;
@@ -1456,30 +1456,30 @@
 
         <!-- Navigation Tabs -->
         <div class="nav-tabs">
-            <button class="nav-btn active" onclick="switchTab('chart')">CHARTS</button>
-            <button class="nav-btn" onclick="switchTab('orderflow')">ORDER FLOW & LIQUIDITY</button>
-            <button class="nav-btn" onclick="switchTab('macro')">MACRO RADAR</button>
-            <a href="/cockpit.html" class="nav-btn" style="background:linear-gradient(135deg, rgba(0, 229, 255, 0.15), rgba(0, 140, 255, 0.15)); border:1px solid var(--accent-cyan); color:#FFF; text-decoration:none; display:inline-flex; align-items:center; gap:4px; box-shadow: 0 0 12px rgba(0, 229, 255, 0.25);">✈️ COCKPIT HUD</a>
-            <a href="/cinema.html" class="nav-btn" style="background:linear-gradient(135deg, rgba(245, 158, 11, 0.18), rgba(225, 29, 72, 0.18)); border:1px solid var(--accent-gold); color:#FFF; text-decoration:none; display:inline-flex; align-items:center; gap:4px; box-shadow: 0 0 12px rgba(245, 158, 11, 0.35);">🎬 CINEMA SUITE</a>
-            <a href="/fractals.html" class="nav-btn" style="background:linear-gradient(135deg, rgba(168, 85, 247, 0.2), rgba(6, 182, 212, 0.2)); border:1px solid #a855f7; color:#FFF; text-decoration:none; display:inline-flex; align-items:center; gap:4px; box-shadow: 0 0 14px rgba(168, 85, 247, 0.4);">🧩 GHOST BLUEPRINT</a>
-            <a href="/matrix.html" class="nav-btn" style="background:linear-gradient(135deg, rgba(0, 229, 255, 0.2), rgba(16, 185, 129, 0.2)); border:1px solid var(--accent-cyan); color:#FFF; text-decoration:none; display:inline-flex; align-items:center; gap:4px; box-shadow: 0 0 14px rgba(0, 229, 255, 0.35);">⚡ FRACTAL MATRIX</a>
-            <a href="/mazrion.html" class="nav-btn" style="background:linear-gradient(135deg, #A855F7, #7C3AED, #00E5FF); border:1px solid #C084FC; color:#FFF; text-decoration:none; display:inline-flex; align-items:center; gap:4px; font-weight:800; box-shadow: 0 0 16px rgba(168, 85, 247, 0.5);">🔮 MAZRION AI</a>
+            <button class="nav-btn active" onclick="switchTab('chart')">📊 CHARTS</button>
+            <button class="nav-btn" onclick="switchTab('orderflow')">🌊 ORDER FLOW</button>
+            <button class="nav-btn" onclick="switchTab('macro')">📡 MACRO</button>
+            <a href="/cockpit.html" class="nav-btn" style="background:linear-gradient(135deg, rgba(0, 229, 255, 0.15), rgba(0, 140, 255, 0.15)); border:1px solid var(--accent-cyan); color:#FFF; text-decoration:none; display:inline-flex; align-items:center; gap:4px;">✈️ COCKPIT</a>
+            <a href="/cinema.html" class="nav-btn" style="background:linear-gradient(135deg, rgba(245, 158, 11, 0.18), rgba(225, 29, 72, 0.18)); border:1px solid var(--accent-gold); color:#FFF; text-decoration:none; display:inline-flex; align-items:center; gap:4px;">🎬 CINEMA</a>
+            <a href="/fractals.html" class="nav-btn" style="background:linear-gradient(135deg, rgba(168, 85, 247, 0.2), rgba(6, 182, 212, 0.2)); border:1px solid #a855f7; color:#FFF; text-decoration:none; display:inline-flex; align-items:center; gap:4px;">🧩 GHOST</a>
+            <a href="/matrix.html" class="nav-btn" style="background:linear-gradient(135deg, rgba(0, 229, 255, 0.2), rgba(16, 185, 129, 0.2)); border:1px solid var(--accent-cyan); color:#FFF; text-decoration:none; display:inline-flex; align-items:center; gap:4px;">⚡ MATRIX</a>
+            <a href="/mazrion.html" class="nav-btn" style="background:linear-gradient(135deg, #A855F7, #7C3AED, #00E5FF); border:1px solid #C084FC; color:#FFF; text-decoration:none; display:inline-flex; align-items:center; gap:4px; font-weight:800;">🔮 AI</a>
         </div>
 
-        <!-- Live Tickers -->
-        <div style="display:flex; align-items:center; gap:16px; font-family:'JetBrains Mono', monospace; font-size:12px;">
+        <!-- Live Tickers (Pinned Right) -->
+        <div style="display:flex; align-items:center; gap:12px; font-family:'JetBrains Mono', monospace; font-size:11px; background:rgba(0,0,0,0.3); padding:4px 10px; border-radius:6px; border:1px solid var(--border-color);">
             <div style="display:flex; align-items:center;">
                 <span class="live-dot"></span>
-                <span style="color:var(--text-muted); margin-right:6px;">LIVE BID:</span>
-                <span id="hdr-bid" style="font-weight:800; color:var(--accent-green);">$4473.50</span>
+                <span style="color:var(--text-muted); margin-right:4px;">BID:</span>
+                <span id="hdr-bid" style="font-weight:800; color:var(--accent-green);">$4410.55</span>
             </div>
             <div style="display:flex; align-items:center;">
-                <span style="color:var(--text-muted); margin-right:6px;">ASK:</span>
-                <span id="hdr-ask" style="font-weight:800; color:var(--accent-red);">$4474.04</span>
+                <span style="color:var(--text-muted); margin-right:4px;">ASK:</span>
+                <span id="hdr-ask" style="font-weight:800; color:var(--accent-red);">$4411.06</span>
             </div>
             <div style="display:flex; align-items:center;">
-                <span style="color:var(--text-muted); margin-right:6px;">SPREAD:</span>
-                <span id="hdr-spread" style="font-weight:700; color:var(--accent-gold);">5.4 PTS</span>
+                <span style="color:var(--text-muted); margin-right:4px;">SPREAD:</span>
+                <span id="hdr-spread" style="font-weight:700; color:var(--accent-gold);">5.1 PTS</span>
             </div>
         </div>
     </header>
