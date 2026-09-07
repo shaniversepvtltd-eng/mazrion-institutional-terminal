@@ -442,17 +442,29 @@ export default async function handler(req, res) {
         const eq50 = parseFloat(((high + low) / 2.0).toFixed(pointPrecision));
         const rangePosPct = Math.min(100, Math.max(0, Math.round(((p - low) / (range || 1)) * 100)));
 
-        let activeStageNum = 2;
-        let activeStage = "";
-        let stageCls = "";
-        let stageBadge = "";
-        let stageDesc = "";
-        let exhaustionStatus = "";
-        let trafficStatus = "YELLOW";
-        let trafficBadge = "";
-        let trafficInstruction = "";
+        const isMacroSweepReroute = (p < active4hLow);
+        const highwayMode = isMacroSweepReroute ? "REROUTED_MACRO_SWEEP" : "PRIMARY_CONTINUATION";
+        const highwayRouteTitle = isMacroSweepReroute
+            ? "🚨 HIGHWAY REROUTED: SCENARIO B (MACRO LIQUIDITY SWEEP)"
+            : "🛣️ ACTIVE HIGHWAY: PRIMARY BULLISH CONTINUATION ($4,381.24 ➔ $4,512.33)";
+        const highwayRouteDesc = isMacroSweepReroute
+            ? `⚠️ Active Weekly Floor ($4,381.24) Breached. Path Rerouted: Institutions hunting $4,363.16 – $4,365.00 Sell-Side Liquidity (SSL) Pool before multi-week rally to $4,697.99.`
+            : `Active Weekly Trading Highway: $4,381.24 (Floor Defended) ➔ $4,512.33 (4H BSL Ceiling). Navigating 4-Lap expansion.`;
+        const highwayRouteBadge = isMacroSweepReroute
+            ? "🔴 PATH CHANGED: $4,365 SWEEP ACTIVE"
+            : "🟢 ROUTE A: 4-LAP EXPANSION ACTIVE";
 
-        if (rangePosPct <= 35) {
+        if (isMacroSweepReroute) {
+            activeStageNum = 4;
+            activeStage = "BIAS DISCREPANCY: HIGHWAY PATH CHANGED (STAND DOWN FOR $4,365 SWEEP)";
+            stageCls = "stage-reversal";
+            stageBadge = "🔴 BIAS DISCREPANCY: REROUTED TO $4,365 SWEEP";
+            stageDesc = `Active Highway floor ($4,381.24) invalidated. Live price ($${p.toFixed(pointPrecision)}) is in Path Change Mode: Institutions are executing a deep sweep of the $4,363.16 – $4,365.00 liquidity pool. Suspend all counter-trend buys until sweep completes.`;
+            exhaustionStatus = "🚨 PATH CHANGED: MACRO SWEEP IN PROGRESS";
+            trafficStatus = "RED";
+            trafficBadge = "🔴 BIAS DISCREPANCY: DO NOT BUY (PATH REROUTED TO $4,365 SWEEP)";
+            trafficInstruction = "Active $4,381.24 floor broken. Cancel resting buys. Stand down on longs until rejection wick prints in the $4,363 – $4,365 macro sweep box.";
+        } else if (rangePosPct <= 35) {
             activeStageNum = 1;
             activeStage = `STAGE 1: WHOLESALE DISCOUNT POI (Rest Limit Orders)`;
             stageCls = "stage-primary";
@@ -512,6 +524,10 @@ export default async function handler(req, res) {
             timeframe: tfKey,
             tf_label: conf.tfLabel,
             trade_type: conf.tradeType,
+            highway_mode: highwayMode,
+            highway_route_title: highwayRouteTitle,
+            highway_route_desc: highwayRouteDesc,
+            highway_route_badge: highwayRouteBadge,
             hold_duration: conf.holdDuration,
             cycle_desc: conf.cycleDesc,
             wave_counter_text: waveCounterText,

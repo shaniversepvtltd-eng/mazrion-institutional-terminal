@@ -760,17 +760,34 @@
             const waveRange = activeWaveHigh - activeWaveLow;
             const wavePct = Math.min(100, Math.max(0, Math.round(((livePrice - activeWaveLow) / (waveRange || 1)) * 100)));
 
-            // 1. Update 4H Highway Header
-            const hwRange = active4hHigh - active4hLow;
-            const hwPct = Math.min(100, Math.max(0, Math.round(((livePrice - active4hLow) / hwRange) * 100)));
-            document.getElementById('highway-pct-text').innerText = `${hwPct}% COMPLETED`;
-            document.getElementById('highway-progress-fill').style.width = `${hwPct}%`;
+            // 1. Update 4H Highway Header & Real-Time Path Change Monitor
+            const hwTitleEl = document.querySelector('.highway-title-box h2');
+            const hwDescEl = document.getElementById('highway-desc');
+            
+            if (livePrice < active4hLow) {
+                // SCENARIO B: PATH CHANGE / MACRO SWEEP TRIGGERED!
+                if (hwTitleEl) hwTitleEl.innerHTML = `🚨 HIGHWAY REROUTED: SCENARIO B (MACRO LIQUIDITY SWEEP)`;
+                if (hwDescEl) hwDescEl.innerHTML = `⚠️ <strong style="color:var(--red-glow);">PATH CHANGED:</strong> Active Floor ($4,381.24) Breached. Smart Money is executing a <strong>Macro Liquidity Sweep to $4,363.16 – $4,365.00</strong> before multi-week rally to $4,697.99. Suspend counter-trend buys!`;
+                document.getElementById('highway-lap-text').innerText = `🚨 MACRO SWEEP IN PROGRESS`;
+                document.getElementById('highway-pct-text').innerText = `REROUTED TO $4,365 SWEEP`;
+                document.getElementById('highway-progress-fill').style.width = `100%`;
+                document.getElementById('highway-progress-fill').style.background = 'linear-gradient(90deg, #EF4444, #F59E0B)';
+            } else {
+                // SCENARIO A: PRIMARY CONTINUATION
+                const hwRange = active4hHigh - active4hLow;
+                const hwPct = Math.min(100, Math.max(0, Math.round(((livePrice - active4hLow) / hwRange) * 100)));
+                if (hwTitleEl) hwTitleEl.innerHTML = `🛣️ 4-HOUR ACTIVE HIGHWAY MISSION CONTROL`;
+                if (hwDescEl) hwDescEl.innerHTML = `Master Weekly Roadmap: <strong>$4,381.24</strong> (Session Floor Defended) ➔ <strong>$4,512.33</strong> (4H BSL Ceiling). Total Highway Range: <strong>$131.09</strong>.`;
+                document.getElementById('highway-pct-text').innerText = `${hwPct}% COMPLETED`;
+                document.getElementById('highway-progress-fill').style.width = `${hwPct}%`;
+                document.getElementById('highway-progress-fill').style.background = 'linear-gradient(90deg, var(--cyan-glow), var(--green-glow))';
 
-            let currentLap = 1;
-            if (livePrice >= 4414 && livePrice < 4454) currentLap = 2;
-            else if (livePrice >= 4454 && livePrice < 4491) currentLap = 3;
-            else if (livePrice >= 4491) currentLap = 4;
-            document.getElementById('highway-lap-text').innerText = `LAP ${currentLap} OF 4 ACTIVE`;
+                let currentLap = 1;
+                if (livePrice >= 4414 && livePrice < 4454) currentLap = 2;
+                else if (livePrice >= 4454 && livePrice < 4491) currentLap = 3;
+                else if (livePrice >= 4491) currentLap = 4;
+                document.getElementById('highway-lap-text').innerText = `LAP ${currentLap} OF 4 ACTIVE`;
+            }
 
             // 2. Scoreboard
             document.getElementById('score-total').innerText = `${spec.total}`;
