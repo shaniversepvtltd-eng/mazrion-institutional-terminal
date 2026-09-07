@@ -349,7 +349,7 @@ export default async function handler(req, res) {
                         dynamicR2 = parseFloat((dynamicPearsonR * dynamicPearsonR).toFixed(3));
                     }
 
-                    // 3. Asynchronously Upsert back into Supabase for permanent persistence
+                    // 3. Asynchronously Upsert back into Supabase for permanent real-time memory persistence
                     fetch(`${SUPABASE_URL}/rest/v1/market_fractal_pivots`, {
                         method: "POST",
                         headers: {
@@ -363,7 +363,11 @@ export default async function handler(req, res) {
                             symbol: symBinance,
                             anchor_low: tfConfigs[selectedTf].anchorLow,
                             anchor_high: tfConfigs[selectedTf].anchorHigh,
+                            highest_peak_reached: highest > 0 ? parseFloat(highest.toFixed(pointPrecision)) : 4448.74,
+                            lowest_retest_floor: lowest > 0 ? parseFloat(lowest.toFixed(pointPrecision)) : 4395.12,
                             last_sweep_price: p,
+                            active_wave_num: selectedTf === '15m' ? 2 : (selectedTf === '4h' ? 2 : 1),
+                            highway_mode: p < active4hLow ? "REROUTED_MACRO_SWEEP" : "PRIMARY_CONTINUATION",
                             cycle_pct: Math.round(((p - tfConfigs[selectedTf].anchorLow) / (tfConfigs[selectedTf].anchorHigh - tfConfigs[selectedTf].anchorLow || 1)) * 100),
                             updated_at: new Date().toISOString()
                         })
