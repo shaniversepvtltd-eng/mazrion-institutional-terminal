@@ -727,17 +727,17 @@
         let selectedTf = '1m';
         const active4hLow = 4381.24;
         const active4hHigh = 4512.33;
-        const macroHighwayLow = 4363.16;
-        const macroHighwayHigh = 4697.99;
+        const activeRetestLow = 4395.12;
+        const activeWave1High = 4448.74;
 
         const tfWaveSpecs = {
-            "1m": { name: "1-MINUTE (1M)", step: 7.50, total: 18, baseLow: active4hLow, baseHigh: active4hHigh, slOffset: 1.70, tp1Offset: 3.20 },
-            "5m": { name: "5-MINUTE (5M)", step: 16.00, total: 9, baseLow: active4hLow, baseHigh: active4hHigh, slOffset: 6.50, tp1Offset: 7.00 },
-            "15m": { name: "15-MINUTE (15M)", step: 32.00, total: 4, baseLow: active4hLow, baseHigh: active4hHigh, slOffset: 10.50, tp1Offset: 12.00 },
-            "1h": { name: "1-HOUR (1H)", step: 65.00, total: 2, baseLow: active4hLow, baseHigh: active4hHigh, slOffset: 14.00, tp1Offset: 18.00 },
-            "4h": { name: "4-HOUR (4H)", step: 32.77, total: 4, baseLow: active4hLow, baseHigh: active4hHigh, slOffset: 16.50, tp1Offset: 24.00 },
-            "1d": { name: "DAILY (1D)", step: 111.61, total: 3, baseLow: macroHighwayLow, baseHigh: macroHighwayHigh, slOffset: 45.00, tp1Offset: 65.00 },
-            "1w": { name: "WEEKLY (1W)", step: 83.70, total: 4, baseLow: macroHighwayLow, baseHigh: macroHighwayHigh, slOffset: 66.00, tp1Offset: 120.00 }
+            "1m": { name: "1-MINUTE (1M)", step: 7.50, total: 18, baseLow: active4hLow, baseHigh: active4hHigh, slOffset: 1.70, tp1Offset: 3.20, activeWaveOverride: 5 },
+            "5m": { name: "5-MINUTE (5M)", step: 16.00, total: 9, baseLow: active4hLow, baseHigh: active4hHigh, slOffset: 6.50, tp1Offset: 7.00, activeWaveOverride: 2 },
+            "15m": { name: "15-MINUTE (15M)", step: 32.00, total: 4, baseLow: active4hLow, baseHigh: active4hHigh, slOffset: 10.50, tp1Offset: 12.00, activeWaveOverride: 2 },
+            "1h": { name: "1-HOUR (1H)", step: 65.00, total: 2, baseLow: active4hLow, baseHigh: active4hHigh, slOffset: 14.00, tp1Offset: 18.00, activeWaveOverride: 1 },
+            "4h": { name: "4-HOUR (4H)", step: 32.77, total: 4, baseLow: active4hLow, baseHigh: active4hHigh, slOffset: 16.50, tp1Offset: 24.00, activeWaveOverride: 2 },
+            "1d": { name: "DAILY (1D)", step: 111.61, total: 3, baseLow: macroHighwayLow, baseHigh: macroHighwayHigh, slOffset: 45.00, tp1Offset: 65.00, activeWaveOverride: 1 },
+            "1w": { name: "WEEKLY (1W)", step: 83.70, total: 4, baseLow: macroHighwayLow, baseHigh: macroHighwayHigh, slOffset: 66.00, tp1Offset: 120.00, activeWaveOverride: 1 }
         };
 
         function switchTimeframe(tf) {
@@ -751,9 +751,8 @@
 
         function renderMatrixHUD() {
             const spec = tfWaveSpecs[selectedTf];
-            const distance = Math.max(0, livePrice - spec.baseLow);
-            const resetsDone = Math.min(spec.total - 1, Math.floor(distance / spec.step));
-            const activeWaveNum = resetsDone + 1;
+            const activeWaveNum = spec.activeWaveOverride || (Math.min(spec.total - 1, Math.floor(Math.max(0, livePrice - spec.baseLow) / spec.step)) + 1);
+            const resetsDone = activeWaveNum - 1;
 
             const activeWaveLow = parseFloat((spec.baseLow + (resetsDone * spec.step)).toFixed(2));
             const activeWaveHigh = parseFloat(Math.min(spec.baseHigh, activeWaveLow + spec.step).toFixed(2));
