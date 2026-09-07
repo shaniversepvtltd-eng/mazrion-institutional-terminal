@@ -48,46 +48,74 @@ export default async function handler(req, res) {
     }
     const p = parseFloat(currentPrice.toFixed(pointPrecision));
 
-    // ==================== MASTER HIGHWAY (4-LAP ARCHITECTURE) ====================
-    const macroHighwayLow = 4363.158;
-    const macroHighwayHigh = 4697.993;
+    // ==================== 4H ACTIVE HIGHWAY & MACRO SUPER-HIGHWAY ====================
+    // 1. Active Weekly Trading Highway (The Trade Road):
+    const active4hLow = 4381.24;
+    const active4hHigh = 4512.33;
+    const active4hRange = active4hHigh - active4hLow; // $131.09 total journey
+    const active4hProgressPct = Math.min(100, Math.max(0, Math.round(((p - active4hLow) / (active4hRange || 1)) * 100)));
+
+    // 2. Grand Macro Super-Highway (1W/Monthly Bull Run):
+    const macroHighwayLow = 4363.16;
+    const macroHighwayHigh = 4697.99;
     const macroHighwayRange = macroHighwayHigh - macroHighwayLow;
     const macroHighwayProgressPct = Math.min(100, Math.max(0, Math.round(((p - macroHighwayLow) / (macroHighwayRange || 1)) * 100)));
 
-    const lap2Progress = Math.min(100, Math.max(0, Math.round(((p - 4413.99) / (4510.00 - 4413.99)) * 100)));
+    // 4H Highway Laps Calculation:
+    let activeLap = 2;
+    let lapsRemaining = 2;
+    let lapProgress = 35;
+    if (p < 4414.00) {
+        activeLap = 1;
+        lapsRemaining = 3;
+        lapProgress = Math.min(100, Math.max(0, Math.round(((p - 4381.24) / (4414.00 - 4381.24)) * 100)));
+    } else if (p < 4454.00) {
+        activeLap = 2;
+        lapsRemaining = 2;
+        lapProgress = Math.min(100, Math.max(0, Math.round(((p - 4414.00) / (4454.00 - 4414.00)) * 100)));
+    } else if (p < 4491.00) {
+        activeLap = 3;
+        lapsRemaining = 1;
+        lapProgress = Math.min(100, Math.max(0, Math.round(((p - 4454.00) / (4491.00 - 4454.00)) * 100)));
+    } else {
+        activeLap = 4;
+        lapsRemaining = 0;
+        lapProgress = Math.min(100, Math.max(0, Math.round(((p - 4491.00) / (4512.33 - 4491.00)) * 100)));
+    }
+
     const macroLaps = [
         {
             lap: 1,
-            title: "Lap 1: Ignition Sweep & Base Recovery",
-            range: "$4,363.16 ➔ $4,490.89",
-            status: "COMPLETED ✅",
-            is_active: false,
-            desc: "Defended $4,363 sweep floor, expanded +$127 to Friday high ($4,490.89)."
+            title: "Lap 1: Ignition Sweep & Wholesale Reclaim",
+            range: "$4,381.24 ➔ $4,414.00",
+            status: activeLap > 1 ? "COMPLETED ✅" : `ACTIVE 🟢 (${lapProgress}%)`,
+            is_active: activeLap === 1,
+            desc: "Defended $4,381.24 session low floor and reclaimed $4,395 wholesale discount."
         },
         {
             lap: 2,
-            title: "Lap 2: Friday Retest & 4H BOS Continuation",
-            range: "$4,413.99 ➔ $4,510.00",
-            status: `ACTIVE 🟢 (${lap2Progress}% Done)`,
-            is_active: true,
-            progress_pct: lap2Progress,
-            desc: "Bounced off $4,413.99 wholesale floor. Currently navigating to $4,510 extension."
+            title: "Lap 2: Intraday Momentum & BOS Continuation",
+            range: "$4,414.00 ➔ $4,454.00",
+            status: activeLap === 2 ? `ACTIVE 🟢 (${lapProgress}%)` : (activeLap > 2 ? "COMPLETED ✅" : "UPCOMING ⏳"),
+            is_active: activeLap === 2,
+            progress_pct: lapProgress,
+            desc: "Expanding above $4,414 wholesale baseline heading toward $4,454 Buy-Side Liquidity."
         },
         {
             lap: 3,
-            title: "Lap 3: 50% Fair Value & Equilibrium Expansion",
-            range: "$4,480.00 ➔ $4,580.00",
-            status: "UPCOMING ⏳",
-            is_active: false,
-            desc: "Wholesale equilibrium retest and breakout through $4,500 psychological barrier."
+            title: "Lap 3: 50% Equilibrium & BSL Pool Infiltration",
+            range: "$4,454.00 ➔ $4,491.00",
+            status: activeLap === 3 ? `ACTIVE 🟢 (${lapProgress}%)` : (activeLap > 3 ? "COMPLETED ✅" : "UPCOMING ⏳"),
+            is_active: activeLap === 3,
+            desc: "Breaking Friday high ($4,490.89) to trigger macro institutional stop runs."
         },
         {
             lap: 4,
-            title: "Lap 4: August High Liquidity Sweep & Highway Peak",
-            range: "$4,550.00 ➔ $4,697.99",
-            status: "FINAL DESTINATION 🏆",
-            is_active: false,
-            desc: "Final parabolic wave to harvest buy-side liquidity pool at $4,697.99."
+            title: "Lap 4: Final 4H BSL Ceiling Sweep (Highway Peak)",
+            range: "$4,491.00 ➔ $4,512.33",
+            status: activeLap === 4 ? `ACTIVE 🟢 (${lapProgress}%)` : "FINAL DESTINATION 🏆",
+            is_active: activeLap === 4,
+            desc: "Harvesting the primary 4H buy-side liquidity pool at $4,512.33."
         }
     ];
 
@@ -101,39 +129,54 @@ export default async function handler(req, res) {
     // 5M: Micro Momentum Pivot $4418.00, Momentum Target $4444.00
     // 1M: Micro CHoCH Reversal Low $4424.15, Micro Range High $4439.85
 
+    // ==================== TIME FRAME FRACTAL STRUCTURE CONFIG ====================
+    // Mapped directly from confirmed institutional price structure:
+    // 1W/1M: Grand Macro Super-Highway Peak $4697.99 - $5000.00 (Multi-Month Macro Trend)
+    // 1D: Daily Liquidity Sweep Base $4363.16 ➔ $4580.00 50% Equilibrium Target
+    // 4H: Active Master Trading Highway: Sweep Floor $4381.24 ➔ Friday Ceiling $4512.33
+    // 1H: Intraday Wholesale Equilibrium: $4381.24 ➔ $4454.00 BSL Pool
+    // 15M: Session Demand Wave: $4390.00 ➔ $4425.00 Session Expansion
+    // 5M: Fast Momentum Scalp: $4392.00 ➔ $4408.00 (+16.00 Wave Reset)
+    // 1M: Sniper Micro Scalp: Dynamic (+$6.00 to +$8.00 Micro Wave Reset)
+
+    // Dynamic Micro-Wave Anchor Calculation for Scalping Timeframes
+    const micro1mBase = Math.floor(p / 7.0) * 7.0;
+    const micro5mBase = Math.floor(p / 16.0) * 16.0;
+    const micro15mBase = Math.floor(p / 30.0) * 30.0;
+
     const tfConfigs = {
         "1m": {
             tfLabel: "1-MINUTE (1M)",
-            tradeType: "⚡ SNIPER SCALP",
-            holdDuration: "15 – 30 Minutes",
-            currentLap: "Lap 1 of 2 (Micro-CHoCH Trigger)",
+            tradeType: "⚡ SNIPER SCALP (MICRO-GEAR)",
+            holdDuration: "5 – 15 Minutes",
+            currentLap: "Micro-Sprint Wave (Auto-Resetting)",
             lapsRemaining: 1,
-            lapSummary: "Micro-expansion leg toward range high",
-            anchorLow: parseFloat((p - 7.50).toFixed(pointPrecision)),
-            anchorHigh: parseFloat((p + 8.20).toFixed(pointPrecision)),
-            pullbackOffset: 3.50,
-            slOffset: 6.80,
-            tp1Offset: 6.00,
-            tp2Offset: 8.20,
-            cycleDesc: "1M Micro-CHoCH Trigger",
+            lapSummary: "Rapid micro-wave scalp cycle (+ $6.00 to $8.00 target)",
+            anchorLow: parseFloat(micro1mBase.toFixed(pointPrecision)),
+            anchorHigh: parseFloat((micro1mBase + 7.50).toFixed(pointPrecision)),
+            pullbackOffset: 1.80,
+            slOffset: 3.50,
+            tp1Offset: 3.00,
+            tp2Offset: 5.50,
+            cycleDesc: "1M Micro-CHoCH Rapid Scalp Cycle",
             targetName: "1M Micro Range High",
             lotSize: "0.01 – 0.03 LOTS"
         },
         "5m": {
             tfLabel: "5-MINUTE (5M)",
             tradeType: "⚡ FAST MOMENTUM SCALP",
-            holdDuration: "30 – 60 Minutes",
-            currentLap: "Lap 2 of 3 (Session Momentum Continuation)",
+            holdDuration: "15 – 45 Minutes",
+            currentLap: "Lap 1 of 2 (Fast Momentum Push)",
             lapsRemaining: 1,
-            lapSummary: "Post-pullback expansion toward $4,444 High",
-            anchorLow: 4418.00,
-            anchorHigh: 4444.00,
-            pullbackOffset: 5.00,
-            slOffset: 9.50,
-            tp1Offset: 10.00,
-            tp2Offset: 14.17,
-            cycleDesc: "5M Momentum Continuation",
-            targetName: "5M Liquidity High",
+            lapSummary: "Intraday momentum leg (+ $16.00 wave target)",
+            anchorLow: parseFloat(micro5mBase.toFixed(pointPrecision)),
+            anchorHigh: parseFloat((micro5mBase + 16.00).toFixed(pointPrecision)),
+            pullbackOffset: 3.50,
+            slOffset: 6.50,
+            tp1Offset: 7.00,
+            tp2Offset: 12.50,
+            cycleDesc: "5M Fast Momentum Expansion",
+            targetName: "5M Liquidity Pivot High",
             lotSize: "0.01 – 0.02 LOTS"
         },
         "15m": {
@@ -142,15 +185,15 @@ export default async function handler(req, res) {
             holdDuration: "1 – 3 Hours",
             currentLap: "Lap 2 of 3 (Session Demand Expansion)",
             lapsRemaining: 1,
-            lapSummary: "Green demand box defense expanding toward $4,448 Session High",
-            anchorLow: 4416.00,
-            anchorHigh: 4448.00,
-            pullbackOffset: 7.20,
-            slOffset: 13.84,
-            tp1Offset: 14.00,
-            tp2Offset: 18.17,
-            cycleDesc: "15M Green Demand Box Defense",
-            targetName: "15M Session High",
+            lapSummary: "Session demand box expansion (+ $30.00 wave target)",
+            anchorLow: parseFloat(micro15mBase.toFixed(pointPrecision)),
+            anchorHigh: parseFloat((micro15mBase + 30.00).toFixed(pointPrecision)),
+            pullbackOffset: 5.50,
+            slOffset: 10.50,
+            tp1Offset: 12.00,
+            tp2Offset: 22.00,
+            cycleDesc: "15M Session Demand Expansion",
+            targetName: "15M Session High Target",
             lotSize: "0.01 LOTS"
         },
         "1h": {
@@ -159,32 +202,32 @@ export default async function handler(req, res) {
             holdDuration: "4 – 8 Hours",
             currentLap: "Lap 2 of 3 (Intraday Equilibrium Wave)",
             lapsRemaining: 1,
-            lapSummary: "Equilibrium expansion toward $4,454 Buy-Side Liquidity",
-            anchorLow: 4413.99,
+            lapSummary: "Intraday equilibrium wave targeting $4,454.00 BSL Pool",
+            anchorLow: 4381.24,
             anchorHigh: 4454.00,
-            pullbackOffset: 9.50,
-            slOffset: 15.84,
+            pullbackOffset: 8.00,
+            slOffset: 14.00,
             tp1Offset: 18.00,
-            tp2Offset: 24.17,
+            tp2Offset: 35.00,
             cycleDesc: "1H Wholesale Equilibrium Expansion",
             targetName: "1H Buy-Side Liquidity Pool",
             lotSize: "0.01 LOTS"
         },
         "4h": {
             tfLabel: "4-HOUR (4H)",
-            tradeType: "🛡️ STRUCTURAL SWING (MASTER)",
-            holdDuration: "1 – 2 Days",
-            currentLap: "Lap 2 of 4 (Friday Retest & BOS Wave)",
+            tradeType: "🛡️ ACTIVE TRADE HIGHWAY (MASTER)",
+            holdDuration: "1 – 4 Days",
+            currentLap: "Lap 2 of 4 (Friday Retest & BOS Expansion)",
             lapsRemaining: 2,
-            lapSummary: "4H structural wave navigating toward $4,510 extension",
-            anchorLow: 4413.99,
-            anchorHigh: 4490.89,
+            lapSummary: "Active Weekly Trading Highway: $4,381.24 Floor ➔ $4,512.33 BSL Ceiling",
+            anchorLow: 4381.24,
+            anchorHigh: 4512.33,
             pullbackOffset: 10.00,
-            slOffset: 18.50,
-            tp1Offset: 24.36,
-            tp2Offset: 61.06,
-            cycleDesc: "4H Bullish BOS Continuation Wave",
-            targetName: "4H BSL Liquidity Pool",
+            slOffset: 16.50,
+            tp1Offset: 24.00,
+            tp2Offset: 80.00,
+            cycleDesc: "4H Active Weekly Highway Wave",
+            targetName: "4H BSL Liquidity Pool ($4,512.33)",
             lotSize: "0.01 LOTS"
         },
         "1d": {
@@ -193,32 +236,32 @@ export default async function handler(req, res) {
             holdDuration: "3 – 7 Days",
             currentLap: "Lap 2 of 3 (Liquidity Sweep Mean-Reversion)",
             lapsRemaining: 1,
-            lapSummary: "Daily recovery wave heading to $4,580 50% Equilibrium",
+            lapSummary: "Daily macro recovery wave heading to $4,580.00 (50% Equilibrium)",
             anchorLow: 4363.16,
             anchorHigh: 4580.00,
-            pullbackOffset: 22.00,
-            slOffset: 51.83,
+            pullbackOffset: 20.00,
+            slOffset: 45.00,
             tp1Offset: 65.00,
-            tp2Offset: 150.17,
+            tp2Offset: 140.00,
             cycleDesc: "Daily Liquidity Sweep Mean-Reversion",
-            targetName: "50% Drop Equilibrium Target",
+            targetName: "50% Drop Equilibrium Target ($4,580.00)",
             lotSize: "0.01 LOTS"
         },
         "1w": {
-            tfLabel: "WEEKLY (1W)",
-            tradeType: "👑 MACRO POSITION SWING",
-            holdDuration: "2 – 6 Weeks",
-            currentLap: "Lap 1 of 3 (Macro Re-Accumulation Cycle)",
-            lapsRemaining: 2,
-            lapSummary: "Multi-week accumulation wave targeting $4,697.99 Peak",
+            tfLabel: "WEEKLY / MONTHLY (1W)",
+            tradeType: "👑 GRAND MACRO SUPER-HIGHWAY",
+            holdDuration: "1 – 3 Months",
+            currentLap: "Lap 1 of 4 (Macro Institutional Bull Super-Highway)",
+            lapsRemaining: 3,
+            lapSummary: "Grand Macro Super-Highway navigating from $4,363.16 base ➔ $4,697.99 August Peak ➔ $5,000.00 Target",
             anchorLow: 4363.16,
             anchorHigh: 4697.99,
             pullbackOffset: 35.00,
-            slOffset: 66.68,
+            slOffset: 66.00,
             tp1Offset: 120.00,
-            tp2Offset: 268.16,
-            cycleDesc: "Major August Cycle Retracement & Re-accumulation",
-            targetName: "August Cycle Swing High ($4,697.99)",
+            tp2Offset: 300.00,
+            cycleDesc: "Grand Macro Super-Highway Accumulation Wave",
+            targetName: "Grand Macro Super-Highway Peak ($4,697.99 – $5,000)",
             lotSize: "0.01 LOTS"
         }
     };
@@ -333,8 +376,63 @@ export default async function handler(req, res) {
     // Helper to generate a full radar object for any timeframe
     function buildRadarForTimeframe(tfKey) {
         const conf = tfConfigs[tfKey] || tfConfigs["4h"];
+
+        // Calculate nested sub-wave metrics:
+        // 1M, 5M, 15M, 1H track along Active 4H Highway ($4,381.24 -> $4,512.33)
+        // 1D tracks along Grand Macro Super-Highway ($4,363.16 -> $4,697.99)
+        const stepMap = {
+            "1m": 7.50,
+            "5m": 16.00,
+            "15m": 32.00,
+            "1h": 65.00,
+            "4h": active4hRange,
+            "1d": 111.61, // 3 Daily Waves on $334.83 Grand Super-Highway
+            "1w": macroHighwayRange
+        };
+        const waveStep = stepMap[tfKey] || 16.00;
+        
+        let totalWaves = 1;
+        let resetsCompleted = 0;
+        let currentWaveNum = 1;
+        let waveCounterText = "";
         let low = conf.anchorLow;
         let high = conf.anchorHigh;
+
+        if (tfKey === "1m" || tfKey === "5m" || tfKey === "15m" || tfKey === "1h") {
+            totalWaves = Math.max(1, Math.ceil(active4hRange / waveStep));
+            const distanceTraversed = Math.max(0, p - active4hLow);
+            resetsCompleted = Math.min(totalWaves - 1, Math.floor(distanceTraversed / waveStep));
+            currentWaveNum = resetsCompleted + 1;
+            low = parseFloat((active4hLow + (resetsCompleted * waveStep)).toFixed(pointPrecision));
+            high = parseFloat(Math.min(active4hHigh, low + waveStep).toFixed(pointPrecision));
+            waveCounterText = `Wave #${currentWaveNum} of ${totalWaves} (${resetsCompleted} Resets Done on 4H Highway)`;
+        } else if (tfKey === "1d") {
+            totalWaves = 3; // 3 Daily Waves to $4,697.99 Peak
+            const distanceTraversed = Math.max(0, p - macroHighwayLow);
+            resetsCompleted = Math.min(2, Math.floor(distanceTraversed / 111.61));
+            currentWaveNum = resetsCompleted + 1;
+            low = parseFloat((macroHighwayLow + (resetsCompleted * 111.61)).toFixed(pointPrecision));
+            high = parseFloat(Math.min(macroHighwayHigh, low + 111.61).toFixed(pointPrecision));
+            waveCounterText = `Daily Wave #${currentWaveNum} of 3 (${resetsCompleted} Resets Done on Grand Super-Highway)`;
+        } else if (tfKey === "4h") {
+            totalWaves = 4; // 4 Laps on Active 4H Highway
+            const step4h = 32.77;
+            const distanceTraversed = Math.max(0, p - active4hLow);
+            resetsCompleted = Math.min(3, Math.floor(distanceTraversed / step4h));
+            currentWaveNum = resetsCompleted + 1;
+            low = parseFloat((active4hLow + (resetsCompleted * step4h)).toFixed(pointPrecision));
+            high = parseFloat(Math.min(active4hHigh, low + step4h).toFixed(pointPrecision));
+            waveCounterText = `Active 4H Highway • Lap ${currentWaveNum} of 4 (${resetsCompleted} Laps Completed)`;
+        } else { // 1w / Monthly
+            totalWaves = 4;
+            const step1w = 83.70;
+            const distanceTraversed = Math.max(0, p - macroHighwayLow);
+            resetsCompleted = Math.min(3, Math.floor(distanceTraversed / step1w));
+            currentWaveNum = resetsCompleted + 1;
+            low = parseFloat((macroHighwayLow + (resetsCompleted * step1w)).toFixed(pointPrecision));
+            high = parseFloat(Math.min(macroHighwayHigh, low + step1w).toFixed(pointPrecision));
+            waveCounterText = `Grand Macro Super-Highway • Lap ${currentWaveNum} of 4 (${resetsCompleted} Laps Completed)`;
+        }
 
         // Auto-adjust bounds if live price moves outside
         if (p < low) low = parseFloat((p - conf.pullbackOffset).toFixed(pointPrecision));
@@ -359,7 +457,7 @@ export default async function handler(req, res) {
             activeStage = `STAGE 1: WHOLESALE DISCOUNT POI (Rest Limit Orders)`;
             stageCls = "stage-primary";
             stageBadge = `🟢 STAGE 1: WHOLESALE DISCOUNT POI (${conf.tradeType})`;
-            stageDesc = `Live Price ($${p.toFixed(pointPrecision)}) is in DEEP WHOLESALE DISCOUNT (${rangePosPct}% of ${conf.tfLabel} range). Institutions are hunting the $${low.toFixed(pointPrecision)} floor. Rest Buy Limit orders; DO NOT market-buy falling knives.`;
+            stageDesc = `Live Price ($${p.toFixed(pointPrecision)}) is in DEEP WHOLESALE DISCOUNT (${rangePosPct}% of Wave #${currentWaveNum}). Institutions are hunting the $${low.toFixed(pointPrecision)} floor. Rest Buy Limit orders; DO NOT market-buy falling knives.`;
             exhaustionStatus = `✅ WHOLESALE DISCOUNT (Rest Limit Orders @ $${low.toFixed(pointPrecision)})`;
             trafficStatus = "GREEN";
             trafficBadge = `🟢 WHOLESALE POI: REST BUY LIMIT @ $${low.toFixed(pointPrecision)} (DO NOT CHASE FALLING CANDLES)`;
@@ -369,8 +467,8 @@ export default async function handler(req, res) {
             activeStage = `STAGE 2: ON THE MOVE (Safe to Hold)`;
             stageCls = "stage-continuation";
             stageBadge = `🔵 STAGE 2: ON THE MOVE (${conf.tradeType})`;
-            stageDesc = `Retest DEFENDED @ $${low.toFixed(pointPrecision)}. Live Price ($${p.toFixed(pointPrecision)}) is halfway (${rangePosPct}%) through the move. 68% chance of secondary micro-sweep before continuing to $${high.toFixed(pointPrecision)}.`;
-            exhaustionStatus = `✅ MID-CYCLE EXPANSION (${100 - rangePosPct}% Fuel Left to $${high.toFixed(pointPrecision)})`;
+            stageDesc = `Retest DEFENDED @ $${low.toFixed(pointPrecision)}. Live Price ($${p.toFixed(pointPrecision)}) is halfway (${rangePosPct}%) through Wave #${currentWaveNum}. 68% chance of secondary micro-sweep before continuing to $${high.toFixed(pointPrecision)}.`;
+            exhaustionStatus = `✅ MID-CYCLE EXPANSION (${100 - rangePosPct}% Fuel Left in Wave #${currentWaveNum})`;
             trafficStatus = "YELLOW";
             trafficBadge = `🟡 YELLOW LIGHT: WAIT FOR DIP (DO NOT CHASE MARKET)`;
             trafficInstruction = `Retest defended at $${low.toFixed(pointPrecision)}. In profit ➔ Hold to $${high.toFixed(pointPrecision)}. Flat/New Entries ➔ Rest Buy Limit @ $${(p - conf.pullbackOffset).toFixed(pointPrecision)}.`;
@@ -379,27 +477,27 @@ export default async function handler(req, res) {
             activeStage = `STAGE 3: NEARLY THERE (Lock In Profits)`;
             stageCls = "stage-exhaustion";
             stageBadge = `🟡 STAGE 3: NEARLY THERE (TRAIL STOPS / PREPARE TP)`;
-            stageDesc = `Live Price ($${p.toFixed(pointPrecision)}) is in PREMIUM ZONE (${rangePosPct}% of ${conf.tfLabel} range). 75%+ of the move is finished. Move SL to Breakeven. Do NOT chase new buys.`;
-            exhaustionStatus = `⚠️ RUNNING ON EMPTY (${rangePosPct}% Fuel Consumed — Bank Cash)`;
+            stageDesc = `Live Price ($${p.toFixed(pointPrecision)}) is in PREMIUM ZONE (${rangePosPct}% of Wave #${currentWaveNum}). 75%+ of this micro wave is finished. Move SL to Breakeven. Do NOT chase new buys.`;
+            exhaustionStatus = `⚠️ RUNNING ON EMPTY (${rangePosPct}% Fuel Consumed — Bank Scalp)`;
             trafficStatus = "YELLOW";
             trafficBadge = `🟡 YELLOW LIGHT: DANGER TO BUY (LOCK PROFITS)`;
-            trafficInstruction = `Price is approaching ${conf.targetName} ($${high.toFixed(pointPrecision)}). Lock profits at +1.2R and tighten trailing stop.`;
+            trafficInstruction = `Price is approaching Wave #${currentWaveNum} Target ($${high.toFixed(pointPrecision)}). Lock profits at +1.2R and tighten trailing stop.`;
         } else {
             activeStageNum = 4;
             activeStage = `STAGE 4: GOAL REACHED (Take Profits & Stop)`;
             stageCls = "stage-reversal";
             stageBadge = `🔴 STAGE 4: GOAL REACHED (STAND DOWN)`;
-            stageDesc = `Live Price ($${p.toFixed(pointPrecision)}) touched the ${conf.tfLabel} Target ($${high.toFixed(pointPrecision)}). Move finished. Take all profits and wait for a fresh reset.`;
-            exhaustionStatus = `🚨 100% EXHAUSTED — TARGET REACHED`;
+            stageDesc = `Live Price ($${p.toFixed(pointPrecision)}) touched Wave #${currentWaveNum} Target ($${high.toFixed(pointPrecision)}). Scalp complete (Reset #${currentWaveNum} triggered). Stand down and wait for pullback.`;
+            exhaustionStatus = `🚨 100% EXHAUSTED — TARGET REACHED (RESET READY)`;
             trafficStatus = "RED";
             trafficBadge = `🔴 RED LIGHT: DO NOT BUY (MOVE FINISHED)`;
-            trafficInstruction = `${conf.tfLabel} Target High ($${high.toFixed(pointPrecision)}) reached. Stand down on all longs. Wait for new discount cycle.`;
+            trafficInstruction = `Wave #${currentWaveNum} Target High ($${high.toFixed(pointPrecision)}) reached. Stand down on all longs. Wait for new discount cycle.`;
         }
 
-        const pullbackEntry = parseFloat((p - conf.pullbackOffset).toFixed(pointPrecision));
-        const structuralSl = parseFloat((p - conf.slOffset).toFixed(pointPrecision));
+        const pullbackEntry = parseFloat((low + 0.01).toFixed(pointPrecision));
+        const structuralSl = parseFloat((low - conf.slOffset).toFixed(pointPrecision));
         const riskDistance = parseFloat((pullbackEntry - structuralSl).toFixed(pointPrecision));
-        const tp1Target = parseFloat((p + conf.tp1Offset).toFixed(pointPrecision));
+        const tp1Target = parseFloat((low + conf.tp1Offset).toFixed(pointPrecision));
         const tp2Target = parseFloat(high.toFixed(pointPrecision));
         const rewardDistance = parseFloat((tp2Target - pullbackEntry).toFixed(pointPrecision));
         const exactRr = (rewardDistance / (riskDistance || 1)).toFixed(1);
@@ -416,6 +514,10 @@ export default async function handler(req, res) {
             trade_type: conf.tradeType,
             hold_duration: conf.holdDuration,
             cycle_desc: conf.cycleDesc,
+            wave_counter_text: waveCounterText,
+            total_waves_on_4h: totalWaves,
+            resets_completed: resetsCompleted,
+            current_wave_num: currentWaveNum,
             active_stage_num: activeStageNum,
             active_stage: activeStage,
             stage_badge: stageBadge,
@@ -486,14 +588,15 @@ export default async function handler(req, res) {
         confidence: `${90 + Math.min(6, Math.round(activeRadar.range_position_pct / 15))}%`,
         trade_state: `${activeRadar.active_stage} ACTIVE`,
         master_highway: {
-            macro_low: `$${macroHighwayLow.toFixed(pointPrecision)}`,
-            macro_high: `$${macroHighwayHigh.toFixed(pointPrecision)}`,
-            progress_pct: macroHighwayProgressPct,
-            progress_desc: `${macroHighwayProgressPct}% Completed (Lap 2 of 4 • 2 Laps Remaining to $${macroHighwayHigh.toFixed(pointPrecision)} Peak)`,
-            status: "🛣️ MASTER HIGHWAY EXPANSION ACTIVE",
-            current_lap: "Lap 2 of 4 (4H Friday Retest & BOS Wave)",
-            laps_remaining: 2,
-            lap_progress: `${lap2Progress}% of Lap 2`,
+            highway_type: "Active 4H Highway ($4,381.24 ➔ $4,512.33)",
+            macro_low: `$${active4hLow.toFixed(pointPrecision)}`,
+            macro_high: `$${active4hHigh.toFixed(pointPrecision)}`,
+            progress_pct: active4hProgressPct,
+            progress_desc: `${active4hProgressPct}% Completed (Lap ${activeLap} of 4 • Target $${active4hHigh.toFixed(pointPrecision)} Ceiling)`,
+            status: "🛣️ ACTIVE 4H HIGHWAY EXPANSION",
+            current_lap: `Lap ${activeLap} of 4 (${macroLaps[activeLap-1].title})`,
+            laps_remaining: lapsRemaining,
+            lap_progress: `${lapProgress}% of Lap ${activeLap}`,
             laps: macroLaps
         },
         fractal_radar: {

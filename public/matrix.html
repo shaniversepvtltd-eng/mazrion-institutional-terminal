@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>MAZRION // FRACTAL WAVE & RESET MATRIX — MULTI-TIMEFRAME HIGHWAY LEDGER</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700;800;900&family=Orbitron:wght@600;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-base: #030712;
+            --bg-surface: #0B1120;
+            --bg-card: rgba(15, 23, 42, 0.85);
+            --bg-card-hover: rgba(30, 41, 59, 0.95);
+            --border-subtle: rgba(255, 255, 255, 0.08);
+            --border-cyan: rgba(0, 229, 255, 0.35);
+            --border-gold: rgba(245, 158, 11, 0.4);
+            --border-green: rgba(16, 185, 129, 0.4);
+            --text-main: #F8FAFC;
+            --text-muted: #94A3B8;
+            --text-dim: #64748B;
+            --cyan-glow: #00E5FF;
+            --gold-glow: #F59E0B;
+            --green-glow: #10B981;
+            --red-glow: #EF4444;
+            --purple-glow: #A855F7;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-base);
+            color: var(--text-main);
+            min-height: 100vh;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 10% 15%, rgba(0, 229, 255, 0.07) 0%, transparent 45%),
+                radial-gradient(circle at 90% 85%, rgba(168, 85, 247, 0.06) 0%, transparent 45%),
+                linear-gradient(to bottom, #030712, #080E1A);
+        }
+
+        /* Top Institutional Header */
+        .top-nav {
+            background: rgba(11, 17, 32, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-subtle);
+            padding: 10px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .brand-box {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-logo {
+            width: 38px;
+            height: 38px;
+            background: linear-gradient(135deg, var(--cyan-glow), var(--purple-glow));
+            border-radius: 9px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 19px;
+            box-shadow: 0 0 20px rgba(0, 229, 255, 0.45);
+        }
+
+        .brand-text h1 {
+            font-size: 15px;
+            font-weight: 900;
+            letter-spacing: 0.8px;
+            font-family: 'Orbitron', monospace;
+            background: linear-gradient(90deg, #FFFFFF, var(--cyan-glow));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .brand-text p {
+            font-size: 9.5px;
+            font-weight: 700;
+            color: var(--cyan-glow);
+            letter-spacing: 1.2px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .nav-suites {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .nav-link {
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 700;
+            text-decoration: none;
+            color: var(--text-muted);
+            border: 1px solid transparent;
+            transition: all 0.2s ease;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .nav-link:hover {
+            color: #FFF;
+            background: rgba(255, 255, 255, 0.05);
+            border-color: var(--border-subtle);
+        }
+
+        .nav-link.active {
+            background: linear-gradient(135deg, rgba(0, 229, 255, 0.15), rgba(168, 85, 247, 0.15));
+            border-color: var(--cyan-glow);
+            color: #FFF;
+            box-shadow: 0 0 14px rgba(0, 229, 255, 0.25);
+        }
+
+        .live-price-pill {
+            background: rgba(0, 229, 255, 0.08);
+            border: 1px solid var(--border-cyan);
+            border-radius: 20px;
+            padding: 4px 14px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .pulse-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--green-glow);
+            box-shadow: 0 0 8px var(--green-glow);
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.4; transform: scale(0.9); }
+            50% { opacity: 1; transform: scale(1.15); }
+            100% { opacity: 0.4; transform: scale(0.9); }
+        }
+
+        /* Container Layout */
+        .matrix-container {
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        /* Highway Banner Strip */
+        .highway-hero {
+            background: var(--bg-card);
+            border: 1px solid var(--border-cyan);
+            border-radius: 12px;
+            padding: 16px 20px;
+            backdrop-filter: blur(16px);
+            display: grid;
+            grid-template-columns: 1.4fr 1.6fr 1fr;
+            gap: 20px;
+            align-items: center;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+        }
+
+        .highway-title-box h2 {
+            font-size: 13px;
+            font-weight: 900;
+            letter-spacing: 1px;
+            color: var(--cyan-glow);
+            font-family: 'Orbitron', monospace;
+            margin-bottom: 4px;
+        }
+
+        .highway-title-box p {
+            font-size: 11px;
+            color: var(--text-muted);
+            line-height: 1.4;
+        }
+
+        .highway-progress-rack {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .progress-bar-track {
+            height: 10px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 5px;
+            overflow: hidden;
+            border: 1px solid var(--border-subtle);
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--cyan-glow), var(--green-glow));
+            box-shadow: 0 0 12px var(--cyan-glow);
+            transition: width 0.4s ease;
+        }
+
+        .scoreboard-rack {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            padding: 8px 12px;
+            display: flex;
+            justify-content: space-around;
+            text-align: center;
+        }
+
+        .score-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .score-label {
+            font-size: 9px;
+            color: var(--text-dim);
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .score-val {
+            font-size: 13px;
+            font-weight: 900;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Timeframe Tabs Bar */
+        .tf-bar {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            background: var(--bg-surface);
+            padding: 8px 12px;
+            border-radius: 10px;
+            border: 1px solid var(--border-subtle);
+            overflow-x: auto;
+        }
+
+        .tf-btn {
+            padding: 8px 16px;
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-muted);
+            font-size: 11px;
+            font-weight: 800;
+            font-family: 'JetBrains Mono', monospace;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .tf-btn:hover {
+            color: #FFF;
+            border-color: var(--border-cyan);
+            background: rgba(0, 229, 255, 0.08);
+        }
+
+        .tf-btn.active {
+            background: linear-gradient(135deg, rgba(0, 229, 255, 0.25), rgba(16, 185, 129, 0.2));
+            border-color: var(--cyan-glow);
+            color: #FFF;
+            box-shadow: 0 0 12px rgba(0, 229, 255, 0.35);
+        }
+
+        /* Active Live Wave Hero Focus Card */
+        .live-wave-hero {
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(8, 14, 24, 0.95));
+            border: 1.5px solid var(--cyan-glow);
+            border-radius: 14px;
+            padding: 20px;
+            display: grid;
+            grid-template-columns: 1.2fr 1.3fr 1fr;
+            gap: 20px;
+            box-shadow: 0 0 25px rgba(0, 229, 255, 0.18);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .live-wave-hero::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--cyan-glow);
+            box-shadow: 0 0 12px var(--cyan-glow);
+        }
+
+        .wave-badge-live {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(16, 185, 129, 0.15);
+            border: 1px solid var(--green-glow);
+            color: var(--green-glow);
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 900;
+            font-family: 'JetBrains Mono', monospace;
+            margin-bottom: 8px;
+        }
+
+        .wave-header-title {
+            font-size: 20px;
+            font-weight: 900;
+            font-family: 'Orbitron', monospace;
+            color: #FFF;
+            margin-bottom: 4px;
+        }
+
+        .wave-range-tag {
+            font-size: 12px;
+            color: var(--cyan-glow);
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 800;
+        }
+
+        /* Pullback Probability Meter */
+        .pullback-box {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--border-subtle);
+            border-radius: 10px;
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .pullback-title {
+            font-size: 10.5px;
+            font-weight: 800;
+            color: var(--gold-glow);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+        }
+
+        .pullback-gauge-track {
+            height: 8px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 6px 0;
+        }
+
+        .pullback-gauge-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--gold-glow), var(--green-glow));
+            transition: width 0.4s ease;
+        }
+
+        .pullback-advice {
+            font-size: 11px;
+            color: #CBD5E1;
+            line-height: 1.4;
+        }
+
+        /* Execution Clapper Slate */
+        .ticket-slate {
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px dashed var(--border-cyan);
+            border-radius: 10px;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+        }
+
+        .ticket-row {
+            display: flex;
+            justify-content: space-between;
+            color: var(--text-muted);
+        }
+
+        .ticket-row strong {
+            color: #FFF;
+        }
+
+        .btn-action-copy {
+            background: linear-gradient(135deg, var(--cyan-glow), #0099FF);
+            color: #000;
+            border: none;
+            border-radius: 6px;
+            padding: 8px 12px;
+            font-weight: 900;
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .btn-action-copy:hover {
+            box-shadow: 0 0 16px rgba(0, 229, 255, 0.6);
+            transform: translateY(-1px);
+        }
+
+        /* The Complete Multi-Wave Ledger Table */
+        .matrix-ledger-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            padding: 18px;
+            backdrop-filter: blur(16px);
+        }
+
+        .ledger-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
+            border-bottom: 1px solid var(--border-subtle);
+            padding-bottom: 10px;
+        }
+
+        .ledger-title {
+            font-size: 13px;
+            font-weight: 900;
+            font-family: 'Orbitron', monospace;
+            color: var(--cyan-glow);
+        }
+
+        .ledger-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+        }
+
+        .ledger-table th {
+            text-align: left;
+            padding: 10px 12px;
+            color: var(--text-dim);
+            font-size: 9.5px;
+            text-transform: uppercase;
+            font-weight: 800;
+            border-bottom: 1px solid var(--border-subtle);
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .ledger-table td {
+            padding: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            color: #E2E8F0;
+        }
+
+        .ledger-table tr:hover {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .ledger-table tr.row-active {
+            background: rgba(0, 229, 255, 0.07);
+            border-left: 3px solid var(--cyan-glow);
+        }
+
+        .ledger-table tr.row-completed {
+            opacity: 0.88;
+        }
+
+        .ledger-table tr.row-future {
+            opacity: 0.6;
+        }
+
+        .status-tag {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 9.5px;
+            font-weight: 900;
+        }
+
+        .tag-hit { background: rgba(16, 185, 129, 0.2); color: var(--green-glow); border: 1px solid var(--green-glow); }
+        .tag-be { background: rgba(0, 229, 255, 0.2); color: var(--cyan-glow); border: 1px solid var(--cyan-glow); }
+        .tag-active { background: rgba(245, 158, 11, 0.25); color: var(--gold-glow); border: 1px solid var(--gold-glow); animation: pulse 2s infinite; }
+        .tag-queued { background: rgba(148, 163, 184, 0.15); color: var(--text-muted); border: 1px solid var(--border-subtle); }
+        .tag-sl { background: rgba(239, 68, 68, 0.2); color: var(--red-glow); border: 1px solid var(--red-glow); }
+
+        .btn-prearm {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-main);
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-prearm:hover {
+            background: var(--cyan-glow);
+            color: #000;
+            border-color: var(--cyan-glow);
+        }
+
+        /* Missed Wave Protocol Box */
+        .missed-protocol-card {
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px solid var(--border-gold);
+            border-radius: 10px;
+            padding: 14px 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 11px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ==================== TOP NAVIGATION ==================== -->
+    <nav class="top-nav">
+        <div class="brand-box">
+            <div class="brand-logo">⚡</div>
+            <div class="brand-text">
+                <h1>MAZRION FRACTAL MATRIX</h1>
+                <p>MULTI-TIMEFRAME HIGHWAY WAVE LEDGER</p>
+            </div>
+        </div>
+
+        <div class="nav-suites">
+            <a href="/" class="nav-link">📊 CHARTS</a>
+            <a href="/cockpit.html" class="nav-link">✈️ COCKPIT HUD</a>
+            <a href="/cinema.html" class="nav-link">🎬 CINEMA SUITE</a>
+            <a href="/fractals.html" class="nav-link">🧬 GHOST BLUEPRINT</a>
+            <a href="/matrix.html" class="nav-link active">⚡ FRACTAL MATRIX</a>
+            <a href="/mazrion.html" class="nav-link" style="color:var(--purple-glow);">🔮 MAZRION AI</a>
+        </div>
+
+        <div class="live-price-pill">
+            <div class="pulse-dot"></div>
+            <span>XAUUSD SPOT:</span>
+            <span id="nav-live-price" style="color:var(--cyan-glow);">$4,412.34</span>
+        </div>
+    </nav>
+
+    <!-- ==================== MAIN MATRIX CONTENT ==================== -->
+    <div class="matrix-container">
+
+        <!-- 1. 4H Master Highway & Global Scoreboard Hero -->
+        <div class="highway-hero">
+            <div class="highway-title-box">
+                <h2>🛣️ 4-HOUR ACTIVE HIGHWAY MISSION CONTROL</h2>
+                <p id="highway-desc">
+                    Master Weekly Roadmap: <strong>$4,381.24</strong> (Session Floor Defended) ➔ <strong>$4,512.33</strong> (4H BSL Ceiling). Total Highway Range: <strong>$131.09</strong>.
+                </p>
+            </div>
+
+            <div class="highway-progress-rack">
+                <div style="display:flex; justify-content:space-between; font-size:10px; font-weight:800; font-family:'JetBrains Mono';">
+                    <span style="color:var(--text-muted);" id="highway-lap-text">LAP 2 OF 4 ACTIVE</span>
+                    <span style="color:var(--cyan-glow);" id="highway-pct-text">24% COMPLETED</span>
+                </div>
+                <div class="progress-bar-track">
+                    <div class="progress-bar-fill" id="highway-progress-fill" style="width: 24%;"></div>
+                </div>
+                <div style="display:flex; justify-content:space-between; font-size:9px; color:var(--text-dim); font-family:'JetBrains Mono';">
+                    <span>$4,381.24 (Ignition)</span>
+                    <span>$4,454.00 (Mid-EQ)</span>
+                    <span>$4,512.33 (Target 🏆)</span>
+                </div>
+            </div>
+
+            <div class="scoreboard-rack">
+                <div class="score-item">
+                    <span class="score-label">Total Waves</span>
+                    <span class="score-val" id="score-total" style="color:#FFF;">18</span>
+                </div>
+                <div class="score-item">
+                    <span class="score-label">TP Hit (Won)</span>
+                    <span class="score-val" id="score-won" style="color:var(--green-glow);">4</span>
+                </div>
+                <div class="score-item">
+                    <span class="score-label">Win Rate</span>
+                    <span class="score-val" id="score-winrate" style="color:var(--cyan-glow);">100%</span>
+                </div>
+                <div class="score-item">
+                    <span class="score-label">Total Banked</span>
+                    <span class="score-val" id="score-profit" style="color:var(--gold-glow);">+8.4R</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. Timeframe Switcher Tabs -->
+        <div class="tf-bar">
+            <span style="font-size:10px; font-weight:800; color:var(--text-dim); text-transform:uppercase; margin-right:4px;">SELECT FRACTAL TIMEFRAME:</span>
+            <button class="tf-btn active" id="tf-btn-1m" onclick="switchTimeframe('1m')">1-MINUTE (1M) • 18 WAVES</button>
+            <button class="tf-btn" id="tf-btn-5m" onclick="switchTimeframe('5m')">5-MINUTE (5M) • 9 WAVES</button>
+            <button class="tf-btn" id="tf-btn-15m" onclick="switchTimeframe('15m')">15-MINUTE (15M) • 4 WAVES</button>
+            <button class="tf-btn" id="tf-btn-1h" onclick="switchTimeframe('1h')">1-HOUR (1H) • 2 WAVES</button>
+            <button class="tf-btn" id="tf-btn-4h" onclick="switchTimeframe('4h')">4-HOUR (4H) • 4 LAPS</button>
+            <button class="tf-btn" id="tf-btn-1d" onclick="switchTimeframe('1d')">DAILY (1D) • 3 WAVES</button>
+            <button class="tf-btn" id="tf-btn-1w" onclick="switchTimeframe('1w')">WEEKLY (1W) • 4 LEGS</button>
+        </div>
+
+        <!-- 3. Active Live Wave Radar Focus -->
+        <div class="live-wave-hero" id="active-wave-hero">
+            <div>
+                <div class="wave-badge-live" id="hero-badge">⚡ LIVE ACTIVE WAVE #5</div>
+                <div class="wave-header-title" id="hero-title">1M WAVE #5 (OF 18)</div>
+                <div class="wave-range-tag" id="hero-range">$4,411.24 ➔ $4,418.74 (+$7.50 Step)</div>
+                
+                <div style="margin-top:12px;">
+                    <div style="display:flex; justify-content:space-between; font-size:10px; font-weight:800; font-family:'JetBrains Mono'; margin-bottom:4px;">
+                        <span style="color:var(--text-muted);">WAVE PROGRESSION GAUGE:</span>
+                        <span style="color:var(--cyan-glow);" id="hero-wave-pct">24% COMPLETED</span>
+                    </div>
+                    <div class="progress-bar-track" style="height:8px;">
+                        <div class="progress-bar-fill" id="hero-wave-fill" style="width: 24%;"></div>
+                    </div>
+                </div>
+
+                <div style="font-size:10.5px; color:var(--text-muted); margin-top:8px;" id="hero-status-desc">
+                    Live Price ($4,413.05) is in Wholesale Discount zone. Institutions defending the $4,411.24 floor.
+                </div>
+            </div>
+
+            <!-- Pullback Probability Gauge -->
+            <div class="pullback-box">
+                <div>
+                    <div class="pullback-title">
+                        <span>🎯 PULLBACK PROBABILITY GAUGE</span>
+                        <span id="pullback-pct-val" style="color:var(--gold-glow); font-size:12px;">76% CHANCE</span>
+                    </div>
+                    <div class="pullback-gauge-track">
+                        <div class="pullback-gauge-fill" id="pullback-gauge-fill" style="width: 76%;"></div>
+                    </div>
+                    <div class="pullback-advice" id="pullback-advice-text">
+                        <strong>HIGH PULLBACK LIKELIHOOD</strong>: Do not market-buy. Rest a <strong>BUY LIMIT</strong> order at the <strong>$4,411.25</strong> discount POI.
+                    </div>
+                </div>
+
+                <div style="margin-top:8px; font-size:10px; color:var(--text-dim); border-top:1px solid rgba(255,255,255,0.06); padding-top:6px;">
+                    ⚡ Breakeven Trigger: <strong>+$1.80 Move</strong> ➔ Lock SL to entry
+                </div>
+            </div>
+
+            <!-- 1-Click Ticket Execution Slate -->
+            <div class="ticket-slate">
+                <div style="font-weight:900; color:var(--cyan-glow); font-size:11.5px;">📋 LIVE EXECUTION TICKET</div>
+                <div class="ticket-row"><span>ORDER:</span> <strong style="color:var(--green-glow);">BUY LIMIT</strong></div>
+                <div class="ticket-row"><span>ENTRY POI:</span> <strong id="ticket-entry">$4,411.25</strong></div>
+                <div class="ticket-row"><span>STOP LOSS:</span> <strong id="ticket-sl" style="color:var(--red-glow);">$4,409.55</strong></div>
+                <div class="ticket-row"><span>TP1 (BE LOCK):</span> <strong id="ticket-tp1" style="color:var(--cyan-glow);">$4,416.05</strong></div>
+                <div class="ticket-row"><span>TP2 (GOAL):</span> <strong id="ticket-tp2" style="color:var(--green-glow);">$4,418.74</strong></div>
+                <div class="ticket-row"><span>RISK (2% GUARD):</span> <strong id="ticket-risk">$1.70 (0.01 Lots)</strong></div>
+                <button class="btn-action-copy" id="btn-copy-ticket" onclick="copyActiveTicket()">
+                    ⚡ 1-CLICK COPY MT5 TICKET
+                </button>
+            </div>
+        </div>
+
+        <!-- 4. Missed Wave Situation Protocol -->
+        <div class="missed-protocol-card">
+            <div style="display:flex; align-items:center; gap:10px;">
+                <span style="font-size:18px;">🛡️</span>
+                <div>
+                    <strong style="color:var(--gold-glow);">MISSED THE CURRENT WAVE ENTRY?</strong>
+                    <span style="color:var(--text-muted); display:block;">Do NOT chase green candles at the top of the wave. You can pre-arm a limit order on the <strong>upcoming future wave</strong> from the ledger below.</span>
+                </div>
+            </div>
+            <div style="font-size:10px; font-weight:800; color:var(--cyan-glow); font-family:'JetBrains Mono';">
+                INSTITUTIONAL DISCIPLINE PROTOCOL: ACTIVE
+            </div>
+        </div>
+
+        <!-- 5. Full Wave Matrix Ledger Table -->
+        <div class="matrix-ledger-card">
+            <div class="ledger-header">
+                <div class="ledger-title" id="ledger-title">📜 1-MINUTE (1M) COMPLETE 18-WAVE ROADMAP & TRADE AUDIT</div>
+                <div style="font-size:11px; color:var(--text-dim); font-family:'JetBrains Mono';">
+                    START: <strong>$4,381.24</strong> ➔ CEILING: <strong>$4,512.33</strong>
+                </div>
+            </div>
+
+            <table class="ledger-table">
+                <thead>
+                    <tr>
+                        <th>Wave #</th>
+                        <th>Range Bound</th>
+                        <th>Start Price</th>
+                        <th>Target Price</th>
+                        <th>System Entry Signal</th>
+                        <th>SL Level</th>
+                        <th>Status / Outcome</th>
+                        <th>R / Dollar Gain</th>
+                        <th>Pre-Arm MT5 Order</th>
+                    </tr>
+                </thead>
+                <tbody id="ledger-tbody">
+                    <!-- Dynamically Generated Wave Rows -->
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+    <!-- ==================== MATRIX LOGIC ENGINE ==================== -->
+    <script>
+        let livePrice = 4412.34;
+        let selectedTf = '1m';
+        const active4hLow = 4381.24;
+        const active4hHigh = 4512.33;
+        const macroHighwayLow = 4363.16;
+        const macroHighwayHigh = 4697.99;
+
+        const tfWaveSpecs = {
+            "1m": { name: "1-MINUTE (1M)", step: 7.50, total: 18, baseLow: active4hLow, baseHigh: active4hHigh, slOffset: 1.70, tp1Offset: 3.20 },
+            "5m": { name: "5-MINUTE (5M)", step: 16.00, total: 9, baseLow: active4hLow, baseHigh: active4hHigh, slOffset: 6.50, tp1Offset: 7.00 },
+            "15m": { name: "15-MINUTE (15M)", step: 32.00, total: 4, baseLow: active4hLow, baseHigh: active4hHigh, slOffset: 10.50, tp1Offset: 12.00 },
+            "1h": { name: "1-HOUR (1H)", step: 65.00, total: 2, baseLow: active4hLow, baseHigh: active4hHigh, slOffset: 14.00, tp1Offset: 18.00 },
+            "4h": { name: "4-HOUR (4H)", step: 32.77, total: 4, baseLow: active4hLow, baseHigh: active4hHigh, slOffset: 16.50, tp1Offset: 24.00 },
+            "1d": { name: "DAILY (1D)", step: 111.61, total: 3, baseLow: macroHighwayLow, baseHigh: macroHighwayHigh, slOffset: 45.00, tp1Offset: 65.00 },
+            "1w": { name: "WEEKLY (1W)", step: 83.70, total: 4, baseLow: macroHighwayLow, baseHigh: macroHighwayHigh, slOffset: 66.00, tp1Offset: 120.00 }
+        };
+
+        function switchTimeframe(tf) {
+            selectedTf = tf;
+            ['1m', '5m', '15m', '1h', '4h', '1d', '1w'].forEach(t => {
+                const btn = document.getElementById(`tf-btn-${t}`);
+                if (btn) btn.className = `tf-btn ${t === tf ? 'active' : ''}`;
+            });
+            renderMatrixHUD();
+        }
+
+        function renderMatrixHUD() {
+            const spec = tfWaveSpecs[selectedTf];
+            const distance = Math.max(0, livePrice - spec.baseLow);
+            const resetsDone = Math.min(spec.total - 1, Math.floor(distance / spec.step));
+            const activeWaveNum = resetsDone + 1;
+
+            const activeWaveLow = parseFloat((spec.baseLow + (resetsDone * spec.step)).toFixed(2));
+            const activeWaveHigh = parseFloat(Math.min(spec.baseHigh, activeWaveLow + spec.step).toFixed(2));
+            const waveRange = activeWaveHigh - activeWaveLow;
+            const wavePct = Math.min(100, Math.max(0, Math.round(((livePrice - activeWaveLow) / (waveRange || 1)) * 100)));
+
+            // 1. Update 4H Highway Header
+            const hwRange = active4hHigh - active4hLow;
+            const hwPct = Math.min(100, Math.max(0, Math.round(((livePrice - active4hLow) / hwRange) * 100)));
+            document.getElementById('highway-pct-text').innerText = `${hwPct}% COMPLETED`;
+            document.getElementById('highway-progress-fill').style.width = `${hwPct}%`;
+
+            let currentLap = 1;
+            if (livePrice >= 4414 && livePrice < 4454) currentLap = 2;
+            else if (livePrice >= 4454 && livePrice < 4491) currentLap = 3;
+            else if (livePrice >= 4491) currentLap = 4;
+            document.getElementById('highway-lap-text').innerText = `LAP ${currentLap} OF 4 ACTIVE`;
+
+            // 2. Scoreboard
+            document.getElementById('score-total').innerText = `${spec.total}`;
+            document.getElementById('score-won').innerText = `${resetsDone}`;
+            document.getElementById('score-winrate').innerText = resetsDone > 0 ? "100%" : "READY";
+            document.getElementById('score-profit').innerText = `+${(resetsDone * 2.2).toFixed(1)}R`;
+
+            // 3. Active Wave Hero Card
+            document.getElementById('hero-badge').innerText = `⚡ LIVE ACTIVE WAVE #${activeWaveNum}`;
+            document.getElementById('hero-title').innerText = `${spec.name} WAVE #${activeWaveNum} (OF ${spec.total})`;
+            document.getElementById('hero-range').innerText = `$${activeWaveLow.toFixed(2)} ➔ $${activeWaveHigh.toFixed(2)} (+$${spec.step.toFixed(2)} Step)`;
+            document.getElementById('hero-wave-pct').innerText = `${wavePct}% COMPLETED`;
+            document.getElementById('hero-wave-fill').style.width = `${wavePct}%`;
+
+            // Pullback Probability
+            const pullbackPct = Math.max(15, Math.min(88, 100 - wavePct));
+            document.getElementById('pullback-pct-val').innerText = `${pullbackPct}% CHANCE`;
+            document.getElementById('pullback-gauge-fill').style.width = `${pullbackPct}%`;
+            
+            const entryPoi = (activeWaveLow + 0.01).toFixed(2);
+            const slPoi = (activeWaveLow - spec.slOffset).toFixed(2);
+            const tp1Poi = (activeWaveLow + spec.tp1Offset).toFixed(2);
+            const tp2Poi = activeWaveHigh.toFixed(2);
+            const riskDist = (parseFloat(entryPoi) - parseFloat(slPoi)).toFixed(2);
+
+            if (wavePct <= 35) {
+                document.getElementById('pullback-advice-text').innerHTML = `<strong>HIGH PULLBACK POI DEFENSE</strong>: In Wholesale Discount zone. Rest <strong>BUY LIMIT @ $${entryPoi}</strong>.`;
+            } else if (wavePct <= 75) {
+                document.getElementById('pullback-advice-text').innerHTML = `<strong>MID-WAVE EXPANSION</strong>: Runners active in profit. Move SL to Breakeven (+1.2R lock).`;
+            } else {
+                document.getElementById('pullback-advice-text').innerHTML = `<strong>WAVE EXHAUSTION (80%+)</strong>: Target $${activeWaveHigh.toFixed(2)} reached. Stand down on buys; prepare for Reset #${activeWaveNum}.`;
+            }
+
+            // Ticket Slate
+            document.getElementById('ticket-entry').innerText = `$${entryPoi}`;
+            document.getElementById('ticket-sl').innerText = `$${slPoi}`;
+            document.getElementById('ticket-tp1').innerText = `$${tp1Poi}`;
+            document.getElementById('ticket-tp2').innerText = `$${tp2Poi}`;
+            document.getElementById('ticket-risk').innerText = `$${riskDist} (0.01 Lots)`;
+
+            // 4. Render Ledger Table
+            document.getElementById('ledger-title').innerText = `📜 ${spec.name} COMPLETE ${spec.total}-WAVE ROADMAP & TRADE AUDIT`;
+            const tbody = document.getElementById('ledger-tbody');
+            let html = "";
+
+            for (let i = 1; i <= spec.total; i++) {
+                const wLow = parseFloat((spec.baseLow + ((i - 1) * spec.step)).toFixed(2));
+                const wHigh = parseFloat(Math.min(spec.baseHigh, wLow + spec.step).toFixed(2));
+                const wEntry = (wLow + 0.01).toFixed(2);
+                const wSl = (wLow - spec.slOffset).toFixed(2);
+
+                if (i < activeWaveNum) {
+                    // Past Completed Wave
+                    html += `
+                        <tr class="row-completed">
+                            <td><strong style="color:var(--green-glow);">WAVE #${i}</strong></td>
+                            <td>$${spec.step.toFixed(2)}</td>
+                            <td>$${wLow.toFixed(2)}</td>
+                            <td>$${wHigh.toFixed(2)}</td>
+                            <td>BUY LIMIT @ $${wEntry}</td>
+                            <td>$${wSl}</td>
+                            <td><span class="status-tag tag-hit">TP2 HIT 🎯</span></td>
+                            <td style="color:var(--green-glow); font-weight:800;">+2.3R (+$${(spec.step * 0.95).toFixed(2)})</td>
+                            <td><span style="color:var(--text-dim); font-size:10px;">CLOSED ✅</span></td>
+                        </tr>
+                    `;
+                } else if (i === activeWaveNum) {
+                    // Active Wave
+                    html += `
+                        <tr class="row-active">
+                            <td><strong style="color:var(--cyan-glow);">WAVE #${i} (ACTIVE)</strong></td>
+                            <td>$${spec.step.toFixed(2)}</td>
+                            <td>$${wLow.toFixed(2)}</td>
+                            <td>$${wHigh.toFixed(2)}</td>
+                            <td><strong style="color:var(--gold-glow);">BUY LIMIT @ $${entryPoi}</strong></td>
+                            <td style="color:var(--red-glow);">$${slPoi}</td>
+                            <td><span class="status-tag tag-active">${wavePct}% ACTIVE 🟢</span></td>
+                            <td style="color:var(--cyan-glow); font-weight:800;">RUNNER ACTIVE</td>
+                            <td><button class="btn-prearm" onclick="copyWaveTicket(${i}, ${wEntry}, ${wSl}, ${wHigh})">📋 COPY LIVE TICKET</button></td>
+                        </tr>
+                    `;
+                } else {
+                    // Future Queued Wave
+                    html += `
+                        <tr class="row-future">
+                            <td><span style="color:var(--text-muted);">WAVE #${i}</span></td>
+                            <td>$${spec.step.toFixed(2)}</td>
+                            <td>$${wLow.toFixed(2)}</td>
+                            <td>$${wHigh.toFixed(2)}</td>
+                            <td>BUY LIMIT @ $${wEntry}</td>
+                            <td>$${wSl}</td>
+                            <td><span class="status-tag tag-queued">QUEUED ⏳</span></td>
+                            <td style="color:var(--text-dim);">POTENTIAL +2.4R</td>
+                            <td><button class="btn-prearm" onclick="copyWaveTicket(${i}, ${wEntry}, ${wSl}, ${wHigh})">⏳ PRE-SET LIMIT ORDER</button></td>
+                        </tr>
+                    `;
+                }
+            }
+            tbody.innerHTML = html;
+        }
+
+        // Live Price Sync
+        setInterval(async () => {
+            try {
+                const res = await fetch('/api/price');
+                const data = await res.json();
+                if (data && data.price) {
+                    livePrice = parseFloat(data.price);
+                    document.getElementById('nav-live-price').innerText = `$${livePrice.toFixed(2)}`;
+                    renderMatrixHUD();
+                }
+            } catch (e) {}
+        }, 1500);
+
+        function copyActiveTicket() {
+            const entry = document.getElementById('ticket-entry').innerText;
+            const sl = document.getElementById('ticket-sl').innerText;
+            const tp1 = document.getElementById('ticket-tp1').innerText;
+            const tp2 = document.getElementById('ticket-tp2').innerText;
+            const risk = document.getElementById('ticket-risk').innerText;
+
+            const text = `// MAZRION FRACTAL WAVE TICKET\nSymbol: XAUUSD SPOT\nType: BUY LIMIT\nEntry: ${entry}\nSL: ${sl}\nTP1 (BE Trigger): ${tp1}\nTP2 (Wave Goal): ${tp2}\nRisk: ${risk}`;
+            navigator.clipboard.writeText(text);
+
+            const btn = document.getElementById('btn-copy-ticket');
+            btn.innerText = '✅ MT5 TICKET COPIED TO CLIPBOARD!';
+            btn.style.background = '#10B981';
+            setTimeout(() => {
+                btn.innerText = '⚡ 1-CLICK COPY MT5 TICKET';
+                btn.style.background = 'linear-gradient(135deg, var(--cyan-glow), #0099FF)';
+            }, 2500);
+        }
+
+        function copyWaveTicket(waveNum, entry, sl, tp) {
+            const text = `// MAZRION PRE-SET WAVE #${waveNum} ORDER\nSymbol: XAUUSD SPOT\nType: BUY LIMIT\nEntry POI: $${entry.toFixed(2)}\nFloor SL: $${sl.toFixed(2)}\nTarget TP: $${tp.toFixed(2)}\nMode: Strict 2% Capital Protocol`;
+            navigator.clipboard.writeText(text);
+            alert(`✅ Future Wave #${waveNum} Pre-Set Limit Order copied to clipboard!\n\nEntry: $${entry.toFixed(2)}\nSL: $${sl.toFixed(2)}\nTP: $${tp.toFixed(2)}`);
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            renderMatrixHUD();
+        });
+    </script>
+    <script src="/js/mazrion_widget.js"></script>
+</body>
+</html>
