@@ -551,6 +551,59 @@ export default async function handler(req, res) {
         const dollarRisk = (riskDistance * 1.0).toFixed(2);
         const riskPct = ((parseFloat(dollarRisk) / 500.0) * 100.0).toFixed(2);
 
+        // Institutional Liquidity Fuel & Sweep Meta
+        let sweepMeta = {
+            swept_pool: "Session Retest Floor @ $4,395.12 Defended",
+            sweep_type: "ERL (External Range Liquidity)",
+            fuel_grade: "Tier 2: Highway Session Tank (+$53.62 Capacity)",
+            fuel_distance: `+$${(high - low).toFixed(pointPrecision)} Fuel Distance`,
+            opposing_target: `$${high.toFixed(pointPrecision)} (${conf.targetName})`,
+            retest_discount_box: `$${low.toFixed(pointPrecision)} – $${(low + conf.pullbackOffset).toFixed(pointPrecision)}`,
+            thesis: `Smart Money swept retail Sell-Side Liquidity (SSL) at the $${low.toFixed(pointPrecision)} floor, trapping breakout sellers. Price is expanding toward unmitigated Buy-Side Liquidity (BSL) at $${high.toFixed(pointPrecision)}.`
+        };
+
+        if (tfKey === "1m" || tfKey === "5m") {
+            sweepMeta = {
+                swept_pool: `Micro ${tfKey.toUpperCase()} Swing Low @ $${low.toFixed(pointPrecision)} Purged`,
+                sweep_type: "IRL (Internal Range Liquidity)",
+                fuel_grade: "Tier 1: Micro Scalp Tank (+$7.50 to +$16.00 Capacity)",
+                fuel_distance: `+$${waveStep.toFixed(pointPrecision)} Micro Step`,
+                opposing_target: `$${high.toFixed(pointPrecision)} (${conf.targetName})`,
+                retest_discount_box: `$${low.toFixed(pointPrecision)} – $${(low + conf.pullbackOffset).toFixed(pointPrecision)}`,
+                thesis: `Micro liquidity harvested below $${low.toFixed(pointPrecision)}. Institutions absorbed resting sell stops in the Fair Value Gap (FVG); targeting immediate scalp high at $${high.toFixed(pointPrecision)}.`
+            };
+        } else if (tfKey === "15m" || tfKey === "1h") {
+            sweepMeta = {
+                swept_pool: `London Low / 1H Wick @ $${low.toFixed(pointPrecision)} Swept & Reclaimed`,
+                sweep_type: "ERL ⇄ IRL Convergence",
+                fuel_grade: "Tier 2: Intraday Session Tank (+$32.00 to +$65.00 Capacity)",
+                fuel_distance: `+$${(high - low).toFixed(pointPrecision)} Session Fuel`,
+                opposing_target: `$${high.toFixed(pointPrecision)} (${conf.targetName})`,
+                retest_discount_box: `$${low.toFixed(pointPrecision)} – $${(low + conf.pullbackOffset).toFixed(pointPrecision)}`,
+                thesis: `Session low liquidity swept. Retail sellers were trapped on the downside break; market structure shifted bullish (CHoCH) toward the $${high.toFixed(pointPrecision)} BSL magnet.`
+            };
+        } else if (tfKey === "4h") {
+            sweepMeta = {
+                swept_pool: `Master Highway Sweep Floor @ $4,381.24 Defended / Retest @ $4,395.12`,
+                sweep_type: "ERL (External Range Liquidity)",
+                fuel_grade: "Tier 2: Master Highway Tank (+$131.09 Total Capacity)",
+                fuel_distance: "+$131.09 Master Highway Fuel",
+                opposing_target: "$4,512.33 (4-Hour BSL Ceiling)",
+                retest_discount_box: "$4,395.12 – $4,411.00",
+                thesis: "Primary Weekly Accumulation Defended. Smart money is utilizing resting buy limits in the $4,395 – $4,411 discount box to propel price through the 4-Lap Highway toward the $4,512.33 macro ceiling."
+            };
+        } else if (tfKey === "1d" || tfKey === "1w") {
+            sweepMeta = {
+                swept_pool: `Macro Institutional Base @ $4,363.16 Multi-Week Liquidity Pool`,
+                sweep_type: "ERL (Macro External Range Liquidity)",
+                fuel_grade: "Tier 3: Rocket Booster Tank (+$334.83+ Capacity)",
+                fuel_distance: "+$334.83 Grand Super-Highway Fuel",
+                opposing_target: "$4,697.99 (All-Time Macro High)",
+                retest_discount_box: "$4,363.16 – $4,414.00",
+                thesis: "Multi-week liquidation cascade absorbed by institutional desks. Massive macro fuel unlocked to power the continuous multi-month superhighway toward $4,697.99."
+            };
+        }
+
         return {
             timeframe: tfKey,
             tf_label: conf.tfLabel,
@@ -580,6 +633,7 @@ export default async function handler(req, res) {
             breakeven_trigger: `+$${(riskDistance * 1.2).toFixed(pointPrecision)} (+1.2R move @ $${beActivationPrice.toFixed(pointPrecision)} ➔ Lock SL to $${beLockSlPrice.toFixed(pointPrecision)})`,
             exhaustion_pct: rangePosPct,
             exhaustion_status: exhaustionStatus,
+            liquidity_fuel: sweepMeta,
             traffic_light: {
                 status: trafficStatus,
                 badge: trafficBadge,

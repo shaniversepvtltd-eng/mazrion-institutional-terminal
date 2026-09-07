@@ -519,16 +519,63 @@
             border-color: var(--cyan-glow);
         }
 
-        /* Missed Wave Protocol Box */
-        .missed-protocol-card {
-            background: rgba(15, 23, 42, 0.7);
-            border: 1px solid var(--border-gold);
-            border-radius: 10px;
-            padding: 14px 18px;
+        /* Institutional Liquidity & Fuel Badges */
+        .fuel-badge-bar {
             display: flex;
-            justify-content: space-between;
             align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 8px;
+        }
+
+        .sweep-tag-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 900;
+            font-family: 'JetBrains Mono', monospace;
+            background: rgba(0, 229, 255, 0.15);
+            color: var(--cyan-glow);
+            border: 1px solid var(--border-cyan);
+        }
+
+        .fuel-tank-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 800;
+            font-family: 'JetBrains Mono', monospace;
+            background: rgba(245, 158, 11, 0.15);
+            color: var(--gold-glow);
+            border: 1px solid var(--border-gold);
+        }
+
+        .thesis-box {
+            background: rgba(10, 16, 28, 0.8);
+            border: 1px solid rgba(0, 229, 255, 0.2);
+            border-radius: 8px;
+            padding: 10px 12px;
+            margin-top: 10px;
             font-size: 11px;
+            line-height: 1.5;
+            color: #CBD5E1;
+        }
+        .thesis-title {
+            font-size: 10px;
+            font-weight: 900;
+            color: var(--cyan-glow);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
         }
     </style>
 </head>
@@ -580,7 +627,7 @@
                 <div class="progress-bar-track">
                     <div class="progress-bar-fill" id="highway-progress-fill" style="width: 24%;"></div>
                 </div>
-                <div style="display:flex; justify-content:space-between; font-size:9px; color:var(--text-dim); font-family:'JetBrains Mono';">
+                <div style="display:flex; justify-content:space-between; font-size:9.5px; color:var(--text-dim); margin-top:4px;">
                     <span>$4,381.24 (Ignition)</span>
                     <span>$4,454.00 (Mid-EQ)</span>
                     <span>$4,512.33 (Target 🏆)</span>
@@ -622,11 +669,15 @@
         <!-- 3. Active Live Wave Radar Focus -->
         <div class="live-wave-hero" id="active-wave-hero">
             <div>
-                <div class="wave-badge-live" id="hero-badge">⚡ LIVE ACTIVE WAVE #5</div>
-                <div class="wave-header-title" id="hero-title">1M WAVE #5 (OF 18)</div>
-                <div class="wave-range-tag" id="hero-range">$4,411.24 ➔ $4,418.74 (+$7.50 Step)</div>
+                <div class="fuel-badge-bar">
+                    <span class="sweep-tag-pill" id="hero-sweep-pill">⚡ ERL SWEEP CONFIRMED</span>
+                    <span class="fuel-tank-pill" id="hero-fuel-pill">⛽ TIER 2: HIGHWAY SESSION TANK</span>
+                </div>
+                <div class="wave-badge-live" id="hero-badge">⚡ LIVE ACTIVE WAVE #2</div>
+                <div class="wave-header-title" id="hero-title">4H WAVE #2 (OF 4)</div>
+                <div class="wave-range-tag" id="hero-range">$4,395.12 ➔ $4,448.74 (+$53.62 Fuel Tank)</div>
                 
-                <div style="margin-top:12px;">
+                <div style="margin-top:10px;">
                     <div style="display:flex; justify-content:space-between; font-size:10px; font-weight:800; font-family:'JetBrains Mono'; margin-bottom:4px;">
                         <span style="color:var(--text-muted);">WAVE PROGRESSION GAUGE:</span>
                         <span style="color:var(--cyan-glow);" id="hero-wave-pct">24% COMPLETED</span>
@@ -637,7 +688,15 @@
                 </div>
 
                 <div style="font-size:10.5px; color:var(--text-muted); margin-top:8px;" id="hero-status-desc">
-                    Live Price ($4,413.05) is in Wholesale Discount zone. Institutions defending the $4,411.24 floor.
+                    Live Price ($4,412.34) is in Wholesale Discount zone. Institutions defending the $4,395.12 floor.
+                </div>
+
+                <!-- Institutional Thesis Card -->
+                <div class="thesis-box" id="hero-thesis-box">
+                    <div class="thesis-title">🧠 INSTITUTIONAL ORDER FLOW THESIS</div>
+                    <div id="hero-thesis-text">
+                        Smart Money swept retail Sell-Side Liquidity (SSL) at the $4,395.12 floor, trapping breakout sellers. Price is expanding toward unmitigated Buy-Side Liquidity (BSL) at $4,448.74.
+                    </div>
                 </div>
             </div>
 
@@ -652,11 +711,11 @@
                         <div class="pullback-gauge-fill" id="pullback-gauge-fill" style="width: 76%;"></div>
                     </div>
                     <div class="pullback-advice" id="pullback-advice-text">
-                        <strong>HIGH PULLBACK LIKELIHOOD</strong>: Do not market-buy. Rest a <strong>BUY LIMIT</strong> order at the <strong>$4,411.25</strong> discount POI.
+                        <strong>HIGH PULLBACK LIKELIHOOD</strong>: Do not market-buy. Rest a <strong>BUY LIMIT</strong> order in the <strong>$4,395.12 – $4,406.00</strong> wholesale discount zone.
                     </div>
                 </div>
 
-                <div style="margin-top:8px; font-size:10px; color:var(--text-dim); border-top:1px solid rgba(255,255,255,0.06); padding-top:6px;">
+                <div style="margin-top:8px; font-size:10px; color:var(--text-dim); border-top:1px solid rgba(255,255,255,0.06); padding-top:6px;" id="hero-be-trigger">
                     ⚡ Breakeven Trigger: <strong>+$1.80 Move</strong> ➔ Lock SL to entry
                 </div>
             </div>
@@ -665,11 +724,11 @@
             <div class="ticket-slate">
                 <div style="font-weight:900; color:var(--cyan-glow); font-size:11.5px;">📋 LIVE EXECUTION TICKET</div>
                 <div class="ticket-row"><span>ORDER:</span> <strong style="color:var(--green-glow);">BUY LIMIT</strong></div>
-                <div class="ticket-row"><span>ENTRY POI:</span> <strong id="ticket-entry">$4,411.25</strong></div>
-                <div class="ticket-row"><span>STOP LOSS:</span> <strong id="ticket-sl" style="color:var(--red-glow);">$4,409.55</strong></div>
+                <div class="ticket-row"><span>ENTRY POI:</span> <strong id="ticket-entry">$4,395.15</strong></div>
+                <div class="ticket-row"><span>STOP LOSS:</span> <strong id="ticket-sl" style="color:var(--red-glow);">$4,378.00</strong></div>
                 <div class="ticket-row"><span>TP1 (BE LOCK):</span> <strong id="ticket-tp1" style="color:var(--cyan-glow);">$4,416.05</strong></div>
-                <div class="ticket-row"><span>TP2 (GOAL):</span> <strong id="ticket-tp2" style="color:var(--green-glow);">$4,418.74</strong></div>
-                <div class="ticket-row"><span>RISK (2% GUARD):</span> <strong id="ticket-risk">$1.70 (0.01 Lots)</strong></div>
+                <div class="ticket-row"><span>TP2 (GOAL):</span> <strong id="ticket-tp2" style="color:var(--green-glow);">$4,448.74</strong></div>
+                <div class="ticket-row"><span>RISK (2% GUARD):</span> <strong id="ticket-risk">$17.15 (0.01 Lots)</strong></div>
                 <button class="btn-action-copy" id="btn-copy-ticket" onclick="copyActiveTicket()">
                     ⚡ 1-CLICK COPY MT5 TICKET
                 </button>
@@ -703,13 +762,13 @@
                 <thead>
                     <tr>
                         <th>Wave #</th>
-                        <th>Range Bound</th>
-                        <th>Start Price</th>
-                        <th>Target Price</th>
-                        <th>System Entry Signal</th>
-                        <th>SL Level</th>
+                        <th>Swept Liquidity Pool (Fuel Source)</th>
+                        <th>Discount Entry POI</th>
+                        <th>Protected SL</th>
+                        <th>Target BSL Pool</th>
                         <th>Status / Outcome</th>
                         <th>R / Dollar Gain</th>
+                        <th>Institutional Rationale</th>
                         <th>Pre-Arm MT5 Order</th>
                     </tr>
                 </thead>
@@ -733,13 +792,111 @@
         const activeWave1High = 4448.74;
 
         const tfWaveSpecs = {
-            "1m": { name: "1-MINUTE (1M)", step: 7.50, total: 18, baseLow: active4hLow, baseHigh: active4hHigh, slOffset: 1.70, tp1Offset: 3.20, activeWaveOverride: 5 },
-            "5m": { name: "5-MINUTE (5M)", step: 16.00, total: 9, baseLow: active4hLow, baseHigh: active4hHigh, slOffset: 6.50, tp1Offset: 7.00, activeWaveOverride: 2 },
-            "15m": { name: "15-MINUTE (15M)", step: 32.00, total: 4, baseLow: active4hLow, baseHigh: active4hHigh, slOffset: 10.50, tp1Offset: 12.00, activeWaveOverride: 2 },
-            "1h": { name: "1-HOUR (1H)", step: 65.00, total: 2, baseLow: active4hLow, baseHigh: active4hHigh, slOffset: 14.00, tp1Offset: 18.00, activeWaveOverride: 1 },
-            "4h": { name: "4-HOUR (4H)", step: 32.77, total: 4, baseLow: active4hLow, baseHigh: active4hHigh, slOffset: 16.50, tp1Offset: 24.00, activeWaveOverride: 2 },
-            "1d": { name: "DAILY (1D)", step: 111.61, total: 3, baseLow: macroHighwayLow, baseHigh: macroHighwayHigh, slOffset: 45.00, tp1Offset: 65.00, activeWaveOverride: 1 },
-            "1w": { name: "WEEKLY (1W)", step: 83.70, total: 4, baseLow: macroHighwayLow, baseHigh: macroHighwayHigh, slOffset: 66.00, tp1Offset: 120.00, activeWaveOverride: 1 }
+            "1m": {
+                name: "1-MINUTE (1M)",
+                step: 7.50,
+                total: 18,
+                baseLow: active4hLow,
+                baseHigh: active4hHigh,
+                slOffset: 1.70,
+                tp1Offset: 3.20,
+                activeWaveOverride: 5,
+                sweepType: "IRL (Internal Range Liquidity)",
+                fuelGrade: "⛽ TIER 1: MICRO SCALP TANK (+$7.50 Step)",
+                fuelCap: "+$7.50 Step Fuel",
+                sweptPool: "Micro 1M Wick @ $4,406.00 Defended",
+                thesis: "Micro Sell-Side Liquidity (SSL) harvested below the 1M swing low. Algorithms refilled orders in the 1M Fair Value Gap (FVG); targeting immediate scalp high at $4,418.74."
+            },
+            "5m": {
+                name: "5-MINUTE (5M)",
+                step: 16.00,
+                total: 9,
+                baseLow: active4hLow,
+                baseHigh: active4hHigh,
+                slOffset: 6.50,
+                tp1Offset: 7.00,
+                activeWaveOverride: 2,
+                sweepType: "IRL (5M Momentum FVG)",
+                fuelGrade: "⛽ TIER 1: FAST MOMENTUM TANK (+$16.00 Step)",
+                fuelCap: "+$16.00 Wave Fuel",
+                sweptPool: "5M Liquidity Pivot @ $4,395.12 Swept",
+                thesis: "5-Minute momentum pivot purged retail stop losses. Institutional limit orders absorbed sell volume; pushing to $4,427.00 Buy-Side Liquidity pool."
+            },
+            "15m": {
+                name: "15-MINUTE (15M)",
+                step: 32.00,
+                total: 4,
+                baseLow: active4hLow,
+                baseHigh: active4hHigh,
+                slOffset: 10.50,
+                tp1Offset: 12.00,
+                activeWaveOverride: 2,
+                sweepType: "ERL ⇄ IRL Convergence",
+                fuelGrade: "⛽ TIER 2: SESSION INTRADAY TANK (+$32.00 Step)",
+                fuelCap: "+$32.00 Session Fuel",
+                sweptPool: "London Open Low ($4,395.12) Swept & Defended",
+                thesis: "London session low purged. Breakout sellers were trapped on the downside break; market structure shifted bullish (CHoCH) targeting London High at $4,448.74."
+            },
+            "1h": {
+                name: "1-HOUR (1H)",
+                step: 65.00,
+                total: 2,
+                baseLow: active4hLow,
+                baseHigh: active4hHigh,
+                slOffset: 14.00,
+                tp1Offset: 18.00,
+                activeWaveOverride: 1,
+                sweepType: "ERL (Intraday Equilibrium)",
+                fuelGrade: "⛽ TIER 2: INTRADAY EXPANSION TANK (+$65.00 Step)",
+                fuelCap: "+$65.00 Fuel to $4,454 BSL",
+                sweptPool: "Wholesale Equilibrium Floor ($4,381.24) Defended",
+                thesis: "Wholesale 1-hour demand zone defended by institutional buyers. Fuel unlocked to power expansion into Friday High ($4,490.89) and $4,512.33 BSL pool."
+            },
+            "4h": {
+                name: "4-HOUR (4H)",
+                step: 32.77,
+                total: 4,
+                baseLow: active4hLow,
+                baseHigh: active4hHigh,
+                slOffset: 16.50,
+                tp1Offset: 24.00,
+                activeWaveOverride: 2,
+                sweepType: "ERL (Master Weekly Highway)",
+                fuelGrade: "⛽ TIER 2: MASTER HIGHWAY TANK (+$131.09 Total)",
+                fuelCap: "+$131.09 Master Highway Fuel",
+                sweptPool: "Weekly Highway Floor ($4,381.24) / Retest @ $4,395.12",
+                thesis: "Primary Weekly Accumulation Defended. Smart money is utilizing resting buy limits in the $4,395 – $4,411 discount box to propel price through the 4-Lap Highway toward the $4,512.33 macro ceiling."
+            },
+            "1d": {
+                name: "DAILY (1D)",
+                step: 111.61,
+                total: 3,
+                baseLow: macroHighwayLow,
+                baseHigh: macroHighwayHigh,
+                slOffset: 45.00,
+                tp1Offset: 65.00,
+                activeWaveOverride: 1,
+                sweepType: "ERL (Macro Sweep Base)",
+                fuelGrade: "🚀 TIER 3: ROCKET BOOSTER TANK (+$334.83 Capacity)",
+                fuelCap: "+$334.83 Macro Superhighway Fuel",
+                sweptPool: "Macro Institutional Base ($4,363.16) Multi-Week Pool",
+                thesis: "Daily liquidity sweep base defended. Institutional desks absorbed massive liquidation volume to power the multi-week mean-reversion wave to $4,580.00 (50% Drop EQ)."
+            },
+            "1w": {
+                name: "WEEKLY (1W)",
+                step: 83.70,
+                total: 4,
+                baseLow: macroHighwayLow,
+                baseHigh: macroHighwayHigh,
+                slOffset: 66.00,
+                tp1Offset: 120.00,
+                activeWaveOverride: 1,
+                sweepType: "ERL (Grand Macro Superhighway)",
+                fuelGrade: "🚀 TIER 3: ROCKET BOOSTER TANK (+$334.83+ Capacity)",
+                fuelCap: "Multi-Month Macro Bull Run",
+                sweptPool: "Macro Support Base ($4,363.16) ➔ August Peak ($4,697.99)",
+                thesis: "Grand Macro Super-Highway accumulation wave. Multi-month institutional bull run targeting All-Time Highs ($4,697.99 – $5,000.00)."
+            }
         };
 
         function switchTimeframe(tf) {
@@ -761,12 +918,10 @@
             const waveRange = activeWaveHigh - activeWaveLow;
             const wavePct = Math.min(100, Math.max(0, Math.round(((livePrice - activeWaveLow) / (waveRange || 1)) * 100)));
 
-            // 1. Update 4H Highway Header & Real-Time Path Change Monitor
             const hwTitleEl = document.querySelector('.highway-title-box h2');
             const hwDescEl = document.getElementById('highway-desc');
             
             if (livePrice < active4hLow) {
-                // SCENARIO B: PATH CHANGE / MACRO SWEEP TRIGGERED!
                 if (hwTitleEl) hwTitleEl.innerHTML = `🚨 HIGHWAY REROUTED: SCENARIO B (MACRO LIQUIDITY SWEEP)`;
                 if (hwDescEl) hwDescEl.innerHTML = `⚠️ <strong style="color:var(--red-glow);">PATH CHANGED:</strong> Active Floor ($4,381.24) Breached. Smart Money is executing a <strong>Macro Liquidity Sweep to $4,363.16 – $4,365.00</strong> before multi-week rally to $4,697.99. Suspend counter-trend buys!`;
                 document.getElementById('highway-lap-text').innerText = `🚨 MACRO SWEEP IN PROGRESS`;
@@ -774,7 +929,6 @@
                 document.getElementById('highway-progress-fill').style.width = `100%`;
                 document.getElementById('highway-progress-fill').style.background = 'linear-gradient(90deg, #EF4444, #F59E0B)';
             } else {
-                // SCENARIO A: PRIMARY CONTINUATION
                 const hwRange = active4hHigh - active4hLow;
                 const hwPct = Math.min(100, Math.max(0, Math.round(((livePrice - active4hLow) / hwRange) * 100)));
                 if (hwTitleEl) hwTitleEl.innerHTML = `🛣️ 4-HOUR ACTIVE HIGHWAY MISSION CONTROL`;
@@ -790,24 +944,24 @@
                 document.getElementById('highway-lap-text').innerText = `LAP ${currentLap} OF 4 ACTIVE`;
             }
 
-            // 2. Scoreboard
             document.getElementById('score-total').innerText = `${spec.total}`;
             document.getElementById('score-won').innerText = `${resetsDone}`;
             document.getElementById('score-winrate').innerText = resetsDone > 0 ? "100%" : "READY";
             document.getElementById('score-profit').innerText = `+${(resetsDone * 2.2).toFixed(1)}R`;
 
-            // 3. Active Wave Hero Card
+            document.getElementById('hero-sweep-pill').innerText = `⚡ ${spec.sweepType}`;
+            document.getElementById('hero-fuel-pill').innerText = spec.fuelGrade;
             document.getElementById('hero-badge').innerText = `⚡ LIVE ACTIVE WAVE #${activeWaveNum}`;
             document.getElementById('hero-title').innerText = `${spec.name} WAVE #${activeWaveNum} (OF ${spec.total})`;
-            document.getElementById('hero-range').innerText = `$${activeWaveLow.toFixed(2)} ➔ $${activeWaveHigh.toFixed(2)} (+$${spec.step.toFixed(2)} Step)`;
+            document.getElementById('hero-range').innerText = `$${activeWaveLow.toFixed(2)} ➔ $${activeWaveHigh.toFixed(2)} (${spec.fuelCap})`;
             document.getElementById('hero-wave-pct').innerText = `${wavePct}% COMPLETED`;
             document.getElementById('hero-wave-fill').style.width = `${wavePct}%`;
+            document.getElementById('hero-thesis-text').innerText = spec.thesis;
 
-            // Dynamic Hero Status Description
             const statusDescEl = document.getElementById('hero-status-desc');
             if (statusDescEl) {
                 if (wavePct <= 35) {
-                    statusDescEl.innerHTML = `Live Price ($${livePrice.toFixed(2)}) is in <strong style="color:var(--green-glow);">Wholesale Discount</strong> (${wavePct}% of Wave #${activeWaveNum}). Institutions defending the <strong>$${activeWaveLow.toFixed(2)}</strong> floor.`;
+                    statusDescEl.innerHTML = `Live Price ($${livePrice.toFixed(2)}) is in <strong style="color:var(--green-glow);">Wholesale Discount</strong> (${wavePct}% of Wave #${activeWaveNum}). Swept Pool: <strong>${spec.sweptPool}</strong>.`;
                 } else if (wavePct <= 85) {
                     statusDescEl.innerHTML = `Live Price ($${livePrice.toFixed(2)}) is in <strong style="color:var(--cyan-glow);">Mid-Wave Expansion</strong> (${wavePct}% of Wave #${activeWaveNum}). Pushing toward the <strong>$${activeWaveHigh.toFixed(2)}</strong> target.`;
                 } else {
@@ -815,7 +969,6 @@
                 }
             }
 
-            // Pullback Probability
             const pullbackPct = Math.max(15, Math.min(88, 100 - wavePct));
             document.getElementById('pullback-pct-val').innerText = `${pullbackPct}% CHANCE`;
             document.getElementById('pullback-gauge-fill').style.width = `${pullbackPct}%`;
@@ -827,22 +980,20 @@
             const riskDist = (parseFloat(entryPoi) - parseFloat(slPoi)).toFixed(2);
 
             if (wavePct <= 35) {
-                document.getElementById('pullback-advice-text').innerHTML = `<strong>HIGH PULLBACK POI DEFENSE</strong>: In Wholesale Discount zone. Rest <strong>BUY LIMIT @ $${entryPoi}</strong>.`;
+                document.getElementById('pullback-advice-text').innerHTML = `<strong>HIGH PULLBACK POI DEFENSE</strong>: In Wholesale Discount zone. Rest <strong>BUY LIMIT @ $${entryPoi}</strong>. Do NOT market-buy green wicks.`;
             } else if (wavePct <= 85) {
                 document.getElementById('pullback-advice-text').innerHTML = `<strong>MID-WAVE EXPANSION</strong>: Runners active in profit. Move SL to Breakeven (+1.2R lock) as price heads to <strong>$${activeWaveHigh.toFixed(2)}</strong>.`;
             } else {
                 document.getElementById('pullback-advice-text').innerHTML = `<strong>WAVE EXHAUSTION (85%+)</strong>: Target $${activeWaveHigh.toFixed(2)} reached. Stand down on new buys; prepare for Reset #${activeWaveNum}.`;
             }
 
-            // Ticket Slate
             document.getElementById('ticket-entry').innerText = `$${entryPoi}`;
             document.getElementById('ticket-sl').innerText = `$${slPoi}`;
             document.getElementById('ticket-tp1').innerText = `$${tp1Poi}`;
             document.getElementById('ticket-tp2').innerText = `$${tp2Poi}`;
             document.getElementById('ticket-risk').innerText = `$${riskDist} (0.01 Lots)`;
 
-            // 4. Render Ledger Table
-            document.getElementById('ledger-title').innerText = `📜 ${spec.name} COMPLETE ${spec.total}-WAVE ROADMAP & TRADE AUDIT`;
+            document.getElementById('ledger-title').innerText = `📜 ${spec.name} COMPLETE ${spec.total}-WAVE LIQUIDITY ROADMAP & TRADE AUDIT`;
             const tbody = document.getElementById('ledger-tbody');
             let html = "";
 
@@ -851,49 +1002,47 @@
                 const wHigh = parseFloat(Math.min(spec.baseHigh, wLow + spec.step).toFixed(2));
                 const wEntry = (wLow + 0.01).toFixed(2);
                 const wSl = (wLow - spec.slOffset).toFixed(2);
+                const wSweptPool = i === 1 ? spec.sweptPool : `Wave #${i-1} High Swept ➔ Retest Floor @ $${wLow.toFixed(2)}`;
 
                 if (i < activeWaveNum) {
-                    // Past Completed Wave
                     html += `
                         <tr class="row-completed">
                             <td><strong style="color:var(--green-glow);">WAVE #${i}</strong></td>
-                            <td>$${spec.step.toFixed(2)}</td>
-                            <td>$${wLow.toFixed(2)}</td>
-                            <td>$${wHigh.toFixed(2)}</td>
+                            <td><span style="color:var(--cyan-glow);">${wSweptPool}</span></td>
                             <td>BUY LIMIT @ $${wEntry}</td>
                             <td>$${wSl}</td>
+                            <td>$${wHigh.toFixed(2)} (BSL)</td>
                             <td><span class="status-tag tag-hit">TP2 HIT 🎯</span></td>
                             <td style="color:var(--green-glow); font-weight:800;">+2.3R (+$${(spec.step * 0.95).toFixed(2)})</td>
+                            <td style="font-size:10px; color:var(--text-muted); max-width:240px;">Liquidated retail short stops; completed expansion leg.</td>
                             <td><span style="color:var(--text-dim); font-size:10px;">CLOSED ✅</span></td>
                         </tr>
                     `;
                 } else if (i === activeWaveNum) {
-                    // Active Wave
                     html += `
                         <tr class="row-active">
                             <td><strong style="color:var(--cyan-glow);">WAVE #${i} (ACTIVE)</strong></td>
-                            <td>$${spec.step.toFixed(2)}</td>
-                            <td>$${wLow.toFixed(2)}</td>
-                            <td>$${wHigh.toFixed(2)}</td>
+                            <td><strong style="color:var(--gold-glow);">${spec.sweptPool}</strong></td>
                             <td><strong style="color:var(--gold-glow);">BUY LIMIT @ $${entryPoi}</strong></td>
-                            <td style="color:var(--red-glow);">$${slPoi}</td>
+                            <td style="color:var(--red-glow); font-weight:800;">$${slPoi}</td>
+                            <td><strong style="color:var(--green-glow);">$${wHigh.toFixed(2)} (BSL Magnet)</strong></td>
                             <td><span class="status-tag tag-active">${wavePct}% ACTIVE 🟢</span></td>
                             <td style="color:var(--cyan-glow); font-weight:800;">RUNNER ACTIVE</td>
+                            <td style="font-size:10px; color:#CBD5E1; max-width:240px;">${spec.thesis}</td>
                             <td><button class="btn-prearm" onclick="copyWaveTicket(${i}, ${wEntry}, ${wSl}, ${wHigh})">📋 COPY LIVE TICKET</button></td>
                         </tr>
                     `;
                 } else {
-                    // Future Queued Wave
                     html += `
                         <tr class="row-future">
                             <td><span style="color:var(--text-muted);">WAVE #${i}</span></td>
-                            <td>$${spec.step.toFixed(2)}</td>
-                            <td>$${wLow.toFixed(2)}</td>
-                            <td>$${wHigh.toFixed(2)}</td>
+                            <td><span style="color:var(--text-dim);">${wSweptPool}</span></td>
                             <td>BUY LIMIT @ $${wEntry}</td>
                             <td>$${wSl}</td>
+                            <td>$${wHigh.toFixed(2)} (BSL)</td>
                             <td><span class="status-tag tag-queued">QUEUED ⏳</span></td>
                             <td style="color:var(--text-dim);">POTENTIAL +2.4R</td>
+                            <td style="font-size:10px; color:var(--text-dim); max-width:240px;">Pending completion of Wave #${i-1} target and discount retest.</td>
                             <td><button class="btn-prearm" onclick="copyWaveTicket(${i}, ${wEntry}, ${wSl}, ${wHigh})">⏳ PRE-SET LIMIT ORDER</button></td>
                         </tr>
                     `;
@@ -902,7 +1051,6 @@
             tbody.innerHTML = html;
         }
 
-        // Live Price Sync
         setInterval(async () => {
             try {
                 const res = await fetch('/api/price');
