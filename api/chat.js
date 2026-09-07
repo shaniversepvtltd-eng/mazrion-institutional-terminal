@@ -88,20 +88,48 @@ export default async function handler(req, res) {
         const maxRiskDollars = (bal * 0.02).toFixed(2); // Strict 2% cap
         const safeLot = 0.01; // Rule 2: Minimum lot size 0.01
 
-        // Determine Bias Discrepancy Gate (Rule 1 in AGENTS.md)
+        // Determine Dynamic Market Stage & Bias Confirmation
+        let biasState = "NORMAL_ALIGNMENT";
         let biasDiscrepancyWarning = "";
-        let recommendedDirective = "🟢 BUY LIMIT READY";
-        let suggestedEntry = 4390.00;
-        let suggestedSL = 4378.00; // Structural stop beyond recent low
-        let suggestedTP1 = 4410.00;
+        let recommendedDirective = "🟢 BUY LIMIT / PULLBACK ENTRY READY";
+        let suggestedEntry = (p - 1.5).toFixed(2);
+        let suggestedSL = (sessionLow - 3.0).toFixed(2);
+        let suggestedTP1 = 4415.00;
         let suggestedTP2 = 4512.33;
 
-        if (p < 4410.00) {
-            biasDiscrepancyWarning = "⚠️ BIAS DISCREPANCY / INTRADAY FLUSH ACTIVE: Market pulled back below the $4,413 morning level. Intraday momentum is flushed. Do NOT FOMO buy during active falling candles. Sit on hands or wait for 5M/15M base confirmation above $4,395 before triggering entries.";
-            recommendedDirective = "⏳ SIT ON HANDS / WAIT FOR 5M BASE";
-            suggestedEntry = (p - 2.5).toFixed(2);
-            suggestedSL = (sessionLow - 5.0).toFixed(2);
-            suggestedTP1 = (p + 15.0).toFixed(2);
+        if (p < 4385.00) {
+            // Stage A: Active Falling / Liquidity Hunt at Lows
+            biasState = "ACTIVE_FLUSH";
+            biasDiscrepancyWarning = "⚠️ ACTIVE FLUSH: Price testing session low ($4,381.24). Do not buy falling candles. Wait for 5M green reversal.";
+            recommendedDirective = "⏳ SIT ON HANDS / WAIT FOR 5M REVERSAL";
+            suggestedEntry = (sessionLow - 2.0).toFixed(2);
+            suggestedSL = (sessionLow - 7.0).toFixed(2);
+            suggestedTP1 = 4400.00;
+        } else if (p >= 4385.00 && p < 4395.00) {
+            // Stage B: Basing / Reversal in progress
+            biasState = "BASING";
+            biasDiscrepancyWarning = "🔄 BASING IN PROGRESS: Bounced off $4,381.24 session low. Watch for confirmed close above $4,395.00.";
+            recommendedDirective = "⏳ WAIT FOR $4,395 BREAK CONFIRMATION";
+            suggestedEntry = 4390.00;
+            suggestedSL = (sessionLow - 3.0).toFixed(2);
+            suggestedTP1 = 4410.00;
+        } else if (p >= 4395.00 && p < 4415.00) {
+            // Stage C: Confirmed 5M Reclaim & CHoCH Rebound!
+            biasState = "5M_CONFIRMED_REBOUND";
+            biasDiscrepancyWarning = "✅ 5M BASE CONFIRMED: Price successfully defended $4,381.24 wholesale low and reclaimed above $4,395 ($" + p.toFixed(2) + "). 5M Bullish CHoCH active. Pullback buy orders are valid!";
+            recommendedDirective = "🟢 BUY ON PULLBACK READY (5M Base Confirmed)";
+            suggestedEntry = (p - 1.5).toFixed(2);
+            suggestedSL = (sessionLow - 3.0).toFixed(2);
+            suggestedTP1 = 4415.00;
+            suggestedTP2 = 4512.33;
+        } else {
+            // Stage D: Full Highway Expansion
+            biasState = "HIGHWAY_EXPANSION";
+            recommendedDirective = "🟢 BUY EXPANSION ACTIVE (Lap 2 Highway)";
+            suggestedEntry = p.toFixed(2);
+            suggestedSL = (p - 10.0).toFixed(2);
+            suggestedTP1 = 4440.00;
+            suggestedTP2 = 4512.33;
         }
 
         // Live Market Context Summary (Strictly Token Efficient)
@@ -110,29 +138,30 @@ LIVE TRADINGVIEW TELEMETRY & TERMINAL CONTEXT:
 - Real-Time Spot Gold Price: $${p.toFixed(2)} (Official TradingView OANDA:XAUUSD Feed)
 - 24H Session Range: Low $${sessionLow.toFixed(2)} — High $${sessionHigh.toFixed(2)} (Open: $${sessionOpen.toFixed(2)})
 - Session Net Change: ${sessionChangePct.toFixed(2)}% | Technical RSI: ${sessionRSI.toFixed(1)} (${technicalRating})
-- 5-Minute Intraday State: ${recent5mTrend}
+- 5-Minute Intraday State: ${recent5mTrend} | Bias State: ${biasState}
 - Master Highway: Lap 2 of 4 (Macro Target: $4,512.33 | Defense Floor: $4,286.97)
 - User Account Capital: $${bal.toFixed(2)} (Strict Risk Cap: $${maxRiskDollars} | Recommended Size: ${safeLot} lots)
-- Bias Discrepancy Gate: ${biasDiscrepancyWarning || "Normal alignment"}
+- Status Note: ${biasDiscrepancyWarning}
 - Breakeven Shield (+1.2R): Defending structural swings
 - 7-Timeframe Hierarchy: 1M (Oversold), 5M (${recent5mTrend}), 15M (Liquidity Hunt), 1H (Testing Demand), 4H (Macro Bull Lap 2), 1D (Re-accumulation)
 `;
 
         const systemPrompt = `You are MAZRION, the user's personal, elite institutional AI trading advisor and protective friend.
-The user is a beginner who knows nothing about trading. Talk to them warmly, directly, and supportively like a trusted, experienced friend (e.g. "Hey bro," "Here's what's happening," "Relax, you're safe").
+The user is a beginner who knows nothing about trading. Talk to them warmly, directly, and supportively like a trusted, experienced friend (e.g. "Hey bro," "Here's the plan," "Relax, you're safe").
 
 MANDATORY RULES & INSTANT INTELLIGENCE:
 1. Ground your response in the EXACT live TradingView spot price: $${p.toFixed(2)}.
-2. DYNAMIC QUESTION ANSWERING: If the user asks a specific question (e.g. "Why is the market falling?", "Is it safe?", "What does BOS mean?", "What lot size?"):
-   - ANSWER THEIR EXACT QUESTION DIRECTLY in 2-3 friendly, super insightful bullet points explaining the real market mechanics (e.g., London/NY session sweep, profit-taking, testing the 4H wholesale base at $4,381, risk protection).
-   - Do NOT just dump a generic card if they asked a specific conversational question.
-3. When the user asks for a trade plan, signal, entry, or MT5 ticket, use this exact 4-part card format:
-🎯 DIRECTIVE: [1 short line: 🟢 BUY LIMIT READY / 🔴 SELL LIMIT READY / ⏳ SIT ON HANDS / 🛡️ MOVE TO BREAKEVEN]
+2. DYNAMIC CONFIRMATION AWARENESS:
+   - When price breaks and holds above $4,395 after bouncing from $4,381, acknowledge that the 5M base confirmation HAS OCCURRED. Do NOT tell them to keep waiting for $4,395 if price is ALREADY above $4,395!
+   - Give them the clear confirmed setup (🟢 BUY ON PULLBACK at ~$4,395, SL at $4,378 below session low, TP1 at $4,415, TP2 at $4,512).
+3. If the user asks conversational questions ("Why is it falling?", "Is it safe?"), answer directly with friendly market mechanics.
+4. When giving a trade plan or setup, ALWAYS use this exact 4-part card format:
+🎯 DIRECTIVE: [1 short line: 🟢 BUY ON PULLBACK READY / 🔴 SELL LIMIT READY / ⏳ SIT ON HANDS / 🛡️ MOVE TO BREAKEVEN]
 📍 NUMBERS: Entry: $${suggestedEntry} | SL: $${suggestedSL} | TP1: $${suggestedTP1} | TP2: $${suggestedTP2}
-💡 WHY: (Max 2 short friendly bullets explaining the move)
+💡 WHY: (Max 2 short friendly bullets explaining the confirmation & move)
 🛡️ YOUR RISK ($${bal}): Trade ${safeLot} lots. Dollar risk: $${maxRiskDollars} (strict 2% account protection).
 
-4. STRICT TOKEN CONSTRAINT: Output must be concise, punchy, zero fluff, zero paragraph essays (max 100-150 words).
+5. STRICT TOKEN CONSTRAINT: Output must be concise, punchy, zero fluff, zero paragraph essays (max 100-150 words).
 
 ${marketTelemetry}`;
 
