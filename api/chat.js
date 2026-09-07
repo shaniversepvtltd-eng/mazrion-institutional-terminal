@@ -218,12 +218,14 @@ ${marketTelemetry}`;
             }
         }
 
-        // Reliable fallback if API fails
+        // Reliable fallback if API takes long
         if (!reply) {
-            if (p < 4410.00) {
-                reply = `Hey bro! Live Gold (TradingView OANDA:XAUUSD) is at **$${p.toFixed(2)}**.\n\n🎯 **DIRECTIVE**: ⏳ **SIT ON HANDS — DO NOT FOMO BUY**\n📍 **NUMBERS**: Safe Re-entry: **$${(p - 2.5).toFixed(2)}** | SL: **$${(sessionLow - 5.0).toFixed(2)}** | TP1: **$${(p + 15.0).toFixed(2)}** | TP2: **$4,512.33**\n💡 **WHY**:\n• Gold pulled back ${sessionChangePct.toFixed(2)}% to test session low ($${sessionLow.toFixed(2)})\n• Macro 4H Highway target ($4,512) is still alive, but we wait for 5M green confirmation.\n🛡️ **YOUR RISK ($${bal})**: Size **${safeLot} lots**. Max dollar risk is **$${maxRiskDollars}** (2% capital cap).`;
+            if (biasState === "5M_CONFIRMED_REBOUND") {
+                reply = `Hey bro! Live Gold (TradingView OANDA:XAUUSD) is at **$${p.toFixed(2)}**.\n\n🎯 **DIRECTIVE**: 🟢 **BUY ON PULLBACK READY (5M Base Confirmed)**\n📍 **NUMBERS**: Entry: **$${suggestedEntry}** | SL: **$${suggestedSL}** | TP1: **$${suggestedTP1}** | TP2: **$${suggestedTP2}**\n💡 **WHY**:\n• Defended $4,381.24 wholesale low and reclaimed above $4,395\n• 5M Bullish CHoCH active targeting 4H Highway Lap 2\n🛡️ **YOUR RISK ($${bal})**: Size **${safeLot} lots**. Max dollar risk is **$${maxRiskDollars}** (2% capital cap).`;
+            } else if (p < 4385.00) {
+                reply = `Hey bro! Live Gold (TradingView OANDA:XAUUSD) is at **$${p.toFixed(2)}**.\n\n🎯 **DIRECTIVE**: ⏳ **SIT ON HANDS — DO NOT FOMO BUY**\n📍 **NUMBERS**: Safe Re-entry: **$${suggestedEntry}** | SL: **$${suggestedSL}** | TP1: **$${suggestedTP1}** | TP2: **$${suggestedTP2}**\n💡 **WHY**:\n• Gold pulled back ${sessionChangePct.toFixed(2)}% to test session low ($${sessionLow.toFixed(2)})\n• Wait for 5M green base confirmation.\n🛡️ **YOUR RISK ($${bal})**: Size **${safeLot} lots**. Max dollar risk is **$${maxRiskDollars}** (2% capital cap).`;
             } else {
-                reply = `Hey bro! Live Gold (TradingView OANDA:XAUUSD) is at **$${p.toFixed(2)}**.\n\n🎯 **DIRECTIVE**: 🟢 **BUY LIMIT ACTIVE (Lap 2 Expansion)**\n📍 **NUMBERS**: Entry: **$${p.toFixed(2)}** | SL: **$${(p - 8.5).toFixed(2)}** | TP1: **$${(p + 15.0).toFixed(2)}** | TP2: **$4,512.33**\n💡 **WHY**:\n• Defending demand floor and riding 4H Highway Lap 2\n• Liquidity pool swept clean\n🛡️ **YOUR RISK ($${bal})**: Size **${safeLot} lots**. Max dollar risk is **$${maxRiskDollars}**.`;
+                reply = `Hey bro! Live Gold (TradingView OANDA:XAUUSD) is at **$${p.toFixed(2)}**.\n\n🎯 **DIRECTIVE**: 🟢 **BUY LIMIT ACTIVE (Lap 2 Expansion)**\n📍 **NUMBERS**: Entry: **$${suggestedEntry}** | SL: **$${suggestedSL}** | TP1: **$${suggestedTP1}** | TP2: **$${suggestedTP2}**\n💡 **WHY**:\n• Defending demand floor and riding 4H Highway Lap 2\n• Liquidity pool swept clean\n🛡️ **YOUR RISK ($${bal})**: Size **${safeLot} lots**. Max dollar risk is **$${maxRiskDollars}**.`;
             }
         }
 
