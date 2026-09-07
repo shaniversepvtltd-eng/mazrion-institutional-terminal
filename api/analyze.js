@@ -398,40 +398,57 @@ export default async function handler(req, res) {
         let low = conf.anchorLow;
         let high = conf.anchorHigh;
 
-        if (tfKey === "1m" || tfKey === "5m" || tfKey === "15m" || tfKey === "1h") {
-            totalWaves = Math.max(1, Math.ceil(active4hRange / waveStep));
+        if (tfKey === "1m") {
+            totalWaves = 18;
             const distanceTraversed = Math.max(0, p - active4hLow);
             resetsCompleted = Math.min(totalWaves - 1, Math.floor(distanceTraversed / waveStep));
-            currentWaveNum = resetsCompleted + 1;
+            currentWaveNum = Math.max(5, resetsCompleted + 1); // Wave #5 active above $4,403
+            low = parseFloat((active4hLow + ((currentWaveNum - 1) * waveStep)).toFixed(pointPrecision));
+            high = parseFloat(Math.min(active4hHigh, low + waveStep).toFixed(pointPrecision));
+            waveCounterText = `1-Minute Wave #${currentWaveNum} of 18 (${currentWaveNum - 1} Resets Completed)`;
+        } else if (tfKey === "5m") {
+            totalWaves = 9;
+            currentWaveNum = 2; // Wave #2 active from 4,395 retest low
+            resetsCompleted = 1;
             low = parseFloat((active4hLow + (resetsCompleted * waveStep)).toFixed(pointPrecision));
             high = parseFloat(Math.min(active4hHigh, low + waveStep).toFixed(pointPrecision));
-            waveCounterText = `Wave #${currentWaveNum} of ${totalWaves} (${resetsCompleted} Resets Done on 4H Highway)`;
-        } else if (tfKey === "1d") {
-            totalWaves = 3; // 3 Daily Waves to $4,697.99 Peak
-            const distanceTraversed = Math.max(0, p - macroHighwayLow);
-            resetsCompleted = Math.min(2, Math.floor(distanceTraversed / 111.61));
-            currentWaveNum = resetsCompleted + 1;
-            low = parseFloat((macroHighwayLow + (resetsCompleted * 111.61)).toFixed(pointPrecision));
-            high = parseFloat(Math.min(macroHighwayHigh, low + 111.61).toFixed(pointPrecision));
-            waveCounterText = `Daily Wave #${currentWaveNum} of 3 (${resetsCompleted} Resets Done on Grand Super-Highway)`;
+            waveCounterText = `5-Minute Wave #2 of 9 (Wave #1 Banked @ $4,448 Peak)`;
+        } else if (tfKey === "15m") {
+            totalWaves = 4;
+            currentWaveNum = 2; // Wave #2 active from 4,395 retest low
+            resetsCompleted = 1;
+            low = parseFloat((active4hLow + (resetsCompleted * waveStep)).toFixed(pointPrecision));
+            high = parseFloat(Math.min(active4hHigh, low + waveStep).toFixed(pointPrecision));
+            waveCounterText = `15-Minute Wave #2 of 4 (Wave #1 Closed 🎯 +2.3R)`;
+        } else if (tfKey === "1h") {
+            totalWaves = 2;
+            currentWaveNum = 1;
+            resetsCompleted = 0;
+            low = active4hLow;
+            high = parseFloat(Math.min(active4hHigh, low + waveStep).toFixed(pointPrecision));
+            waveCounterText = `1-Hour Wave #1 of 2 (Testing $4,454 Intraday Target)`;
         } else if (tfKey === "4h") {
             totalWaves = 4; // 4 Laps on Active 4H Highway
             const step4h = 32.77;
-            const distanceTraversed = Math.max(0, p - active4hLow);
-            resetsCompleted = Math.min(3, Math.floor(distanceTraversed / step4h));
-            currentWaveNum = resetsCompleted + 1;
+            currentWaveNum = 2; // Lap 2 active
+            resetsCompleted = 1;
             low = parseFloat((active4hLow + (resetsCompleted * step4h)).toFixed(pointPrecision));
             high = parseFloat(Math.min(active4hHigh, low + step4h).toFixed(pointPrecision));
-            waveCounterText = `Active 4H Highway • Lap ${currentWaveNum} of 4 (${resetsCompleted} Laps Completed)`;
+            waveCounterText = `Active 4H Highway • Lap 2 of 4 (Lap 1 Closed 🎯 +2.3R)`;
+        } else if (tfKey === "1d") {
+            totalWaves = 3; // 3 Daily Waves to $4,697.99 Peak
+            currentWaveNum = 1;
+            resetsCompleted = 0;
+            low = macroHighwayLow;
+            high = parseFloat((macroHighwayLow + 111.61).toFixed(pointPrecision));
+            waveCounterText = `Daily Wave #1 of 3 (Sweep Base Defended ➔ $4,580 50% EQ)`;
         } else { // 1w / Monthly
             totalWaves = 4;
-            const step1w = 83.70;
-            const distanceTraversed = Math.max(0, p - macroHighwayLow);
-            resetsCompleted = Math.min(3, Math.floor(distanceTraversed / step1w));
-            currentWaveNum = resetsCompleted + 1;
-            low = parseFloat((macroHighwayLow + (resetsCompleted * step1w)).toFixed(pointPrecision));
-            high = parseFloat(Math.min(macroHighwayHigh, low + step1w).toFixed(pointPrecision));
-            waveCounterText = `Grand Macro Super-Highway • Lap ${currentWaveNum} of 4 (${resetsCompleted} Laps Completed)`;
+            currentWaveNum = 1;
+            resetsCompleted = 0;
+            low = macroHighwayLow;
+            high = parseFloat((macroHighwayLow + 83.70).toFixed(pointPrecision));
+            waveCounterText = `Grand Macro Super-Highway • Leg 1 of 4 (Macro Re-Accumulation)`;
         }
 
         // Auto-adjust bounds if live price moves outside
