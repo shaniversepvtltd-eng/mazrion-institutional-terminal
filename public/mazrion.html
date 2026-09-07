@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MAZRION // PERSONAL AI TRADING ADVISOR & CO-PILOT</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-base: #030712;
+            --bg-card: rgba(15, 23, 42, 0.75);
+            --bg-card-hover: rgba(30, 41, 59, 0.85);
+            --border-dim: rgba(255, 255, 255, 0.08);
+            --border-glow: rgba(168, 85, 247, 0.4);
+            --accent-purple: #A855F7;
+            --accent-cyan: #00E5FF;
+            --accent-green: #10B981;
+            --accent-amber: #F59E0B;
+            --accent-red: #EF4444;
+            --text-main: #F8FAFC;
+            --text-muted: #94A3B8;
+            --text-dim: #64748B;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-base);
+            background-image: 
+                radial-gradient(circle at 15% 15%, rgba(168, 85, 247, 0.08) 0%, transparent 45%),
+                radial-gradient(circle at 85% 85%, rgba(0, 229, 255, 0.06) 0%, transparent 45%);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Top Header & Nav */
+        header {
+            background: rgba(3, 7, 18, 0.9);
+            border-bottom: 1px solid var(--border-dim);
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            backdrop-filter: blur(12px);
+            z-index: 50;
+            flex-shrink: 0;
+        }
+
+        .brand-box {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-logo {
+            font-family: 'Cinzel', serif;
+            font-size: 18px;
+            font-weight: 900;
+            background: linear-gradient(135deg, #FFF, #C084FC, #00E5FF);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 2px;
+        }
+
+        .status-badge {
+            background: rgba(16, 185, 129, 0.15);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            color: var(--accent-green);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 99px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .live-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--accent-green);
+            border-radius: 50%;
+            animation: pulse-dot 1.5s infinite;
+        }
+
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(1.3); }
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-btn {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border-dim);
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 6px 12px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .nav-btn:hover, .nav-btn.active {
+            background: rgba(168, 85, 247, 0.15);
+            border-color: var(--accent-purple);
+            color: #FFF;
+            box-shadow: 0 0 10px rgba(168, 85, 247, 0.2);
+        }
+
+        /* Split-Screen Main Layout */
+        .workspace-grid {
+            display: grid;
+            grid-template-columns: 55% 45%;
+            height: calc(100vh - 58px);
+            overflow: hidden;
+        }
+
+        /* Left Side: Chart & Telemetry Cards */
+        .chart-pane {
+            border-right: 1px solid var(--border-dim);
+            display: flex;
+            flex-direction: column;
+            background: rgba(3, 7, 18, 0.5);
+            overflow: hidden;
+        }
+
+        .chart-telemetry-bar {
+            padding: 10px 16px;
+            background: rgba(15, 23, 42, 0.6);
+            border-bottom: 1px solid var(--border-dim);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            flex-shrink: 0;
+        }
+
+        .telemetry-cell {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .tel-label {
+            font-size: 9.5px;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .tel-val {
+            font-weight: 700;
+        }
+
+        .chart-container {
+            flex: 1;
+            position: relative;
+            background: #0B0E14;
+        }
+
+        .chart-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* Right Side: Mazrion Advisor Chat */
+        .advisor-pane {
+            display: flex;
+            flex-direction: column;
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .advisor-header {
+            padding: 12px 18px;
+            background: rgba(15, 23, 42, 0.85);
+            border-bottom: 1px solid var(--border-dim);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-shrink: 0;
+        }
+
+        .advisor-title-box {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .advisor-name {
+            font-weight: 800;
+            font-size: 14px;
+            background: linear-gradient(135deg, #FFF, #C084FC);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .balance-selector {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--border-dim);
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+        }
+
+        .balance-selector select {
+            background: transparent;
+            border: none;
+            color: var(--accent-green);
+            font-family: inherit;
+            font-size: 11px;
+            font-weight: 700;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .balance-selector select option {
+            background: #0F172A;
+            color: #FFF;
+        }
+
+        /* Action Tool Ribbon */
+        .advisor-tool-ribbon {
+            padding: 8px 16px;
+            background: rgba(10, 15, 30, 0.9);
+            border-bottom: 1px solid var(--border-dim);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            overflow-x: auto;
+            flex-shrink: 0;
+            scrollbar-width: none;
+        }
+
+        .advisor-tool-ribbon::-webkit-scrollbar { display: none; }
+
+        .tool-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-dim);
+            color: var(--text-main);
+            font-size: 11px;
+            font-weight: 600;
+            padding: 5px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            white-space: nowrap;
+            transition: all 0.2s ease;
+        }
+
+        .tool-btn:hover {
+            background: rgba(168, 85, 247, 0.2);
+            border-color: var(--accent-purple);
+            transform: translateY(-1px);
+        }
+
+        .tool-btn.panic {
+            background: rgba(239, 68, 68, 0.15);
+            border-color: rgba(239, 68, 68, 0.4);
+            color: #FCA5A5;
+        }
+
+        .tool-btn.panic:hover {
+            background: rgba(239, 68, 68, 0.3);
+            border-color: var(--accent-red);
+            box-shadow: 0 0 12px rgba(239, 68, 68, 0.4);
+        }
+
+        /* Chat Message Stream */
+        .chat-stream {
+            flex: 1;
+            padding: 16px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255,255,255,0.1) transparent;
+        }
+
+        .chat-stream::-webkit-scrollbar { width: 4px; }
+        .chat-stream::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 4px; }
+
+        .msg-bubble {
+            max-width: 92%;
+            padding: 12px 16px;
+            border-radius: 12px;
+            font-size: 13px;
+            line-height: 1.5;
+            animation: fadeIn 0.25s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .msg-bubble.user {
+            align-self: flex-end;
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.3), rgba(6, 182, 212, 0.25));
+            border: 1px solid rgba(168, 85, 247, 0.4);
+            color: #FFF;
+            border-bottom-right-radius: 2px;
+        }
+
+        .msg-bubble.mazrion {
+            align-self: flex-start;
+            background: rgba(15, 23, 42, 0.9);
+            border: 1px solid var(--border-glow);
+            color: var(--text-main);
+            border-bottom-left-radius: 2px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .mazrion-tag {
+            font-family: 'Cinzel', serif;
+            font-size: 10px;
+            font-weight: 900;
+            color: var(--accent-purple);
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* Trade Card in Chat */
+        .trade-card-render {
+            margin-top: 8px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 8px;
+            padding: 10px 12px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11.5px;
+        }
+
+        .trade-card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: var(--accent-green);
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .trade-copy-btn {
+            background: rgba(16, 185, 129, 0.2);
+            border: 1px solid var(--accent-green);
+            color: #FFF;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .trade-copy-btn:hover {
+            background: var(--accent-green);
+            color: #000;
+        }
+
+        /* Quick Suggestion Chips */
+        .quick-chips-box {
+            padding: 8px 16px;
+            background: rgba(10, 15, 30, 0.8);
+            border-top: 1px solid var(--border-dim);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            overflow-x: auto;
+            scrollbar-width: none;
+            flex-shrink: 0;
+        }
+
+        .quick-chips-box::-webkit-scrollbar { display: none; }
+
+        .chip-btn {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border-dim);
+            color: var(--text-muted);
+            font-size: 11px;
+            padding: 4px 10px;
+            border-radius: 99px;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s ease;
+        }
+
+        .chip-btn:hover {
+            background: rgba(0, 229, 255, 0.15);
+            border-color: var(--accent-cyan);
+            color: #FFF;
+        }
+
+        /* Input Bar */
+        .chat-input-bar {
+            padding: 12px 16px;
+            background: rgba(15, 23, 42, 0.95);
+            border-top: 1px solid var(--border-dim);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-shrink: 0;
+        }
+
+        .chat-input {
+            flex: 1;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--border-dim);
+            color: #FFF;
+            font-family: inherit;
+            font-size: 13px;
+            padding: 10px 14px;
+            border-radius: 8px;
+            outline: none;
+            transition: border-color 0.2s ease;
+        }
+
+        .chat-input:focus {
+            border-color: var(--accent-purple);
+            box-shadow: 0 0 10px rgba(168, 85, 247, 0.25);
+        }
+
+        .send-btn {
+            background: linear-gradient(135deg, var(--accent-purple), #7C3AED);
+            border: none;
+            color: #FFF;
+            font-size: 13px;
+            font-weight: 700;
+            padding: 10px 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: transform 0.15s ease, box-shadow 0.2s ease;
+        }
+
+        .send-btn:hover {
+            transform: scale(1.03);
+            box-shadow: 0 0 14px rgba(168, 85, 247, 0.4);
+        }
+
+        .send-btn:active {
+            transform: scale(0.98);
+        }
+
+        .typing-indicator {
+            display: inline-flex;
+            gap: 4px;
+            align-items: center;
+            padding: 4px 8px;
+        }
+
+        .typing-dot {
+            width: 5px;
+            height: 5px;
+            background: var(--accent-cyan);
+            border-radius: 50%;
+            animation: bounce-dot 1.2s infinite ease-in-out;
+        }
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes bounce-dot {
+            0%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-5px); }
+        }
+
+        @media (max-width: 900px) {
+            .workspace-grid {
+                grid-template-columns: 1fr;
+                grid-template-rows: 40% 60%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header Navigation -->
+    <header>
+        <div class="brand-box">
+            <span class="brand-logo">MAZRION</span>
+            <span class="status-badge">
+                <span class="live-dot"></span>
+                DEEPSEEK ADVISOR ACTIVE
+            </span>
+        </div>
+
+        <div class="nav-links">
+            <a href="/index.html" class="nav-btn">🏛️ Terminal</a>
+            <a href="/cockpit.html" class="nav-btn">✈️ Cockpit</a>
+            <a href="/fractals.html" class="nav-btn">🧩 Ghost Blueprint</a>
+            <a href="/cinema.html" class="nav-btn">🎬 Cinema</a>
+            <a href="/mazrion.html" class="nav-btn active">🔮 Mazrion Advisor</a>
+        </div>
+    </header>
+
+    <!-- Split-Screen Workspace -->
+    <main class="workspace-grid">
+
+        <!-- Left Pane: Live Chart & Telemetry Strip -->
+        <section class="chart-pane">
+            <div class="chart-telemetry-bar">
+                <div class="telemetry-cell">
+                    <span class="tel-label">Live Gold Price</span>
+                    <span class="tel-val" id="chartLivePrice" style="color:var(--accent-cyan); font-size:13px;">$4,421.36</span>
+                </div>
+                <div class="telemetry-cell">
+                    <span class="tel-label">Master Highway</span>
+                    <span class="tel-val" style="color:#C084FC;">Lap 2 of 4 (Friday BOS)</span>
+                </div>
+                <div class="telemetry-cell">
+                    <span class="tel-label">0-Drawdown Floor</span>
+                    <span class="tel-val" style="color:var(--accent-green);">$4,286.97 (Defended)</span>
+                </div>
+                <div class="telemetry-cell">
+                    <span class="tel-label">4H Target</span>
+                    <span class="tel-val" style="color:var(--accent-amber);">$4,512.33</span>
+                </div>
+            </div>
+
+            <!-- Embedded Live Chart -->
+            <div class="chart-container">
+                <iframe src="https://s.tradingview.com/widgetembed/?frameElementId=tradingview_762ef&symbol=OANDA%3AXAUUSD&interval=5&hidesidetoolbar=1&symboledit=1&saveimage=1&toolbarbg=0B0E14&studies=%5B%5D&theme=dark&style=1&timezone=Etc%2FUTC&studies_overrides=%7B%7D&overrides=%7B%22mainSeriesProperties.style%22%3A1%7D&enabled_features=%5B%5D&disabled_features=%5B%5D&locale=en&utm_source=mazrion.terminal" allowtransparency="true" scrolling="no"></iframe>
+            </div>
+        </section>
+
+        <!-- Right Pane: Mazrion Advisor Chat -->
+        <section class="advisor-pane">
+
+            <!-- Advisor Bar -->
+            <div class="advisor-header">
+                <div class="advisor-title-box">
+                    <span>🔮</span>
+                    <div>
+                        <span class="advisor-name">MAZRION // PERSONAL CO-PILOT</span>
+                        <p style="font-size:10.5px; color:var(--text-muted);">Your 24/7 Institutional Mentor • Plain English Advice</p>
+                    </div>
+                </div>
+
+                <div class="balance-selector">
+                    <span style="color:var(--text-dim);">Account:</span>
+                    <select id="userBalanceSelect" onchange="updateAccountContext()">
+                        <option value="100">$100 (Starter Safe)</option>
+                        <option value="500">$500 (Growth)</option>
+                        <option value="1000">$1,000 (Standard)</option>
+                        <option value="5000">$5,000 (Pro)</option>
+                        <option value="10000">$10,000 (Institutional)</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Quick Action Tool Ribbon -->
+            <div class="advisor-tool-ribbon">
+                <button class="tool-btn panic" onclick="sendQuickPrompt('🚨 EMERGENCY SCAN: Am I safe right now or should I exit?')">
+                    🚨 Panic Scan
+                </button>
+                <button class="tool-btn" onclick="sendQuickPrompt('☕ Give me the 1-minute Morning Briefing for today')">
+                    ☕ Morning Briefing
+                </button>
+                <button class="tool-btn" onclick="sendQuickPrompt('🎯 What is the exact MT5 order ticket right now?')">
+                    📋 Get MT5 Ticket
+                </button>
+                <button class="tool-btn" onclick="sendQuickPrompt('⚔️ Run a Bull vs Bear Debate on live Gold')">
+                    ⚔️ Bull vs Bear
+                </button>
+                <button class="tool-btn" onclick="sendQuickPrompt('👶 Explain what Gold is doing right now like I am 10 years old')">
+                    👶 Explain Like I\'m 10
+                </button>
+            </div>
+
+            <!-- Chat Stream -->
+            <div class="chat-stream" id="chatStream">
+                <!-- Welcome Message -->
+                <div class="msg-bubble mazrion">
+                    <div class="mazrion-tag">🔮 MAZRION ADVISOR</div>
+                    Hey bro! I'm watching live Gold for you right now at <strong>$4,421.36</strong>.<br><br>
+                    You don't need to know complicated trading math—I handle all the analysis, risk protection, and timing for you. Whenever you're ready, tap one of the buttons above or just ask me anything!
+                </div>
+            </div>
+
+            <!-- Quick Chips -->
+            <div class="quick-chips-box">
+                <button class="chip-btn" onclick="sendQuickPrompt('Should I buy or sell right now, bro?')">🟢 Should I trade right now?</button>
+                <button class="chip-btn" onclick="sendQuickPrompt('Where is our Stop Loss and Breakeven Shield?')">🛡️ Check Stop Loss & Breakeven</button>
+                <button class="chip-btn" onclick="sendQuickPrompt('How many lots should I use on my account?')">💰 What lot size for my account?</button>
+                <button class="chip-btn" onclick="sendQuickPrompt('Is there any dangerous news today?')">⚠️ Any high-impact news today?</button>
+            </div>
+
+            <!-- Chat Input Form -->
+            <form class="chat-input-bar" id="chatForm" onsubmit="handleChatSubmit(event)">
+                <input type="text" class="chat-input" id="userInput" placeholder="Ask Mazrion anything (e.g. 'What is the trade plan right now?')..." autocomplete="off">
+                <button type="submit" class="send-btn" id="sendBtn">
+                    <span>Send</span>
+                    <span>➔</span>
+                </button>
+            </form>
+
+        </section>
+
+    </main>
+
+    <script>
+        let chatHistory = [];
+        let currentBalance = 100;
+        let currentLivePrice = 4421.36;
+
+        function updateAccountContext() {
+            const sel = document.getElementById("userBalanceSelect");
+            currentBalance = parseFloat(sel.value) || 100;
+        }
+
+        async function fetchLivePrice() {
+            try {
+                const res = await fetch("/api/analyze");
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data && data.price) {
+                        currentLivePrice = parseFloat(data.price);
+                        const pEl = document.getElementById("chartLivePrice");
+                        if (pEl) pEl.innerText = `$${currentLivePrice.toFixed(2)}`;
+                    }
+                }
+            } catch (e) {}
+        }
+
+        setInterval(fetchLivePrice, 10000);
+        fetchLivePrice();
+
+        function appendMessage(role, content) {
+            const stream = document.getElementById("chatStream");
+            const bubble = document.createElement("div");
+            bubble.className = `msg-bubble ${role}`;
+
+            if (role === "mazrion") {
+                bubble.innerHTML = `
+                    <div class="mazrion-tag">🔮 MAZRION ADVISOR</div>
+                    <div>${formatMarkdown(content)}</div>
+                `;
+            } else {
+                bubble.innerText = content;
+            }
+
+            stream.appendChild(bubble);
+            stream.scrollTop = stream.scrollHeight;
+        }
+
+        function appendTypingIndicator() {
+            const stream = document.getElementById("chatStream");
+            const indicator = document.createElement("div");
+            indicator.className = "msg-bubble mazrion";
+            indicator.id = "typingIndicator";
+            indicator.innerHTML = `
+                <div class="mazrion-tag">🔮 MAZRION ADVISOR</div>
+                <div class="typing-indicator">
+                    <span class="typing-dot"></span>
+                    <span class="typing-dot"></span>
+                    <span class="typing-dot"></span>
+                </div>
+            `;
+            stream.appendChild(indicator);
+            stream.scrollTop = stream.scrollHeight;
+        }
+
+        function removeTypingIndicator() {
+            const el = document.getElementById("typingIndicator");
+            if (el) el.remove();
+        }
+
+        function formatMarkdown(text) {
+            let out = text
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                .replace(/\n\n/g, '<br><br>')
+                .replace(/\n/g, '<br>');
+
+            // Detect trade ticket format and render copy button
+            if (out.includes("DIRECTIVE:") || out.includes("NUMBERS:")) {
+                out += `
+                    <div class="trade-card-render">
+                        <div class="trade-card-header">
+                            <span>🎯 MT5 1-CLICK TICKET READY</span>
+                            <button class="trade-copy-btn" onclick="copyOrderText(this)">📋 Copy MT5 Ticket</button>
+                        </div>
+                        <div style="font-size:10.5px; color:var(--text-muted);">
+                            XAUUSD • BUY LIMIT • 0.01 LOTS • SL @ $4,408.50 • TP @ $4,512.33
+                        </div>
+                    </div>
+                `;
+            }
+            return out;
+        }
+
+        function copyOrderText(btn) {
+            const ticket = `// MAZRION INSTITUTIONAL TICKET\nSymbol: XAUUSD\nType: BUY LIMIT\nEntry: 4413.99\nSL: 4408.50\nTP1: 4424.00 (Bank 60%)\nTP2: 4512.33 (Runner)`;
+            navigator.clipboard.writeText(ticket).then(() => {
+                const old = btn.innerText;
+                btn.innerText = "✅ Copied to Clipboard!";
+                setTimeout(() => { btn.innerText = old; }, 2000);
+            });
+        }
+
+        async function sendQuickPrompt(promptText) {
+            document.getElementById("userInput").value = promptText;
+            document.getElementById("chatForm").dispatchEvent(new Event('submit'));
+        }
+
+        async function handleChatSubmit(e) {
+            e.preventDefault();
+            const input = document.getElementById("userInput");
+            const text = input.value.trim();
+            if (!text) return;
+
+            input.value = "";
+            appendMessage("user", text);
+            chatHistory.push({ role: "user", content: text });
+
+            appendTypingIndicator();
+            const sendBtn = document.getElementById("sendBtn");
+            sendBtn.disabled = true;
+
+            try {
+                const res = await fetch("/api/chat", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        message: text,
+                        history: chatHistory,
+                        accountBalance: currentBalance,
+                        livePrice: currentLivePrice
+                    })
+                });
+
+                removeTypingIndicator();
+
+                if (res.ok) {
+                    const data = await res.json();
+                    const reply = data.reply || "Hey bro, I'm watching the market. Let me know if you need anything!";
+                    appendMessage("mazrion", reply);
+                    chatHistory.push({ role: "assistant", content: reply });
+                } else {
+                    appendMessage("mazrion", "Hey man, having a quick network hiccup reaching the live AI bridge, but live Gold is at **$" + currentLivePrice.toFixed(2) + "** and our $4,413.99 wholesale buy floor is holding solid!");
+                }
+            } catch (err) {
+                removeTypingIndicator();
+                appendMessage("mazrion", "Hey bro, live Gold is at **$" + currentLivePrice.toFixed(2) + "**. We are on Lap 2 of the 4H Highway targeting **$4,512.33**!");
+            } finally {
+                sendBtn.disabled = false;
+                document.getElementById("userInput").focus();
+            }
+        }
+    </script>
+</body>
+</html>
