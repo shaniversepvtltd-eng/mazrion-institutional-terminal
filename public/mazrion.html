@@ -603,7 +603,7 @@
                 <!-- Welcome Message -->
                 <div class="msg-bubble mazrion">
                     <div class="mazrion-tag">🔮 MAZRION ADVISOR</div>
-                    Hey bro! I'm watching live Gold for you right now at <strong>$4,421.36</strong>.<br><br>
+                    Hey bro! I'm watching live Gold for you right now at <strong id="welcomePrice" style="color:var(--accent-cyan);">$4,395.00</strong>.<br><br>
                     You don't need to know complicated trading math—I handle all the analysis, risk protection, and timing for you. Whenever you're ready, tap one of the buttons above or just ask me anything!
                 </div>
             </div>
@@ -611,14 +611,14 @@
             <!-- Quick Chips -->
             <div class="quick-chips-box">
                 <button class="chip-btn" onclick="sendQuickPrompt('Should I buy or sell right now, bro?')">🟢 Should I trade right now?</button>
+                <button class="chip-btn" onclick="sendQuickPrompt('Why is the market falling right now? Is it safe?')">📉 Why is market falling?</button>
                 <button class="chip-btn" onclick="sendQuickPrompt('Where is our Stop Loss and Breakeven Shield?')">🛡️ Check Stop Loss & Breakeven</button>
                 <button class="chip-btn" onclick="sendQuickPrompt('How many lots should I use on my account?')">💰 What lot size for my account?</button>
-                <button class="chip-btn" onclick="sendQuickPrompt('Is there any dangerous news today?')">⚠️ Any high-impact news today?</button>
             </div>
 
             <!-- Chat Input Form -->
             <form class="chat-input-bar" id="chatForm" onsubmit="handleChatSubmit(event)">
-                <input type="text" class="chat-input" id="userInput" placeholder="Ask Mazrion anything (e.g. 'What is the trade plan right now?')..." autocomplete="off">
+                <input type="text" class="chat-input" id="userInput" placeholder="Ask Mazrion anything (e.g. 'Why is Gold dropping and what is the plan?')..." autocomplete="off">
                 <button type="submit" class="send-btn" id="sendBtn">
                     <span>Send</span>
                     <span>➔</span>
@@ -632,7 +632,7 @@
     <script>
         let chatHistory = [];
         let currentBalance = 100;
-        let currentLivePrice = 4421.36;
+        let currentLivePrice = 4395.00;
 
         function updateAccountContext() {
             const sel = document.getElementById("userBalanceSelect");
@@ -641,19 +641,21 @@
 
         async function fetchLivePrice() {
             try {
-                const res = await fetch("/api/analyze");
+                const res = await fetch("https://api.binance.com/api/v3/ticker/price?symbol=PAXGUSDT");
                 if (res.ok) {
                     const data = await res.json();
                     if (data && data.price) {
                         currentLivePrice = parseFloat(data.price);
                         const pEl = document.getElementById("chartLivePrice");
                         if (pEl) pEl.innerText = `$${currentLivePrice.toFixed(2)}`;
+                        const wEl = document.getElementById("welcomePrice");
+                        if (wEl && chatHistory.length === 0) wEl.innerText = `$${currentLivePrice.toFixed(2)}`;
                     }
                 }
             } catch (e) {}
         }
 
-        setInterval(fetchLivePrice, 10000);
+        setInterval(fetchLivePrice, 1500);
         fetchLivePrice();
 
         function appendMessage(role, content) {

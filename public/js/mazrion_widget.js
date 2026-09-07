@@ -257,6 +257,19 @@
     document.body.appendChild(widgetContainer);
 
     let widgetHistory = [];
+    let widgetLivePrice = 4395.00;
+
+    async function fetchWidgetPrice() {
+        try {
+            const res = await fetch('https://api.binance.com/api/v3/ticker/price?symbol=PAXGUSDT');
+            if (res.ok) {
+                const data = await res.json();
+                if (data && data.price) widgetLivePrice = parseFloat(data.price);
+            }
+        } catch (e) {}
+    }
+    fetchWidgetPrice();
+    setInterval(fetchWidgetPrice, 2000);
 
     window.toggleMazrionDrawer = function() {
         const drawer = document.getElementById('mazrion-drawer');
@@ -292,7 +305,8 @@
                 body: JSON.stringify({
                     message: text,
                     history: widgetHistory,
-                    accountBalance: 100
+                    accountBalance: 100,
+                    livePrice: widgetLivePrice
                 })
             });
 
@@ -301,16 +315,16 @@
 
             if (res.ok) {
                 const data = await res.json();
-                const reply = data.reply || "Hey bro, I'm watching the market. Wholesale floor at $4,413.99 is defended!";
+                const reply = data.reply || `Hey bro, live Gold is at **$${widgetLivePrice.toFixed(2)}**. Watching the market closely!`;
                 appendWidgetMsg('ai', reply);
                 widgetHistory.push({ role: 'assistant', content: reply });
             } else {
-                appendWidgetMsg('ai', "Hey bro, live Gold is holding firm at wholesale discount. Lap 2 is active targeting **$4,512.33**!");
+                appendWidgetMsg('ai', `Hey bro, live Gold is at **$${widgetLivePrice.toFixed(2)}**. Sitting on hands until 5M base confirms!`);
             }
         } catch (err) {
             const temp = document.getElementById('tempIndicator');
             if (temp) temp.remove();
-            appendWidgetMsg('ai', "Hey bro, wholesale floor $4,413.99 is defended. Lap 2 is active targeting **$4,512.33**!");
+            appendWidgetMsg('ai', `Hey bro, live Gold is at **$${widgetLivePrice.toFixed(2)}**. Lap 2 is active targeting **$4,512.33**!`);
         }
     };
 
