@@ -356,14 +356,14 @@ export default async function handler(req, res) {
 
         if (rangePosPct <= 35) {
             activeStageNum = 1;
-            activeStage = `STAGE 1: BEST BUY ZONE (Lowest Risk Entry)`;
+            activeStage = `STAGE 1: WHOLESALE DISCOUNT POI (Rest Limit Orders)`;
             stageCls = "stage-primary";
-            stageBadge = `🟢 STAGE 1: BEST BUY ZONE (${conf.tradeType})`;
-            stageDesc = `Live Price ($${p.toFixed(pointPrecision)}) is in DEEP WHOLESALE DISCOUNT (${rangePosPct}% of ${conf.tfLabel} range). Fresh bounce off the $${low.toFixed(pointPrecision)} floor. Optimal time to enter with lowest risk.`;
-            exhaustionStatus = `✅ OPTIMAL ENTRY (Only ${rangePosPct}% Fuel Consumed)`;
+            stageBadge = `🟢 STAGE 1: WHOLESALE DISCOUNT POI (${conf.tradeType})`;
+            stageDesc = `Live Price ($${p.toFixed(pointPrecision)}) is in DEEP WHOLESALE DISCOUNT (${rangePosPct}% of ${conf.tfLabel} range). Institutions are hunting the $${low.toFixed(pointPrecision)} floor. Rest Buy Limit orders; DO NOT market-buy falling knives.`;
+            exhaustionStatus = `✅ WHOLESALE DISCOUNT (Rest Limit Orders @ $${low.toFixed(pointPrecision)})`;
             trafficStatus = "GREEN";
-            trafficBadge = `🟢 GREEN LIGHT: SAFE TO BUY (${conf.tradeType})`;
-            trafficInstruction = `Price is at discount floor (< $${eq50.toFixed(pointPrecision)}). Limit order accumulation active. Target: $${high.toFixed(pointPrecision)}.`;
+            trafficBadge = `🟢 WHOLESALE POI: REST BUY LIMIT @ $${low.toFixed(pointPrecision)} (DO NOT CHASE FALLING CANDLES)`;
+            trafficInstruction = `Wholesale floor hunting active (< $${eq50.toFixed(pointPrecision)}). Rest Buy Limit @ $${low.toFixed(pointPrecision)}. Wait for rejection wick confirmation. Target: $${high.toFixed(pointPrecision)}.`;
         } else if (rangePosPct > 35 && rangePosPct <= 65) {
             activeStageNum = 2;
             activeStage = `STAGE 2: ON THE MOVE (Safe to Hold)`;
