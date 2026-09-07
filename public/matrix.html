@@ -785,6 +785,18 @@
             document.getElementById('hero-wave-pct').innerText = `${wavePct}% COMPLETED`;
             document.getElementById('hero-wave-fill').style.width = `${wavePct}%`;
 
+            // Dynamic Hero Status Description
+            const statusDescEl = document.getElementById('hero-status-desc');
+            if (statusDescEl) {
+                if (wavePct <= 35) {
+                    statusDescEl.innerHTML = `Live Price ($${livePrice.toFixed(2)}) is in <strong style="color:var(--green-glow);">Wholesale Discount</strong> (${wavePct}% of Wave #${activeWaveNum}). Institutions defending the <strong>$${activeWaveLow.toFixed(2)}</strong> floor.`;
+                } else if (wavePct <= 85) {
+                    statusDescEl.innerHTML = `Live Price ($${livePrice.toFixed(2)}) is in <strong style="color:var(--cyan-glow);">Mid-Wave Expansion</strong> (${wavePct}% of Wave #${activeWaveNum}). Pushing toward the <strong>$${activeWaveHigh.toFixed(2)}</strong> target.`;
+                } else {
+                    statusDescEl.innerHTML = `Live Price ($${livePrice.toFixed(2)}) is in <strong style="color:var(--gold-glow);">Wave Exhaustion Zone</strong> (${wavePct}% of Wave #${activeWaveNum}). Target $${activeWaveHigh.toFixed(2)} approached; prepare for Reset #${activeWaveNum}.`;
+                }
+            }
+
             // Pullback Probability
             const pullbackPct = Math.max(15, Math.min(88, 100 - wavePct));
             document.getElementById('pullback-pct-val').innerText = `${pullbackPct}% CHANCE`;
@@ -798,10 +810,10 @@
 
             if (wavePct <= 35) {
                 document.getElementById('pullback-advice-text').innerHTML = `<strong>HIGH PULLBACK POI DEFENSE</strong>: In Wholesale Discount zone. Rest <strong>BUY LIMIT @ $${entryPoi}</strong>.`;
-            } else if (wavePct <= 75) {
-                document.getElementById('pullback-advice-text').innerHTML = `<strong>MID-WAVE EXPANSION</strong>: Runners active in profit. Move SL to Breakeven (+1.2R lock).`;
+            } else if (wavePct <= 85) {
+                document.getElementById('pullback-advice-text').innerHTML = `<strong>MID-WAVE EXPANSION</strong>: Runners active in profit. Move SL to Breakeven (+1.2R lock) as price heads to <strong>$${activeWaveHigh.toFixed(2)}</strong>.`;
             } else {
-                document.getElementById('pullback-advice-text').innerHTML = `<strong>WAVE EXHAUSTION (80%+)</strong>: Target $${activeWaveHigh.toFixed(2)} reached. Stand down on buys; prepare for Reset #${activeWaveNum}.`;
+                document.getElementById('pullback-advice-text').innerHTML = `<strong>WAVE EXHAUSTION (85%+)</strong>: Target $${activeWaveHigh.toFixed(2)} reached. Stand down on new buys; prepare for Reset #${activeWaveNum}.`;
             }
 
             // Ticket Slate
