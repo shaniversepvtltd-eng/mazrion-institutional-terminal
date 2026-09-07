@@ -1069,7 +1069,10 @@
 
             if (isCustomRoadmap) {
                 roadmap.forEach(row => {
-                    if (row.isWon) {
+                    const rowRange = row.tp2 - row.entry;
+                    const rowPct = Math.min(100, Math.max(0, Math.round(((livePrice - row.entry) / (rowRange || 1)) * 100)));
+
+                    if (row.isWon || (livePrice > row.tp2 && !row.isActive)) {
                         html += `
                             <tr class="row-completed">
                                 <td><strong style="color:var(--green-glow);">WAVE #${row.num}</strong></td>
@@ -1077,7 +1080,12 @@
                                 <td>BUY LIMIT @ $${row.entry.toFixed(2)}</td>
                                 <td>$${row.sl.toFixed(2)}</td>
                                 <td>$${row.tp2.toFixed(2)} (BSL)</td>
-                                <td><span class="status-tag tag-hit">${row.status}</span></td>
+                                <td>
+                                    <span class="status-tag tag-hit">TP2 HIT 🎯</span>
+                                    <div style="margin-top:4px; width:90px; height:4px; background:rgba(16,185,129,0.2); border-radius:2px; overflow:hidden;">
+                                        <div style="height:100%; width:100%; background:var(--green-glow);"></div>
+                                    </div>
+                                </td>
                                 <td style="color:var(--green-glow); font-weight:800;">+2.3R (+$${((row.tp2 - row.entry) * 0.95).toFixed(2)})</td>
                                 <td style="font-size:10px; color:var(--text-muted); max-width:240px;">${row.desc}</td>
                                 <td><span style="color:var(--text-dim); font-size:10px;">CLOSED ✅</span></td>
@@ -1091,7 +1099,12 @@
                                 <td><strong style="color:var(--gold-glow);">BUY LIMIT @ $${row.entry.toFixed(2)}</strong></td>
                                 <td style="color:var(--red-glow); font-weight:800;">$${row.sl.toFixed(2)}</td>
                                 <td><strong style="color:var(--green-glow);">$${row.tp2.toFixed(2)} (BSL Magnet)</strong></td>
-                                <td><span class="status-tag tag-active">${wavePct}% ACTIVE 🟢</span></td>
+                                <td>
+                                    <span class="status-tag tag-active">${rowPct}% FUEL ⛽</span>
+                                    <div style="margin-top:4px; width:90px; height:5px; background:rgba(255,255,255,0.08); border-radius:3px; overflow:hidden;">
+                                        <div style="height:100%; width:${rowPct}%; background:linear-gradient(90deg, var(--cyan-glow), var(--green-glow)); transition:width 0.3s ease;"></div>
+                                    </div>
+                                </td>
                                 <td style="color:var(--cyan-glow); font-weight:800;">RUNNER ACTIVE</td>
                                 <td style="font-size:10px; color:#CBD5E1; max-width:240px;">${row.desc}</td>
                                 <td><button class="btn-prearm" onclick="copyWaveTicket(${row.num}, ${row.entry}, ${row.sl}, ${row.tp2})">📋 COPY LIVE TICKET</button></td>
@@ -1105,7 +1118,12 @@
                                 <td>BUY LIMIT @ $${row.entry.toFixed(2)}</td>
                                 <td>$${row.sl.toFixed(2)}</td>
                                 <td>$${row.tp2.toFixed(2)} (BSL)</td>
-                                <td><span class="status-tag tag-queued">QUEUED ⏳</span></td>
+                                <td>
+                                    <span class="status-tag tag-queued">QUEUED ⏳</span>
+                                    <div style="margin-top:4px; width:90px; height:4px; background:rgba(255,255,255,0.04); border-radius:2px; overflow:hidden;">
+                                        <div style="height:100%; width:0%;"></div>
+                                    </div>
+                                </td>
                                 <td style="color:var(--text-dim);">POTENTIAL +2.4R</td>
                                 <td style="font-size:10px; color:var(--text-dim); max-width:240px;">${row.desc}</td>
                                 <td><button class="btn-prearm" onclick="copyWaveTicket(${row.num}, ${row.entry}, ${row.sl}, ${row.tp2})">⏳ PRE-SET LIMIT ORDER</button></td>
@@ -1114,10 +1132,24 @@
                     }
                 });
             } else {
-                // Algorithmic 1M / 5M 50% Pullback Table Generation
+                // Algorithmic 1M / 5M Dynamic Wave Calculation
                 const step = spec.step;
                 const halfStep = step * 0.50;
                 const w1Low = spec.baseLow;
+
+                // Dynamically find active wave number based on live price
+                let dynActive = 1;
+                for (let i = 1; i <= spec.total; i++) {
+                    const rLow = (i === 1) ? w1Low : (w1Low + ((i - 1) * halfStep));
+                    const rHigh = rLow + step;
+                    if (livePrice >= rLow && livePrice < rHigh) {
+                        dynActive = i;
+                        break;
+                    } else if (livePrice >= rHigh) {
+                        dynActive = i + 1;
+                    }
+                }
+                dynActive = Math.min(spec.total, Math.max(1, dynActive));
 
                 for (let i = 1; i <= spec.total; i++) {
                     const rowLow = (i === 1) ? w1Low : (w1Low + ((i - 1) * halfStep));
@@ -1125,8 +1157,9 @@
                     const rowEntry = (rowLow + 0.05).toFixed(2);
                     const rowSl = (rowLow - spec.slOffset).toFixed(2);
                     const wSweptPool = i === 1 ? spec.sweptPool : `Wave #${i-1} Peak Swept ➔ 50% Pullback Retest @ $${rowLow.toFixed(2)}`;
+                    const rowPct = Math.min(100, Math.max(0, Math.round(((livePrice - rowLow) / (step || 1)) * 100)));
 
-                    if (i < activeWaveNum) {
+                    if (i < dynActive) {
                         html += `
                             <tr class="row-completed">
                                 <td><strong style="color:var(--green-glow);">WAVE #${i}</strong></td>
@@ -1134,24 +1167,34 @@
                                 <td>BUY LIMIT @ $${rowEntry}</td>
                                 <td>$${rowSl}</td>
                                 <td>$${rowHigh.toFixed(2)} (BSL)</td>
-                                <td><span class="status-tag tag-hit">TP2 HIT 🎯</span></td>
+                                <td>
+                                    <span class="status-tag tag-hit">TP2 HIT 🎯</span>
+                                    <div style="margin-top:4px; width:90px; height:4px; background:rgba(16,185,129,0.2); border-radius:2px; overflow:hidden;">
+                                        <div style="height:100%; width:100%; background:var(--green-glow);"></div>
+                                    </div>
+                                </td>
                                 <td style="color:var(--green-glow); font-weight:800;">+2.3R (+$${(step * 0.95).toFixed(2)})</td>
                                 <td style="font-size:10px; color:var(--text-muted); max-width:240px;">Harvested short stop liquidity; completed expansion leg.</td>
                                 <td><span style="color:var(--text-dim); font-size:10px;">CLOSED ✅</span></td>
                             </tr>
                         `;
-                    } else if (i === activeWaveNum) {
+                    } else if (i === dynActive) {
                         html += `
                             <tr class="row-active">
                                 <td><strong style="color:var(--cyan-glow);">WAVE #${i} (ACTIVE)</strong></td>
                                 <td><strong style="color:var(--gold-glow);">${spec.sweptPool}</strong></td>
-                                <td><strong style="color:var(--gold-glow);">BUY LIMIT @ $${entryPoi}</strong></td>
-                                <td style="color:var(--red-glow); font-weight:800;">$${slPoi}</td>
+                                <td><strong style="color:var(--gold-glow);">BUY LIMIT @ $${rowEntry}</strong></td>
+                                <td style="color:var(--red-glow); font-weight:800;">$${rowSl}</td>
                                 <td><strong style="color:var(--green-glow);">$${rowHigh.toFixed(2)} (BSL Magnet)</strong></td>
-                                <td><span class="status-tag tag-active">${wavePct}% ACTIVE 🟢</span></td>
+                                <td>
+                                    <span class="status-tag tag-active">${rowPct}% FUEL ⛽</span>
+                                    <div style="margin-top:4px; width:90px; height:5px; background:rgba(255,255,255,0.08); border-radius:3px; overflow:hidden;">
+                                        <div style="height:100%; width:${rowPct}%; background:linear-gradient(90deg, var(--cyan-glow), var(--green-glow)); transition:width 0.3s ease;"></div>
+                                    </div>
+                                </td>
                                 <td style="color:var(--cyan-glow); font-weight:800;">RUNNER ACTIVE</td>
                                 <td style="font-size:10px; color:#CBD5E1; max-width:240px;">${spec.thesis}</td>
-                                <td><button class="btn-prearm" onclick="copyWaveTicket(${i}, ${parseFloat(entryPoi)}, ${parseFloat(slPoi)}, ${rowHigh})">📋 COPY LIVE TICKET</button></td>
+                                <td><button class="btn-prearm" onclick="copyWaveTicket(${i}, ${parseFloat(rowEntry)}, ${parseFloat(rowSl)}, ${rowHigh})">📋 COPY LIVE TICKET</button></td>
                             </tr>
                         `;
                     } else {
@@ -1162,7 +1205,12 @@
                                 <td>BUY LIMIT @ $${rowEntry}</td>
                                 <td>$${rowSl}</td>
                                 <td>$${rowHigh.toFixed(2)} (BSL)</td>
-                                <td><span class="status-tag tag-queued">QUEUED ⏳</span></td>
+                                <td>
+                                    <span class="status-tag tag-queued">QUEUED ⏳</span>
+                                    <div style="margin-top:4px; width:90px; height:4px; background:rgba(255,255,255,0.04); border-radius:2px; overflow:hidden;">
+                                        <div style="height:100%; width:0%;"></div>
+                                    </div>
+                                </td>
                                 <td style="color:var(--text-dim);">POTENTIAL +2.4R</td>
                                 <td style="font-size:10px; color:var(--text-dim); max-width:240px;">Pending Wave #${i-1} target completion and 50% discount pullback.</td>
                                 <td><button class="btn-prearm" onclick="copyWaveTicket(${i}, ${parseFloat(rowEntry)}, ${parseFloat(rowSl)}, ${rowHigh})">⏳ PRE-SET LIMIT ORDER</button></td>
