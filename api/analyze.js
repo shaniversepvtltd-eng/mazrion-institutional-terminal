@@ -360,7 +360,7 @@ export default async function handler(req, res) {
                         },
                         body: JSON.stringify({
                             timeframe: selectedTf,
-                            symbol: symBinance,
+                            symbol: symbol.toUpperCase(),
                             anchor_low: tfConfigs[selectedTf].anchorLow,
                             anchor_high: tfConfigs[selectedTf].anchorHigh,
                             highest_peak_reached: highest > 0 ? parseFloat(highest.toFixed(pointPrecision)) : 4448.74,
