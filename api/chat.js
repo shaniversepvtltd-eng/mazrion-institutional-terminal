@@ -18,49 +18,53 @@ export default async function handler(req, res) {
             return res.status(400).json({ error: "Message is required." });
         }
 
-        // 1. Fetch Real-Time Live Ticker Price from Binance PAXG/USDT (Gold)
+        // 1. Fetch Real-Time Live Market Data Directly from TradingView (OANDA:XAUUSD / Spot Gold)
         let realLivePrice = parseFloat(livePrice) || null;
         let recent5mTrend = "FLAT / CONSOLIDATING";
-        let klineHigh = 4425.0;
-        let klineLow = 4385.0;
+        let sessionHigh = 4435.25;
+        let sessionLow = 4381.24;
+        let sessionOpen = 4422.50;
+        let sessionChangePct = -0.80;
+        let sessionRSI = 50.0;
+        let technicalRating = "NEUTRAL";
 
         try {
-            const [tickerRes, klineRes] = await Promise.all([
-                fetch("https://api.binance.com/api/v3/ticker/price?symbol=PAXGUSDT"),
-                fetch("https://api.binance.com/api/v3/klines?symbol=PAXGUSDT&interval=5m&limit=12")
-            ]);
+            const tvRes = await fetch("https://scanner.tradingview.com/cfd/scan", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    symbols: { tickers: ["OANDA:XAUUSD", "FX:XAUUSD"] },
+                    columns: ["close", "high", "low", "open", "change", "change_abs", "volume", "Recommend.All", "RSI", "ATR"]
+                })
+            });
 
-            if (tickerRes.ok) {
-                const tickerData = await tickerRes.json();
-                if (tickerData && tickerData.price) {
-                    realLivePrice = parseFloat(tickerData.price);
-                }
-            }
+            if (tvRes.ok) {
+                const tvData = await tvRes.json();
+                if (tvData && Array.isArray(tvData.data) && tvData.data.length > 0) {
+                    const row = tvData.data[0].d;
+                    realLivePrice = parseFloat(row[0]);
+                    sessionHigh = parseFloat(row[1]);
+                    sessionLow = parseFloat(row[2]);
+                    sessionOpen = parseFloat(row[3]);
+                    sessionChangePct = parseFloat(row[4]);
+                    sessionRSI = parseFloat(row[8] || 50);
+                    const recScore = parseFloat(row[7] || 0);
 
-            if (klineRes.ok) {
-                const klines = await klineRes.json();
-                if (Array.isArray(klines) && klines.length >= 2) {
-                    const latest = klines[klines.length - 1];
-                    const prev = klines[klines.length - 2];
-                    const open = parseFloat(latest[1]);
-                    const close = parseFloat(latest[4]);
-                    const prevClose = parseFloat(prev[4]);
-
-                    klineHigh = Math.max(...klines.map(k => parseFloat(k[2])));
-                    klineLow = Math.min(...klines.map(k => parseFloat(k[3])));
-
-                    if (close < open && close < prevClose) {
-                        recent5mTrend = "INTRADAY SELLING / LIQUIDITY FLUSH (5M Red Momentum)";
-                    } else if (close > open && close > prevClose) {
-                        recent5mTrend = "INTRADAY RECOVERY / BOUNCING (5M Green Rebound)";
+                    if (sessionChangePct < -0.3) {
+                        recent5mTrend = `INTRADAY SELLING / LIQUIDITY HUNT (${sessionChangePct.toFixed(2)}% Session Drop)`;
+                    } else if (sessionChangePct > 0.3) {
+                        recent5mTrend = `INTRADAY EXPANSION / BULLISH (${sessionChangePct.toFixed(2)}% Session Gain)`;
                     }
+
+                    if (recScore > 0.1) technicalRating = "BULLISH BIAS";
+                    else if (recScore < -0.1) technicalRating = "BEARISH MOMENTUM / PULLBACK";
                 }
             }
         } catch (e) {
-            console.warn("Binance fetch fallback:", e.message);
+            console.warn("TradingView fetch fallback:", e.message);
         }
 
-        const p = realLivePrice || 4395.00;
+        const p = realLivePrice || 4394.14;
         const bal = parseFloat(accountBalance) || 100.0;
         
         // 2. Fetch live persistent fractal pivots from Supabase
@@ -96,16 +100,17 @@ export default async function handler(req, res) {
             biasDiscrepancyWarning = "⚠️ BIAS DISCREPANCY / INTRADAY FLUSH ACTIVE: Market pulled back below the $4,413 morning level. Intraday momentum is flushed. Do NOT FOMO buy during active falling candles. Sit on hands or wait for 5M/15M base confirmation above $4,395 before triggering entries.";
             recommendedDirective = "⏳ SIT ON HANDS / WAIT FOR 5M BASE";
             suggestedEntry = (p - 2.5).toFixed(2);
-            suggestedSL = (klineLow - 5.0).toFixed(2);
+            suggestedSL = (sessionLow - 5.0).toFixed(2);
             suggestedTP1 = (p + 15.0).toFixed(2);
         }
 
         // Live Market Context Summary (Strictly Token Efficient)
         const marketTelemetry = `
-LIVE TELEMETRY & TERMINAL CONTEXT:
-- Real-Time Live Tick: $${p.toFixed(2)} (Binance PAXG/Gold Spot Live Feed)
+LIVE TRADINGVIEW TELEMETRY & TERMINAL CONTEXT:
+- Real-Time Spot Gold Price: $${p.toFixed(2)} (Official TradingView OANDA:XAUUSD Feed)
+- 24H Session Range: Low $${sessionLow.toFixed(2)} — High $${sessionHigh.toFixed(2)} (Open: $${sessionOpen.toFixed(2)})
+- Session Net Change: ${sessionChangePct.toFixed(2)}% | Technical RSI: ${sessionRSI.toFixed(1)} (${technicalRating})
 - 5-Minute Intraday State: ${recent5mTrend}
-- Recent 1-Hour Session Range: Low $${klineLow.toFixed(2)} — High $${klineHigh.toFixed(2)}
 - Master Highway: Lap 2 of 4 (Macro Target: $4,512.33 | Defense Floor: $4,286.97)
 - User Account Capital: $${bal.toFixed(2)} (Strict Risk Cap: $${maxRiskDollars} | Recommended Size: ${safeLot} lots)
 - Bias Discrepancy Gate: ${biasDiscrepancyWarning || "Normal alignment"}
@@ -117,8 +122,8 @@ LIVE TELEMETRY & TERMINAL CONTEXT:
 The user is a beginner who knows nothing about trading. Talk to them warmly, directly, and supportively like a trusted, experienced friend (e.g. "Hey bro," "Here's the deal," "Relax, you're safe").
 
 MANDATORY RULES & INSTANT INTELLIGENCE:
-1. Ground your response in the EXACT live tick price: $${p.toFixed(2)}. NEVER hallucinate or quote old prices.
-2. If market is dropping or showing red momentum, NEVER say "just buy now". Explain honestly that market is doing an intraday flush/pullback and tell them whether to wait or where the safe level is.
+1. Ground your response in the EXACT live TradingView spot price: $${p.toFixed(2)}. NEVER quote PAXG crypto or old prices.
+2. If market is dropping or showing red momentum (${sessionChangePct.toFixed(2)}%), NEVER say "just buy now". Explain honestly that market is doing an intraday flush/pullback and tell them whether to wait or where the safe level is.
 3. STRICT TOKEN CONSTRAINT: Output must be concise, punchy, zero fluff, zero paragraph essays.
 4. When giving a trade plan or setup, ALWAYS use this exact 4-part card format:
 🎯 DIRECTIVE: [1 short line: 🟢 BUY LIMIT READY / 🔴 SELL LIMIT READY / ⏳ SIT ON HANDS / 🛡️ MOVE TO BREAKEVEN]
@@ -186,9 +191,9 @@ ${marketTelemetry}`;
         // Reliable fallback if API fails
         if (!reply) {
             if (p < 4410.00) {
-                reply = `Hey bro! Live Gold is at **$${p.toFixed(2)}**.\n\n🎯 **DIRECTIVE**: ⏳ **SIT ON HANDS — DO NOT FOMO BUY**\n📍 **NUMBERS**: Safe Re-entry: **$${(p - 3.0).toFixed(2)}** | SL: **$${(klineLow - 5.0).toFixed(2)}** | TP1: **$${(p + 15.0).toFixed(2)}** | TP2: **$4,512.33**\n💡 **WHY**:\n• Gold had an intraday liquidity flush from $4,422 down to session low ($${klineLow.toFixed(2)})\n• Macro 4H Highway target ($4,512) is still alive, but we wait for 5M green confirmation.\n🛡️ **YOUR RISK ($${bal})**: Size **${safeLot} lots**. Max dollar risk is **$${maxRiskDollars}** (2% capital cap).`;
+                reply = `Hey bro! Live Gold (TradingView OANDA:XAUUSD) is at **$${p.toFixed(2)}**.\n\n🎯 **DIRECTIVE**: ⏳ **SIT ON HANDS — DO NOT FOMO BUY**\n📍 **NUMBERS**: Safe Re-entry: **$${(p - 2.5).toFixed(2)}** | SL: **$${(sessionLow - 5.0).toFixed(2)}** | TP1: **$${(p + 15.0).toFixed(2)}** | TP2: **$4,512.33**\n💡 **WHY**:\n• Gold pulled back ${sessionChangePct.toFixed(2)}% to test session low ($${sessionLow.toFixed(2)})\n• Macro 4H Highway target ($4,512) is still alive, but we wait for 5M green confirmation.\n🛡️ **YOUR RISK ($${bal})**: Size **${safeLot} lots**. Max dollar risk is **$${maxRiskDollars}** (2% capital cap).`;
             } else {
-                reply = `Hey bro! Live Gold is at **$${p.toFixed(2)}**.\n\n🎯 **DIRECTIVE**: 🟢 **BUY LIMIT ACTIVE (Lap 2 Expansion)**\n📍 **NUMBERS**: Entry: **$${p.toFixed(2)}** | SL: **$${(p - 8.5).toFixed(2)}** | TP1: **$${(p + 15.0).toFixed(2)}** | TP2: **$4,512.33**\n💡 **WHY**:\n• Defending demand floor and riding 4H Highway Lap 2\n• Liquidity pool swept clean\n🛡️ **YOUR RISK ($${bal})**: Size **${safeLot} lots**. Max dollar risk is **$${maxRiskDollars}**.`;
+                reply = `Hey bro! Live Gold (TradingView OANDA:XAUUSD) is at **$${p.toFixed(2)}**.\n\n🎯 **DIRECTIVE**: 🟢 **BUY LIMIT ACTIVE (Lap 2 Expansion)**\n📍 **NUMBERS**: Entry: **$${p.toFixed(2)}** | SL: **$${(p - 8.5).toFixed(2)}** | TP1: **$${(p + 15.0).toFixed(2)}** | TP2: **$4,512.33**\n💡 **WHY**:\n• Defending demand floor and riding 4H Highway Lap 2\n• Liquidity pool swept clean\n🛡️ **YOUR RISK ($${bal})**: Size **${safeLot} lots**. Max dollar risk is **$${maxRiskDollars}**.`;
             }
         }
 
@@ -197,6 +202,10 @@ ${marketTelemetry}`;
             telemetry: {
                 price: p,
                 trend: recent5mTrend,
+                sessionLow: sessionLow,
+                sessionHigh: sessionHigh,
+                sessionChangePct: sessionChangePct,
+                rsi: sessionRSI,
                 lap: "Lap 2 of 4",
                 stage: "STAGE 2: ON THE MOVE",
                 target: 4512.33

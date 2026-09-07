@@ -257,19 +257,28 @@
     document.body.appendChild(widgetContainer);
 
     let widgetHistory = [];
-    let widgetLivePrice = 4395.00;
+    let widgetLivePrice = 4394.14;
 
     async function fetchWidgetPrice() {
         try {
-            const res = await fetch('https://api.binance.com/api/v3/ticker/price?symbol=PAXGUSDT');
+            const res = await fetch('https://scanner.tradingview.com/cfd/scan', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    symbols: { tickers: ['OANDA:XAUUSD'] },
+                    columns: ['close', 'high', 'low', 'open', 'change']
+                })
+            });
             if (res.ok) {
                 const data = await res.json();
-                if (data && data.price) widgetLivePrice = parseFloat(data.price);
+                if (data && Array.isArray(data.data) && data.data[0] && data.data[0].d) {
+                    widgetLivePrice = parseFloat(data.data[0].d[0]);
+                }
             }
         } catch (e) {}
     }
     fetchWidgetPrice();
-    setInterval(fetchWidgetPrice, 2000);
+    setInterval(fetchWidgetPrice, 1500);
 
     window.toggleMazrionDrawer = function() {
         const drawer = document.getElementById('mazrion-drawer');
