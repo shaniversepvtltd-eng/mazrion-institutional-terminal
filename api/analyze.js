@@ -454,6 +454,16 @@ export default async function handler(req, res) {
             ? "🔴 PATH CHANGED: $4,365 SWEEP ACTIVE"
             : "🟢 ROUTE A: 4-LAP EXPANSION ACTIVE";
 
+        let activeStageNum = 2;
+        let activeStage = "";
+        let stageCls = "";
+        let stageBadge = "";
+        let stageDesc = "";
+        let exhaustionStatus = "";
+        let trafficStatus = "YELLOW";
+        let trafficBadge = "";
+        let trafficInstruction = "";
+
         if (isMacroSweepReroute) {
             activeStageNum = 4;
             activeStage = "BIAS DISCREPANCY: HIGHWAY PATH CHANGED (STAND DOWN FOR $4,365 SWEEP)";
