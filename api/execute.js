@@ -53,29 +53,38 @@ export default async function handler(req, res) {
                 created_at: new Date().toISOString()
             };
 
-            const dbRes = await fetch(`${SUPABASE_URL}/rest/v1/mazrion_order_queue`, {
+            const dbRes = await fetch(`${SUPABASE_URL}/rest/v1/rpc/mazrion_secure_enqueue_order`, {
                 method: "POST",
                 headers: {
                     "apikey": SUPABASE_ANON_KEY,
                     "Authorization": `Bearer ${SUPABASE_ANON_KEY}`,
-                    "Content-Type": "application/json",
-                    "Prefer": "return=representation"
+                    "Content-Type": "application/json"
                 },
-                body: JSON.stringify(orderPayload)
+                body: JSON.stringify({
+                    auth_secret: MASTER_PIN,
+                    p_symbol: String(symbol).toUpperCase(),
+                    p_order_type: String(orderType).toUpperCase(),
+                    p_entry_price: parseFloat(entryPrice),
+                    p_stop_loss: parseFloat(stopLoss),
+                    p_take_profit_1: takeProfit1 ? parseFloat(takeProfit1) : null,
+                    p_take_profit_2: takeProfit2 ? parseFloat(takeProfit2) : null,
+                    p_volume: parseFloat(volume) || 0.01,
+                    p_timeframe: String(timeframe),
+                    p_wave_title: String(waveTitle)
+                })
             });
 
             if (!dbRes.ok) {
                 const errText = await dbRes.text();
-                return res.status(500).json({ error: "Failed to queue order in database", details: errText });
+                return res.status(500).json({ error: "Failed to queue order securely in database", details: errText });
             }
 
-            const createdOrders = await dbRes.json();
-            const order = createdOrders && createdOrders[0] ? createdOrders[0] : orderPayload;
+            const createdOrder = await dbRes.json();
 
             return res.status(200).json({
                 success: true,
                 message: `⚡ Order dispatched to VPS MT5 queue for execution!`,
-                order: order
+                order: createdOrder || orderPayload
             });
         }
 

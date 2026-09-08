@@ -122,27 +122,31 @@ export default async function handler(req, res) {
                 created_at: new Date().toISOString()
             };
 
-            const actRes = await fetch(`${SUPABASE_URL}/rest/v1/mazrion_action_queue`, {
+            const actRes = await fetch(`${SUPABASE_URL}/rest/v1/rpc/mazrion_secure_enqueue_action`, {
                 method: "POST",
                 headers: {
                     "apikey": SUPABASE_ANON_KEY,
                     "Authorization": `Bearer ${SUPABASE_ANON_KEY}`,
-                    "Content-Type": "application/json",
-                    "Prefer": "return=representation"
+                    "Content-Type": "application/json"
                 },
-                body: JSON.stringify(actionPayload)
+                body: JSON.stringify({
+                    auth_secret: MASTER_PIN,
+                    p_action_type: actionType,
+                    p_ticket_id: ticketId ? parseInt(ticketId) : null,
+                    p_parameters: parameters
+                })
             });
 
             if (!actRes.ok) {
                 const errText = await actRes.text();
-                return res.status(500).json({ error: "Failed to queue action", details: errText });
+                return res.status(500).json({ error: "Failed to queue action securely", details: errText });
             }
 
             const created = await actRes.json();
             return res.status(200).json({
                 success: true,
-                message: `Action ${actionType} sent to VPS MT5 bridge!`,
-                action: created && created[0] ? created[0] : actionPayload
+                message: `Action ${actionType} sent securely to VPS MT5 bridge!`,
+                action: created || actionPayload
             });
         }
 
