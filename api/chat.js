@@ -106,13 +106,14 @@ export default async function handler(req, res) {
             suggestedSL = (sessionLow - 7.0).toFixed(2);
             suggestedTP1 = 4400.00;
         } else if (p >= 4385.00 && p < 4395.00) {
-            // Stage B: Basing / Reversal in progress
-            biasState = "BASING";
-            biasDiscrepancyWarning = "🔄 BASING IN PROGRESS: Bounced off $4,381.24 session low. Watch for confirmed close above $4,395.00.";
-            recommendedDirective = "⏳ WAIT FOR $4,395 BREAK CONFIRMATION";
-            suggestedEntry = 4390.00;
+            // Stage B: Wholesale Accumulation / Base building above session low
+            biasState = "ACCUMULATION_ZONE";
+            biasDiscrepancyWarning = "🟢 ACCUMULATION ZONE: Bounced from $4,381.24 liquidity sweep. Institutional accumulation in progress ($4,388–$4,395).";
+            recommendedDirective = "🟢 BUY LIMIT / WHOLESALE ENTRY (Base Building)";
+            suggestedEntry = (p - 1.5).toFixed(2);
             suggestedSL = (sessionLow - 3.0).toFixed(2);
-            suggestedTP1 = 4410.00;
+            suggestedTP1 = 4415.00;
+            suggestedTP2 = 4512.33;
         } else if (p >= 4395.00 && p < 4415.00) {
             // Stage C: Confirmed 5M Reclaim & CHoCH Rebound!
             biasState = "5M_CONFIRMED_REBOUND";
@@ -139,11 +140,11 @@ LIVE TRADINGVIEW TELEMETRY & TERMINAL CONTEXT:
 - 24H Session Range: Low $${sessionLow.toFixed(2)} — High $${sessionHigh.toFixed(2)} (Open: $${sessionOpen.toFixed(2)})
 - Session Net Change: ${sessionChangePct.toFixed(2)}% | Technical RSI: ${sessionRSI.toFixed(1)} (${technicalRating})
 - 5-Minute Intraday State: ${recent5mTrend} | Bias State: ${biasState}
-- Master Highway: Lap 2 of 4 (Macro Target: $4,512.33 | Defense Floor: $4,286.97)
+- Master Highway: Lap 1 of 4 ($4,381 ➔ $4,414) | Macro Target: $4,512.33 | Defense Floor: $4,381.24
 - User Account Capital: $${bal.toFixed(2)} (Strict Risk Cap: $${maxRiskDollars} | Recommended Size: ${safeLot} lots)
 - Status Note: ${biasDiscrepancyWarning}
 - Breakeven Shield (+1.2R): Defending structural swings
-- 7-Timeframe Hierarchy: 1M (Oversold), 5M (${recent5mTrend}), 15M (Liquidity Hunt), 1H (Testing Demand), 4H (Macro Bull Lap 2), 1D (Re-accumulation)
+- 7-Timeframe Hierarchy: 1M (Oversold), 5M (${recent5mTrend}), 15M (Liquidity Hunt), 1H (Testing Demand), 4H (Macro Bull Lap 1), 1D (Re-accumulation)
 `;
 
         const systemPrompt = `You are MAZRION, the user's personal, elite institutional AI trading advisor and protective friend.
@@ -222,10 +223,12 @@ ${marketTelemetry}`;
         if (!reply) {
             if (biasState === "5M_CONFIRMED_REBOUND") {
                 reply = `Hey bro! Live Gold (TradingView OANDA:XAUUSD) is at **$${p.toFixed(2)}**.\n\n🎯 **DIRECTIVE**: 🟢 **BUY ON PULLBACK READY (5M Base Confirmed)**\n📍 **NUMBERS**: Entry: **$${suggestedEntry}** | SL: **$${suggestedSL}** | TP1: **$${suggestedTP1}** | TP2: **$${suggestedTP2}**\n💡 **WHY**:\n• Defended $4,381.24 wholesale low and reclaimed above $4,395\n• 5M Bullish CHoCH active targeting 4H Highway Lap 2\n🛡️ **YOUR RISK ($${bal})**: Size **${safeLot} lots**. Max dollar risk is **$${maxRiskDollars}** (2% capital cap).`;
+            } else if (biasState === "ACCUMULATION_ZONE") {
+                reply = `Hey bro! Live Gold (TradingView OANDA:XAUUSD) is at **$${p.toFixed(2)}**.\n\n🎯 **DIRECTIVE**: 🟢 **BUY LIMIT / WHOLESALE ACCUMULATION**\n📍 **NUMBERS**: Entry: **$${suggestedEntry}** | SL: **$${suggestedSL}** | TP1: **$${suggestedTP1}** | TP2: **$${suggestedTP2}**\n💡 **WHY**:\n• Price swept Tuesday session low ($4,381.24) and is forming institutional base ($4,388–$4,395)\n• High risk-to-reward buy limit targeting 4H Lap 2 continuation ($4,414 ➔ $4,512)\n🛡️ **YOUR RISK ($${bal})**: Size **${safeLot} lots**. Max dollar risk is **$${maxRiskDollars}** (strict 2% rule).`;
             } else if (p < 4385.00) {
                 reply = `Hey bro! Live Gold (TradingView OANDA:XAUUSD) is at **$${p.toFixed(2)}**.\n\n🎯 **DIRECTIVE**: ⏳ **SIT ON HANDS — DO NOT FOMO BUY**\n📍 **NUMBERS**: Safe Re-entry: **$${suggestedEntry}** | SL: **$${suggestedSL}** | TP1: **$${suggestedTP1}** | TP2: **$${suggestedTP2}**\n💡 **WHY**:\n• Gold pulled back ${sessionChangePct.toFixed(2)}% to test session low ($${sessionLow.toFixed(2)})\n• Wait for 5M green base confirmation.\n🛡️ **YOUR RISK ($${bal})**: Size **${safeLot} lots**. Max dollar risk is **$${maxRiskDollars}** (2% capital cap).`;
             } else {
-                reply = `Hey bro! Live Gold (TradingView OANDA:XAUUSD) is at **$${p.toFixed(2)}**.\n\n🎯 **DIRECTIVE**: 🟢 **BUY LIMIT ACTIVE (Lap 2 Expansion)**\n📍 **NUMBERS**: Entry: **$${suggestedEntry}** | SL: **$${suggestedSL}** | TP1: **$${suggestedTP1}** | TP2: **$${suggestedTP2}**\n💡 **WHY**:\n• Defending demand floor and riding 4H Highway Lap 2\n• Liquidity pool swept clean\n🛡️ **YOUR RISK ($${bal})**: Size **${safeLot} lots**. Max dollar risk is **$${maxRiskDollars}**.`;
+                reply = `Hey bro! Live Gold (TradingView OANDA:XAUUSD) is at **$${p.toFixed(2)}**.\n\n🎯 **DIRECTIVE**: 🟢 **BUY LIMIT ACTIVE (Highway Expansion)**\n📍 **NUMBERS**: Entry: **$${suggestedEntry}** | SL: **$${suggestedSL}** | TP1: **$${suggestedTP1}** | TP2: **$${suggestedTP2}**\n💡 **WHY**:\n• Defending demand floor and riding 4H Highway Lap 2\n• Liquidity pool swept clean\n🛡️ **YOUR RISK ($${bal})**: Size **${safeLot} lots**. Max dollar risk is **$${maxRiskDollars}**.`;
             }
         }
 
@@ -238,8 +241,8 @@ ${marketTelemetry}`;
                 sessionHigh: sessionHigh,
                 sessionChangePct: sessionChangePct,
                 rsi: sessionRSI,
-                lap: "Lap 2 of 4",
-                stage: "STAGE 2: ON THE MOVE",
+                lap: p < 4414 ? "Lap 1 of 4 ($4,381 ➔ $4,414)" : (p < 4454 ? "Lap 2 of 4 ($4,414 ➔ $4,454)" : "Lap 3 of 4"),
+                stage: p < 4414 ? "STAGE 1: BASE IGNITION" : "STAGE 2: EXPANSION",
                 target: 4512.33
             }
         });

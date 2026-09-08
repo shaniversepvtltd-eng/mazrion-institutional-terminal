@@ -832,7 +832,7 @@
             <div class="chk-box active-secured" id="chk-step-1">
                 <span class="chk-status-tag" style="color:#10B981;">● STEP 1: DEFENDED</span>
                 <span class="chk-title">0-Drawdown Sweep Base</span>
-                <span class="chk-price" style="color:#34D399;" id="chk-val-1">$4,286.97</span>
+                <span class="chk-price" style="color:#34D399;" id="chk-val-1">$4,381.24</span>
             </div>
             <div class="chk-box active-be" id="chk-step-2">
                 <span class="chk-status-tag" style="color:#00E5FF;">● STEP 2: LOCKED ($0 RISK)</span>
@@ -900,7 +900,7 @@
                             <canvas id="canvasCurrent"></canvas>
                         </div>
                         <div class="twin-footer">
-                            <span>🟢 Floor: <strong id="canvasSweepLow" style="color:#34D399;">$4,286.97</strong></span>
+                            <span>🟢 Floor: <strong id="canvasSweepLow" style="color:#34D399;">$4,381.24</strong></span>
                             <span>🛡️ BE: <strong id="canvasBeShield" style="color:#38BDF8;">$4,430.05</strong></span>
                             <span>🎯 Target: <strong id="canvasDestination" style="color:#FBBF24;">$4,512.33</strong></span>
                         </div>
@@ -1482,10 +1482,10 @@
             });
 
             // 2. Draw Right Current Live Canvas
-            const r = apiData ? apiData.active_radar : { anchor_low: 4286.97, anchor_high: 4438.05 };
+            const r = apiData ? apiData.active_radar : { anchor_low: 4381.24, anchor_high: 4438.05 };
             const f = apiData ? apiData.fractal_analytica : null;
             const liveCandles = (f && f.live_candles && f.live_candles.length > 5) ? f.live_candles : [
-                { open: 4290, high: 4305, low: 4286.97, close: 4300 },
+                { open: 4385, high: 4398, low: 4381.24, close: 4390 },
                 { open: 4300, high: 4320, low: 4295, close: 4315 },
                 { open: 4315, high: 4350, low: 4310, close: 4345 },
                 { open: 4345, high: 4380, low: 4340, close: 4375 },
