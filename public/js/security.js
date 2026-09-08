@@ -359,11 +359,13 @@
         }
     }
 
-    function showLockModal() {
+    function showLockModal(forceReset = false) {
         const overlay = document.getElementById('mazrion-lock-overlay');
         if (overlay) {
-            window._mazrionPinClear();
-            overlay.classList.add('active');
+            if (!overlay.classList.contains('active') || forceReset) {
+                window._mazrionPinClear();
+                overlay.classList.add('active');
+            }
         }
     }
 

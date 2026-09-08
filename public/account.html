@@ -783,16 +783,17 @@
 
         async function fetchAccountData() {
             try {
+                // If currently locked, pause polling so user input is never interrupted
+                if (window.MazrionSecurity && !window.MazrionSecurity.isUnlocked()) {
+                    return;
+                }
+
                 const fetchFn = window.MazrionSecurity ? window.MazrionSecurity.fetchWithAuth.bind(window.MazrionSecurity) : fetch;
                 const res = await fetchFn('/api/account');
                 if (!res.ok) return;
                 const data = await res.json();
                 
                 if (data && data.locked) {
-                    // Show locked overlay if API returned locked
-                    if (window.MazrionSecurity && !window.MazrionSecurity.isUnlocked()) {
-                        window.MazrionSecurity.lock();
-                    }
                     return;
                 }
                 
