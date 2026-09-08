@@ -801,6 +801,8 @@
             btn.innerText = "⏳ Sending...";
             btn.disabled = true;
 
+            const cleanNum = (val) => parseFloat(String(val || 0).replace(/[$,]/g, '')) || 0;
+
             try {
                 const res = await fetch("/api/execute", {
                     method: "POST",
@@ -808,10 +810,10 @@
                     body: JSON.stringify({
                         symbol: "XAUUSD",
                         orderType: "BUY_LIMIT",
-                        entryPrice: parseFloat(entry),
-                        stopLoss: parseFloat(sl),
-                        takeProfit1: parseFloat(tp1),
-                        takeProfit2: parseFloat(tp2),
+                        entryPrice: cleanNum(entry),
+                        stopLoss: cleanNum(sl),
+                        takeProfit1: cleanNum(tp1),
+                        takeProfit2: cleanNum(tp2),
                         volume: 0.01,
                         timeframe: "5m",
                         waveTitle: "Advisor Live Ticket"

@@ -1281,15 +1281,17 @@
         }
 
         async function executeActiveTicketOnVps() {
-            const entryStr = document.getElementById('ticket-entry').innerText.replace('$', '').trim();
-            const slStr = document.getElementById('ticket-sl').innerText.replace('$', '').trim();
-            const tp1Str = document.getElementById('ticket-tp1').innerText.replace('$', '').trim();
-            const tp2Str = document.getElementById('ticket-tp2').innerText.replace('$', '').trim();
+            const entryStr = document.getElementById('ticket-entry').innerText.replace(/[$,]/g, '').trim();
+            const slStr = document.getElementById('ticket-sl').innerText.replace(/[$,]/g, '').trim();
+            const tp1Str = document.getElementById('ticket-tp1').innerText.replace(/[$,]/g, '').trim();
+            const tp2Str = document.getElementById('ticket-tp2').innerText.replace(/[$,]/g, '').trim();
             const btn = document.getElementById('btn-execute-vps');
             
             const origText = btn.innerText;
             btn.innerText = '⏳ SENDING TO VPS...';
             btn.disabled = true;
+
+            const tf = (typeof selectedTf !== 'undefined') ? selectedTf : '1m';
 
             try {
                 const res = await fetch('/api/execute', {
@@ -1303,8 +1305,8 @@
                         takeProfit1: parseFloat(tp1Str),
                         takeProfit2: parseFloat(tp2Str),
                         volume: 0.01,
-                        timeframe: activeTf,
-                        waveTitle: `${activeTf.toUpperCase()} Wave Execution`
+                        timeframe: tf,
+                        waveTitle: `${tf.toUpperCase()} Wave Execution`
                     })
                 });
 
@@ -1323,12 +1325,14 @@
                     setTimeout(() => { btn.innerText = origText; btn.disabled = false; }, 2000);
                 }
             } catch (e) {
+                console.error("Execute error:", e);
                 btn.innerText = '❌ NETWORK ERROR';
                 setTimeout(() => { btn.innerText = origText; btn.disabled = false; }, 2000);
             }
         }
 
         async function executeWaveTicketOnVps(waveNum, entry, sl, tp) {
+            const tf = (typeof selectedTf !== 'undefined') ? selectedTf : '1m';
             try {
                 const res = await fetch('/api/execute', {
                     method: 'POST',
@@ -1336,13 +1340,13 @@
                     body: JSON.stringify({
                         symbol: 'XAUUSD',
                         orderType: 'BUY_LIMIT',
-                        entryPrice: parseFloat(entry),
-                        stopLoss: parseFloat(sl),
-                        takeProfit1: parseFloat(tp),
-                        takeProfit2: parseFloat(tp),
+                        entryPrice: parseFloat(String(entry).replace(/[$,]/g, '')),
+                        stopLoss: parseFloat(String(sl).replace(/[$,]/g, '')),
+                        takeProfit1: parseFloat(String(tp).replace(/[$,]/g, '')),
+                        takeProfit2: parseFloat(String(tp).replace(/[$,]/g, '')),
                         volume: 0.01,
-                        timeframe: activeTf,
-                        waveTitle: `${activeTf.toUpperCase()} Wave #${waveNum}`
+                        timeframe: tf,
+                        waveTitle: `${tf.toUpperCase()} Wave #${waveNum}`
                     })
                 });
                 if (res.ok) {
