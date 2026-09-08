@@ -7,6 +7,17 @@ export default async function handler(req, res) {
         return res.status(200).end();
     }
 
+    const MASTER_PIN = process.env.MAZRION_MASTER_PIN || "999777";
+    const authHeader = req.headers['x-mazrion-auth'] || req.headers['authorization'];
+    const token = authHeader ? authHeader.replace(/^Bearer\s+/i, '').trim() : '';
+
+    if (token !== MASTER_PIN) {
+        return res.status(401).json({
+            error: "🔒 Security Alert: Unauthorized access. Valid Mazrion Master PIN required.",
+            code: "AUTH_REQUIRED"
+        });
+    }
+
     const SUPABASE_URL = "https://xnuvkkqrzogzoryxzkec.supabase.co";
     const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhudXZra3Fyem9nem9yeXh6a2VjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg2ODQ2NDMsImV4cCI6MjEwNDI2MDY0M30.49K0Rkbcx2arVvKyHpOqOZUbYB30JPRcJWL0DZ84Jus";
 

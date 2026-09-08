@@ -7,6 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,600;0,700;0,800;1,400;1,700&family=Orbitron:wght@500;700;800;900&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="/js/security.js"></script>
     <style>
         :root {
             --bg-base: #06080E;
@@ -782,9 +783,18 @@
 
         async function fetchAccountData() {
             try {
-                const res = await fetch('/api/account');
+                const fetchFn = window.MazrionSecurity ? window.MazrionSecurity.fetchWithAuth.bind(window.MazrionSecurity) : fetch;
+                const res = await fetchFn('/api/account');
                 if (!res.ok) return;
                 const data = await res.json();
+                
+                if (data && data.locked) {
+                    // Show locked overlay if API returned locked
+                    if (window.MazrionSecurity && !window.MazrionSecurity.isUnlocked()) {
+                        window.MazrionSecurity.lock();
+                    }
+                    return;
+                }
                 
                 if (data && data.account) {
                     renderAccountMetrics(data.account);
@@ -1017,7 +1027,8 @@
             }
 
             try {
-                const res = await fetch('/api/account', {
+                const fetchFn = window.MazrionSecurity ? window.MazrionSecurity.fetchWithAuth.bind(window.MazrionSecurity) : fetch;
+                const res = await fetchFn('/api/account', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -1029,6 +1040,9 @@
                 if (res.ok) {
                     alert(`✅ Command [${actionType}] dispatched to VPS MT5 relay!`);
                     setTimeout(fetchAccountData, 1000);
+                } else if (res.status === 401) {
+                    alert("🔒 Security Error: Invalid or Expired Master PIN. Please unlock terminal.");
+                    if (window.MazrionSecurity) window.MazrionSecurity.lock();
                 } else {
                     alert("❌ Failed to dispatch action.");
                 }

@@ -7,11 +7,46 @@ export default async function handler(req, res) {
         return res.status(200).end();
     }
 
+    const MASTER_PIN = process.env.MAZRION_MASTER_PIN || "999777";
+    const authHeader = req.headers['x-mazrion-auth'] || req.headers['authorization'];
+    const token = authHeader ? authHeader.replace(/^Bearer\s+/i, '').trim() : '';
+    const isAuthorized = (token === MASTER_PIN);
+
+    // If verifying PIN
+    if (req.query && req.query.verify === '1') {
+        if (isAuthorized) {
+            return res.status(200).json({ success: true, verified: true, message: "PIN Verified Successfully" });
+        } else {
+            return res.status(401).json({ error: "Invalid Security PIN", verified: false });
+        }
+    }
+
     const SUPABASE_URL = "https://xnuvkkqrzogzoryxzkec.supabase.co";
     const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhudXZra3Fyem9nem9yeXh6a2VjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg2ODQ2NDMsImV4cCI6MjEwNDI2MDY0M30.49K0Rkbcx2arVvKyHpOqOZUbYB30JPRcJWL0DZ84Jus";
 
     try {
         if (req.method === 'GET') {
+            // If unauthorized, return masked security view
+            if (!isAuthorized) {
+                return res.status(200).json({
+                    success: true,
+                    locked: true,
+                    account: {
+                        account_login: "•••••••",
+                        broker_server: "XMGlobal-MT5 (LOCKED)",
+                        balance: "••••••",
+                        equity: "••••••",
+                        margin: "••••••",
+                        free_margin: "••••••",
+                        floating_pnl: "••••••",
+                        positions: [],
+                        pending_orders: [],
+                        last_synced: new Date().toISOString()
+                    },
+                    history: []
+                });
+            }
+
             // 1. Fetch Latest Account State (Balance, Equity, Positions, Pending Orders)
             const stateRes = await fetch(`${SUPABASE_URL}/rest/v1/mazrion_account_state?id=eq.primary`, {
                 headers: {
@@ -65,6 +100,13 @@ export default async function handler(req, res) {
         }
 
         if (req.method === 'POST') {
+            if (!isAuthorized) {
+                return res.status(401).json({
+                    error: "🔒 Security Alert: Unauthorized access. Valid Mazrion Master PIN required to perform account actions.",
+                    code: "AUTH_REQUIRED"
+                });
+            }
+
             const { actionType, ticketId, parameters = {} } = req.body || {};
 
             if (!actionType) {

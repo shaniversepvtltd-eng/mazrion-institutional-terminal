@@ -10,6 +10,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700;800;900&family=Orbitron:wght@600;800;900&display=swap" rel="stylesheet">
+    <script src="/js/security.js"></script>
     <style>
         :root {
             --bg-base: #030712;
@@ -1348,7 +1349,8 @@
             }
 
             try {
-                const res = await fetch('/api/execute', {
+                const fetchFn = window.MazrionSecurity ? window.MazrionSecurity.fetchWithAuth.bind(window.MazrionSecurity) : fetch;
+                const res = await fetchFn('/api/execute', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -1371,12 +1373,23 @@
                     if (tag) tag.innerText = '🟢 QUEUED IN MT5';
                     setTimeout(() => {
                         btn.innerText = origText;
-                        btn.style.background = 'linear-gradient(135deg, #10B981, #059669)';
                         btn.disabled = false;
-                    }, 3000);
+                    }, 3500);
+                } else if (res.status === 401) {
+                    btn.innerText = '🔒 PIN REQUIRED';
+                    btn.style.background = '#EF4444';
+                    alert("🔒 Security Alert: Master PIN required to dispatch trades. Please unlock terminal.");
+                    if (window.MazrionSecurity) window.MazrionSecurity.lock();
+                    btn.disabled = false;
                 } else {
-                    btn.innerText = '❌ FAILED TO DISPATCH';
-                    setTimeout(() => { btn.innerText = origText; btn.disabled = false; }, 2000);
+                    const err = await res.json();
+                    btn.innerText = '❌ DISPATCH FAILED';
+                    btn.style.background = '#EF4444';
+                    alert(`❌ Dispatch Failed: ${err.error || 'Server error'}`);
+                    setTimeout(() => {
+                        btn.innerText = origText;
+                        btn.disabled = false;
+                    }, 3500);
                 }
             } catch (e) {
                 console.error("Execute error:", e);
