@@ -1,0 +1,1074 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MAZRION MT5 LIVE COCKPIT | 24/7 VPS Bridge & Risk Command</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,600;0,700;0,800;1,400;1,700&family=Orbitron:wght@500;700;800;900&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-base: #06080E;
+            --bg-card: rgba(13, 19, 33, 0.85);
+            --border-subtle: rgba(255, 255, 255, 0.08);
+            --border-cyan: rgba(0, 229, 255, 0.35);
+            --border-gold: rgba(245, 158, 11, 0.35);
+            --border-green: rgba(16, 185, 129, 0.4);
+            --border-red: rgba(239, 68, 68, 0.4);
+            --border-purple: rgba(168, 85, 247, 0.4);
+            --cyan-glow: #00E5FF;
+            --green-glow: #10B981;
+            --gold-glow: #F59E0B;
+            --red-glow: #EF4444;
+            --purple-glow: #A855F7;
+            --text-main: #F8FAFC;
+            --text-muted: #94A3B8;
+            --text-dim: #64748B;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-base);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background-image: 
+                radial-gradient(circle at 15% 15%, rgba(0, 229, 255, 0.04) 0%, transparent 40%),
+                radial-gradient(circle at 85% 85%, rgba(16, 185, 129, 0.04) 0%, transparent 40%);
+            background-attachment: fixed;
+        }
+
+        /* Top Navigation */
+        .top-nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 24px;
+            background: rgba(6, 8, 14, 0.92);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border-subtle);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .brand-box {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .brand-logo {
+            font-size: 20px;
+            filter: drop-shadow(0 0 10px var(--cyan-glow));
+        }
+
+        .brand-text h1 {
+            font-family: 'Orbitron', monospace;
+            font-size: 15px;
+            font-weight: 900;
+            letter-spacing: 1.2px;
+            background: linear-gradient(135deg, #FFF, var(--cyan-glow));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .brand-text p {
+            font-size: 9px;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--text-muted);
+            letter-spacing: 0.5px;
+        }
+
+        .nav-suites {
+            display: flex;
+            gap: 6px;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: var(--text-muted);
+            font-size: 11px;
+            font-weight: 700;
+            font-family: 'JetBrains Mono', monospace;
+            padding: 6px 12px;
+            border-radius: 6px;
+            transition: all 0.2s;
+            border: 1px solid transparent;
+        }
+
+        .nav-link:hover {
+            color: #FFF;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .nav-link.active {
+            color: var(--cyan-glow);
+            background: rgba(0, 229, 255, 0.12);
+            border: 1px solid var(--border-cyan);
+            box-shadow: 0 0 12px rgba(0, 229, 255, 0.25);
+        }
+
+        .spot-pill {
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid var(--border-green);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            font-weight: 800;
+            color: var(--green-glow);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .pulse-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--green-glow);
+            box-shadow: 0 0 8px var(--green-glow);
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.4; transform: scale(0.9); }
+            50% { opacity: 1; transform: scale(1.15); }
+            100% { opacity: 0.4; transform: scale(0.9); }
+        }
+
+        /* Main Container Layout */
+        .account-container {
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            width: 100%;
+        }
+
+        /* Account Header Hero Grid */
+        .account-hero {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+            gap: 14px;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            padding: 16px 18px;
+            backdrop-filter: blur(16px);
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+        }
+
+        .stat-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 3px;
+            height: 100%;
+            background: var(--cyan-glow);
+        }
+
+        .stat-card.card-equity::after { background: var(--green-glow); }
+        .stat-card.card-pnl::after { background: var(--gold-glow); }
+        .stat-card.card-broker::after { background: var(--purple-glow); }
+
+        .stat-label {
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: var(--text-dim);
+            font-family: 'JetBrains Mono', monospace;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .stat-val {
+            font-size: 22px;
+            font-weight: 900;
+            font-family: 'JetBrains Mono', monospace;
+            letter-spacing: -0.5px;
+            color: #FFF;
+        }
+
+        .stat-sub {
+            font-size: 10.5px;
+            color: var(--text-muted);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Performance Metrics Strip (Win Rate, TP, BE, SL) */
+        .performance-strip {
+            background: rgba(13, 19, 33, 0.95);
+            border: 1px solid var(--border-gold);
+            border-radius: 12px;
+            padding: 14px 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 14px;
+            box-shadow: 0 0 20px rgba(245, 158, 11, 0.08);
+        }
+
+        .perf-item {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .perf-label {
+            font-size: 9.5px;
+            font-weight: 800;
+            text-transform: uppercase;
+            color: var(--text-dim);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .perf-val {
+            font-size: 18px;
+            font-weight: 900;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Fast Action / Emergency Ribbon */
+        .action-ribbon {
+            background: rgba(13, 19, 33, 0.95);
+            border: 1px solid var(--border-cyan);
+            border-radius: 12px;
+            padding: 14px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            box-shadow: 0 0 20px rgba(0, 229, 255, 0.1);
+        }
+
+        .action-title-box {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .action-title-box h2 {
+            font-family: 'Orbitron', monospace;
+            font-size: 13px;
+            font-weight: 900;
+            color: var(--cyan-glow);
+            letter-spacing: 0.8px;
+        }
+
+        .action-title-box p {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .action-buttons-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn-action {
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            font-weight: 800;
+            cursor: pointer;
+            border: 1px solid transparent;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-panic {
+            background: rgba(239, 68, 68, 0.15);
+            color: #FCA5A5;
+            border-color: var(--border-red);
+        }
+        .btn-panic:hover {
+            background: var(--red-glow);
+            color: #FFF;
+            box-shadow: 0 0 16px rgba(239, 68, 68, 0.5);
+        }
+
+        .btn-shield {
+            background: rgba(0, 229, 255, 0.15);
+            color: var(--cyan-glow);
+            border-color: var(--border-cyan);
+        }
+        .btn-shield:hover {
+            background: var(--cyan-glow);
+            color: #000;
+            box-shadow: 0 0 16px rgba(0, 229, 255, 0.5);
+        }
+
+        .btn-cancel-all {
+            background: rgba(245, 158, 11, 0.15);
+            color: var(--gold-glow);
+            border-color: var(--border-gold);
+        }
+        .btn-cancel-all:hover {
+            background: var(--gold-glow);
+            color: #000;
+            box-shadow: 0 0 16px rgba(245, 158, 11, 0.5);
+        }
+
+        .btn-download {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.25), rgba(0, 229, 255, 0.25));
+            color: #FFF;
+            border: 1px solid var(--green-glow);
+        }
+        .btn-download:hover {
+            background: var(--green-glow);
+            color: #000;
+            box-shadow: 0 0 16px rgba(16, 185, 129, 0.5);
+        }
+
+        .btn-refresh {
+            background: rgba(255, 255, 255, 0.06);
+            color: #FFF;
+            border-color: var(--border-subtle);
+        }
+        .btn-refresh:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        /* Section Cards & Tables */
+        .table-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            overflow: hidden;
+            backdrop-filter: blur(16px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+        }
+
+        .card-header {
+            padding: 14px 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-bottom: 1px solid var(--border-subtle);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .card-title {
+            font-family: 'Orbitron', monospace;
+            font-size: 13px;
+            font-weight: 900;
+            color: var(--cyan-glow);
+            letter-spacing: 0.8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .card-badge {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            font-weight: 800;
+            padding: 2px 8px;
+            border-radius: 4px;
+            background: rgba(0, 229, 255, 0.12);
+            color: var(--cyan-glow);
+            border: 1px solid var(--border-cyan);
+        }
+
+        .mt5-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+        }
+
+        .mt5-table th {
+            text-align: left;
+            padding: 12px 16px;
+            color: var(--text-dim);
+            font-size: 9.5px;
+            text-transform: uppercase;
+            font-weight: 800;
+            border-bottom: 1px solid var(--border-subtle);
+            background: rgba(0, 0, 0, 0.15);
+        }
+
+        .mt5-table td {
+            padding: 14px 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            color: #E2E8F0;
+        }
+
+        .mt5-table tr:hover {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .badge-buy {
+            background: rgba(16, 185, 129, 0.15);
+            color: var(--green-glow);
+            border: 1px solid var(--green-glow);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 800;
+        }
+
+        .badge-sell {
+            background: rgba(239, 68, 68, 0.15);
+            color: var(--red-glow);
+            border: 1px solid var(--red-glow);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 800;
+        }
+
+        .badge-limit {
+            background: rgba(245, 158, 11, 0.15);
+            color: var(--gold-glow);
+            border: 1px solid var(--gold-glow);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 800;
+        }
+
+        .badge-stop {
+            background: rgba(168, 85, 247, 0.15);
+            color: var(--purple-glow);
+            border: 1px solid var(--purple-glow);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 800;
+        }
+
+        .btn-table-action {
+            background: rgba(239, 68, 68, 0.12);
+            color: #F87171;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-table-action:hover {
+            background: var(--red-glow);
+            color: #FFF;
+        }
+
+        .btn-be-action {
+            background: rgba(0, 229, 255, 0.12);
+            color: var(--cyan-glow);
+            border: 1px solid var(--border-cyan);
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 800;
+            cursor: pointer;
+            margin-right: 4px;
+            transition: all 0.2s;
+        }
+
+        .btn-be-action:hover {
+            background: var(--cyan-glow);
+            color: #000;
+        }
+
+        .empty-state {
+            padding: 30px;
+            text-align: center;
+            color: var(--text-dim);
+            font-size: 11px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .filter-select {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--border-cyan);
+            color: var(--cyan-glow);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 4px 8px;
+            border-radius: 6px;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .filter-select option {
+            background: #0B0E14;
+            color: #FFF;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ==================== TOP NAVIGATION ==================== -->
+    <nav class="top-nav">
+        <a href="/" class="brand-box">
+            <div class="brand-logo">⚡</div>
+            <div class="brand-text">
+                <h1>MAZRION MT5 COCKPIT</h1>
+                <p>LIVE VPS DIRECT TRADE & AUDIT COMMAND</p>
+            </div>
+        </a>
+
+        <div class="nav-suites">
+            <a href="/" class="nav-link">📊 CHARTS</a>
+            <a href="/cockpit.html" class="nav-link">✈️ COCKPIT HUD</a>
+            <a href="/cinema.html" class="nav-link">🎬 CINEMA SUITE</a>
+            <a href="/fractals.html" class="nav-link">🧬 GHOST BLUEPRINT</a>
+            <a href="/matrix.html" class="nav-link">⚡ FRACTAL MATRIX</a>
+            <a href="/account.html" class="nav-link active">💳 MT5 ACCOUNT</a>
+            <a href="/mazrion.html" class="nav-link" style="color:var(--purple-glow);">🔮 MAZRION AI</a>
+        </div>
+
+        <div class="spot-pill">
+            <div class="pulse-dot"></div>
+            <span>XAUUSD SPOT: <strong id="nav-live-price">$4,404.94</strong></span>
+        </div>
+    </nav>
+
+    <!-- ==================== MAIN CONTENT ==================== -->
+    <main class="account-container">
+
+        <!-- 1. Master Account Stats Grid -->
+        <section class="account-hero">
+            <div class="stat-card">
+                <div class="stat-label">
+                    <span>Account Balance</span>
+                    <span>💰</span>
+                </div>
+                <div class="stat-val" id="acc-balance">$945.06</div>
+                <div class="stat-sub">Starting Capital Protection</div>
+            </div>
+
+            <div class="stat-card card-equity">
+                <div class="stat-label">
+                    <span>Floating Equity</span>
+                    <span>📈</span>
+                </div>
+                <div class="stat-val" style="color:var(--green-glow);" id="acc-equity">$945.06</div>
+                <div class="stat-sub" id="acc-free-margin">Free Margin: $945.06</div>
+            </div>
+
+            <div class="stat-card card-pnl">
+                <div class="stat-label">
+                    <span>Floating Open P&L</span>
+                    <span>⚡</span>
+                </div>
+                <div class="stat-val" id="acc-floating-pnl">+$0.00</div>
+                <div class="stat-sub" id="acc-open-count">0 Open Positions</div>
+            </div>
+
+            <div class="stat-card card-broker">
+                <div class="stat-label">
+                    <span>VPS MT5 Bridge</span>
+                    <span>🟢 LIVE</span>
+                </div>
+                <div class="stat-val" style="font-size:16px; margin-top:4px;" id="acc-broker">XMGlobal-MT5 7</div>
+                <div class="stat-sub" id="acc-login">Login: 316126743</div>
+            </div>
+        </section>
+
+        <!-- 2. Performance & Audit Metrics Strip -->
+        <section class="performance-strip">
+            <div class="perf-item">
+                <span class="perf-label">Win Rate %</span>
+                <span class="perf-val" style="color:var(--green-glow);" id="stat-winrate">100.0%</span>
+            </div>
+            <div class="perf-item">
+                <span class="perf-label">Total Closed Trades</span>
+                <span class="perf-val" id="stat-total-trades">0</span>
+            </div>
+            <div class="perf-item">
+                <span class="perf-label">Take Profit Won</span>
+                <span class="perf-val" style="color:var(--green-glow);" id="stat-tp-hit">0 🎯</span>
+            </div>
+            <div class="perf-item">
+                <span class="perf-label">Breakeven Protected</span>
+                <span class="perf-val" style="color:var(--cyan-glow);" id="stat-be-hit">0 🛡️</span>
+            </div>
+            <div class="perf-item">
+                <span class="perf-label">Stop Loss Defended</span>
+                <span class="perf-val" style="color:var(--red-glow);" id="stat-sl-hit">0 🛑</span>
+            </div>
+            <div class="perf-item">
+                <span class="perf-label">Total Realized Net Profit</span>
+                <span class="perf-val" style="color:var(--gold-glow);" id="stat-total-profit">+$0.00</span>
+            </div>
+        </section>
+
+        <!-- 3. Fast Emergency Controls Ribbon -->
+        <section class="action-ribbon">
+            <div class="action-title-box">
+                <span style="font-size:20px;">🛡️</span>
+                <div>
+                    <h2>REAL-TIME EXECUTION & RISK CONTROLS</h2>
+                    <p>Commands dispatch immediately to your 24/7 VPS MT5 relay with zero slippage.</p>
+                </div>
+            </div>
+
+            <div class="action-buttons-group">
+                <button class="btn-action btn-shield" onclick="triggerAction('BREAKEVEN_ALL')">
+                    🛡️ LOCK ALL TO BREAKEVEN
+                </button>
+                <button class="btn-action btn-cancel-all" onclick="triggerAction('CANCEL_ALL_PENDING')">
+                    ⚡ CANCEL ALL PENDING
+                </button>
+                <button class="btn-action btn-panic" onclick="triggerAction('CLOSE_ALL')">
+                    🚨 PANIC: CLOSE ALL TRADES
+                </button>
+                <button class="btn-action btn-download" onclick="downloadTradeHistoryCSV()">
+                    📥 DOWNLOAD CSV AUDIT
+                </button>
+                <button class="btn-action btn-refresh" onclick="fetchAccountData()">
+                    🔄 REFRESH
+                </button>
+            </div>
+        </section>
+
+        <!-- 4. Open Live Positions Table -->
+        <section class="table-card">
+            <div class="card-header">
+                <div class="card-title">
+                    <span>📊 LIVE OPEN POSITIONS (ACTIVE MARKET EXECUTIONS)</span>
+                </div>
+                <span class="card-badge" id="badge-pos-count">0 ACTIVE</span>
+            </div>
+            <table class="mt5-table">
+                <thead>
+                    <tr>
+                        <th>Ticket #</th>
+                        <th>Symbol</th>
+                        <th>Type</th>
+                        <th>Volume</th>
+                        <th>Open Price</th>
+                        <th>Current Price</th>
+                        <th>Floating P&L ($)</th>
+                        <th>Stop Loss</th>
+                        <th>Take Profit</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody-positions">
+                    <tr><td colspan="10" class="empty-state">Loading active positions from VPS MT5...</td></tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- 5. Pending Limit & Stop Orders Table -->
+        <section class="table-card">
+            <div class="card-header">
+                <div class="card-title">
+                    <span>⏳ PENDING RESTING ORDERS (LIMITS & STOPS)</span>
+                </div>
+                <span class="card-badge" style="background:rgba(245,158,11,0.15); color:var(--gold-glow); border-color:var(--border-gold);" id="badge-orders-count">0 PENDING</span>
+            </div>
+            <table class="mt5-table">
+                <thead>
+                    <tr>
+                        <th>Ticket #</th>
+                        <th>Symbol</th>
+                        <th>Type</th>
+                        <th>Volume</th>
+                        <th>Order Price</th>
+                        <th>Stop Loss</th>
+                        <th>Take Profit</th>
+                        <th>Time Placed</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody-pending">
+                    <tr><td colspan="9" class="empty-state">No resting limit or stop orders currently active.</td></tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- 6. Recent Order Queue Dispatch History -->
+        <section class="table-card">
+            <div class="card-header">
+                <div class="card-title">
+                    <span>📜 RECENT WEB DISPATCH LOGS & AUDIT TRAIL</span>
+                </div>
+                <span class="card-badge" style="background:rgba(168,85,247,0.15); color:var(--purple-glow); border-color:var(--purple-glow);">SYNCHRONIZED</span>
+            </div>
+            <table class="mt5-table">
+                <thead>
+                    <tr>
+                        <th>Created Time</th>
+                        <th>Wave Title</th>
+                        <th>Order Type</th>
+                        <th>Entry Price</th>
+                        <th>SL / TP</th>
+                        <th>MT5 Ticket #</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody-history">
+                    <tr><td colspan="7" class="empty-state">Fetching recent dispatch history...</td></tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- 7. Closed Trade History & Audit Ledger -->
+        <section class="table-card">
+            <div class="card-header">
+                <div class="card-title">
+                    <span>📈 MT5 CLOSED TRADE HISTORY & PERFORMANCE LOGS</span>
+                </div>
+                <div style="display:flex; align-items:center; gap:8px;">
+                    <select class="filter-select" id="history-filter" onchange="filterHistory()">
+                        <option value="ALL">All (Last 30 Days)</option>
+                        <option value="TODAY">Today</option>
+                        <option value="YESTERDAY">Yesterday</option>
+                        <option value="7D">Last 7 Days</option>
+                    </select>
+                    <button class="btn-action btn-download" style="padding:4px 10px; font-size:10px;" onclick="downloadTradeHistoryCSV()">
+                        📥 EXPORT CSV
+                    </button>
+                </div>
+            </div>
+            <table class="mt5-table">
+                <thead>
+                    <tr>
+                        <th>Close Time</th>
+                        <th>Deal #</th>
+                        <th>Symbol</th>
+                        <th>Type</th>
+                        <th>Volume</th>
+                        <th>Close Price</th>
+                        <th>Profit / Loss ($)</th>
+                        <th>Outcome</th>
+                        <th>Comment</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody-trade-history">
+                    <tr><td colspan="9" class="empty-state">Fetching closed trade history from MT5...</td></tr>
+                </tbody>
+            </table>
+        </section>
+
+    </main>
+
+    <!-- ==================== LOGIC & REAL-TIME POLLING ==================== -->
+    <script>
+        let livePrice = 4404.94;
+        let globalHistoryList = [];
+
+        async function fetchAccountData() {
+            try {
+                const res = await fetch('/api/account');
+                if (!res.ok) return;
+                const data = await res.json();
+                
+                if (data && data.account) {
+                    renderAccountMetrics(data.account);
+                    renderPositions(data.account.positions || []);
+                    renderPendingOrders(data.account.pending_orders || []);
+                    renderStats(data.account.stats || {});
+                    
+                    globalHistoryList = data.account.trade_history || [];
+                    renderTradeHistory(globalHistoryList);
+                }
+                if (data && data.history) {
+                    renderHistory(data.history);
+                }
+            } catch (e) {
+                console.error("Error fetching account data:", e);
+            }
+        }
+
+        function renderAccountMetrics(acc) {
+            document.getElementById('acc-balance').innerText = `$${parseFloat(acc.balance || 0).toFixed(2)}`;
+            document.getElementById('acc-equity').innerText = `$${parseFloat(acc.equity || 0).toFixed(2)}`;
+            document.getElementById('acc-free-margin').innerText = `Free Margin: $${parseFloat(acc.free_margin || 0).toFixed(2)}`;
+
+            const pnl = parseFloat(acc.floating_pnl || 0);
+            const pnlEl = document.getElementById('acc-floating-pnl');
+            pnlEl.innerText = `${pnl >= 0 ? '+' : ''}$${pnl.toFixed(2)}`;
+            pnlEl.style.color = pnl > 0 ? 'var(--green-glow)' : (pnl < 0 ? 'var(--red-glow)' : '#FFF');
+
+            const posCount = (acc.positions || []).length;
+            document.getElementById('acc-open-count').innerText = `${posCount} Open Position${posCount === 1 ? '' : 's'}`;
+            document.getElementById('acc-broker').innerText = acc.broker_server || "XMGlobal-MT5 7";
+            document.getElementById('acc-login').innerText = `Login: ${acc.account_login || 316126743}`;
+        }
+
+        function renderStats(stats) {
+            if (!stats) return;
+            document.getElementById('stat-winrate').innerText = `${stats.win_rate || 0}%`;
+            document.getElementById('stat-total-trades').innerText = `${stats.total_trades || 0}`;
+            document.getElementById('stat-tp-hit').innerText = `${stats.tp_hit || 0} 🎯`;
+            document.getElementById('stat-be-hit').innerText = `${stats.be_hit || 0} 🛡️`;
+            document.getElementById('stat-sl-hit').innerText = `${stats.sl_hit || 0} 🛑`;
+            
+            const p = parseFloat(stats.total_profit || 0);
+            document.getElementById('stat-total-profit').innerText = `${p >= 0 ? '+' : ''}$${p.toFixed(2)}`;
+            document.getElementById('stat-total-profit').style.color = p >= 0 ? 'var(--gold-glow)' : 'var(--red-glow)';
+        }
+
+        function renderPositions(positions) {
+            const tbody = document.getElementById('tbody-positions');
+            document.getElementById('badge-pos-count').innerText = `${positions.length} ACTIVE`;
+
+            if (positions.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="10" class="empty-state">✅ No open floating positions. Capital 100% defended.</td></tr>`;
+                return;
+            }
+
+            let html = "";
+            positions.forEach(p => {
+                const pnl = parseFloat(p.profit || 0);
+                const pnlColor = pnl > 0 ? 'var(--green-glow)' : (pnl < 0 ? 'var(--red-glow)' : '#FFF');
+                const badgeClass = p.type === 'BUY' ? 'badge-buy' : 'badge-sell';
+
+                html += `
+                    <tr>
+                        <td><strong>#${p.ticket}</strong></td>
+                        <td><strong style="color:var(--cyan-glow);">${p.symbol}</strong></td>
+                        <td><span class="${badgeClass}">${p.type}</span></td>
+                        <td>${p.volume} lots</td>
+                        <td>$${parseFloat(p.open_price).toFixed(2)}</td>
+                        <td>$${parseFloat(p.current_price).toFixed(2)}</td>
+                        <td><strong style="color:${pnlColor}; font-size:13px;">${pnl >= 0 ? '+' : ''}$${pnl.toFixed(2)}</strong></td>
+                        <td style="color:var(--red-glow);">$${parseFloat(p.sl).toFixed(2)}</td>
+                        <td style="color:var(--green-glow);">$${parseFloat(p.tp).toFixed(2)}</td>
+                        <td>
+                            <button class="btn-be-action" onclick="triggerClosePosition(${p.ticket}, true)">🛡️ BE</button>
+                            <button class="btn-table-action" onclick="triggerClosePosition(${p.ticket}, false)">❌ CLOSE</button>
+                        </td>
+                    </tr>
+                `;
+            });
+            tbody.innerHTML = html;
+        }
+
+        function renderPendingOrders(orders) {
+            const tbody = document.getElementById('tbody-pending');
+            document.getElementById('badge-orders-count').innerText = `${orders.length} PENDING`;
+
+            if (orders.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="9" class="empty-state">No resting limit or stop orders currently active.</td></tr>`;
+                return;
+            }
+
+            let html = "";
+            orders.forEach(o => {
+                const badgeClass = o.type.includes('LIMIT') ? 'badge-limit' : 'badge-stop';
+                const timeStr = o.time_setup ? new Date(o.time_setup).toLocaleTimeString() : '--:--';
+
+                html += `
+                    <tr>
+                        <td><strong>#${o.ticket}</strong></td>
+                        <td><strong style="color:var(--cyan-glow);">${o.symbol}</strong></td>
+                        <td><span class="${badgeClass}">${o.type}</span></td>
+                        <td>${o.volume} lots</td>
+                        <td><strong style="color:var(--gold-glow);">$${parseFloat(o.price_open).toFixed(2)}</strong></td>
+                        <td style="color:var(--red-glow);">$${parseFloat(o.sl).toFixed(2)}</td>
+                        <td style="color:var(--green-glow);">$${parseFloat(o.tp).toFixed(2)}</td>
+                        <td style="color:var(--text-dim);">${timeStr}</td>
+                        <td>
+                            <button class="btn-table-action" onclick="triggerCancelOrder(${o.ticket})">🗑️ CANCEL</button>
+                        </td>
+                    </tr>
+                `;
+            });
+            tbody.innerHTML = html;
+        }
+
+        function renderHistory(history) {
+            const tbody = document.getElementById('tbody-history');
+            if (!history || history.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" class="empty-state">No recent dispatch history.</td></tr>`;
+                return;
+            }
+
+            let html = "";
+            history.forEach(h => {
+                const timeStr = h.created_at ? new Date(h.created_at).toLocaleTimeString() : '--:--';
+                const statusTag = h.status === 'EXECUTED' 
+                    ? `<span style="color:var(--green-glow); font-weight:800;">✅ EXECUTED</span>` 
+                    : (h.status === 'FAILED' ? `<span style="color:var(--red-glow); font-weight:800;">❌ FAILED</span>` : `<span style="color:var(--gold-glow); font-weight:800;">⏳ PENDING</span>`);
+
+                html += `
+                    <tr>
+                        <td style="color:var(--text-dim);">${timeStr}</td>
+                        <td><strong>${h.wave_title || 'Mazrion Order'}</strong></td>
+                        <td><span class="badge-limit">${h.order_type}</span></td>
+                        <td>$${parseFloat(h.entry_price || 0).toFixed(2)}</td>
+                        <td>SL: $${parseFloat(h.stop_loss || 0).toFixed(2)} | TP: $${parseFloat(h.take_profit_2 || h.take_profit_1 || 0).toFixed(2)}</td>
+                        <td><strong style="color:var(--cyan-glow);">${h.mt5_ticket ? '#' + h.mt5_ticket : '—'}</strong></td>
+                        <td>${statusTag}</td>
+                    </tr>
+                `;
+            });
+            tbody.innerHTML = html;
+        }
+
+        function renderTradeHistory(history) {
+            const tbody = document.getElementById('tbody-trade-history');
+            if (!history || history.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="9" class="empty-state">No closed trade history found in the selected period.</td></tr>`;
+                return;
+            }
+
+            let html = "";
+            history.forEach(h => {
+                const timeStr = h.time ? new Date(h.time).toLocaleString() : '--';
+                const p = parseFloat(h.profit || 0);
+                const pColor = p > 0 ? 'var(--green-glow)' : (p < 0 ? 'var(--red-glow)' : '#FFF');
+                const badgeClass = h.type === 'BUY' ? 'badge-buy' : 'badge-sell';
+
+                html += `
+                    <tr>
+                        <td style="color:var(--text-dim); font-size:10.5px;">${timeStr}</td>
+                        <td><strong>#${h.deal_id}</strong></td>
+                        <td><strong style="color:var(--cyan-glow);">${h.symbol}</strong></td>
+                        <td><span class="${badgeClass}">${h.type}</span></td>
+                        <td>${h.volume} lots</td>
+                        <td>$${parseFloat(h.price || 0).toFixed(2)}</td>
+                        <td><strong style="color:${pColor}; font-size:12.5px;">${p >= 0 ? '+' : ''}$${p.toFixed(2)}</strong></td>
+                        <td><span style="font-weight:800; color:${pColor};">${h.outcome}</span></td>
+                        <td style="color:var(--text-dim); font-size:10px;">${h.comment || 'Mazrion Trade'}</td>
+                    </tr>
+                `;
+            });
+            tbody.innerHTML = html;
+        }
+
+        function filterHistory() {
+            const filterVal = document.getElementById('history-filter').value;
+            if (!globalHistoryList || globalHistoryList.length === 0) return;
+
+            const now = new Date();
+            let filtered = globalHistoryList.filter(item => {
+                if (!item.time) return true;
+                const d = new Date(item.time);
+                if (filterVal === 'TODAY') {
+                    return d.toDateString() === now.toDateString();
+                } else if (filterVal === 'YESTERDAY') {
+                    const yest = new Date();
+                    yest.setDate(yest.getDate() - 1);
+                    return d.toDateString() === yest.toDateString();
+                } else if (filterVal === '7D') {
+                    const sevenDaysAgo = new Date();
+                    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+                    return d >= sevenDaysAgo;
+                }
+                return true;
+            });
+
+            renderTradeHistory(filtered);
+        }
+
+        function downloadTradeHistoryCSV() {
+            if (!globalHistoryList || globalHistoryList.length === 0) {
+                alert("No trade history available to download.");
+                return;
+            }
+
+            let csvContent = "data:text/csv;charset=utf-8,";
+            csvContent += "Close Time,Deal Ticket,Order Ticket,Symbol,Type,Volume,Close Price,Profit ($),Outcome,Comment\n";
+
+            globalHistoryList.forEach(row => {
+                const timeStr = row.time ? `"${row.time}"` : '""';
+                csvContent += `${timeStr},${row.deal_id},${row.order_id || ''},${row.symbol},${row.type},${row.volume},${row.price},${row.profit},"${row.outcome}","${row.comment || ''}"\n`;
+            });
+
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `Mazrion_MT5_Trade_Audit_${new Date().toISOString().slice(0,10)}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        async function triggerAction(actionType, ticketId = null) {
+            if (actionType === 'CLOSE_ALL') {
+                if (!confirm("🚨 WARNING: Are you sure you want to PANIC CLOSE ALL OPEN POSITIONS and CANCEL ALL PENDING ORDERS on VPS MT5?")) {
+                    return;
+                }
+            }
+
+            try {
+                const res = await fetch('/api/account', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        actionType: actionType,
+                        ticketId: ticketId
+                    })
+                });
+
+                if (res.ok) {
+                    alert(`✅ Command [${actionType}] dispatched to VPS MT5 relay!`);
+                    setTimeout(fetchAccountData, 1000);
+                } else {
+                    alert("❌ Failed to dispatch action.");
+                }
+            } catch (e) {
+                alert("Network error sending action to VPS.");
+            }
+        }
+
+        async function triggerClosePosition(ticketId, isBreakeven = false) {
+            if (isBreakeven) {
+                await triggerAction('BREAKEVEN_ALL', ticketId);
+            } else {
+                if (confirm(`Are you sure you want to close position #${ticketId}?`)) {
+                    await triggerAction('CLOSE_POSITION', ticketId);
+                }
+            }
+        }
+
+        async function triggerCancelOrder(ticketId) {
+            if (confirm(`Are you sure you want to cancel pending order #${ticketId}?`)) {
+                await triggerAction('CANCEL_ORDER', ticketId);
+            }
+        }
+
+        setInterval(fetchAccountData, 2000);
+        setInterval(async () => {
+            try {
+                const res = await fetch('/api/price');
+                const data = await res.json();
+                if (data && data.price) {
+                    livePrice = parseFloat(data.price);
+                    document.getElementById('nav-live-price').innerText = `$${livePrice.toFixed(2)}`;
+                }
+            } catch (e) {}
+        }, 1500);
+
+        window.addEventListener('DOMContentLoaded', () => {
+            fetchAccountData();
+        });
+    </script>
+    <script src="/js/mazrion_widget.js"></script>
+</body>
+</html>

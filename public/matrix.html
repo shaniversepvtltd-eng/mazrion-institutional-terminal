@@ -597,6 +597,7 @@
             <a href="/cinema.html" class="nav-link">🎬 CINEMA SUITE</a>
             <a href="/fractals.html" class="nav-link">🧬 GHOST BLUEPRINT</a>
             <a href="/matrix.html" class="nav-link active">⚡ FRACTAL MATRIX</a>
+            <a href="/account.html" class="nav-link">💳 MT5 ACCOUNT</a>
             <a href="/mazrion.html" class="nav-link" style="color:var(--purple-glow);">🔮 MAZRION AI</a>
         </div>
 
@@ -1066,12 +1067,34 @@
                 }
             }
 
+            // Dynamic Order Type Calculation
+            let dynOrderType = "BUY LIMIT";
+            let dynOrderBadgeColor = "var(--green-glow)";
+            const entryNum = parseFloat(entryPoi);
+
+            if (Math.abs(livePrice - entryNum) <= 1.00) {
+                dynOrderType = "BUY (MARKET DISCOUNT)";
+                dynOrderBadgeColor = "var(--cyan-glow)";
+            } else if (entryNum < livePrice) {
+                dynOrderType = "BUY LIMIT (DISCOUNT FLOOR)";
+                dynOrderBadgeColor = "var(--green-glow)";
+            } else {
+                dynOrderType = "BUY STOP (BREAKOUT RECLAIM)";
+                dynOrderBadgeColor = "var(--gold-glow)";
+            }
+
+            const orderTypeEl = document.getElementById('ticket-order-type');
+            if (orderTypeEl) {
+                orderTypeEl.innerText = dynOrderType;
+                orderTypeEl.style.color = dynOrderBadgeColor;
+            }
+
             const pullbackPct = Math.max(15, Math.min(88, 100 - wavePct));
             document.getElementById('pullback-pct-val').innerText = `${pullbackPct}% CHANCE`;
             document.getElementById('pullback-gauge-fill').style.width = `${pullbackPct}%`;
 
             if (wavePct <= 35) {
-                document.getElementById('pullback-advice-text').innerHTML = `<strong>HIGH PULLBACK POI DEFENSE</strong>: In Wholesale Discount zone. Rest <strong>BUY LIMIT @ $${entryPoi}</strong>. Do NOT market-buy green wicks.`;
+                document.getElementById('pullback-advice-text').innerHTML = `<strong>HIGH PULLBACK POI DEFENSE</strong>: In Wholesale Discount zone. Rest <strong>${dynOrderType} @ $${entryPoi}</strong>. Defend structural floor $${slPoi}.`;
             } else if (wavePct <= 85) {
                 document.getElementById('pullback-advice-text').innerHTML = `<strong>MID-WAVE EXPANSION</strong>: Runners active in profit. Move SL to Breakeven (+1.2R lock) as price heads to <strong>$${activeWaveHigh.toFixed(2)}</strong>.`;
             } else {
@@ -1092,6 +1115,7 @@
                 roadmap.forEach(row => {
                     const rowRange = row.tp2 - row.entry;
                     const rowPct = Math.min(100, Math.max(0, Math.round(((livePrice - row.entry) / (rowRange || 1)) * 100)));
+                    const gainDollar = ((row.tp2 - row.entry) * 0.95).toFixed(2);
 
                     if (row.isWon || (livePrice > row.tp2 && !row.isActive)) {
                         html += `
@@ -1099,25 +1123,26 @@
                                 <td><strong style="color:var(--green-glow);">WAVE #${row.num}</strong></td>
                                 <td><span style="color:var(--cyan-glow);">${row.swept}</span></td>
                                 <td>BUY LIMIT @ $${row.entry.toFixed(2)}</td>
-                                <td>$${row.sl.toFixed(2)}</td>
-                                <td>$${row.tp2.toFixed(2)} (BSL)</td>
+                                <td style="color:var(--red-glow);">$${row.sl.toFixed(2)}</td>
+                                <td><strong style="color:var(--green-glow);">$${row.tp2.toFixed(2)} (BSL)</strong></td>
                                 <td>
                                     <span class="status-tag tag-hit">TP2 HIT 🎯</span>
                                     <div style="margin-top:4px; width:90px; height:4px; background:rgba(16,185,129,0.2); border-radius:2px; overflow:hidden;">
                                         <div style="height:100%; width:100%; background:var(--green-glow);"></div>
                                     </div>
                                 </td>
-                                <td style="color:var(--green-glow); font-weight:800;">+2.3R (+$${((row.tp2 - row.entry) * 0.95).toFixed(2)})</td>
-                                <td style="font-size:10px; color:var(--text-muted); max-width:240px;">${row.desc}</td>
+                                <td style="color:var(--green-glow); font-weight:800;">+2.3R (+$${gainDollar})</td>
+                                <td style="font-size:10px; color:#CBD5E1; max-width:240px;">${row.desc}</td>
                                 <td><span style="color:var(--text-dim); font-size:10px;">CLOSED ✅</span></td>
                             </tr>
                         `;
                     } else if (row.isActive) {
+                        const rowOrderType = (row.entry < livePrice) ? "BUY LIMIT" : (Math.abs(row.entry - livePrice) <= 1.0 ? "BUY (MARKET)" : "BUY STOP");
                         html += `
                             <tr class="row-active">
                                 <td><strong style="color:var(--cyan-glow);">WAVE #${row.num} (ACTIVE)</strong></td>
                                 <td><strong style="color:var(--gold-glow);">${row.swept}</strong></td>
-                                <td><strong style="color:var(--gold-glow);">BUY LIMIT @ $${row.entry.toFixed(2)}</strong></td>
+                                <td><strong style="color:var(--gold-glow);">${rowOrderType} @ $${row.entry.toFixed(2)}</strong></td>
                                 <td style="color:var(--red-glow); font-weight:800;">$${row.sl.toFixed(2)}</td>
                                 <td><strong style="color:var(--green-glow);">$${row.tp2.toFixed(2)} (BSL Magnet)</strong></td>
                                 <td>
@@ -1137,7 +1162,7 @@
                                 <td><span style="color:var(--text-muted);">WAVE #${row.num}</span></td>
                                 <td><span style="color:var(--text-dim);">${row.swept}</span></td>
                                 <td>BUY LIMIT @ $${row.entry.toFixed(2)}</td>
-                                <td>$${row.sl.toFixed(2)}</td>
+                                <td style="color:var(--red-glow);">$${row.sl.toFixed(2)}</td>
                                 <td>$${row.tp2.toFixed(2)} (BSL)</td>
                                 <td>
                                     <span class="status-tag tag-queued">QUEUED ⏳</span>
@@ -1158,7 +1183,6 @@
                 const halfStep = step * 0.50;
                 const w1Low = spec.baseLow;
 
-                // Dynamically find active wave number based on live price
                 let dynActive = 1;
                 for (let i = 1; i <= spec.total; i++) {
                     const rLow = (i === 1) ? w1Low : (w1Low + ((i - 1) * halfStep));
@@ -1179,6 +1203,7 @@
                     const rowSl = (rowLow - spec.slOffset).toFixed(2);
                     const wSweptPool = i === 1 ? spec.sweptPool : `Wave #${i-1} Peak Swept ➔ 50% Pullback Retest @ $${rowLow.toFixed(2)}`;
                     const rowPct = Math.min(100, Math.max(0, Math.round(((livePrice - rowLow) / (step || 1)) * 100)));
+                    const gainDollar = (step * 0.95).toFixed(2);
 
                     if (i < dynActive) {
                         html += `
@@ -1186,25 +1211,26 @@
                                 <td><strong style="color:var(--green-glow);">WAVE #${i}</strong></td>
                                 <td><span style="color:var(--cyan-glow);">${wSweptPool}</span></td>
                                 <td>BUY LIMIT @ $${rowEntry}</td>
-                                <td>$${rowSl}</td>
-                                <td>$${rowHigh.toFixed(2)} (BSL)</td>
+                                <td style="color:var(--red-glow);">$${rowSl}</td>
+                                <td><strong style="color:var(--green-glow);">$${rowHigh.toFixed(2)} (BSL)</strong></td>
                                 <td>
                                     <span class="status-tag tag-hit">TP2 HIT 🎯</span>
                                     <div style="margin-top:4px; width:90px; height:4px; background:rgba(16,185,129,0.2); border-radius:2px; overflow:hidden;">
                                         <div style="height:100%; width:100%; background:var(--green-glow);"></div>
                                     </div>
                                 </td>
-                                <td style="color:var(--green-glow); font-weight:800;">+2.3R (+$${(step * 0.95).toFixed(2)})</td>
+                                <td style="color:var(--green-glow); font-weight:800;">+2.3R (+$${gainDollar})</td>
                                 <td style="font-size:10px; color:var(--text-muted); max-width:240px;">Harvested short stop liquidity; completed expansion leg.</td>
                                 <td><span style="color:var(--text-dim); font-size:10px;">CLOSED ✅</span></td>
                             </tr>
                         `;
                     } else if (i === dynActive) {
+                        const rowOrderType = (parseFloat(rowEntry) < livePrice) ? "BUY LIMIT" : (Math.abs(parseFloat(rowEntry) - livePrice) <= 1.0 ? "BUY (MARKET)" : "BUY STOP");
                         html += `
                             <tr class="row-active">
                                 <td><strong style="color:var(--cyan-glow);">WAVE #${i} (ACTIVE)</strong></td>
                                 <td><strong style="color:var(--gold-glow);">${spec.sweptPool}</strong></td>
-                                <td><strong style="color:var(--gold-glow);">BUY LIMIT @ $${rowEntry}</strong></td>
+                                <td><strong style="color:var(--gold-glow);">${rowOrderType} @ $${rowEntry}</strong></td>
                                 <td style="color:var(--red-glow); font-weight:800;">$${rowSl}</td>
                                 <td><strong style="color:var(--green-glow);">$${rowHigh.toFixed(2)} (BSL Magnet)</strong></td>
                                 <td>
@@ -1224,7 +1250,7 @@
                                 <td><span style="color:var(--text-muted);">WAVE #${i}</span></td>
                                 <td><span style="color:var(--text-dim);">${wSweptPool}</span></td>
                                 <td>BUY LIMIT @ $${rowEntry}</td>
-                                <td>$${rowSl}</td>
+                                <td style="color:var(--red-glow);">$${rowSl}</td>
                                 <td>$${rowHigh.toFixed(2)} (BSL)</td>
                                 <td>
                                     <span class="status-tag tag-queued">QUEUED ⏳</span>
@@ -1256,21 +1282,22 @@
         }, 1500);
 
         function copyActiveTicket() {
+            const orderType = document.getElementById('ticket-order-type').innerText;
             const entry = document.getElementById('ticket-entry').innerText;
             const sl = document.getElementById('ticket-sl').innerText;
             const tp1 = document.getElementById('ticket-tp1').innerText;
             const tp2 = document.getElementById('ticket-tp2').innerText;
             const risk = document.getElementById('ticket-risk').innerText;
 
-            const text = `// MAZRION FRACTAL WAVE TICKET\nSymbol: XAUUSD SPOT\nType: BUY LIMIT\nEntry: ${entry}\nSL: ${sl}\nTP1 (BE Trigger): ${tp1}\nTP2 (Wave Goal): ${tp2}\nRisk: ${risk}`;
+            const text = `// MAZRION FRACTAL WAVE TICKET\nSymbol: XAUUSD SPOT\nType: ${orderType}\nEntry: ${entry}\nSL: ${sl}\nTP1 (BE Trigger): ${tp1}\nTP2 (Wave Goal): ${tp2}\nRisk: ${risk}`;
             navigator.clipboard.writeText(text);
 
             const btn = document.getElementById('btn-copy-ticket');
-            btn.innerText = '✅ MT5 TICKET COPIED TO CLIPBOARD!';
+            btn.innerText = '✅ MT5 TICKET COPIED!';
             btn.style.background = '#10B981';
             setTimeout(() => {
-                btn.innerText = '⚡ 1-CLICK COPY MT5 TICKET';
-                btn.style.background = 'linear-gradient(135deg, var(--cyan-glow), #0099FF)';
+                btn.innerText = '📋 COPY';
+                btn.style.background = 'rgba(255,255,255,0.06)';
             }, 2500);
         }
 
@@ -1281,6 +1308,7 @@
         }
 
         async function executeActiveTicketOnVps() {
+            const rawOrderType = document.getElementById('ticket-order-type').innerText;
             const entryStr = document.getElementById('ticket-entry').innerText.replace(/[$,]/g, '').trim();
             const slStr = document.getElementById('ticket-sl').innerText.replace(/[$,]/g, '').trim();
             const tp1Str = document.getElementById('ticket-tp1').innerText.replace(/[$,]/g, '').trim();
@@ -1288,10 +1316,21 @@
             const btn = document.getElementById('btn-execute-vps');
             
             const origText = btn.innerText;
-            btn.innerText = '⏳ SENDING TO VPS...';
+            btn.innerText = '⏳ DISPATCHING...';
             btn.disabled = true;
 
             const tf = (typeof selectedTf !== 'undefined') ? selectedTf : '1m';
+            const entryVal = parseFloat(entryStr);
+
+            // Determine explicit order type string for MT5
+            let cleanOrderType = "BUY_LIMIT";
+            if (rawOrderType.includes("MARKET")) {
+                cleanOrderType = "BUY";
+            } else if (rawOrderType.includes("STOP")) {
+                cleanOrderType = "BUY_STOP";
+            } else {
+                cleanOrderType = (entryVal < livePrice) ? "BUY_LIMIT" : "BUY_STOP";
+            }
 
             try {
                 const res = await fetch('/api/execute', {
@@ -1299,8 +1338,8 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         symbol: 'XAUUSD',
-                        orderType: 'BUY_LIMIT',
-                        entryPrice: parseFloat(entryStr),
+                        orderType: cleanOrderType,
+                        entryPrice: entryVal,
                         stopLoss: parseFloat(slStr),
                         takeProfit1: parseFloat(tp1Str),
                         takeProfit2: parseFloat(tp2Str),
@@ -1333,14 +1372,17 @@
 
         async function executeWaveTicketOnVps(waveNum, entry, sl, tp) {
             const tf = (typeof selectedTf !== 'undefined') ? selectedTf : '1m';
+            const entryVal = parseFloat(String(entry).replace(/[$,]/g, ''));
+            const orderType = (entryVal < livePrice) ? "BUY_LIMIT" : "BUY_STOP";
+
             try {
                 const res = await fetch('/api/execute', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         symbol: 'XAUUSD',
-                        orderType: 'BUY_LIMIT',
-                        entryPrice: parseFloat(String(entry).replace(/[$,]/g, '')),
+                        orderType: orderType,
+                        entryPrice: entryVal,
                         stopLoss: parseFloat(String(sl).replace(/[$,]/g, '')),
                         takeProfit1: parseFloat(String(tp).replace(/[$,]/g, '')),
                         takeProfit2: parseFloat(String(tp).replace(/[$,]/g, '')),
@@ -1350,7 +1392,7 @@
                     })
                 });
                 if (res.ok) {
-                    alert(`🚀 Mazrion Dispatched Wave #${waveNum} Order to VPS MT5!\n\nSymbol: XAUUSD\nType: BUY LIMIT\nEntry: $${entry.toFixed(2)}\nSL: $${sl.toFixed(2)}\nTP: $${tp.toFixed(2)}\n\nOrder is now queued for instant execution on your VPS MT5.`);
+                    alert(`🚀 Mazrion Dispatched Wave #${waveNum} Order to VPS MT5!\n\nSymbol: XAUUSD\nType: ${orderType}\nEntry: $${entryVal.toFixed(2)}\nSL: $${sl.toFixed(2)}\nTP: $${tp.toFixed(2)}\n\nOrder is now queued for instant execution on your VPS MT5.`);
                 }
             } catch (e) {
                 alert("Network error sending order to VPS.");
