@@ -722,16 +722,25 @@
 
             <!-- 1-Click Ticket Execution Slate -->
             <div class="ticket-slate">
-                <div style="font-weight:900; color:var(--cyan-glow); font-size:11.5px;">📋 LIVE EXECUTION TICKET</div>
-                <div class="ticket-row"><span>ORDER:</span> <strong style="color:var(--green-glow);">BUY LIMIT</strong></div>
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <div style="font-weight:900; color:var(--cyan-glow); font-size:11.5px;">📋 LIVE EXECUTION TICKET</div>
+                    <span id="vpsSyncTag" style="font-size:9.5px; font-weight:800; color:var(--green-glow); background:rgba(16,185,129,0.12); border:1px solid rgba(16,185,129,0.3); padding:2px 6px; border-radius:4px;">● VPS BRIDGE READY</span>
+                </div>
+                <div class="ticket-row"><span>ORDER:</span> <strong style="color:var(--green-glow);" id="ticket-order-type">BUY LIMIT</strong></div>
                 <div class="ticket-row"><span>ENTRY POI:</span> <strong id="ticket-entry">$4,395.15</strong></div>
                 <div class="ticket-row"><span>STOP LOSS:</span> <strong id="ticket-sl" style="color:var(--red-glow);">$4,378.00</strong></div>
                 <div class="ticket-row"><span>TP1 (BE LOCK):</span> <strong id="ticket-tp1" style="color:var(--cyan-glow);">$4,416.05</strong></div>
                 <div class="ticket-row"><span>TP2 (GOAL):</span> <strong id="ticket-tp2" style="color:var(--green-glow);">$4,448.74</strong></div>
                 <div class="ticket-row"><span>RISK (2% GUARD):</span> <strong id="ticket-risk">$17.15 (0.01 Lots)</strong></div>
-                <button class="btn-action-copy" id="btn-copy-ticket" onclick="copyActiveTicket()">
-                    ⚡ 1-CLICK COPY MT5 TICKET
-                </button>
+                
+                <div style="display:flex; gap:6px; margin-top:8px;">
+                    <button class="btn-action-copy" id="btn-execute-vps" onclick="executeActiveTicketOnVps()" style="flex:1.2; background:linear-gradient(135deg, #10B981, #059669); border-color:#34D399; font-weight:900; box-shadow:0 0 15px rgba(16,185,129,0.3);">
+                        🚀 EXECUTE ON VPS MT5
+                    </button>
+                    <button class="btn-action-copy" id="btn-copy-ticket" onclick="copyActiveTicket()" style="flex:0.8; background:rgba(255,255,255,0.06); font-size:10px;">
+                        📋 COPY
+                    </button>
+                </div>
             </div>
         </div>
 
@@ -1269,6 +1278,79 @@
             const text = `// MAZRION PRE-SET WAVE #${waveNum} ORDER\nSymbol: XAUUSD SPOT\nType: BUY LIMIT\nEntry POI: $${entry.toFixed(2)}\nFloor SL: $${sl.toFixed(2)}\nTarget TP: $${tp.toFixed(2)}\nMode: Strict 2% Capital Protocol`;
             navigator.clipboard.writeText(text);
             alert(`✅ Future Wave #${waveNum} Pre-Set Limit Order copied to clipboard!\n\nEntry: $${entry.toFixed(2)}\nSL: $${sl.toFixed(2)}\nTP: $${tp.toFixed(2)}`);
+        }
+
+        async function executeActiveTicketOnVps() {
+            const entryStr = document.getElementById('ticket-entry').innerText.replace('$', '').trim();
+            const slStr = document.getElementById('ticket-sl').innerText.replace('$', '').trim();
+            const tp1Str = document.getElementById('ticket-tp1').innerText.replace('$', '').trim();
+            const tp2Str = document.getElementById('ticket-tp2').innerText.replace('$', '').trim();
+            const btn = document.getElementById('btn-execute-vps');
+            
+            const origText = btn.innerText;
+            btn.innerText = '⏳ SENDING TO VPS...';
+            btn.disabled = true;
+
+            try {
+                const res = await fetch('/api/execute', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        symbol: 'XAUUSD',
+                        orderType: 'BUY_LIMIT',
+                        entryPrice: parseFloat(entryStr),
+                        stopLoss: parseFloat(slStr),
+                        takeProfit1: parseFloat(tp1Str),
+                        takeProfit2: parseFloat(tp2Str),
+                        volume: 0.01,
+                        timeframe: activeTf,
+                        waveTitle: `${activeTf.toUpperCase()} Wave Execution`
+                    })
+                });
+
+                if (res.ok) {
+                    btn.innerText = '✅ DISPATCHED TO VPS MT5!';
+                    btn.style.background = '#059669';
+                    const tag = document.getElementById('vpsSyncTag');
+                    if (tag) tag.innerText = '🟢 QUEUED IN MT5';
+                    setTimeout(() => {
+                        btn.innerText = origText;
+                        btn.style.background = 'linear-gradient(135deg, #10B981, #059669)';
+                        btn.disabled = false;
+                    }, 3000);
+                } else {
+                    btn.innerText = '❌ FAILED TO DISPATCH';
+                    setTimeout(() => { btn.innerText = origText; btn.disabled = false; }, 2000);
+                }
+            } catch (e) {
+                btn.innerText = '❌ NETWORK ERROR';
+                setTimeout(() => { btn.innerText = origText; btn.disabled = false; }, 2000);
+            }
+        }
+
+        async function executeWaveTicketOnVps(waveNum, entry, sl, tp) {
+            try {
+                const res = await fetch('/api/execute', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        symbol: 'XAUUSD',
+                        orderType: 'BUY_LIMIT',
+                        entryPrice: parseFloat(entry),
+                        stopLoss: parseFloat(sl),
+                        takeProfit1: parseFloat(tp),
+                        takeProfit2: parseFloat(tp),
+                        volume: 0.01,
+                        timeframe: activeTf,
+                        waveTitle: `${activeTf.toUpperCase()} Wave #${waveNum}`
+                    })
+                });
+                if (res.ok) {
+                    alert(`🚀 Mazrion Dispatched Wave #${waveNum} Order to VPS MT5!\n\nSymbol: XAUUSD\nType: BUY LIMIT\nEntry: $${entry.toFixed(2)}\nSL: $${sl.toFixed(2)}\nTP: $${tp.toFixed(2)}\n\nOrder is now queued for instant execution on your VPS MT5.`);
+                }
+            } catch (e) {
+                alert("Network error sending order to VPS.");
+            }
         }
 
         window.addEventListener('DOMContentLoaded', () => {

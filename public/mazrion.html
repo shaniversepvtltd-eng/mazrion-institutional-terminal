@@ -782,7 +782,10 @@
                     <div class="trade-card-render">
                         <div class="trade-card-header">
                             <span>🎯 MT5 1-CLICK TICKET READY</span>
-                            <button class="trade-copy-btn" data-ticket="${encodeURIComponent(ticketData)}" onclick="copyDynamicTicket(this)">📋 Copy MT5 Ticket</button>
+                            <div style="display:flex; gap:6px;">
+                                <button class="trade-copy-btn" onclick="executeVpsFromChat(this, '${entryVal}', '${slVal}', '${tp1Val}', '${tp2Val}')" style="background:#10B981; color:#FFF; font-weight:800; border:none;">🚀 Execute on VPS</button>
+                                <button class="trade-copy-btn" data-ticket="${encodeURIComponent(ticketData)}" onclick="copyDynamicTicket(this)">📋 Copy</button>
+                            </div>
                         </div>
                         <div style="font-size:10.5px; color:var(--text-muted);">
                             XAUUSD • BUY LIMIT • 0.01 LOTS • Entry @ $${entryVal} • SL @ $${slVal} • TP @ $${tp2Val}
@@ -793,11 +796,46 @@
             return out;
         }
 
+        async function executeVpsFromChat(btn, entry, sl, tp1, tp2) {
+            const old = btn.innerText;
+            btn.innerText = "⏳ Sending...";
+            btn.disabled = true;
+
+            try {
+                const res = await fetch("/api/execute", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        symbol: "XAUUSD",
+                        orderType: "BUY_LIMIT",
+                        entryPrice: parseFloat(entry),
+                        stopLoss: parseFloat(sl),
+                        takeProfit1: parseFloat(tp1),
+                        takeProfit2: parseFloat(tp2),
+                        volume: 0.01,
+                        timeframe: "5m",
+                        waveTitle: "Advisor Live Ticket"
+                    })
+                });
+
+                if (res.ok) {
+                    btn.innerText = "✅ Sent to MT5!";
+                    btn.style.background = "#059669";
+                } else {
+                    btn.innerText = "❌ Failed";
+                    setTimeout(() => { btn.innerText = old; btn.disabled = false; }, 2000);
+                }
+            } catch (e) {
+                btn.innerText = "❌ Error";
+                setTimeout(() => { btn.innerText = old; btn.disabled = false; }, 2000);
+            }
+        }
+
         function copyDynamicTicket(btn) {
             const raw = decodeURIComponent(btn.getAttribute('data-ticket') || '');
             navigator.clipboard.writeText(raw).then(() => {
                 const old = btn.innerText;
-                btn.innerText = "✅ Copied to Clipboard!";
+                btn.innerText = "✅ Copied!";
                 setTimeout(() => { btn.innerText = old; }, 2000);
             });
         }
