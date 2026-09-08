@@ -434,11 +434,11 @@ export default async function handler(req, res) {
         } else if (tfKey === "4h") {
             totalWaves = 4; // 4 Laps on Active 4H Highway
             const step4h = 32.77;
-            currentWaveNum = 2; // Lap 2 active
-            resetsCompleted = 1;
+            currentWaveNum = activeLap; // Dynamically synced with activeLap
+            resetsCompleted = Math.max(0, activeLap - 1);
             low = parseFloat((active4hLow + (resetsCompleted * step4h)).toFixed(pointPrecision));
             high = parseFloat(Math.min(active4hHigh, low + step4h).toFixed(pointPrecision));
-            waveCounterText = `Active 4H Highway • Lap 2 of 4 (Lap 1 Closed 🎯 +2.3R)`;
+            waveCounterText = `Active 4H Highway • Lap ${activeLap} of 4 (${activeLap === 1 ? 'Sweep Base Defended' : `Lap ${activeLap - 1} Closed 🎯`})`;
         } else if (tfKey === "1d") {
             totalWaves = 3; // 3 Daily Waves to $4,697.99 Peak
             currentWaveNum = 1;
