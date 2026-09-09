@@ -866,6 +866,10 @@
         function renderFractalDashboard(data) {
             if (!data || !data.parentMission) return;
 
+            if (data.learnedRules) {
+                renderLearnedRules(data.learnedRules);
+            }
+
             const spot = data.hierarchyTree ? data.hierarchyTree[8]?.currentPrice || 4398.00 : 4398.00;
             const spotEl = document.getElementById('hdr-spot-price');
             if (spotEl) spotEl.innerText = `$${spot.toFixed(2)}`;

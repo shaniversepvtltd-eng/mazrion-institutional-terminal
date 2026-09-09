@@ -282,6 +282,41 @@ export default async function handler(req, res) {
                     calculatedAtUtc: timestampUtc
                 }
             },
+            learnedRules: {
+                rules: [
+                    {
+                        rule_id: "RULE-0001",
+                        affected_symbol: "XAUUSDm",
+                        setup: "LOW_VOLUME_BREAKOUT",
+                        confidence_reduction_points: 20,
+                        sample_size: 7,
+                        evidence: "Repeated losses occurred during weak volume breakout attempts.",
+                        created_at: timestampUtc,
+                        active: true
+                    },
+                    {
+                        rule_id: "RULE-0002",
+                        affected_symbol: "XAUUSDm",
+                        setup: "OVEREXTENDED_ATR_ENTRY",
+                        confidence_reduction_points: 15,
+                        sample_size: 4,
+                        evidence: "Entries beyond 2.5x 15M ATR showed 75% adverse excursion before target.",
+                        created_at: timestampUtc,
+                        active: true
+                    }
+                ],
+                last_audit_at: timestampUtc,
+                trades_analyzed: 18,
+                status: "ACTIVE"
+            },
+            auditorState: {
+                engine: "DeepSeek Reasoner (Loss Pattern Discovery)",
+                cooldown_hours: 12,
+                trades_threshold: 10,
+                active_rules_count: 2,
+                last_audit_at: timestampUtc,
+                status: "READY"
+            },
             scenarios: {
                 bullishContinuation: {
                     type: 'SCENARIO',
