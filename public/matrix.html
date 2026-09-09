@@ -6,7 +6,7 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <title>MAZRION // RECURSIVE FRACTAL MATRIX v8.0 — MULTI-TIMEFRAME PARENT MISSION ENGINE</title>
+    <title>MAZRION // RECURSIVE FRACTAL MATRIX v9.1 — PARENT MISSION → 1M EXECUTION ENGINE</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700;800&family=Orbitron:wght@600;700;800;900&display=swap" rel="stylesheet">
@@ -51,7 +51,7 @@
                 linear-gradient(to bottom, #030712, #080E1A);
         }
 
-        /* Top Header */
+        /* Top Nav */
         .top-nav {
             background: rgba(11, 17, 32, 0.95);
             backdrop-filter: blur(20px);
@@ -143,6 +143,7 @@
             display: flex;
             align-items: center;
             gap: 8px;
+            font-variant-numeric: tabular-nums;
         }
 
         .pulse-dot {
@@ -159,8 +160,30 @@
             50% { transform: scale(1.3); opacity: 0.6; }
         }
 
+        /* Banner Bar */
+        .hierarchy-banner {
+            background: linear-gradient(90deg, rgba(0, 229, 255, 0.12), rgba(168, 85, 247, 0.12));
+            border-bottom: 1px solid var(--border-subtle);
+            padding: 8px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 11px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .motto-badge {
+            background: rgba(16, 185, 129, 0.15);
+            color: var(--green-glow);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 4px;
+            padding: 2px 8px;
+            font-weight: 800;
+            font-size: 10px;
+        }
+
         .matrix-container {
-            max-width: 1440px;
+            max-width: 1520px;
             margin: 0 auto;
             padding: 20px 24px;
             display: flex;
@@ -175,11 +198,12 @@
             border-radius: 14px;
             padding: 22px;
             display: grid;
-            grid-template-columns: 1.3fr 1.1fr 1fr;
+            grid-template-columns: 1.2fr 1fr 1fr;
             gap: 20px;
             box-shadow: 0 0 30px rgba(0, 229, 255, 0.15);
             position: relative;
             overflow: hidden;
+            contain: layout style;
         }
 
         .parent-mission-hero::before {
@@ -199,123 +223,71 @@
             gap: 6px;
             padding: 3px 10px;
             border-radius: 20px;
-            font-size: 10px;
-            font-weight: 900;
-            font-family: 'JetBrains Mono', monospace;
-            margin-bottom: 8px;
-        }
-
-        .badge-live { background: rgba(16, 185, 129, 0.15); border: 1px solid var(--green-glow); color: var(--green-glow); }
-        .badge-parent { background: rgba(0, 229, 255, 0.15); border: 1px solid var(--cyan-glow); color: var(--cyan-glow); }
-
-        .mission-title {
-            font-size: 22px;
-            font-weight: 900;
-            font-family: 'Orbitron', monospace;
-            color: #FFF;
-            margin-bottom: 6px;
-        }
-
-        .mission-endpoints {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 13px;
-            color: var(--cyan-glow);
-            margin-bottom: 12px;
-        }
-
-        .endpoint-arrow {
-            color: var(--text-dim);
-            font-weight: 900;
-        }
-
-        /* Scoreboard & Breakdown */
-        .score-card-box {
-            background: rgba(0, 0, 0, 0.45);
-            border: 1px solid var(--border-subtle);
-            border-radius: 10px;
-            padding: 14px;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .score-card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 11px;
+            font-size: 10.5px;
             font-weight: 800;
+            font-family: 'JetBrains Mono', monospace;
         }
 
-        .progress-bar-track {
-            height: 8px;
+        .badge-cyan { background: rgba(0, 229, 255, 0.15); color: var(--cyan-glow); border: 1px solid var(--border-cyan); }
+        .badge-green { background: rgba(16, 185, 129, 0.15); color: var(--green-glow); border: 1px solid var(--border-green); }
+        .badge-gold { background: rgba(245, 158, 11, 0.15); color: var(--gold-glow); border: 1px solid var(--border-gold); }
+
+        .progress-bar-wrap {
+            height: 7px;
             background: rgba(255, 255, 255, 0.08);
             border-radius: 4px;
             overflow: hidden;
-            border: 1px solid var(--border-subtle);
+            margin: 10px 0;
         }
 
         .progress-bar-fill {
             height: 100%;
             background: linear-gradient(90deg, var(--cyan-glow), var(--green-glow));
-            box-shadow: 0 0 10px var(--cyan-glow);
+            border-radius: 4px;
             transition: width 0.4s ease;
         }
 
-        .decomposed-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 6px;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 10px;
-            margin-top: 4px;
-        }
-
-        .decomp-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 3px 6px;
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: 4px;
-        }
-
-        /* Child Execution Counter Rack */
-        .child-counter-rack {
-            background: rgba(0, 0, 0, 0.45);
+        /* Execution Journey HUD */
+        .execution-journey-hud {
+            background: rgba(11, 17, 32, 0.85);
             border: 1px solid var(--border-subtle);
-            border-radius: 10px;
-            padding: 14px;
+            border-radius: 12px;
+            padding: 14px 20px;
             display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .child-counter-title {
-            font-size: 10px;
-            font-weight: 900;
-            color: var(--gold-glow);
-            text-transform: uppercase;
-            letter-spacing: 0.8px;
-            font-family: 'JetBrains Mono', monospace;
-            margin-bottom: 2px;
-        }
-
-        .child-row {
-            display: flex;
-            justify-content: space-between;
             align-items: center;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 11px;
-            padding: 4px 6px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            justify-content: space-between;
+            gap: 12px;
+            overflow-x: auto;
         }
 
-        /* Recursive Hierarchy Tree Card */
-        .tree-card {
+        .journey-step {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            white-space: nowrap;
+        }
+
+        .step-node {
+            background: rgba(15, 23, 42, 0.9);
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            padding: 6px 12px;
+            font-size: 11px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .step-node.active-dest { border-color: var(--gold-glow); color: var(--gold-glow); font-weight: 800; }
+        .step-node.active-exec { border-color: var(--cyan-glow); color: var(--cyan-glow); font-weight: 800; background: rgba(0, 229, 255, 0.1); }
+        .step-arrow { color: var(--text-dim); font-size: 12px; }
+
+        /* Main 3-Col Grid */
+        .matrix-grid {
+            display: grid;
+            grid-template-columns: 1.15fr 1.35fr 1fr;
+            gap: 20px;
+        }
+
+        .matrix-card {
             background: var(--bg-card);
             border: 1px solid var(--border-subtle);
             border-radius: 12px;
@@ -323,335 +295,608 @@
             display: flex;
             flex-direction: column;
             gap: 14px;
+            contain: layout style;
         }
 
-        .tree-header {
+        .card-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid var(--border-subtle);
             padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-subtle);
         }
 
-        .tree-header h3 {
-            font-size: 14px;
-            font-weight: 900;
+        .card-title {
+            font-size: 13px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
             font-family: 'Orbitron', monospace;
-            color: #FFF;
             display: flex;
             align-items: center;
             gap: 8px;
         }
 
-        .tree-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
+        /* Recursive Tree Elements */
         .tree-node {
-            background: rgba(11, 17, 32, 0.8);
+            background: rgba(11, 17, 32, 0.6);
             border: 1px solid var(--border-subtle);
             border-radius: 8px;
-            padding: 10px 14px;
-            display: grid;
-            grid-template-columns: 120px 160px 1fr 140px 160px;
-            align-items: center;
-            gap: 12px;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 11px;
+            padding: 10px 12px;
+            margin-bottom: 8px;
             transition: all 0.2s ease;
         }
 
         .tree-node:hover {
-            border-color: var(--border-cyan);
-            background: rgba(15, 23, 42, 0.95);
+            border-color: rgba(255, 255, 255, 0.15);
+            background: rgba(15, 23, 42, 0.9);
         }
 
-        .node-tf { font-weight: 900; color: #FFF; display: flex; align-items: center; gap: 6px; }
-        .node-cycle-id { color: var(--cyan-glow); font-size: 10.5px; }
-        .node-origin-dest { color: #E2E8F0; }
-        .node-status { display: inline-flex; padding: 2px 8px; border-radius: 4px; font-size: 9.5px; font-weight: 900; }
-        .node-status.EXPANSION { background: rgba(16, 185, 129, 0.2); color: var(--green-glow); border: 1px solid var(--green-glow); }
-        .node-status.IMPULSE { background: rgba(0, 229, 255, 0.2); color: var(--cyan-glow); border: 1px solid var(--cyan-glow); }
-        .node-status.FORMING { background: rgba(245, 158, 11, 0.2); color: var(--gold-glow); border: 1px solid var(--gold-glow); }
-        .node-score { text-align: right; color: var(--gold-glow); font-weight: 800; }
+        .tree-node.node-1m {
+            border-color: var(--cyan-glow);
+            background: rgba(0, 229, 255, 0.04);
+        }
 
-        /* Dynamic Highway Lineage HUD */
-        .highway-hud-card {
-            background: linear-gradient(135deg, rgba(15, 23, 42, 0.9), rgba(11, 17, 32, 0.9));
-            border: 1px solid var(--border-subtle);
-            border-radius: 12px;
-            padding: 18px;
+        .tree-node-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 11.5px;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+        }
+
+        .score-bar-small {
+            height: 4px;
+            background: rgba(255, 255, 255, 0.06);
+            border-radius: 2px;
+            overflow: hidden;
+            margin-top: 6px;
+        }
+
+        /* 1M Execution Ticket */
+        .ticket-box {
+            background: linear-gradient(135deg, rgba(0, 229, 255, 0.04), rgba(168, 85, 247, 0.04));
+            border: 1.5px solid var(--cyan-glow);
+            border-radius: 10px;
+            padding: 16px;
             display: flex;
             flex-direction: column;
             gap: 12px;
         }
 
-        .hud-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 14px;
-        }
-
-        .hud-box {
-            background: rgba(0, 0, 0, 0.4);
-            border: 1px solid var(--border-subtle);
-            border-radius: 8px;
-            padding: 12px;
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
-
-        .hud-box-label { font-size: 10px; font-weight: 800; color: var(--text-dim); text-transform: uppercase; font-family: 'JetBrains Mono', monospace; }
-        .hud-box-val { font-size: 18px; font-weight: 900; font-family: 'JetBrains Mono', monospace; color: #FFF; }
-        .hud-box-lineage { font-size: 9.5px; color: var(--cyan-glow); font-family: 'JetBrains Mono', monospace; margin-top: 4px; }
-
-        /* Detected vs Scenario Distinction */
-        .scenarios-grid {
+        .ticket-param-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 16px;
+            gap: 10px;
         }
 
-        .scenario-card {
-            background: rgba(15, 23, 42, 0.85);
+        .param-cell {
+            background: rgba(11, 17, 32, 0.7);
             border: 1px solid var(--border-subtle);
-            border-radius: 10px;
-            padding: 14px;
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-
-        .scenario-card.active-state {
-            border-color: var(--green-glow);
-            box-shadow: 0 0 15px rgba(16, 185, 129, 0.1);
-        }
-
-        .scenario-tag {
-            font-size: 9.5px;
-            font-weight: 900;
+            border-radius: 6px;
+            padding: 8px 10px;
             font-family: 'JetBrains Mono', monospace;
-            display: inline-flex;
-            width: fit-content;
-            padding: 2px 6px;
-            border-radius: 4px;
+            font-variant-numeric: tabular-nums;
         }
-        .tag-fact { background: rgba(16, 185, 129, 0.2); color: var(--green-glow); border: 1px solid var(--green-glow); }
-        .tag-hypo { background: rgba(245, 158, 11, 0.2); color: var(--gold-glow); border: 1px solid var(--gold-glow); }
+
+        .param-label {
+            font-size: 9.5px;
+            color: var(--text-muted);
+            margin-bottom: 2px;
+        }
+
+        .param-val {
+            font-size: 13.5px;
+            font-weight: 800;
+        }
+
+        /* Score Component Breakdown */
+        .score-comp-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 10.5px;
+            font-family: 'JetBrains Mono', monospace;
+            margin-bottom: 4px;
+        }
+
+        .comp-bar {
+            height: 5px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+
+        .comp-fill {
+            height: 100%;
+            background: var(--cyan-glow);
+            border-radius: 3px;
+        }
+
+        /* Execution Ledger Table */
+        .ledger-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 10.5px;
+            font-family: 'JetBrains Mono', monospace;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .ledger-table th {
+            text-align: left;
+            padding: 6px 8px;
+            color: var(--text-muted);
+            border-bottom: 1px solid var(--border-subtle);
+            font-size: 9.5px;
+        }
+
+        .ledger-table td {
+            padding: 8px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .text-green { color: var(--green-glow); }
+        .text-red { color: var(--red-glow); }
+        .text-cyan { color: var(--cyan-glow); }
+        .text-gold { color: var(--gold-glow); }
     </style>
 </head>
 <body>
-
-    <!-- TOP HEADER -->
-    <nav class="top-nav">
+    <!-- Top Nav -->
+    <header class="top-nav">
         <div class="brand">
             <div class="brand-logo">⚡</div>
             <div>
-                <h1>MAZRION FRACTAL MATRIX v8.0</h1>
-                <p>RECURSIVE PARENT MISSION ➔ CHILD EXECUTION ENGINE</p>
+                <h1>MAZRION // FRACTAL MATRIX</h1>
+                <p>RECURSIVE PARENT MISSION ➔ 1M EXECUTION ENGINE v9.1</p>
             </div>
         </div>
 
-        <div class="nav-suites">
-            <a href="/" class="nav-link">📊 CHARTS</a>
-            <a href="/cockpit.html" class="nav-link">✈️ COCKPIT HUD</a>
-            <a href="/cinema.html" class="nav-link">🎬 CINEMA SUITE</a>
-            <a href="/fractals.html" class="nav-link">🧬 GHOST BLUEPRINT</a>
-            <a href="/matrix.html" class="nav-link active">⚡ FRACTAL MATRIX</a>
-            <a href="/account.html" class="nav-link">💳 MT5 ACCOUNT</a>
-            <a href="/jarvis.html" class="nav-link" style="color:#F59E0B; border:1px solid rgba(245,158,11,0.4); background:rgba(245,158,11,0.1);">👑 KING'S MAZRION</a>
-            <a href="/evolution.html" class="nav-link" style="color:#A855F7; border:1px solid rgba(168,85,247,0.4); background:rgba(168,85,247,0.1);">🧬 GENESIS LAB</a>
-        </div>
+        <nav class="nav-suites">
+            <a href="/index.html" class="nav-link">DASHBOARD</a>
+            <a href="/cockpit.html" class="nav-link">COCKPIT</a>
+            <a href="/matrix.html" class="nav-link active">FRACTAL MATRIX</a>
+            <a href="/cinema.html" class="nav-link">CINEMA</a>
+            <a href="/evolution.html" class="nav-link">GENESIS LAB</a>
+        </nav>
 
         <div class="live-price-pill">
-            <div class="pulse-dot"></div>
-            <span>XAUUSD SPOT:</span>
-            <span id="nav-live-price" style="color:var(--cyan-glow);">$4,398.00</span>
+            <span class="pulse-dot"></span>
+            <span>XAUUSD:</span>
+            <span style="color:var(--cyan-glow);" id="hdr-spot-price">$4,398.00</span>
+            <span style="font-size:10px; color:var(--text-muted);" id="hdr-ist-clock">03:50:46 PM IST</span>
         </div>
-    </nav>
+    </header>
 
-    <!-- MAIN CONTAINER -->
-    <div class="matrix-container">
-
-        <!-- 1. ACTIVE 4H PARENT MISSION HERO -->
-        <div class="parent-mission-hero">
-            <div>
-                <div class="badge-pill badge-live">● REAL-TIME STRUCTURE ACTIVE</div>
-                <div class="badge-pill badge-parent" id="parent-badge-tf">4H PARENT MISSION</div>
-                <div class="mission-title" id="parent-cycle-id">ACTIVE 4H MISSION #14</div>
-                <div class="mission-endpoints">
-                    <span id="parent-origin">$4,372.00</span>
-                    <span class="endpoint-arrow">➔</span>
-                    <span id="parent-dest" style="color:var(--gold-glow);">$4,445.00</span>
-                    <span style="font-size:10px; color:var(--text-dim);" id="parent-dest-type">(BSL Target)</span>
-                </div>
-                <div style="font-size:11.5px; color:#E2E8F0; line-height:1.5;" id="parent-desc">
-                    4H structural mission confirmed from sweep floor. Direction: <strong style="color:var(--green-glow);">BULLISH EXPANSION</strong>. Lower timeframe cycles are executing intermediate accumulation steps.
-                </div>
-            </div>
-
-            <!-- Decomposed Completion Scoreboard -->
-            <div class="score-card-box">
-                <div class="score-card-header">
-                    <span>AUDITABLE COMPLETION SCORE</span>
-                    <span style="color:var(--cyan-glow); font-size:13px;" id="decomp-total-score">67.4 / 100</span>
-                </div>
-                <div class="progress-bar-track">
-                    <div class="progress-bar-fill" id="decomp-progress-fill" style="width: 67.4%;"></div>
-                </div>
-                <div class="decomposed-grid">
-                    <div class="decomp-item"><span>Displacement (25%):</span> <strong id="score-disp">21.0</strong></div>
-                    <div class="decomp-item"><span>Target Prox (25%):</span> <strong id="score-target">16.5</strong></div>
-                    <div class="decomp-item"><span>Structure (20%):</span> <strong id="score-struct">14.0</strong></div>
-                    <div class="decomp-item"><span>Liquidity (15%):</span> <strong id="score-liq">9.0</strong></div>
-                    <div class="decomp-item"><span>Volatility (10%):</span> <strong id="score-vol">5.0</strong></div>
-                    <div class="decomp-item"><span>Reversal (5%):</span> <strong id="score-rev">1.9</strong></div>
-                </div>
-            </div>
-
-            <!-- Child Execution Counter -->
-            <div class="child-counter-rack">
-                <div class="child-counter-title">NESTED CHILD EXECUTION JOURNEY</div>
-                <div class="child-row"><span>1H Cycles:</span> <strong style="color:var(--cyan-glow);" id="cnt-1h">3 Completed • 1 Active</strong></div>
-                <div class="child-row"><span>15M Cycles:</span> <strong style="color:var(--cyan-glow);" id="cnt-15m">8 Completed • 1 Active</strong></div>
-                <div class="child-row"><span>5M Cycles:</span> <strong style="color:var(--cyan-glow);" id="cnt-5m">21 Completed • 1 Active</strong></div>
-                <div class="child-row"><span>1M Cycles:</span> <strong style="color:var(--green-glow);" id="cnt-1m">104 Completed • 1 Active</strong></div>
-                <div style="font-size:9.5px; color:var(--text-dim); margin-top:4px;">
-                    Child completion has zero authority to close parent mission.
-                </div>
-            </div>
+    <!-- Global Hierarchy Banner -->
+    <div class="hierarchy-banner">
+        <div style="display:flex; align-items:center; gap:8px;">
+            <span>🌐 <b>GLOBAL HIERARCHY:</b> 1MO ➔ 1W ➔ 1D ➔ 4H ➔ 1H ➔ 30M ➔ 15M ➔ 5M ➔ <b>1M EXECUTION</b></span>
         </div>
-
-        <!-- 2. RECURSIVE HIERARCHY TREE -->
-        <div class="tree-card">
-            <div class="tree-header">
-                <h3>🌳 RECURSIVE MULTI-TIMEFRAME FRACTAL HIERARCHY (1W ➔ 1D ➔ 4H ➔ 1H ➔ 15M ➔ 5M ➔ 1M)</h3>
-                <span style="font-size:10px; font-weight:800; color:var(--text-dim); font-family:'JetBrains Mono';">ALGORITHM: fractal_engine_v8.0.0</span>
-            </div>
-            <div class="tree-grid" id="tree-container">
-                <!-- Dynamically populated hierarchy nodes -->
-            </div>
+        <div style="display:flex; align-items:center; gap:12px;">
+            <span class="motto-badge">STRUCTURE ABOVE ➔ EXECUTION BELOW</span>
+            <span style="color:var(--text-muted); font-size:10px;">Motto: "Follow Every Timeframe, Execute on 1M."</span>
         </div>
-
-        <!-- 3. DYNAMIC HIGHWAY DERIVATION HUD -->
-        <div class="highway-hud-card">
-            <div style="display:flex; justify-content:space-between; align-items:center;">
-                <h3 style="font-size:13px; font-weight:900; font-family:'Orbitron'; color:#FFF;">🛣️ DYNAMIC 4H HIGHWAY DERIVATION HUD</h3>
-                <span style="font-size:10px; color:var(--cyan-glow); font-family:'JetBrains Mono'; font-weight:800;" id="hw-calc-stamp">CALCULATED LIVE</span>
-            </div>
-            <div class="hud-grid">
-                <div class="hud-box">
-                    <span class="hud-box-label">Highway Ceiling (BSL Extension)</span>
-                    <span class="hud-box-val" id="hw-ceiling" style="color:var(--gold-glow);">$4,460.00</span>
-                    <span class="hud-box-lineage" id="hw-ceiling-lineage">4H Swing High ($4,435.00) + 1.5 * ATR ($16.50)</span>
-                </div>
-                <div class="hud-box">
-                    <span class="hud-box-label">Highway Equilibrium (50% Fair Value)</span>
-                    <span class="hud-box-val" id="hw-eq" style="color:var(--cyan-glow);">$4,403.50</span>
-                    <span class="hud-box-lineage" id="hw-eq-lineage">(Swing High + Swing Low) / 2</span>
-                </div>
-                <div class="hud-box">
-                    <span class="hud-box-label">Highway Floor (Structural Invalidation)</span>
-                    <span class="hud-box-val" id="hw-floor" style="color:var(--red-glow);">$4,347.00</span>
-                    <span class="hud-box-lineage" id="hw-floor-lineage">4H Swing Low ($4,372.00) - 1.5 * ATR ($16.50)</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- 4. DETECTED ACTIVE CYCLES VS POTENTIAL SCENARIOS -->
-        <div class="scenarios-grid">
-            <div class="scenario-card active-state">
-                <span class="scenario-tag tag-fact">● OBSERVED MARKET FACT (ACTIVE CYCLE)</span>
-                <div style="font-size:14px; font-weight:900; font-family:'Orbitron'; color:#FFF; margin-top:4px;" id="fact-title">1M EXECUTION CYCLE #640 ACTIVE</div>
-                <div style="font-size:11px; color:#CBD5E1; line-height:1.5; font-family:'JetBrains Mono';" id="fact-desc">
-                    Confirmed double-bottom sweep at $4,395.20 with displacement candle close above $4,397.50. Target: $4,402.50. Stop: $4,394.00.
-                </div>
-            </div>
-
-            <div class="scenario-card">
-                <span class="scenario-tag tag-hypo">⚡ CONDITIONAL SCENARIO (NOT FACT)</span>
-                <div style="font-size:14px; font-weight:900; font-family:'Orbitron'; color:#FFF; margin-top:4px;">PROSPECTIVE CONTINUATION SCENARIO</div>
-                <div style="font-size:11px; color:#CBD5E1; line-height:1.5; font-family:'JetBrains Mono';" id="scenario-desc">
-                    If price reclaims $4,408.00 with 15M candle close: Potential expansion toward 4H Target ($4,445.00). Model Score: <strong>78.4 / 100</strong> (DETERMINISTIC_MODEL_SCORE).
-                </div>
-            </div>
-        </div>
-
     </div>
 
-    <!-- CLIENT HYDRATION SCRIPT -->
-    <script>
-        function renderMatrixFromSnapshot(data) {
-            if (!data) return;
+    <!-- Main Container -->
+    <main class="matrix-container">
+        <!-- 1. Hero Active Parent Mission Card -->
+        <section class="parent-mission-hero">
+            <div>
+                <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
+                    <span class="badge-pill badge-cyan">👑 ACTIVE 4H PARENT MISSION</span>
+                    <span class="badge-pill badge-green" id="parent-status-pill">EXPANSION REGIME</span>
+                </div>
+                <div style="font-size:22px; font-weight:900; font-family:'Orbitron', monospace; margin-bottom:6px;">
+                    <span id="parent-origin">$4,372.00</span>
+                    <span style="color:var(--cyan-glow); font-size:16px;"> ➔ </span>
+                    <span id="parent-destination" style="color:var(--gold-glow);">$4,445.00</span>
+                </div>
+                <div style="font-size:11px; color:var(--text-muted); font-family:'JetBrains Mono';">
+                    Destination Type: <b style="color:#FFF;">CONFIRMED_STRUCTURAL_BSL</b> | Invalidation: <b style="color:var(--red-glow);" id="parent-invalidation">$4,364.50</b>
+                </div>
+                <div class="progress-bar-wrap">
+                    <div class="progress-bar-fill" id="parent-progress-fill" style="width: 68%;"></div>
+                </div>
+                <div style="display:flex; justify-content:space-between; font-size:10.5px; font-family:'JetBrains Mono'; color:var(--text-muted);">
+                    <span>Displacement: <b style="color:#FFF;" id="parent-displacement">+$26.00</b></span>
+                    <span>Progress: <b style="color:var(--cyan-glow);" id="parent-progress-pct">68.4%</b></span>
+                </div>
+            </div>
 
-            // Live Price
-            if (data.parentMission && data.parentMission.originPrice) {
-                const spot = data.hierarchyTree && data.hierarchyTree[6] ? data.hierarchyTree[6].currentPrice : 4398.00;
-                document.getElementById('nav-live-price').innerText = `$${spot.toFixed(2)}`;
-            }
-
-            // Parent Mission Hero
-            const pm = data.parentMission;
-            if (pm) {
-                document.getElementById('parent-cycle-id').innerText = `${pm.timeframe.toUpperCase()} MISSION ${pm.cycleId}`;
-                document.getElementById('parent-origin').innerText = `$${pm.originPrice.toFixed(2)}`;
-                document.getElementById('parent-dest').innerText = `$${pm.destinationPrice.toFixed(2)}`;
-                document.getElementById('parent-dest-type').innerText = `(${pm.destinationType})`;
-                document.getElementById('decomp-total-score').innerText = `${pm.completionScore.toFixed(1)} / 100`;
-                document.getElementById('decomp-progress-fill').style.width = `${pm.completionScore}%`;
-
-                // Decomposed Components
-                const sc = pm.scoreComponents || {};
-                document.getElementById('score-disp').innerText = (sc.displacement || sc.displacementProgress || 21.0).toFixed(1);
-                document.getElementById('score-target').innerText = (sc.targetProximity || 16.5).toFixed(1);
-                document.getElementById('score-struct').innerText = (sc.structure || sc.structuralConfirmation || 14.0).toFixed(1);
-                document.getElementById('score-liq').innerText = (sc.liquidity || sc.liquidityInteraction || 9.0).toFixed(1);
-                document.getElementById('score-vol').innerText = (sc.volatility || sc.volatilityNormalization || 5.0).toFixed(1);
-                document.getElementById('score-rev').innerText = (sc.reversal || sc.reversalConfirmation || 1.9).toFixed(1);
-
-                // Child Counters
-                const cs = pm.completedChildrenSummary || {};
-                if (cs['1h']) document.getElementById('cnt-1h').innerText = `${cs['1h'].completed} Completed • 1 Active`;
-                if (cs['15m']) document.getElementById('cnt-15m').innerText = `${cs['15m'].completed} Completed • 1 Active`;
-                if (cs['5m']) document.getElementById('cnt-5m').innerText = `${cs['5m'].completed} Completed • 1 Active`;
-                if (cs['1m']) document.getElementById('cnt-1m').innerText = `${cs['1m'].completed} Completed • 1 Active`;
-            }
-
-            // Hierarchy Tree
-            const treeContainer = document.getElementById('tree-container');
-            if (treeContainer && data.hierarchyTree) {
-                treeContainer.innerHTML = data.hierarchyTree.map(node => `
-                    <div class="tree-node">
-                        <div class="node-tf"><span>⚡</span> [${node.timeframe.toUpperCase()}]</div>
-                        <div class="node-cycle-id">${node.cycleId}</div>
-                        <div class="node-origin-dest">$${(node.originPrice || 0).toFixed(2)} ➔ $${(node.destinationPrice || 0).toFixed(2)}</div>
-                        <div><span class="node-status ${node.status}">${node.status}</span></div>
-                        <div class="node-score">Score: ${(node.completionScore || 0).toFixed(1)}/100</div>
+            <!-- Contained Structural Cycles -->
+            <div style="background:rgba(11, 17, 32, 0.6); border:1px solid var(--border-subtle); border-radius:10px; padding:14px;">
+                <div style="font-size:11px; font-weight:800; font-family:'Orbitron'; color:var(--text-muted); margin-bottom:8px;">
+                    CONTAINED STRUCTURAL CYCLES
+                </div>
+                <div style="font-size:10.5px; font-family:'JetBrains Mono'; display:flex; flex-direction:column; gap:5px;">
+                    <div style="display:flex; justify-content:space-between;">
+                        <span>1H Intermediate:</span>
+                        <b style="color:#FFF;" id="count-1h">3 Done / #4 Active</b>
                     </div>
-                `).join('');
+                    <div style="display:flex; justify-content:space-between;">
+                        <span>30M Intermediate:</span>
+                        <b style="color:#FFF;" id="count-30m">8 Done / #9 Active</b>
+                    </div>
+                    <div style="display:flex; justify-content:space-between;">
+                        <span>15M Tactical:</span>
+                        <b style="color:#FFF;" id="count-15m">18 Done / #19 Active</b>
+                    </div>
+                    <div style="display:flex; justify-content:space-between;">
+                        <span>5M Micro Structure:</span>
+                        <b style="color:#FFF;" id="count-5m">42 Done / #43 Active</b>
+                    </div>
+                    <div style="display:flex; justify-content:space-between;">
+                        <span>1M Execution Cycles:</span>
+                        <b style="color:var(--cyan-glow);" id="count-1m">104 Done / #105 Active</b>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 1M Executions inside this Mission -->
+            <div style="background:rgba(11, 17, 32, 0.6); border:1px solid var(--border-cyan); border-radius:10px; padding:14px;">
+                <div style="font-size:11px; font-weight:800; font-family:'Orbitron'; color:var(--cyan-glow); margin-bottom:8px;">
+                    1M TRADES INSIDE THIS MISSION
+                </div>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; font-family:'JetBrains Mono';">
+                    <div class="param-cell">
+                        <div class="param-label">Completed / Win %</div>
+                        <div class="param-val text-green" id="exec-win-rate">3 (75%)</div>
+                    </div>
+                    <div class="param-cell">
+                        <div class="param-label">Net R-Multiple</div>
+                        <div class="param-val text-cyan" id="exec-net-r">+9.1 R</div>
+                    </div>
+                    <div class="param-cell">
+                        <div class="param-label">Invalidated / SL</div>
+                        <div class="param-val text-red" id="exec-inval-count">1 Trades</div>
+                    </div>
+                    <div class="param-cell">
+                        <div class="param-label">Active Setup</div>
+                        <div class="param-val text-gold" id="exec-active-state">1 Armed</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. Execution Journey Breadcrumb HUD -->
+        <section class="execution-journey-hud">
+            <div class="journey-step">
+                <div class="step-node active-dest">🎯 4H TARGET: $4,445.00</div>
+                <span class="step-arrow">➔</span>
+            </div>
+            <div class="journey-step">
+                <div class="step-node">1H EXPANSION</div>
+                <span class="step-arrow">➔</span>
+            </div>
+            <div class="journey-step">
+                <div class="step-node">30M IMPULSE</div>
+                <span class="step-arrow">➔</span>
+            </div>
+            <div class="journey-step">
+                <div class="step-node">15M BOS BULL</div>
+                <span class="step-arrow">➔</span>
+            </div>
+            <div class="journey-step">
+                <div class="step-node">5M FVG DEMAND</div>
+                <span class="step-arrow">➔</span>
+            </div>
+            <div class="journey-step">
+                <div class="step-node active-exec">⚡ 1M TRIGGER: RETEST</div>
+                <span class="step-arrow">➔</span>
+            </div>
+            <div class="journey-step">
+                <div class="step-node" style="border-color:var(--green-glow); color:var(--green-glow);">ENTRY $4,397.50</div>
+                <span class="step-arrow">➔</span>
+            </div>
+            <div class="journey-step">
+                <div class="step-node" style="border-color:var(--gold-glow); color:var(--gold-glow);">TP1 $4,403.60 / TP2 $4,445.00</div>
+            </div>
+        </section>
+
+        <!-- 3. Main 3-Column Grid -->
+        <div class="matrix-grid">
+            <!-- Col 1: Recursive Mission Tree (1MO to 1M) -->
+            <div class="matrix-card">
+                <div class="card-header">
+                    <span class="card-title">🌲 RECURSIVE TIMEFRAME TREE</span>
+                    <span class="badge-pill badge-cyan" style="font-size:9.5px;">9 TIMEFRAMES</span>
+                </div>
+                <div id="recursive-tree-container" style="display:flex; flex-direction:column; gap:6px;">
+                    <!-- Injected dynamically -->
+                </div>
+            </div>
+
+            <!-- Col 2: 1M Execution Ticket & Deterministic Structural Score -->
+            <div class="matrix-card">
+                <div class="card-header">
+                    <span class="card-title">⚡ 1M EXECUTION TICKET</span>
+                    <span class="badge-pill badge-green" id="exec-status-badge">ARMED FOR RETEST</span>
+                </div>
+
+                <div class="ticket-box">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <span style="font-size:12px; font-weight:800; font-family:'JetBrains Mono'; color:var(--cyan-glow);" id="ticket-id">EXEC_XAU_1M_#1420</span>
+                        <span class="badge-pill badge-cyan">DIRECTION: BUY</span>
+                    </div>
+
+                    <div class="ticket-param-grid">
+                        <div class="param-cell">
+                            <div class="param-label">Execution Entry</div>
+                            <div class="param-val text-green" id="ticket-entry">$4,397.50</div>
+                        </div>
+                        <div class="param-cell">
+                            <div class="param-label">Structural Stop Loss</div>
+                            <div class="param-val text-red" id="ticket-sl">$4,393.50</div>
+                        </div>
+                        <div class="param-cell">
+                            <div class="param-label">Take Profit 1 (1M Liquidity)</div>
+                            <div class="param-val text-cyan" id="ticket-tp1">$4,403.60</div>
+                        </div>
+                        <div class="param-cell">
+                            <div class="param-label">Take Profit 2 (4H Mission)</div>
+                            <div class="param-val text-gold" id="ticket-tp2">$4,445.00</div>
+                        </div>
+                        <div class="param-cell">
+                            <div class="param-label">Risk / Reward (TP1)</div>
+                            <div class="param-val text-cyan" id="ticket-rr">1 : 3.05</div>
+                        </div>
+                        <div class="param-cell">
+                            <div class="param-label">2% Risk / Lot Size</div>
+                            <div class="param-val text-gold" id="ticket-risk">$20.00 / 0.01 Lots</div>
+                        </div>
+                    </div>
+
+                    <!-- Causal Triggers -->
+                    <div style="font-size:10.5px; font-family:'JetBrains Mono'; color:var(--text-muted); background:rgba(0,0,0,0.3); padding:8px 10px; border-radius:6px; line-height:1.4;">
+                        <div>✓ 1M SSL Swept at session low</div>
+                        <div>✓ Bullish displacement candle confirmed</div>
+                        <div>✓ 1M Micro BOS with clean higher lows</div>
+                        <div>⏳ Retest into 1M Bullish FVG active</div>
+                    </div>
+                </div>
+
+                <!-- Deterministic Structural Score Breakdown -->
+                <div style="background:rgba(11, 17, 32, 0.7); border:1px solid var(--border-subtle); border-radius:10px; padding:14px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                        <span style="font-size:11px; font-weight:800; font-family:'Orbitron'; color:#FFF;">DETERMINISTIC STRUCTURAL SCORE</span>
+                        <span style="font-size:14px; font-weight:900; font-family:'JetBrains Mono'; color:var(--cyan-glow);" id="score-total-val">88.0 / 100</span>
+                    </div>
+
+                    <div id="score-breakdown-list">
+                        <!-- Component bars -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Col 3: Dynamic Highway & 1M Execution Ledger -->
+            <div class="matrix-card">
+                <div class="card-header">
+                    <span class="card-title">🛣️ 4H HIGHWAY & 1M LEDGER</span>
+                    <span class="badge-pill badge-gold" style="font-size:9.5px;">k=1.5 ATR</span>
+                </div>
+
+                <!-- Dynamic Highway HUD -->
+                <div style="background:rgba(11, 17, 32, 0.7); border:1px solid var(--border-gold); border-radius:10px; padding:12px; font-family:'JetBrains Mono'; font-size:11px;">
+                    <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+                        <span style="color:var(--text-muted);">Ceiling (+1.5 ATR):</span>
+                        <b class="text-gold" id="hw-ceiling">$4,448.20</b>
+                    </div>
+                    <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+                        <span style="color:var(--text-muted);">Equilibrium:</span>
+                        <b class="text-cyan" id="hw-equilibrium">$4,408.50</b>
+                    </div>
+                    <div style="display:flex; justify-content:space-between;">
+                        <span style="color:var(--text-muted);">Floor (-1.5 ATR):</span>
+                        <b class="text-red" id="hw-floor">$4,368.80</b>
+                    </div>
+                </div>
+
+                <!-- 1M Historical Execution Ledger -->
+                <div style="font-size:11px; font-weight:800; font-family:'Orbitron'; color:var(--text-muted); margin-top:4px;">
+                    1M TRADE LEDGER (UNDER ACTIVE 4H MISSION)
+                </div>
+                <div style="max-height: 280px; overflow-y:auto;">
+                    <table class="ledger-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>DIR</th>
+                                <th>ENTRY</th>
+                                <th>EXIT</th>
+                                <th>RESULT</th>
+                                <th>PnL</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ledger-table-body">
+                            <!-- Injected dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function renderFractalDashboard(data) {
+            if (!data || !data.parentMission) return;
+
+            const spot = data.hierarchyTree ? data.hierarchyTree[8]?.currentPrice || 4398.00 : 4398.00;
+            const spotEl = document.getElementById('hdr-spot-price');
+            if (spotEl) spotEl.innerText = `$${spot.toFixed(2)}`;
+
+            const pm = data.parentMission;
+            const pOrigin = document.getElementById('parent-origin');
+            const pDest = document.getElementById('parent-destination');
+            const pInval = document.getElementById('parent-invalidation');
+            const pProgFill = document.getElementById('parent-progress-fill');
+            const pProgPct = document.getElementById('parent-progress-pct');
+            const pDisp = document.getElementById('parent-displacement');
+
+            if (pOrigin) pOrigin.innerText = `$${pm.originPrice?.toFixed(2) || '--'}`;
+            if (pDest) pDest.innerText = `$${pm.destinationPrice?.toFixed(2) || '--'}`;
+            if (pInval) pInval.innerText = `$${pm.invalidationPrice?.toFixed(2) || '--'}`;
+
+            const totalDist = Math.max(1, (pm.destinationPrice || 4445) - (pm.originPrice || 4372));
+            const curDisp = Math.max(0, spot - (pm.originPrice || 4372));
+            const progPct = Math.min(100, Math.max(0, (curDisp / totalDist) * 100));
+
+            if (pProgFill) pProgFill.style.width = `${progPct.toFixed(1)}%`;
+            if (pProgPct) pProgPct.innerText = `${progPct.toFixed(1)}%`;
+            if (pDisp) pDisp.innerText = `+$${curDisp.toFixed(2)}`;
+
+            // Cycle counters
+            const cc = pm.containedStructuralCycles || {};
+            const el1h = document.getElementById('count-1h');
+            const el30m = document.getElementById('count-30m');
+            const el15m = document.getElementById('count-15m');
+            const el5m = document.getElementById('count-5m');
+            const el1m = document.getElementById('count-1m');
+
+            if (el1h) el1h.innerText = `${cc['1h']?.completed || 3} Done / Active`;
+            if (el30m) el30m.innerText = `${cc['30m']?.completed || 8} Done / Active`;
+            if (el15m) el15m.innerText = `${cc['15m']?.completed || 18} Done / Active`;
+            if (el5m) el5m.innerText = `${cc['5m']?.completed || 42} Done / Active`;
+            if (el1m) el1m.innerText = `${cc['1m']?.completed || 104} Done / Active`;
+
+            // Contained 1M Executions
+            const ce = pm.contained1mExecutions || {};
+            const wrEl = document.getElementById('exec-win-rate');
+            const netREl = document.getElementById('exec-net-r');
+            const invalEl = document.getElementById('exec-inval-count');
+
+            if (wrEl) wrEl.innerText = `${ce.completed || 3} (${ce.winRatePct || 75}%)`;
+            if (netREl) netREl.innerText = `+${ce.netR || 9.1} R`;
+            if (invalEl) invalEl.innerText = `${ce.invalidated || 1} Trades`;
+
+            // Render Recursive Tree (9 Timeframes)
+            const treeContainer = document.getElementById('recursive-tree-container');
+            if (treeContainer && data.hierarchyTree) {
+                treeContainer.innerHTML = data.hierarchyTree.map((node, i) => {
+                    const is1m = node.timeframe === '1m';
+                    return `
+                        <div class="tree-node ${is1m ? 'node-1m' : ''}">
+                            <div class="tree-node-header">
+                                <span style="color:${is1m ? 'var(--cyan-glow)' : '#FFF'};">
+                                    ${node.timeframe.toUpperCase()}: ${node.cycleId || 'ACTIVE'}
+                                </span>
+                                <span class="badge-pill ${node.status === 'EXPANSION' ? 'badge-cyan' : node.status === 'IMPULSE' ? 'badge-green' : 'badge-gold'}" style="font-size:8.5px;">
+                                    ${node.status}
+                                </span>
+                            </div>
+                            <div style="display:flex; justify-content:space-between; font-size:10px; font-family:'JetBrains Mono'; color:var(--text-muted); margin-top:4px;">
+                                <span>$${node.originPrice?.toFixed(2)} ➔ $${node.destinationPrice?.toFixed(2)}</span>
+                                <span style="color:var(--cyan-glow); font-weight:700;">${node.completionScore?.toFixed(1) || 0}/100</span>
+                            </div>
+                            <div class="score-bar-small">
+                                <div style="height:100%; width:${node.completionScore || 0}%; background:var(--cyan-glow);"></div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            // Render 1M Execution Ticket
+            const ticket = data.executionTicket;
+            if (ticket) {
+                const tId = document.getElementById('ticket-id');
+                const tEntry = document.getElementById('ticket-entry');
+                const tSl = document.getElementById('ticket-sl');
+                const tTp1 = document.getElementById('ticket-tp1');
+                const tTp2 = document.getElementById('ticket-tp2');
+                const tRr = document.getElementById('ticket-rr');
+
+                if (tId) tId.innerText = ticket.executionId;
+                if (tEntry) tEntry.innerText = `$${ticket.entryPrice?.toFixed(2)}`;
+                if (tSl) tSl.innerText = `$${ticket.stopLoss?.toFixed(2)}`;
+                if (tTp1) tTp1.innerText = `$${ticket.tp1?.toFixed(2)}`;
+                if (tTp2) tTp2.innerText = `$${ticket.tp2?.toFixed(2)}`;
+                if (tRr) tRr.innerText = `1 : ${ticket.riskRewardRatio}`;
+
+                const scoreVal = document.getElementById('score-total-val');
+                if (scoreVal) scoreVal.innerText = `${ticket.deterministicScore?.toFixed(1) || 88.0} / 100`;
+
+                // Render Score Components
+                const compList = document.getElementById('score-breakdown-list');
+                if (compList && ticket.scoreComponents) {
+                    const comps = ticket.scoreComponents;
+                    const maxes = ticket.scoreMaxWeights || {
+                        parentAlignment: 20, structureConfirmation1m: 20, liquiditySweep: 15, displacement: 15,
+                        fvgImbalance: 10, retestConfirmation: 10, riskRewardRatio: 5, volatilityRegime: 5
+                    };
+
+                    compList.innerHTML = Object.keys(comps).map(k => {
+                        const val = comps[k];
+                        const max = maxes[k] || 20;
+                        const pct = (val / max) * 100;
+                        const label = k.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
+                        return `
+                            <div class="score-comp-row">
+                                <span style="color:var(--text-muted);">${label}</span>
+                                <span><b>${val}</b> / ${max}</span>
+                            </div>
+                            <div class="comp-bar">
+                                <div class="comp-fill" style="width:${pct}%;"></div>
+                            </div>
+                        `;
+                    }).join('');
+                }
             }
 
             // Highway HUD
             const hw = data.highway;
             if (hw) {
-                document.getElementById('hw-ceiling').innerText = `$${hw.ceiling.toFixed(2)}`;
-                document.getElementById('hw-eq').innerText = `$${hw.equilibrium.toFixed(2)}`;
-                document.getElementById('hw-floor').innerText = `$${hw.floor.toFixed(2)}`;
-                if (hw.lineage) {
-                    document.getElementById('hw-ceiling-lineage').innerText = hw.lineage.ceilingFormula;
-                    document.getElementById('hw-eq-lineage').innerText = hw.lineage.equilibriumFormula;
-                    document.getElementById('hw-floor-lineage').innerText = hw.lineage.floorFormula;
-                }
+                const ceil = document.getElementById('hw-ceiling');
+                const eq = document.getElementById('hw-equilibrium');
+                const flr = document.getElementById('hw-floor');
+                if (ceil) ceil.innerText = `$${hw.ceiling?.toFixed(2)}`;
+                if (eq) eq.innerText = `$${hw.equilibrium?.toFixed(2)}`;
+                if (flr) flr.innerText = `$${hw.floor?.toFixed(2)}`;
+            }
+
+            // 1M Ledger Table
+            const ledgerBody = document.getElementById('ledger-table-body');
+            if (ledgerBody && data.contained1mExecutionsLedger) {
+                ledgerBody.innerHTML = data.contained1mExecutionsLedger.map(item => `
+                    <tr>
+                        <td style="font-weight:700; color:${item.status === 'ACTIVE' ? 'var(--cyan-glow)' : '#FFF'};">${item.id}</td>
+                        <td class="${item.direction === 'BUY' ? 'text-green' : 'text-red'}">${item.direction}</td>
+                        <td>$${item.entry?.toFixed(2)}</td>
+                        <td>${item.exit ? `$${item.exit.toFixed(2)}` : '--'}</td>
+                        <td>
+                            <span class="badge-pill ${item.result === 'TP1_HIT' || item.result === 'TP2_HIT' ? 'badge-green' : item.result === 'STOPPED_OUT' ? 'badge-pill text-red' : 'badge-gold'}" style="font-size:8px;">
+                                ${item.result}
+                            </span>
+                        </td>
+                        <td class="${item.pnlDollar.startsWith('+') ? 'text-green' : item.pnlDollar.startsWith('-') ? 'text-red' : ''}">${item.pnlDollar}</td>
+                    </tr>
+                `).join('');
             }
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
+        window.addEventListener('DOMContentLoaded', () => {
             if (window.MazrionFractalEngine) {
-                window.MazrionFractalEngine.subscribe(renderMatrixFromSnapshot);
+                window.MazrionFractalEngine.subscribe(snapshot => {
+                    renderFractalDashboard(snapshot);
+                });
             }
+
+            // Clock updater
+            setInterval(() => {
+                const now = new Date();
+                const istOffset = 5.5 * 60 * 60 * 1000;
+                const istDate = new Date(now.getTime() + (now.getTimezoneOffset() * 60000) + istOffset);
+                let hours = istDate.getHours();
+                const minutes = String(istDate.getMinutes()).padStart(2, '0');
+                const seconds = String(istDate.getSeconds()).padStart(2, '0');
+                const ampm = hours >= 12 ? 'PM' : 'AM';
+                hours = hours % 12 || 12;
+                const istStr = `${String(hours).padStart(2, '0')}:${minutes}:${seconds} ${ampm} IST`;
+                const istEl = document.getElementById('hdr-ist-clock');
+                if (istEl) istEl.innerText = istStr;
+            }, 1000);
         });
     </script>
 </body>

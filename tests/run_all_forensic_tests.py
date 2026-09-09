@@ -21,6 +21,7 @@ def run_all():
         ("Fractal State Machine & Decomposed Score", "tests/fractals/test_state_machine.py"),
         ("Look-Ahead Bias Prevention & Causal Pivots", "tests/fractals/test_lookahead_bias.py"),
         ("Fractal Hypothesis Empirical Backtest", "tests/fractals/test_fractal_backtest.py"),
+        ("Recursive HTF ➔ 1M Execution Comparative Backtest", "tests/fractals/test_recursive_execution_backtest.py"),
     ]
     
     results = []

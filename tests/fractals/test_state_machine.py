@@ -1,21 +1,23 @@
 import sys
 
 def test_state_machine_and_score():
-    print("=== [TEST 11] FRACTAL STATE MACHINE & DECOMPOSED SCORE VERIFICATION ===")
+    print("=== [TEST 11] FRACTAL STATE MACHINE & 1M DETERMINISTIC SCORE VERIFICATION ===")
     
-    # 1. Mathematical verification of Decomposed Score components
+    # 1. Mathematical verification of 1M Deterministic Structural Score components
     max_weights = {
-        "displacementProgress": 25.0,
-        "targetProximity": 25.0,
-        "structuralConfirmation": 20.0,
-        "liquidityInteraction": 15.0,
-        "volatilityNormalization": 10.0,
-        "reversalConfirmation": 5.0
+        "parentAlignment": 20.0,
+        "structureConfirmation1m": 20.0,
+        "liquiditySweep": 15.0,
+        "displacement": 15.0,
+        "fvgImbalance": 10.0,
+        "retestConfirmation": 10.0,
+        "riskRewardRatio": 5.0,
+        "volatilityRegime": 5.0
     }
     
     total_weight = sum(max_weights.values())
-    assert total_weight == 100.0, f"Decomposed weights do not sum to 100%: {total_weight}"
-    print(f"Verified Decomposed Score Formulation:")
+    assert total_weight == 100.0, f"Deterministic weights do not sum to 100%: {total_weight}"
+    print(f"Verified 8-Component Deterministic Structural Score Formulation:")
     for comp, w in max_weights.items():
         print(f"  • {comp:<28}: {w:>4.1f}%")
     print(f"  ----------------------------------------")
@@ -23,15 +25,17 @@ def test_state_machine_and_score():
     
     # 2. Test sample state calculations
     sample_components = {
-        "displacementProgress": 21.0,
-        "targetProximity": 16.5,
-        "structuralConfirmation": 14.0,
-        "liquidityInteraction": 9.0,
-        "volatilityNormalization": 5.0,
-        "reversalConfirmation": 1.9
+        "parentAlignment": 20.0,
+        "structureConfirmation1m": 18.0,
+        "liquiditySweep": 14.5,
+        "displacement": 13.0,
+        "fvgImbalance": 9.0,
+        "retestConfirmation": 8.5,
+        "riskRewardRatio": 4.5,
+        "volatilityRegime": 4.5
     }
     sample_total = sum(sample_components.values())
-    print(f"Sample Active Cycle Decomposed Score: {sample_total:.1f} / 100.0")
+    print(f"Sample Active 1M Execution Score: {sample_total:.1f} / 100.0")
     for k, v in sample_components.items():
         print(f"    - {k:<26}: {v:>4.1f} / {max_weights[k]:>4.1f}")
         assert 0.0 <= v <= max_weights[k], f"Component {k} exceeds maximum allowable weight"

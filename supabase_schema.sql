@@ -256,3 +256,67 @@ CREATE TABLE IF NOT EXISTS system_data_health (
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
 CREATE INDEX IF NOT EXISTS idx_health_time ON system_data_health(timestamp DESC);
+
+-- 12. Recursive Fractal Structural Cycles (1MO to 1M)
+CREATE TABLE IF NOT EXISTS fractal_structural_cycles (
+    cycle_id VARCHAR(64) PRIMARY KEY,
+    parent_cycle_id VARCHAR(64) REFERENCES fractal_structural_cycles(cycle_id),
+    timeframe VARCHAR(8) NOT NULL, -- '1mo', '1w', '1d', '4h', '1h', '30m', '15m', '5m', '1m'
+    symbol VARCHAR(32) NOT NULL REFERENCES market_instruments(symbol),
+    start_timestamp TIMESTAMPTZ NOT NULL,
+    end_timestamp TIMESTAMPTZ,
+    status VARCHAR(32) NOT NULL, -- 'FORMING', 'IMPULSE', 'RETRACEMENT', 'EXPANSION', 'CONSOLIDATION', 'TARGET_INTERACTION', 'COMPLETED', 'INVALIDATED', 'RESET'
+    direction VARCHAR(16) NOT NULL, -- 'BULLISH', 'BEARISH', 'NEUTRAL'
+    origin_price NUMERIC(16, 5) NOT NULL,
+    origin_timestamp TIMESTAMPTZ NOT NULL,
+    current_price NUMERIC(16, 5) NOT NULL,
+    swing_high NUMERIC(16, 5) NOT NULL,
+    swing_low NUMERIC(16, 5) NOT NULL,
+    destination_price NUMERIC(16, 5) NOT NULL,
+    destination_type VARCHAR(64) NOT NULL,
+    invalidation_price NUMERIC(16, 5) NOT NULL,
+    atr_at_creation NUMERIC(12, 5) NOT NULL,
+    atr_current NUMERIC(12, 5) NOT NULL,
+    displacement_range NUMERIC(16, 5) NOT NULL,
+    completed_child_count INTEGER DEFAULT 0,
+    active_child_id VARCHAR(64),
+    completion_score NUMERIC(5, 2) DEFAULT 0.0,
+    score_components JSONB NOT NULL,
+    parent_alignment VARCHAR(32) NOT NULL DEFAULT 'ALIGNED', -- 'ALIGNED', 'COUNTERTREND', 'NEUTRAL', 'INVALIDATED'
+    algorithm_version VARCHAR(32) DEFAULT 'fractal_engine_v9.1.0',
+    detection_reason TEXT,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+CREATE INDEX IF NOT EXISTS idx_fractal_cycles ON fractal_structural_cycles(symbol, timeframe, start_timestamp DESC);
+
+-- 13. Recursive 1M Trade Execution Ledger (CONDITIONED ON HIGHER TIMEFRAME MISSION)
+CREATE TABLE IF NOT EXISTS fractal_1m_executions (
+    execution_id VARCHAR(64) PRIMARY KEY,
+    cycle_id_1m VARCHAR(64) NOT NULL REFERENCES fractal_structural_cycles(cycle_id),
+    parent_mission_id_4h VARCHAR(64),
+    parent_chain JSONB NOT NULL, -- ['1mo', '1w', '1d', '4h', '1h', '30m', '15m', '5m', '1m']
+    symbol VARCHAR(32) NOT NULL REFERENCES market_instruments(symbol),
+    entry_timestamp TIMESTAMPTZ NOT NULL,
+    entry_price NUMERIC(16, 5) NOT NULL,
+    stop_loss NUMERIC(16, 5) NOT NULL,
+    take_profit_1 NUMERIC(16, 5) NOT NULL,
+    take_profit_2 NUMERIC(16, 5),
+    parent_destination NUMERIC(16, 5) NOT NULL,
+    risk_reward_ratio NUMERIC(6, 2) NOT NULL,
+    risk_percent NUMERIC(5, 2) NOT NULL DEFAULT 2.00, -- Small-cap Mazrion 2% cap
+    dollar_risk NUMERIC(12, 2) NOT NULL,
+    position_size_lots NUMERIC(8, 2) NOT NULL,
+    setup_score NUMERIC(5, 2) NOT NULL, -- 0-100 Deterministic Structural Score
+    setup_score_components JSONB NOT NULL,
+    parent_alignment VARCHAR(32) NOT NULL,
+    status VARCHAR(16) NOT NULL, -- 'ACTIVE', 'TP1_HIT', 'TP2_HIT', 'STOPPED_OUT', 'INVALIDATED', 'MANUALLY_CLOSED'
+    exit_timestamp TIMESTAMPTZ,
+    exit_price NUMERIC(16, 5),
+    realized_r_multiple NUMERIC(6, 2),
+    exit_reason TEXT,
+    algorithm_version VARCHAR(32) DEFAULT 'fractal_engine_v9.1.0',
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+CREATE INDEX IF NOT EXISTS idx_1m_exec ON fractal_1m_executions(symbol, entry_timestamp DESC);
+
