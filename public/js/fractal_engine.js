@@ -50,7 +50,7 @@
         '1m': 0.15
     };
 
-    const ALGORITHM_VERSION = 'fractal_engine_v9.2.0';
+    const ALGORITHM_VERSION = 'fractal_engine_v9.3.0';
 
     class MazrionFractalEngine {
         constructor() {
