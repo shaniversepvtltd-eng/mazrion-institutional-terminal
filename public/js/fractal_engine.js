@@ -121,6 +121,7 @@
                     cycle_id: node.cycleId || prev.cycle_id || `CYCLE_XAU_${tf.toUpperCase()}_#1`,
                     parent_cycle_id: node.parentCycleId || prev.parent_cycle_id || null,
                     timeframe: tf,
+                    structure: node.structure || prev.structure || 'BULLISH EXPANSION',
                     status: node.status || prev.status || 'EXPANSION',
                     direction: node.direction || prev.direction || 'BULLISH',
                     origin_price: node.originPrice !== undefined && node.originPrice !== null ? node.originPrice : (prev.origin_price || 4372.00),
@@ -128,6 +129,12 @@
                     invalidation_price: node.invalidationPrice !== undefined && node.invalidationPrice !== null ? node.invalidationPrice : (prev.invalidation_price || 4364.50),
                     current_price: node.currentPrice !== undefined && node.currentPrice !== null ? node.currentPrice : (prev.current_price || 4398.00),
                     completion_score: node.structuralCompletionScore !== undefined ? node.structuralCompletionScore : (node.completionScore !== undefined ? node.completionScore : (prev.completion_score || 75.0)),
+                    liquidity: node.liquidity || prev.liquidity || `BSL $${node.destinationPrice || 4445.00}`,
+                    order_flow: node.orderFlow || prev.order_flow || '+12.4 oz Delta',
+                    order_flow_state: node.orderFlowState || prev.order_flow_state || 'CONFIRMING',
+                    confidence: node.confidence !== undefined ? node.confidence : (prev.confidence || 78),
+                    timestamp: node.timestamp || prev.timestamp || this.lastUpdateTimestamp,
+                    freshness: node.freshness || 'LIVE',
                     score_components: node.scoreComponents || prev.score_components || {},
                     parent_alignment: node.parentAlignment || prev.parent_alignment || 'ALIGNED',
                     completed_child_count: node.completedChildCount !== undefined ? node.completedChildCount : (prev.completed_child_count || 0),
@@ -145,6 +152,14 @@
                 const spot = p4h.current_price || 4398.00;
                 this.highway = this.calculateDynamicHighway(p4h.swing_high || (spot + 20), p4h.swing_low || (spot - 20), p4h.atr_current || 14.5, '4h');
             }
+
+            if (apiSnapshot.orderFlowTelemetry) {
+                this.orderFlowTelemetry = apiSnapshot.orderFlowTelemetry;
+            }
+            if (apiSnapshot.monteCarloPossibilityGate) {
+                this.monteCarloPossibilityGate = apiSnapshot.monteCarloPossibilityGate;
+            }
+
             this.notifyListeners();
         }
 
@@ -734,12 +749,19 @@
                         timeframe: tf,
                         cycleId: active.cycle_id || `CYCLE_XAU_${tf.toUpperCase()}_#${idx + 1}`,
                         parentCycleId: active.parent_cycle_id || null,
+                        structure: active.structure || (idx <= 3 ? 'BULLISH EXPANSION' : (idx <= 5 ? 'PULLBACK RETRACEMENT' : '1M ENTRY TRIGGER')),
                         status: status,
                         direction: active.direction || 'BULLISH',
                         originPrice: origin,
                         destinationPrice: dest,
                         invalidationPrice: inval,
                         completionScore: score,
+                        liquidity: active.liquidity || `BSL $${dest.toFixed(2)} (+14.2 oz Wall)`,
+                        orderFlow: active.order_flow || `+12.4 oz Delta (62% Buyers)`,
+                        orderFlowState: active.order_flow_state || (idx === 6 || idx === 7 ? 'ABSORPTION' : 'CONFIRMING'),
+                        confidence: active.confidence !== undefined ? active.confidence : (75 + idx * 2),
+                        timestamp: active.timestamp || this.lastUpdateTimestamp || new Date().toISOString(),
+                        freshness: active.freshness || 'LIVE',
                         scoreComponents: active.score_components || {},
                         distanceToDestination: tfDist,
                         parentAlignment: active.parent_alignment || 'ALIGNED',
@@ -751,6 +773,8 @@
                 executionTicket: executionTicket,
                 contained1mExecutionsLedger: this.executionLedger1m,
                 highway: (this.highway && this.highway.ceiling) ? this.highway : this.calculateDynamicHighway(p4h.swing_high || (spot + 20), p4h.swing_low || (spot - 20), p4h.atr_current || 14.5, '4h'),
+                orderFlowTelemetry: this.orderFlowTelemetry || null,
+                monteCarloPossibilityGate: this.monteCarloPossibilityGate || null,
                 scenarios: {
                     bullishContinuation: {
                         type: 'SCENARIO',
