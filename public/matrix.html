@@ -1015,7 +1015,16 @@
                     const structure = node.structure || (i <= 3 ? 'BULLISH_EXPANSION' : i <= 6 ? 'RETRACEMENT_BOS' : 'MICRO_DISPLACEMENT');
                     const status = node.status || (i <= 3 ? 'EXPANSION' : 'IMPULSE');
                     const liquidity = node.liquidity || (pm.direction === 'BULLISH' ? `BSL $${node.destinationPrice?.toFixed(2) || '4445.00'}` : `SSL $${node.originPrice?.toFixed(2) || '4364.50'}`);
-                    const ofSummary = node.orderFlow ? `${node.orderFlow.delta >= 0 ? '+' : ''}${node.orderFlow.delta?.toFixed(1) || '0.0'} Δ | $${(node.orderFlow.volumeUsd / 1e6).toFixed(1)}M` : `+${(40 + i*10).toFixed(1)} Δ`;
+                    let ofSummary = '+1.5 oz Δ (56.9%)';
+                    if (typeof node.orderFlow === 'string') {
+                        ofSummary = node.orderFlow;
+                    } else if (node.orderFlow && typeof node.orderFlow === 'object') {
+                        const deltaVal = Number(node.orderFlow.delta || 0).toFixed(1);
+                        const volVal = node.orderFlow.volumeUsd ? `$${(node.orderFlow.volumeUsd / 1e6).toFixed(1)}M` : `${Number(node.orderFlow.qty || 1.5).toFixed(1)} oz`;
+                        ofSummary = `${node.orderFlow.delta >= 0 ? '+' : ''}${deltaVal} Δ | ${volVal}`;
+                    } else {
+                        ofSummary = `+${(40 + i*10).toFixed(1)} Δ`;
+                    }
                     const ofState = node.orderFlowState || (i === 8 ? 'CONFIRMING' : 'NEUTRAL');
                     const conf = node.confidence || (75 + i*2.5);
                     const fresh = node.freshness || 'Live';
@@ -1031,7 +1040,7 @@
                             <td style="font-size:9.5px; color:#FFF;">${structure}</td>
                             <td><span class="badge-pill ${status === 'EXPANSION' ? 'badge-cyan' : status === 'IMPULSE' ? 'badge-green' : 'badge-gold'}" style="font-size:8px;">${status}</span></td>
                             <td style="font-size:9.5px; color:var(--text-muted);">${liquidity}</td>
-                            <td style="font-size:9.5px; color:${node.orderFlow?.delta >= 0 ? 'var(--green-glow)' : 'var(--red-glow)'}; font-weight:700;">${ofSummary}</td>
+                            <td style="font-size:9.5px; color:${ofState === 'CONTRADICTING' ? 'var(--red-glow)' : 'var(--green-glow)'}; font-weight:700;">${ofSummary}</td>
                             <td><span class="badge-pill ${badgeClass}" style="font-size:8px;">${ofState}</span></td>
                             <td style="font-size:9.5px; color:var(--cyan-glow); font-weight:700;">${conf.toFixed(1)}% <span style="font-size:8px; color:var(--text-muted);">(${fresh})</span></td>
                         </tr>
@@ -1098,10 +1107,10 @@
             // Monte Carlo Possibility Gate HUD
             const mc = data.monteCarloPossibilityGate || (ticket && ticket.monteCarloGate);
             if (mc) {
-                const targetProb = mc.targetBeforeStopProbPct || 64.2;
-                const stopProb = mc.stopLossProbPct || (100 - targetProb);
-                const expEdge = mc.expectedEdgeR !== undefined ? mc.expectedEdgeR : 0.284;
-                const passed = mc.passed !== undefined ? mc.passed : (targetProb >= 52.0);
+                const targetProb = mc.probTargetBeforeStopPct !== undefined ? mc.probTargetBeforeStopPct : (mc.targetBeforeStopProbPct || 64.2);
+                const stopProb = mc.probStopBeforeTargetPct !== undefined ? mc.probStopBeforeTargetPct : (mc.stopLossProbPct || (100 - targetProb));
+                const expEdge = mc.expectedEdge !== undefined ? mc.expectedEdge : (mc.expectedEdgeR !== undefined ? mc.expectedEdgeR : 0.284);
+                const passed = mc.gatePassed !== undefined ? mc.gatePassed : (mc.passed !== undefined ? mc.passed : (targetProb >= 52.0));
 
                 const gateBadge = document.getElementById('mc-gate-badge');
                 const targetProbEl = document.getElementById('mc-target-prob');
@@ -1122,7 +1131,7 @@
                     expEdgeEl.className = `param-val ${expEdge > 0 ? 'text-green' : 'text-red'}`;
                 }
                 if (probBar) probBar.style.width = `${targetProb.toFixed(1)}%`;
-                if (varEl) varEl.innerText = `${mc.var95R !== undefined ? mc.var95R.toFixed(2) : '-1.00'} R`;
+                if (varEl) varEl.innerText = `${mc.var95 !== undefined ? mc.var95.toFixed(2) : '-1.00'} R`;
                 if (volEl) volEl.innerText = `${mc.realizedVolPct !== undefined ? mc.realizedVolPct.toFixed(1) : '12.4'}%`;
             }
 
@@ -1134,18 +1143,22 @@
                 const absorbEl = document.getElementById('of-absorption-status');
                 const verdictEl = document.getElementById('of-verdict-pill');
 
-                if (ratioEl) ratioEl.innerText = `${of.bidAskDominanceRatio?.toFixed(2) || '1.34'}x ${of.bidAskDominanceRatio >= 1.0 ? 'Bid' : 'Ask'} Dominance`;
+                const ratio = of.orderBook?.imbalanceRatio || of.bidAskDominanceRatio || 1.34;
+                if (ratioEl) ratioEl.innerText = `${ratio.toFixed(2)}x ${ratio >= 1.0 ? 'Bid' : 'Ask'} Dominance`;
+                
                 if (cvdEl) {
-                    const cvd = of.cvdNetDelta || 142.5;
-                    cvdEl.innerText = `${cvd >= 0 ? '+' : ''}${cvd.toFixed(1)} Lots (${of.takerAggressionSide || 'BUY'} Aggr)`;
-                    cvdEl.className = cvd >= 0 ? 'text-green' : 'text-red';
+                    const netDelta = of.volumeDelta?.netDeltaOunces !== undefined ? of.volumeDelta.netDeltaOunces : (of.cvdNetDelta || 142.5);
+                    const aggrSide = of.volumeDelta?.cvdState?.includes('BULLISH') ? 'BUY' : (of.takerAggressionSide || 'BUY');
+                    cvdEl.innerText = `${netDelta >= 0 ? '+' : ''}${netDelta.toFixed(1)} oz (${aggrSide} Aggr)`;
+                    cvdEl.className = netDelta >= 0 ? 'text-green' : 'text-red';
                 }
                 if (absorbEl) {
-                    absorbEl.innerText = of.passiveAbsorptionDetected ? `ABSORPTION ACTIVE` : `NO PASSIVE ABSORPTION`;
-                    absorbEl.className = of.passiveAbsorptionDetected ? 'text-gold' : 'text-cyan';
+                    const isAbsorb = of.divergenceAlert?.includes('Absorption') || of.passiveAbsorptionDetected;
+                    absorbEl.innerText = isAbsorb ? `ABSORPTION ACTIVE` : `BALANCED ORDER FLOW`;
+                    absorbEl.className = isAbsorb ? 'text-gold' : 'text-cyan';
                 }
                 if (verdictEl) {
-                    const st = of.triggerConfirmationState || 'CONFIRMING';
+                    const st = of.triggerConfirmationState || (of.volumeDelta?.cvdState === 'BEARISH_AGGRESSION' && pm.direction === 'BULLISH' ? 'CONTRADICTING' : 'CONFIRMING');
                     verdictEl.innerText = st;
                     verdictEl.className = `badge-pill ${st === 'CONFIRMING' ? 'badge-green' : st === 'ABSORPTION' ? 'badge-cyan' : st === 'CONTRADICTING' ? 'badge-red' : 'badge-gold'}`;
                 }
@@ -1170,14 +1183,18 @@
             }
         }
 
-        // Watchdog loop for stale data (>15s)
+        // Watchdog loop for stale data (>25s) with live tick refresh
         setInterval(() => {
-            const isStale = (Date.now() - lastUpdateTime) > 15000;
+            const isStale = (Date.now() - lastUpdateTime) > 25000;
             const banner = document.getElementById('stale-data-banner');
             const dot = document.getElementById('hdr-pulse-dot');
             if (banner) banner.style.display = isStale ? 'block' : 'none';
             if (dot) dot.className = `pulse-dot ${isStale ? 'stale' : ''}`;
-        }, 3000);
+        }, 2000);
+
+        window.addEventListener('mazrion:price_update', () => {
+            lastUpdateTime = Date.now();
+        });
 
         window.addEventListener('DOMContentLoaded', () => {
             if (window.MazrionFractalEngine) {

@@ -180,10 +180,10 @@
                     });
                 }
 
-                // Poll canonical endpoint periodically to ensure zero state drift
+                // Poll canonical endpoint periodically (every 3.5s) to ensure zero state drift and instant live sync
                 setInterval(() => {
                     this.fetchCanonicalState();
-                }, 15000);
+                }, 3500);
             }
         }
 
