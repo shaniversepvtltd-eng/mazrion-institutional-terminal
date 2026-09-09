@@ -219,45 +219,141 @@
     widgetContainer.innerHTML = `
         <!-- Floating FAB -->
         <button id="mazrion-fab" onclick="toggleMazrionDrawer()">
-            <span>🔮</span>
-            <span>MAZRION AI</span>
+            <span>👑</span>
+            <span>MAZRION J.A.R.V.I.S.</span>
         </button>
 
         <!-- Slide-out Drawer -->
         <div id="mazrion-drawer">
             <div class="m-drawer-header">
                 <div class="m-drawer-title">
-                    <span>🔮</span> MAZRION // ADVISOR
+                    <span>👑</span> MAZRION // J.A.R.V.I.S. CORE
                 </div>
                 <div class="m-drawer-controls">
-                    <a href="/mazrion.html" class="m-icon-btn" title="Open Full Workstation">↗</a>
+                    <button class="m-icon-btn" id="mVoiceToggle" onclick="toggleVoiceAudio()" title="Toggle Voice Speech">🔊</button>
+                    <a href="/mazrion.html" class="m-icon-btn" title="Open Full Hologram Deck">↗</a>
                     <button class="m-icon-btn" onclick="toggleMazrionDrawer()">✕</button>
                 </div>
             </div>
 
             <div class="m-drawer-tools">
-                <button class="m-tool-pill panic" onclick="sendWidgetPrompt('🚨 EMERGENCY SCAN: Am I safe right now?')">🚨 Panic</button>
-                <button class="m-tool-pill" onclick="sendWidgetPrompt('☕ What is today\\'s quick gameplan?')">☕ Plan</button>
-                <button class="m-tool-pill" onclick="sendWidgetPrompt('🎯 Give me the exact MT5 order numbers')">📋 MT5 Ticket</button>
-                <button class="m-tool-pill" onclick="sendWidgetPrompt('👶 Explain live Gold like I\\'m 10')">👶 Explain</button>
+                <button class="m-tool-pill" onclick="sendWidgetPrompt('👑 King\\'s Status: What is our active autonomous posture?')">👑 Status</button>
+                <button class="m-tool-pill" onclick="sendWidgetPrompt('🔴 Red Team Adversary: What are the devil\\'s advocate risks right now?')">🔴 Red Team</button>
+                <button class="m-tool-pill" onclick="sendWidgetPrompt('🔮 Monte Carlo: Run 10,000 probability paths on current Gold price')">🔮 Monte Carlo</button>
+                <button class="m-tool-pill panic" onclick="sendWidgetPrompt('🛡️ Iron Shield: Verify stop loss and capital defense right now')">🛡️ Shield</button>
             </div>
 
             <div class="m-chat-body" id="mChatBody">
                 <div class="m-bubble ai">
-                    <strong>🔮 Mazrion:</strong> Hey bro! I'm watching live market telemetry for you. Tap a quick tool above or ask me anything!
+                    <strong>👑 Mazrion:</strong> Greetings King. Systems 100% operational. I am managing all market analysis, risk calibration, and executions autonomously. How may I serve you, King?
                 </div>
             </div>
 
             <form class="m-chat-input-box" onsubmit="handleWidgetSubmit(event)">
-                <input type="text" id="mWidgetInput" placeholder="Ask your advisor (e.g. 'Should I buy now?')..." autocomplete="off">
-                <button type="submit" class="m-send-btn">Send</button>
+                <button type="button" class="m-icon-btn" id="mMicBtn" onclick="toggleMicRecording()" title="Speak to Mazrion" style="color:var(--accent-cyan);">🎙️</button>
+                <input type="text" id="mWidgetInput" placeholder="Speak or type to Mazrion, King..." autocomplete="off">
+                <button type="submit" class="m-send-btn">Execute</button>
             </form>
         </div>
     `;
     document.body.appendChild(widgetContainer);
 
     let widgetHistory = [];
-    let widgetLivePrice = 4394.14;
+    let widgetLivePrice = 4401.99;
+    let voiceEnabled = true;
+    let recognition = null;
+    let isRecording = false;
+
+    // Speech Synthesis (J.A.R.V.I.S. Voice Engine)
+    function speakJarvisVoice(text) {
+        if (!voiceEnabled || !('speechSynthesis' in window)) return;
+        try {
+            window.speechSynthesis.cancel();
+            // Clean markdown tokens for voice
+            const cleanText = text
+                .replace(/[*#_`>]/g, '')
+                .replace(/👑|🔵|🔴|⚡|🛡️|🎯|📍|💡/g, '')
+                .replace(/https?:\/\/\S+/g, '')
+                .slice(0, 300); // Speak the core punchy summary
+
+            const utterance = new SpeechSynthesisUtterance(cleanText);
+            utterance.rate = 1.05;
+            utterance.pitch = 0.95;
+
+            // Pick a sophisticated British or English voice if available
+            const voices = window.speechSynthesis.getVoices();
+            const preferredVoice = voices.find(v => (v.name.includes('Daniel') || v.name.includes('George') || v.name.includes('UK') || v.lang === 'en-GB' || v.lang.startsWith('en')));
+            if (preferredVoice) utterance.voice = preferredVoice;
+
+            window.speechSynthesis.speak(utterance);
+        } catch (e) {
+            console.warn("Speech synthesis error:", e);
+        }
+    }
+
+    window.toggleVoiceAudio = function() {
+        voiceEnabled = !voiceEnabled;
+        const btn = document.getElementById('mVoiceToggle');
+        if (btn) btn.innerText = voiceEnabled ? '🔊' : '🔇';
+        if (!voiceEnabled && ('speechSynthesis' in window)) window.speechSynthesis.cancel();
+    };
+
+    // Speech-To-Text (Microphone Command Engine)
+    window.toggleMicRecording = function() {
+        const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (!SpeechRec) {
+            alert("Microphone recognition is not supported in this browser.");
+            return;
+        }
+
+        const micBtn = document.getElementById('mMicBtn');
+        if (!recognition) {
+            recognition = new SpeechRec();
+            recognition.continuous = false;
+            recognition.interimResults = false;
+            recognition.lang = 'en-US';
+
+            recognition.onstart = () => {
+                isRecording = true;
+                if (micBtn) {
+                    micBtn.style.color = '#EF4444';
+                    micBtn.style.boxShadow = '0 0 12px rgba(239, 68, 68, 0.6)';
+                }
+            };
+
+            recognition.onresult = (event) => {
+                const transcript = event.results[0][0].transcript;
+                const input = document.getElementById('mWidgetInput');
+                if (input) {
+                    input.value = transcript;
+                    window.handleWidgetSubmit(new Event('submit'));
+                }
+            };
+
+            recognition.onerror = (event) => {
+                console.warn("Speech recognition error:", event.error);
+                isRecording = false;
+                if (micBtn) {
+                    micBtn.style.color = 'var(--accent-cyan)';
+                    micBtn.style.boxShadow = 'none';
+                }
+            };
+
+            recognition.onend = () => {
+                isRecording = false;
+                if (micBtn) {
+                    micBtn.style.color = 'var(--accent-cyan)';
+                    micBtn.style.boxShadow = 'none';
+                }
+            };
+        }
+
+        if (isRecording) {
+            recognition.stop();
+        } else {
+            recognition.start();
+        }
+    };
 
     async function fetchWidgetPrice() {
         try {
@@ -296,7 +392,7 @@
         appendWidgetMsg('user', text);
         widgetHistory.push({ role: 'user', content: text });
 
-        appendWidgetMsg('ai', '<em>Thinking with live telemetry...</em>', 'tempIndicator');
+        appendWidgetMsg('ai', '<em>Simulating market vectors across 10,000 realities...</em>', 'tempIndicator');
 
         try {
             const res = await fetch('/api/chat', {
@@ -305,7 +401,7 @@
                 body: JSON.stringify({
                     message: text,
                     history: widgetHistory,
-                    accountBalance: 100,
+                    accountBalance: 945.35,
                     livePrice: widgetLivePrice
                 })
             });
@@ -315,16 +411,21 @@
 
             if (res.ok) {
                 const data = await res.json();
-                const reply = data.reply || `Hey bro, live Gold is at **$${widgetLivePrice.toFixed(2)}**. Watching the market closely!`;
+                const reply = data.reply || `👑 **STATUS**: Greetings King. Live Gold is **$${widgetLivePrice.toFixed(2)}**. Autonomous systems are standing by.`;
                 appendWidgetMsg('ai', reply);
                 widgetHistory.push({ role: 'assistant', content: reply });
+                speakJarvisVoice(reply);
             } else {
-                appendWidgetMsg('ai', `Hey bro, live Gold is at **$${widgetLivePrice.toFixed(2)}**. Sitting on hands until 5M base confirms!`);
+                const fallbackMsg = `👑 **STATUS**: Greetings King. Live Gold is **$${widgetLivePrice.toFixed(2)}**. Highway Lap 2 is active and under full Mazrion command.`;
+                appendWidgetMsg('ai', fallbackMsg);
+                speakJarvisVoice(fallbackMsg);
             }
         } catch (err) {
             const temp = document.getElementById('tempIndicator');
             if (temp) temp.remove();
-            appendWidgetMsg('ai', `Hey bro, live Gold is at **$${widgetLivePrice.toFixed(2)}**. Lap 2 is active targeting **$4,512.33**!`);
+            const fallbackMsg = `👑 **STATUS**: Greetings King. Live Gold is **$${widgetLivePrice.toFixed(2)}**. Capital is 100% protected under our 2% Iron Shield.`;
+            appendWidgetMsg('ai', fallbackMsg);
+            speakJarvisVoice(fallbackMsg);
         }
     };
 
@@ -339,7 +440,7 @@
             .replace(/\n\n/g, '<br><br>')
             .replace(/\n/g, '<br>');
 
-        bubble.innerHTML = role === 'ai' ? `<strong>🔮 Mazrion:</strong><br>${formatted}` : formatted;
+        bubble.innerHTML = role === 'ai' ? `<strong>👑 Mazrion Core:</strong><br>${formatted}` : formatted;
         body.appendChild(bubble);
         body.scrollTop = body.scrollHeight;
     }

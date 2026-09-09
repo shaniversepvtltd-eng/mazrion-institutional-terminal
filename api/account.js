@@ -47,20 +47,22 @@ export default async function handler(req, res) {
                 });
             }
 
-            // 1. Fetch Latest Account State (Balance, Equity, Positions, Pending Orders)
-            const stateRes = await fetch(`${SUPABASE_URL}/rest/v1/mazrion_account_state?id=eq.primary`, {
+            // 1. Fetch Latest Account State via Secure RPC Function
+            const stateRes = await fetch(`${SUPABASE_URL}/rest/v1/rpc/mazrion_secure_get_state`, {
+                method: "POST",
                 headers: {
                     "apikey": SUPABASE_ANON_KEY,
-                    "Authorization": `Bearer ${SUPABASE_ANON_KEY}`
-                }
+                    "Authorization": `Bearer ${SUPABASE_ANON_KEY}`,
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    auth_secret: MASTER_PIN
+                })
             });
 
             let accountState = null;
             if (stateRes.ok) {
-                const rows = await stateRes.json();
-                if (rows && rows.length > 0) {
-                    accountState = rows[0];
-                }
+                accountState = await stateRes.json();
             }
 
             // Fallback if not yet populated
@@ -79,12 +81,17 @@ export default async function handler(req, res) {
                 };
             }
 
-            // 2. Fetch Recent Order Queue History (Last 15 dispatches)
-            const histRes = await fetch(`${SUPABASE_URL}/rest/v1/mazrion_order_queue?order=created_at.desc&limit=15`, {
+            // 2. Fetch Recent Order Queue History via Secure RPC Function
+            const histRes = await fetch(`${SUPABASE_URL}/rest/v1/rpc/mazrion_secure_get_order_history`, {
+                method: "POST",
                 headers: {
                     "apikey": SUPABASE_ANON_KEY,
-                    "Authorization": `Bearer ${SUPABASE_ANON_KEY}`
-                }
+                    "Authorization": `Bearer ${SUPABASE_ANON_KEY}`,
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    auth_secret: MASTER_PIN
+                })
             });
 
             let history = [];

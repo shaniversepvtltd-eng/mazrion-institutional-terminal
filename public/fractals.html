@@ -9,8 +9,8 @@
     <title>MAZRION // SIDE-BY-SIDE FRACTAL TWIN BLUEPRINT — HISTORICAL VS LIVE</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700;800;900&family=Orbitron:wght@600;800;900&display=swap" rel="stylesheet">
     <script src="/js/security.js"></script>
+    <script src="/js/market_engine.js"></script>
     <style>
         :root {
             --bg-base: #04070D;
@@ -771,7 +771,8 @@
             <a href="/fractals.html" class="nav-btn active">🧩 Ghost Blueprint</a>
             <a href="/matrix.html" class="nav-btn" style="border-color:var(--cyan-glow); color:var(--cyan-glow); box-shadow: 0 0 10px rgba(0, 229, 255, 0.3);">⚡ Fractal Matrix</a>
             <a href="/account.html" class="nav-btn" style="border-color:var(--green-glow); color:var(--green-glow); box-shadow: 0 0 10px rgba(16, 185, 129, 0.3);">💳 MT5 Account</a>
-            <a href="/mazrion.html" class="nav-btn" style="background:linear-gradient(135deg, #A855F7, #7C3AED, #00E5FF); border:1px solid #C084FC; color:#FFF; font-weight:800; box-shadow: 0 0 14px rgba(168, 85, 247, 0.4);">🔮 Mazrion AI</a>
+            <a href="/jarvis.html" class="nav-btn" style="background:linear-gradient(135deg, rgba(245, 158, 11, 0.25), rgba(168, 85, 247, 0.25)); border:1px solid #F59E0B; color:#F59E0B; font-weight:800; box-shadow: 0 0 14px rgba(245, 158, 11, 0.4);">👑 KING'S MAZRION</a>
+            <a href="/evolution.html" class="nav-btn" style="background:linear-gradient(135deg, rgba(168, 85, 247, 0.25), rgba(0, 229, 255, 0.25)); border:1px solid #A855F7; color:#A855F7; font-weight:800; box-shadow: 0 0 14px rgba(168, 85, 247, 0.4);">🧬 GENESIS LAB</a>
         </nav>
     </header>
 
@@ -1470,10 +1471,30 @@
             }
         }
 
-        function drawSideBySideCharts() {
+        let realLiveCandles = [];
+        async function fetchRealCandles() {
+            try {
+                const tfMap = { "1m": "1m", "5m": "5m", "15m": "15m", "1h": "1h", "4h": "4h", "1d": "1d", "1w": "1w" };
+                const klineTf = tfMap[selectedTimeframe] || "4h";
+                const res = await fetch(`https://api.binance.com/api/v3/klines?symbol=PAXGUSDT&interval=${klineTf}&limit=20`);
+                if (res.ok) {
+                    const data = await res.json();
+                    if (Array.isArray(data) && data.length > 0) {
+                        realLiveCandles = data.map(k => ({
+                            open: parseFloat(k[1]),
+                            high: parseFloat(k[2]),
+                            low: parseFloat(k[3]),
+                            close: parseFloat(k[4])
+                        }));
+                    }
+                }
+            } catch(e) {}
+        }
+
+        async function drawSideBySideCharts() {
             const arch = archetypeData[selectedArchetypeId] || archetypeData["ARCH_1"];
             
-            // 1. Draw Left Historical Canvas
+            // 1. Draw Left Historical Canvas (Real Historical Case Study)
             drawCandleChart("canvasHistorical", arch.candles, {
                 isHistorical: true,
                 isLive: false,
@@ -1483,25 +1504,23 @@
                 forwardSlots: 2
             });
 
-            // 2. Draw Right Current Live Canvas
-            const r = apiData ? apiData.active_radar : { anchor_low: 4381.24, anchor_high: 4438.05 };
-            const f = apiData ? apiData.fractal_analytica : null;
-            const liveCandles = (f && f.live_candles && f.live_candles.length > 5) ? f.live_candles : [
-                { open: 4385, high: 4398, low: 4381.24, close: 4390 },
-                { open: 4300, high: 4320, low: 4295, close: 4315 },
-                { open: 4315, high: 4350, low: 4310, close: 4345 },
-                { open: 4345, high: 4380, low: 4340, close: 4375 },
-                { open: 4375, high: 4410, low: 4370, close: 4405 },
-                { open: 4405, high: 4435, low: 4400, close: currentPrice }
+            // 2. Fetch and Draw Right Current Live Canvas from real Binance stream
+            if (realLiveCandles.length === 0) {
+                await fetchRealCandles();
+            }
+
+            const r = apiData ? apiData.active_radar : { anchor_low: currentPrice - 20, anchor_high: currentPrice + 30 };
+            const candlesToDraw = realLiveCandles.length > 0 ? realLiveCandles : [
+                { open: currentPrice - 5, high: currentPrice + 2, low: currentPrice - 8, close: currentPrice }
             ];
 
-            drawCandleChart("canvasCurrent", liveCandles, {
+            drawCandleChart("canvasCurrent", candlesToDraw, {
                 isHistorical: false,
                 isLive: true,
                 precision: 2,
                 floorLow: r.anchor_low,
                 targetHigh: r.anchor_high,
-                forwardSlots: 6
+                forwardSlots: 4
             });
         }
 

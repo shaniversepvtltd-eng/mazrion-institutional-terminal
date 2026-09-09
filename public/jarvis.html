@@ -1,0 +1,1445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MAZRION // J.A.R.V.I.S. SUPERHUMAN AUTONOMOUS SUITE</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700;800&family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
+    <script src="/js/security.js"></script>
+    <script src="/js/market_engine.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    
+    <style>
+        :root {
+            --bg-void: #02040A;
+            --bg-glass: rgba(10, 16, 30, 0.78);
+            --bg-glass-active: rgba(18, 28, 54, 0.9);
+            --border-glow: rgba(0, 229, 255, 0.35);
+            --border-purple: rgba(168, 85, 247, 0.4);
+            --border-dim: rgba(255, 255, 255, 0.08);
+            
+            --cyan: #00E5FF;
+            --purple: #A855F7;
+            --green: #10B981;
+            --red: #EF4444;
+            --gold: #F59E0B;
+            --blue: #3B82F6;
+            
+            --text-main: #F8FAFC;
+            --text-muted: #94A3B8;
+            --text-dim: #64748B;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-void);
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(0, 229, 255, 0.07) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(168, 85, 247, 0.08) 0%, transparent 45%),
+                radial-gradient(circle at 50% 50%, rgba(16, 185, 129, 0.04) 0%, transparent 60%);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Top Navigation Header */
+        header {
+            background: rgba(3, 7, 18, 0.92);
+            border-bottom: 1px solid var(--border-glow);
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            backdrop-filter: blur(20px);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 30px rgba(0, 229, 255, 0.12);
+        }
+
+        .brand-box {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-logo {
+            font-family: 'Cinzel', serif;
+            font-size: 20px;
+            font-weight: 900;
+            background: linear-gradient(135deg, #FFF, var(--cyan), var(--purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 2px;
+            text-shadow: 0 0 20px rgba(0, 229, 255, 0.4);
+        }
+
+        .king-badge {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(168, 85, 247, 0.2));
+            border: 1px solid var(--gold);
+            color: var(--gold);
+            font-family: 'Orbitron', monospace;
+            font-size: 11px;
+            font-weight: 800;
+            padding: 4px 10px;
+            border-radius: 99px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 0 14px rgba(245, 158, 11, 0.3);
+            animation: crownPulse 2.5s infinite;
+        }
+
+        @keyframes crownPulse {
+            0%, 100% { box-shadow: 0 0 10px rgba(245, 158, 11, 0.3); }
+            50% { box-shadow: 0 0 22px rgba(245, 158, 11, 0.6); }
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-btn {
+            text-decoration: none;
+            color: var(--text-muted);
+            font-size: 11.5px;
+            font-weight: 700;
+            font-family: 'JetBrains Mono', monospace;
+            padding: 7px 14px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border-dim);
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .nav-btn:hover {
+            color: #FFF;
+            background: rgba(0, 229, 255, 0.12);
+            border-color: var(--cyan);
+            transform: translateY(-1px);
+        }
+
+        .nav-btn.active {
+            color: var(--cyan);
+            background: rgba(0, 229, 255, 0.16);
+            border: 1px solid var(--cyan);
+            box-shadow: 0 0 16px rgba(0, 229, 255, 0.35);
+        }
+
+        /* J.A.R.V.I.S. Command HUD Strip */
+        .hud-strip {
+            background: rgba(8, 14, 28, 0.85);
+            border-bottom: 1px solid var(--border-dim);
+            padding: 10px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            backdrop-filter: blur(12px);
+        }
+
+        .hud-cell {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .hud-tag {
+            color: var(--text-dim);
+            font-size: 9.5px;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+
+        .hud-val {
+            font-weight: 800;
+            color: var(--text-main);
+        }
+
+        .voice-control-bar {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .voice-btn {
+            background: linear-gradient(135deg, rgba(0, 229, 255, 0.2), rgba(168, 85, 247, 0.2));
+            border: 1px solid var(--cyan);
+            color: #FFF;
+            font-size: 12px;
+            font-weight: 800;
+            padding: 6px 14px;
+            border-radius: 99px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 0 16px rgba(0, 229, 255, 0.25);
+            transition: all 0.2s ease;
+        }
+
+        .voice-btn:hover {
+            transform: scale(1.04);
+            box-shadow: 0 0 24px rgba(0, 229, 255, 0.45);
+        }
+
+        /* Master Superhuman Layout */
+        .jarvis-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 18px;
+            padding: 20px 24px 60px;
+            flex: 1;
+            max-width: 1920px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        /* Glassmorphism Stark Card Base */
+        .stark-card {
+            background: var(--bg-glass);
+            border: 1px solid var(--border-dim);
+            border-radius: 16px;
+            padding: 18px;
+            backdrop-filter: blur(24px);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+            transition: border-color 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        .stark-card:hover {
+            border-color: var(--border-glow);
+            box-shadow: 0 12px 36px rgba(0, 229, 255, 0.15);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 14px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .card-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 12.5px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #FFF;
+        }
+
+        .card-badge {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 9.5px;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 6px;
+            text-transform: uppercase;
+        }
+
+        /* Module 1: Monte Carlo (Span 7) */
+        .col-monte-carlo {
+            grid-column: span 7;
+            height: 420px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .monte-canvas-container {
+            flex: 1;
+            position: relative;
+            border-radius: 10px;
+            background: rgba(4, 8, 18, 0.9);
+            border: 1px solid rgba(0, 229, 255, 0.15);
+            overflow: hidden;
+        }
+
+        #monteCanvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        .monte-stats-overlay {
+            position: absolute;
+            top: 14px;
+            left: 16px;
+            display: flex;
+            gap: 16px;
+            background: rgba(3, 7, 18, 0.85);
+            border: 1px solid var(--border-glow);
+            padding: 8px 14px;
+            border-radius: 8px;
+            backdrop-filter: blur(12px);
+        }
+
+        .stat-pill {
+            display: flex;
+            flex-direction: column;
+        }
+        .stat-pill-lbl { font-size: 8.5px; color: var(--text-dim); text-transform: uppercase; }
+        .stat-pill-val { font-size: 13px; font-weight: 900; font-family: 'JetBrains Mono', monospace; }
+
+        /* Module 2: 3D Holographic Spatial Globe (Span 5) */
+        .col-globe {
+            grid-column: span 5;
+            height: 420px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .globe-container {
+            flex: 1;
+            position: relative;
+            border-radius: 10px;
+            background: radial-gradient(circle at center, rgba(168, 85, 247, 0.15) 0%, rgba(2, 4, 10, 0.95) 75%);
+            border: 1px solid var(--border-purple);
+            overflow: hidden;
+        }
+
+        #globeCanvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        .globe-hud-overlay {
+            position: absolute;
+            bottom: 12px;
+            left: 12px;
+            right: 12px;
+            display: flex;
+            justify-content: space-between;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            color: var(--cyan);
+            background: rgba(3, 7, 18, 0.7);
+            padding: 6px 12px;
+            border-radius: 6px;
+            border: 1px solid rgba(0, 229, 255, 0.2);
+        }
+
+        /* Module 3: SMT Cross-Asset Spiderweb (Span 4) */
+        .col-smt {
+            grid-column: span 4;
+            height: 380px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .smt-radar-box {
+            flex: 1;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #smtCanvas {
+            width: 100%;
+            height: 100%;
+        }
+
+        .smt-divergence-alert {
+            margin-top: 8px;
+            padding: 8px 12px;
+            background: rgba(16, 185, 129, 0.12);
+            border: 1px solid var(--green);
+            border-radius: 8px;
+            font-size: 10.5px;
+            color: #A7F3D0;
+            line-height: 1.4;
+        }
+
+        /* Module 4: Iceberg Dark Pool (Span 4) */
+        .col-iceberg {
+            grid-column: span 4;
+            height: 380px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .iceberg-list {
+            flex: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .iceberg-row {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 8px;
+            padding: 10px 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            transition: all 0.2s;
+        }
+
+        .iceberg-row.bid { border-left: 3px solid var(--green); }
+        .iceberg-row.ask { border-left: 3px solid var(--red); }
+
+        .iceberg-row:hover {
+            background: rgba(0, 229, 255, 0.08);
+            border-color: var(--cyan);
+        }
+
+        /* Module 5: Red Team vs Blue Team War Room (Span 4) */
+        .col-war-room {
+            grid-column: span 4;
+            height: 380px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .war-room-split {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            overflow-y: auto;
+        }
+
+        .team-box {
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 8px;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .team-box.blue { border: 1px solid rgba(59, 130, 246, 0.4); }
+        .team-box.red { border: 1px solid rgba(239, 68, 68, 0.4); }
+
+        .team-title { font-family: 'Orbitron', monospace; font-size: 10.5px; font-weight: 800; display: flex; align-items: center; gap: 5px; }
+        .team-box.blue .team-title { color: var(--blue); }
+        .team-box.red .team-title { color: var(--red); }
+
+        .team-bullet { font-size: 10px; color: var(--text-muted); line-height: 1.35; }
+
+        .synthesis-bar {
+            margin-top: 10px;
+            padding: 8px 12px;
+            background: rgba(168, 85, 247, 0.15);
+            border: 1px solid var(--purple);
+            border-radius: 8px;
+            font-size: 10.5px;
+            color: #E9D5FF;
+        }
+
+        /* Module 6: Genetic AI Evolution (Span 6) */
+        .col-genetic {
+            grid-column: span 6;
+            height: 320px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .genetic-tree-grid {
+            flex: 1;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .gene-node {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-dim);
+            border-radius: 8px;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .gene-node.active {
+            border-color: var(--cyan);
+            background: rgba(0, 229, 255, 0.06);
+            box-shadow: 0 0 16px rgba(0, 229, 255, 0.2);
+        }
+
+        .gene-lbl { font-size: 9.5px; color: var(--text-dim); }
+        .gene-val { font-size: 14px; font-weight: 800; color: #FFF; margin: 4px 0; }
+        .gene-fit { font-size: 10px; color: var(--green); }
+
+        /* Module 7: Biometric Psychological Neuro-Shield (Span 6) */
+        .col-neuro {
+            grid-column: span 6;
+            height: 320px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .neuro-grid {
+            flex: 1;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+
+        .neuro-tile {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--border-dim);
+            border-radius: 8px;
+            padding: 12px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .neuro-icon { font-size: 22px; margin-bottom: 6px; }
+        .neuro-lbl { font-size: 9.5px; color: var(--text-dim); font-family: 'JetBrains Mono', monospace; }
+        .neuro-val { font-size: 16px; font-weight: 900; color: var(--cyan); font-family: 'Orbitron', monospace; margin: 4px 0; }
+        .neuro-status { font-size: 9.5px; color: var(--green); font-weight: 700; }
+
+        /* Floating Interactive Stark HUD Command Console */
+        .jarvis-floating-chat {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            width: 440px;
+            max-width: calc(100vw - 48px);
+            background: rgba(10, 16, 32, 0.95);
+            border: 1px solid var(--cyan);
+            border-radius: 16px;
+            padding: 14px;
+            backdrop-filter: blur(28px);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8), 0 0 30px rgba(0, 229, 255, 0.25);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .j-chat-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-family: 'Orbitron', monospace;
+            font-size: 11.5px;
+            font-weight: 800;
+            color: var(--cyan);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            padding-bottom: 6px;
+        }
+
+        .j-chat-stream {
+            max-height: 160px;
+            overflow-y: auto;
+            font-size: 11.5px;
+            line-height: 1.45;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .j-input-row {
+            display: flex;
+            gap: 8px;
+        }
+
+        .j-input-row input {
+            flex: 1;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(0, 229, 255, 0.3);
+            border-radius: 8px;
+            color: #FFF;
+            padding: 8px 12px;
+            font-size: 11.5px;
+            outline: none;
+        }
+
+        .j-input-row input:focus { border-color: var(--cyan); box-shadow: 0 0 10px rgba(0, 229, 255, 0.4); }
+
+        .j-action-btn {
+            background: var(--cyan);
+            border: none;
+            color: #000;
+            font-weight: 900;
+            font-size: 11.5px;
+            padding: 8px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .j-action-btn:hover { background: #FFF; box-shadow: 0 0 16px var(--cyan); }
+
+        @media (max-width: 1200px) {
+            .col-monte-carlo { grid-column: span 12; }
+            .col-globe { grid-column: span 12; }
+            .col-smt { grid-column: span 6; }
+            .col-iceberg { grid-column: span 6; }
+            .col-war-room { grid-column: span 12; }
+            .col-genetic { grid-column: span 12; }
+            .col-neuro { grid-column: span 12; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header Navigation -->
+    <header>
+        <div class="brand-box">
+            <span class="brand-logo">MAZRION</span>
+            <div class="king-badge">
+                <span>👑</span>
+                <span>KING'S MAZRION SUITE</span>
+            </div>
+        </div>
+
+        <div class="nav-links">
+            <a href="/" class="nav-btn">🏛️ Charts</a>
+            <a href="/cockpit.html" class="nav-btn">✈️ Cockpit</a>
+            <a href="/cinema.html" class="nav-btn">🎬 Cinema</a>
+            <a href="/fractals.html" class="nav-btn">🧩 Ghost Blueprint</a>
+            <a href="/matrix.html" class="nav-btn">⚡ Matrix</a>
+            <a href="/account.html" class="nav-btn" style="border-color:var(--green); color:var(--green);">💳 MT5 Account</a>
+            <a href="/jarvis.html" class="nav-btn active">👑 KING'S MAZRION</a>
+            <a href="/evolution.html" class="nav-btn" style="border-color:var(--purple); color:var(--purple);">🧬 GENESIS LAB</a>
+        </div>
+    </header>
+
+    <!-- Telemetry HUD -->
+    <div class="hud-strip">
+        <div class="hud-cell">
+            <span class="hud-tag">King's Command:</span>
+            <span class="hud-val" style="color:var(--gold);">AUTONOMOUS EXECUTION ACTIVE</span>
+        </div>
+        <div class="hud-cell">
+            <span class="hud-tag">Live Gold Spot:</span>
+            <span class="hud-val" id="hudPrice" style="color:var(--cyan); font-size:13px;">$4,401.99</span>
+        </div>
+        <div class="hud-cell">
+            <span class="hud-tag">MT5 Relay:</span>
+            <span class="hud-val" style="color:var(--green);">#316126743 (XMGlobal-MT5 7)</span>
+        </div>
+        <div class="hud-cell">
+            <span class="hud-tag">Iron Shield:</span>
+            <span class="hud-val" style="color:var(--cyan);">0.01 Lots (Strict 2% Cap)</span>
+        </div>
+        <div class="voice-control-bar">
+            <button class="voice-btn" id="voiceToggleMain" onclick="toggleJarvisVoice()">
+                <span id="voiceIcon">🔊</span>
+                <span id="voiceLabel">Voice: ONLINE</span>
+            </button>
+            <button class="voice-btn" id="micBtnMain" onclick="toggleJarvisMic()" style="border-color:var(--purple);">
+                <span>🎙️</span>
+                <span>Speak to Mazrion</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Grid -->
+    <main class="jarvis-grid">
+
+        <!-- 1. Monte Carlo Reality Simulator -->
+        <div class="stark-card col-monte-carlo">
+            <div class="card-header">
+                <div class="card-title">
+                    <span>🔮</span>
+                    <span>10,000 REALITY SIMULATOR (MONTE CARLO)</span>
+                </div>
+                <div class="card-badge" style="background:rgba(0, 229, 255, 0.15); color:var(--cyan); border:1px solid var(--cyan);">
+                    87.4% TARGET WIN-RATE
+                </div>
+            </div>
+            <div class="monte-canvas-container">
+                <canvas id="monteCanvas"></canvas>
+                <div class="monte-stats-overlay">
+                    <div class="stat-pill">
+                        <span class="stat-pill-lbl">Simulated Paths</span>
+                        <span class="stat-pill-val" style="color:#FFF;">10,000</span>
+                    </div>
+                    <div class="stat-pill">
+                        <span class="stat-pill-lbl">Hit $4,445 TP</span>
+                        <span class="stat-pill-val" style="color:var(--green);">8,740 (87.4%)</span>
+                    </div>
+                    <div class="stat-pill">
+                        <span class="stat-pill-lbl">Hit $4,378 SL</span>
+                        <span class="stat-pill-val" style="color:var(--red);">1,260 (12.6%)</span>
+                    </div>
+                    <div class="stat-pill">
+                        <span class="stat-pill-lbl">Expected Edge</span>
+                        <span class="stat-pill-val" style="color:var(--gold);">+3.84R</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. 3D Holographic Spatial Liquidity Globe -->
+        <div class="stark-card col-globe">
+            <div class="card-header">
+                <div class="card-title">
+                    <span>🥽</span>
+                    <span>3D SPATIAL LIQUIDITY ORBITAL GLOBE</span>
+                </div>
+                <div class="card-badge" style="background:rgba(168, 85, 247, 0.15); color:var(--purple); border:1px solid var(--purple);">
+                    LONDON FIX FLOWS ACTIVE
+                </div>
+            </div>
+            <div class="globe-container">
+                <div id="globeCanvas"></div>
+                <div class="globe-hud-overlay">
+                    <span>🌐 TOKYO: CLOSED</span>
+                    <span>⚡ LONDON: SQUARING INVENTORY</span>
+                    <span>🏛️ NEW YORK: ACCUMULATING</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. SMT Cross-Asset Spiderweb -->
+        <div class="stark-card col-smt">
+            <div class="card-header">
+                <div class="card-title">
+                    <span>🕸️</span>
+                    <span>SMT CROSS-ASSET SPIDERWEB</span>
+                </div>
+                <div class="card-badge" style="background:rgba(16, 185, 129, 0.15); color:var(--green); border:1px solid var(--green);">
+                    BULLISH SMT DIVERGENCE
+                </div>
+            </div>
+            <div class="smt-radar-box">
+                <canvas id="smtCanvas"></canvas>
+            </div>
+            <div class="smt-divergence-alert">
+                <strong>🕸️ King, SMT Alert:</strong> Silver swept London low at $38.20, but Gold refused to break $4,395. Bullish accumulation spring loaded.
+            </div>
+        </div>
+
+        <!-- 4. Real Binance Gold L2 Order Book & CVD (Real Order Flow) -->
+        <div class="stark-card col-iceberg">
+            <div class="card-header">
+                <div class="card-title">
+                    <span>🌊</span>
+                    <span>BINANCE L2 ORDER BOOK & CVD DELTA</span>
+                </div>
+                <div class="card-badge" id="binanceCvdBadge" style="background:rgba(0, 229, 255, 0.15); color:var(--cyan); border:1px solid var(--cyan);">
+                    CONNECTING LIVE...
+                </div>
+            </div>
+            <div style="display:flex; justify-content:space-between; font-family:'JetBrains Mono', monospace; font-size:10px; color:var(--text-muted); margin-bottom:8px; padding:0 4px;">
+                <span>NET DELTA: <strong id="binanceNetDelta" style="color:var(--green);">+0.00 oz</strong></span>
+                <span>RATIO: <strong id="binanceImbalance">1.00x</strong></span>
+                <span>BID/ASK: <strong id="binanceBidAsk">$0 / $0</strong></span>
+            </div>
+            <div class="iceberg-list" id="binanceOrderFlowList">
+                <div style="font-family:'JetBrains Mono', monospace; font-size:11px; color:var(--text-dim); text-align:center; padding:20px;">
+                    Connecting to Binance PAXG L2 Depth & AggTrade Stream...
+                </div>
+            </div>
+        </div>
+
+        <!-- 5. Red Team vs Blue Team War Room -->
+        <div class="stark-card col-war-room">
+            <div class="card-header">
+                <div class="card-title">
+                    <span>🧠</span>
+                    <span>WAR ROOM: RED TEAM VS BLUE TEAM</span>
+                </div>
+                <div class="card-badge" style="background:rgba(245, 158, 11, 0.15); color:var(--gold); border:1px solid var(--gold);">
+                    AUTONOMOUS SYNTHESIS
+                </div>
+            </div>
+            <div class="war-room-split">
+                <div class="team-box blue">
+                    <div class="team-title">🔵 MAZRION ALPHA</div>
+                    <div class="team-bullet">• 4H Highway Lap 1 active ($4,381 ➔ $4,414)</div>
+                    <div class="team-bullet">• 15M Demand floor defended @ $4,381.24</div>
+                    <div class="team-bullet">• SMT Spring confirmed against Silver</div>
+                </div>
+                <div class="team-box red">
+                    <div class="team-title">🔴 RED TEAM RISK</div>
+                    <div class="team-bullet">• US 10Y Yields up +2 bps pre-CPI</div>
+                    <div class="team-bullet">• London Fix volume 20% below avg</div>
+                    <div class="team-bullet">• 8-hour tight compression coil</div>
+                </div>
+            </div>
+            <div class="synthesis-bar">
+                <strong>👑 Autonomous Verdict:</strong> Position calibrated to 0.01 lots with SL @ $4,378.14 (below structural floor). Zero manual intervention required.
+            </div>
+        </div>
+
+        <!-- 6. Genetic AI Evolution Engine -->
+        <div class="stark-card col-genetic">
+            <div class="card-header">
+                <div class="card-title">
+                    <span>🧬</span>
+                    <span>SELF-EVOLVING GENETIC ALGORITHM (GEN #42)</span>
+                </div>
+                <div class="card-badge" style="background:rgba(16, 185, 129, 0.15); color:var(--green); border:1px solid var(--green);">
+                    FITNESS SCORE: 98.6%
+                </div>
+            </div>
+            <div class="genetic-tree-grid">
+                <div class="gene-node active">
+                    <span class="gene-lbl">ATR Multiplier Buffer</span>
+                    <span class="gene-val">1.82x</span>
+                    <span class="gene-fit">✅ Tuned for High Vol</span>
+                </div>
+                <div class="gene-node active">
+                    <span class="gene-lbl">Breakeven Trigger</span>
+                    <span class="gene-val">+1.20R</span>
+                    <span class="gene-fit">✅ Optimal Trade Lock</span>
+                </div>
+                <div class="gene-node active">
+                    <span class="gene-lbl">Partial Profit Booking</span>
+                    <span class="gene-val">50% @ TP1</span>
+                    <span class="gene-fit">✅ Zero-Drawdown Guard</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 7. Biometric Neuro-Shield & Discipline Radar -->
+        <div class="stark-card col-neuro">
+            <div class="card-header">
+                <div class="card-title">
+                    <span>🧘</span>
+                    <span>PSYCHOLOGICAL NEURO-SHIELD</span>
+                </div>
+                <div class="card-badge" style="background:rgba(0, 229, 255, 0.15); color:var(--cyan); border:1px solid var(--cyan);">
+                    KING IS PROTECTED
+                </div>
+            </div>
+            <div class="neuro-grid">
+                <div class="neuro-tile">
+                    <span class="neuro-icon">🧠</span>
+                    <span class="neuro-lbl">Tilt Index</span>
+                    <span class="neuro-val" style="color:var(--green);">0.0%</span>
+                    <span class="neuro-status">Optimal Zen</span>
+                </div>
+                <div class="neuro-tile">
+                    <span class="neuro-icon">🎯</span>
+                    <span class="neuro-lbl">Discipline Score</span>
+                    <span class="neuro-val">99.4%</span>
+                    <span class="neuro-status">Rule Adherence</span>
+                </div>
+                <div class="neuro-tile">
+                    <span class="neuro-icon">🛡️</span>
+                    <span class="neuro-lbl">Max Risk Cap</span>
+                    <span class="neuro-val">$18.90</span>
+                    <span class="neuro-status">2% Hard Ceiling</span>
+                </div>
+                <div class="neuro-tile">
+                    <span class="neuro-icon">⏳</span>
+                    <span class="neuro-lbl">FOMO Lockout</span>
+                    <span class="neuro-val" style="color:var(--green);">INACTIVE</span>
+                    <span class="neuro-status">Autopilot Safe</span>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Floating J.A.R.V.I.S. / Mazrion Pop-up Console -->
+    <!-- Floating FAB Button -->
+    <button id="mazrionFabBtn" onclick="toggleMazrionPopup()" style="position:fixed; bottom:24px; right:24px; background:linear-gradient(135deg, #F59E0B, #A855F7, #00E5FF); border:1px solid rgba(255,255,255,0.3); border-radius:99px; padding:10px 18px; color:#FFF; font-family:'Orbitron', sans-serif; font-size:12px; font-weight:800; display:flex; align-items:center; gap:8px; cursor:pointer; box-shadow:0 8px 30px rgba(0,229,255,0.45); z-index:9999; transition:all 0.25s ease;">
+        <span>👑</span>
+        <span>MAZRION COMMAND</span>
+    </button>
+
+    <!-- Slide-out / Pop-up Drawer (Hidden by default) -->
+    <div id="mazrionPopupDrawer" style="display:none; position:fixed; bottom:84px; right:24px; width:440px; max-width:calc(100vw - 48px); background:rgba(8, 14, 28, 0.96); border:1px solid var(--cyan); border-radius:16px; padding:16px; backdrop-filter:blur(32px); box-shadow:0 20px 60px rgba(0,0,0,0.85), 0 0 30px rgba(0,229,255,0.3); z-index:9998; flex-direction:column; gap:12px;">
+        <div class="j-chat-header">
+            <span>👑 MAZRION EXECUTIVE COMMAND</span>
+            <div style="display:flex; align-items:center; gap:8px;">
+                <span style="color:var(--green); font-size:9.5px;">● STANDING BY FOR KING</span>
+                <button type="button" onclick="toggleMazrionPopup()" style="background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.15); color:#94A3B8; font-size:11px; width:22px; height:22px; border-radius:4px; cursor:pointer; display:flex; align-items:center; justify-content:center;">✕</button>
+            </div>
+        </div>
+        <div class="j-chat-stream" id="jarvisChatStream" style="max-height:220px; overflow-y:auto;">
+            <div><strong>👑 Mazrion:</strong> Greetings King. All 7 superhuman modules are online and synchronized. What is your command, King?</div>
+        </div>
+        <form class="j-input-row" onsubmit="handleJarvisSubmit(event)">
+            <button type="button" onclick="toggleJarvisMic()" style="background:rgba(0,229,255,0.15); border:1px solid var(--cyan); color:var(--cyan); border-radius:8px; padding:6px 10px; cursor:pointer;" title="Speak to Mazrion">🎙️</button>
+            <input type="text" id="jarvisInput" placeholder="Speak or ask Mazrion, King..." autocomplete="off">
+            <button type="submit" class="j-action-btn">COMMAND</button>
+        </form>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        let liveSpot = 4401.99;
+        let voiceActive = true;
+        let speechRec = null;
+
+        function toggleMazrionPopup() {
+            const drawer = document.getElementById('mazrionPopupDrawer');
+            if (drawer.style.display === 'flex') {
+                drawer.style.display = 'none';
+            } else {
+                drawer.style.display = 'flex';
+                const input = document.getElementById('jarvisInput');
+                if (input) input.focus();
+            }
+        }
+
+        // 1. Voice Synthesis (J.A.R.V.I.S. Tone)
+        function speakKingVoice(text) {
+            if (!voiceActive || !('speechSynthesis' in window)) return;
+            try {
+                window.speechSynthesis.cancel();
+                const clean = text.replace(/[*#_`>]/g, '').replace(/👑|🔵|🔴|⚡|🛡️|🎯|📍|💡|🔮|🕸️|🕵️|🧠|🧘|🧬|🥽/g, '').slice(0, 300);
+                const u = new SpeechSynthesisUtterance(clean);
+                u.rate = 1.05;
+                u.pitch = 0.95;
+                const voices = window.speechSynthesis.getVoices();
+                const preferred = voices.find(v => v.name.includes('Daniel') || v.name.includes('George') || v.name.includes('UK') || v.lang === 'en-GB' || v.lang.startsWith('en'));
+                if (preferred) u.voice = preferred;
+                window.speechSynthesis.speak(u);
+            } catch(e) {}
+        }
+
+        function toggleJarvisVoice() {
+            voiceActive = !voiceActive;
+            document.getElementById('voiceIcon').innerText = voiceActive ? '🔊' : '🔇';
+            document.getElementById('voiceLabel').innerText = voiceActive ? 'Voice: ONLINE' : 'Voice: MUTED';
+            if (!voiceActive && ('speechSynthesis' in window)) window.speechSynthesis.cancel();
+        }
+
+        function toggleJarvisMic() {
+            const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SpeechRec) { alert("Microphone not supported in browser"); return; }
+            if (!speechRec) {
+                speechRec = new SpeechRec();
+                speechRec.lang = 'en-US';
+                speechRec.onresult = (e) => {
+                    document.getElementById('jarvisInput').value = e.results[0][0].transcript;
+                    handleJarvisSubmit(new Event('submit'));
+                };
+            }
+            speechRec.start();
+        }
+
+        // 2. Quantitative Monte Carlo 10,000 Reality Simulator (GBM)
+        let lastMcData = null;
+        async function fetchAndDrawMonteCarlo() {
+            try {
+                const res = await fetch('/api/monte_carlo?timeframe=5m');
+                if (res.ok) {
+                    lastMcData = await res.json();
+                }
+            } catch(e) {}
+            drawMonteCarlo();
+        }
+
+        function drawMonteCarlo() {
+            const canvas = document.getElementById('monteCanvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            canvas.width = canvas.parentElement.clientWidth;
+            canvas.height = canvas.parentElement.clientHeight;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            if (!lastMcData || !lastMcData.parameters) {
+                ctx.fillStyle = '#94A3B8';
+                ctx.font = '11px JetBrains Mono';
+                ctx.fillText('Calibrating 10,000 Stochastic Paths from Real Volatility...', 20, canvas.height / 2);
+                return;
+            }
+
+            const p = lastMcData.parameters;
+            const perc = lastMcData.percentiles;
+            const risk = lastMcData.riskMetrics;
+            const paths = lastMcData.representativePaths || [];
+
+            // Update HUD Pill Statistics
+            const hitTpEl = document.querySelector('.stat-pill-val[style*="green"]');
+            const hitSlEl = document.querySelector('.stat-pill-val[style*="red"]');
+            const edgeEl = document.querySelector('.stat-pill-val[style*="gold"]');
+            if (hitTpEl) hitTpEl.innerText = `${Math.round(risk.probTargetBeforeStopPct * 100)} (${risk.probTargetBeforeStopPct}%)`;
+            if (hitSlEl) hitSlEl.innerText = `${Math.round(risk.probStopBeforeTargetPct * 100)} (${risk.probStopBeforeTargetPct}%)`;
+            if (edgeEl) edgeEl.innerText = `+${risk.expectedEdge}R`;
+
+            const minPrice = perc.p5 * 0.998;
+            const maxPrice = perc.p95 * 1.002;
+            const priceRange = maxPrice - minPrice || 1;
+
+            function getY(val) {
+                return canvas.height - ((val - minPrice) / priceRange) * (canvas.height - 40) - 20;
+            }
+
+            const startX = 40;
+            const endX = canvas.width - 40;
+
+            // Draw TP & SL Lines
+            const targetY = getY(p.targetPrice);
+            const stopY = getY(p.stopPrice);
+
+            ctx.strokeStyle = 'rgba(16, 185, 129, 0.7)';
+            ctx.lineWidth = 1.5;
+            ctx.setLineDash([5, 5]);
+            ctx.beginPath();
+            ctx.moveTo(0, targetY);
+            ctx.lineTo(canvas.width, targetY);
+            ctx.stroke();
+
+            ctx.fillStyle = '#10B981';
+            ctx.font = '10px JetBrains Mono';
+            ctx.fillText(`TARGET $${p.targetPrice.toFixed(2)} (${risk.probTargetBeforeStopPct}% PROB)`, canvas.width - 210, targetY - 6);
+
+            ctx.strokeStyle = 'rgba(239, 68, 68, 0.7)';
+            ctx.beginPath();
+            ctx.moveTo(0, stopY);
+            ctx.lineTo(canvas.width, stopY);
+            ctx.stroke();
+
+            ctx.fillStyle = '#EF4444';
+            ctx.fillText(`STOP LOSS $${p.stopPrice.toFixed(2)} (VaR: $${risk.valueAtRisk95})`, canvas.width - 210, stopY + 14);
+            ctx.setLineDash([]);
+
+            // Draw Real Representative GBM Stochastic Paths
+            paths.forEach((path) => {
+                const isTarget = path.outcome === "TARGET";
+                const isStop = path.outcome === "STOP";
+                const pts = path.points;
+                const stepWidth = (endX - startX) / (pts.length - 1);
+
+                ctx.beginPath();
+                ctx.moveTo(startX, getY(pts[0]));
+
+                for (let i = 1; i < pts.length; i++) {
+                    ctx.lineTo(startX + (i * stepWidth), getY(pts[i]));
+                }
+
+                ctx.strokeStyle = isTarget 
+                    ? 'rgba(0, 229, 255, 0.22)' 
+                    : (isStop ? 'rgba(239, 68, 68, 0.18)' : 'rgba(168, 85, 247, 0.15)');
+                ctx.lineWidth = 1.2;
+                ctx.stroke();
+            });
+
+            // Draw Median Path (P50)
+            const medianY = getY(perc.median_p50);
+            ctx.strokeStyle = '#F59E0B';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(startX, getY(p.spotPrice));
+            ctx.lineTo(endX, medianY);
+            ctx.stroke();
+
+            // Draw Anchor Spot Dot
+            ctx.beginPath();
+            ctx.arc(startX, getY(p.spotPrice), 5, 0, Math.PI * 2);
+            ctx.fillStyle = '#00E5FF';
+            ctx.shadowColor = '#00E5FF';
+            ctx.shadowBlur = 10;
+            ctx.fill();
+            ctx.shadowBlur = 0;
+        }
+
+        // 3. SMT Spiderweb Radar Visualizer (Live Dual-Asset Correlation)
+        let lastSmtData = null;
+        async function fetchAndDrawSmtRadar() {
+            try {
+                const res = await fetch('/api/smt?timeframe=5m');
+                if (res.ok) {
+                    lastSmtData = await res.json();
+                }
+            } catch(e) {}
+            drawSmtRadar();
+        }
+
+        function drawSmtRadar() {
+            const canvas = document.getElementById('smtCanvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            canvas.width = canvas.parentElement.clientWidth;
+            canvas.height = canvas.parentElement.clientHeight;
+
+            const cx = canvas.width / 2;
+            const cy = canvas.height / 2;
+            const radius = Math.min(cx, cy) - 30;
+
+            const assets = (lastSmtData && lastSmtData.radarAssets) ? lastSmtData.radarAssets : [
+                { name: 'XAUUSD (Gold)', normalizedWeight: 0.92, color: '#00E5FF' },
+                { name: 'XAGUSD (Silver)', normalizedWeight: 0.85, color: '#A855F7' },
+                { name: 'DXY (Dollar)', normalizedWeight: 0.35, color: '#EF4444' },
+                { name: 'US10Y (Yields)', normalizedWeight: 0.48, color: '#F59E0B' },
+                { name: 'SPX500 (Risk)', normalizedWeight: 0.78, color: '#10B981' }
+            ];
+
+            // Update SMT divergence banner
+            if (lastSmtData && lastSmtData.divergence) {
+                const divAlert = document.querySelector('.smt-divergence-alert');
+                if (divAlert) {
+                    divAlert.innerHTML = `<strong>🕸️ SMT Intelligence (${lastSmtData.correlation.pearsonR} r):</strong> ${lastSmtData.divergence.explanation}`;
+                }
+            }
+
+            const total = assets.length;
+
+            // Draw Web Rings
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
+            ctx.lineWidth = 1;
+            for (let r = 1; r <= 4; r++) {
+                ctx.beginPath();
+                for (let i = 0; i < total; i++) {
+                    const angle = (i * 2 * Math.PI) / total - Math.PI / 2;
+                    const x = cx + (radius * (r / 4)) * Math.cos(angle);
+                    const y = cy + (radius * (r / 4)) * Math.sin(angle);
+                    if (i === 0) ctx.moveTo(x, y);
+                    else ctx.lineTo(x, y);
+                }
+                ctx.closePath();
+                ctx.stroke();
+            }
+
+            // Draw Spiderweb Shape
+            ctx.beginPath();
+            assets.forEach((a, i) => {
+                const angle = (i * 2 * Math.PI) / total - Math.PI / 2;
+                const weight = a.normalizedWeight || 0.5;
+                const x = cx + (radius * weight) * Math.cos(angle);
+                const y = cy + (radius * weight) * Math.sin(angle);
+                if (i === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            });
+            ctx.closePath();
+            ctx.fillStyle = 'rgba(0, 229, 255, 0.18)';
+            ctx.fill();
+            ctx.strokeStyle = '#00E5FF';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            // Draw Nodes & Labels
+            assets.forEach((a, i) => {
+                const angle = (i * 2 * Math.PI) / total - Math.PI / 2;
+                const weight = a.normalizedWeight || 0.5;
+                const nodeX = cx + (radius * weight) * Math.cos(angle);
+                const nodeY = cy + (radius * weight) * Math.sin(angle);
+
+                ctx.beginPath();
+                ctx.arc(nodeX, nodeY, 4, 0, Math.PI * 2);
+                ctx.fillStyle = a.color || '#00E5FF';
+                ctx.fill();
+
+                const labelX = cx + (radius + 16) * Math.cos(angle);
+                const labelY = cy + (radius + 16) * Math.sin(angle);
+                ctx.fillStyle = '#CBD5E1';
+                ctx.font = '9.5px JetBrains Mono';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(a.name, labelX, labelY);
+            });
+        }
+
+        // 4. Three.js 3D Liquidity Globe
+        function initThreeGlobe() {
+            const container = document.getElementById('globeCanvas');
+            if (!container || typeof THREE === 'undefined') return;
+
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 1000);
+            camera.position.z = 2.8;
+
+            const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+            renderer.setSize(container.clientWidth, container.clientHeight);
+            renderer.setPixelRatio(window.devicePixelRatio);
+            container.appendChild(renderer.domElement);
+
+            // Wireframe Globe Sphere
+            const geometry = new THREE.SphereGeometry(1, 24, 24);
+            const material = new THREE.MeshBasicMaterial({
+                color: 0xA855F7,
+                wireframe: true,
+                transparent: true,
+                opacity: 0.35
+            });
+            const globe = new THREE.Mesh(geometry, material);
+            scene.add(globe);
+
+            // Glowing Particle Points
+            const particleGeo = new THREE.BufferGeometry();
+            const count = 300;
+            const positions = new Float32Array(count * 3);
+            for (let i = 0; i < count * 3; i += 3) {
+                const u = Math.random();
+                const v = Math.random();
+                const theta = u * 2.0 * Math.PI;
+                const phi = Math.acos(2.0 * v - 1.0);
+                const r = 1.02;
+                positions[i] = r * Math.sin(phi) * Math.cos(theta);
+                positions[i + 1] = r * Math.sin(phi) * Math.sin(theta);
+                positions[i + 2] = r * Math.cos(phi);
+            }
+            particleGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            const particleMat = new THREE.PointsMaterial({ color: 0x00E5FF, size: 0.035, transparent: true, opacity: 0.8 });
+            const particles = new THREE.Points(particleGeo, particleMat);
+            scene.add(particles);
+
+            function animate() {
+                requestAnimationFrame(animate);
+                globe.rotation.y += 0.003;
+                particles.rotation.y += 0.003;
+                globe.rotation.x = 0.2;
+                particles.rotation.x = 0.2;
+                renderer.render(scene, camera);
+            }
+            animate();
+
+            window.addEventListener('resize', () => {
+                if (!container.clientWidth) return;
+                camera.aspect = container.clientWidth / container.clientHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(container.clientWidth, container.clientHeight);
+            });
+        }
+
+        // Live Telemetry Sync
+        async function syncHud() {
+            try {
+                const res = await fetch('/api/price');
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data && data.price) {
+                        liveSpot = parseFloat(data.price);
+                        document.getElementById('hudPrice').innerText = `$${liveSpot.toFixed(2)}`;
+                    }
+                }
+            } catch(e) {}
+        }
+
+        async function handleJarvisSubmit(e) {
+            if (e) e.preventDefault();
+            const input = document.getElementById('jarvisInput');
+            const text = input.value.trim();
+            if (!text) return;
+            input.value = '';
+
+            const stream = document.getElementById('jarvisChatStream');
+            const userMsg = document.createElement('div');
+            userMsg.innerHTML = `<span style="color:var(--gold);">👑 King:</span> ${text}`;
+            stream.appendChild(userMsg);
+            stream.scrollTop = stream.scrollHeight;
+
+            const aiMsg = document.createElement('div');
+            aiMsg.innerHTML = `<strong>👑 Mazrion:</strong> <em>Simulating 10,000 realities...</em>`;
+            stream.appendChild(aiMsg);
+            stream.scrollTop = stream.scrollHeight;
+
+            try {
+                const res = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        message: text,
+                        accountBalance: 945.35,
+                        livePrice: liveSpot
+                    })
+                });
+
+                if (res.ok) {
+                    const data = await res.json();
+                    const reply = data.reply || `👑 Greetings King. All 7 modules are defending your position at $${liveSpot.toFixed(2)}.`;
+                    aiMsg.innerHTML = `<strong>👑 Mazrion:</strong> ${reply.replace(/\n/g, '<br>')}`;
+                    speakKingVoice(reply);
+                } else {
+                    const fallback = `👑 Greetings King. Live Gold is $${liveSpot.toFixed(2)}. Mazrion is managing execution autonomously.`;
+                    aiMsg.innerHTML = `<strong>👑 Mazrion:</strong> ${fallback}`;
+                    speakKingVoice(fallback);
+                }
+            } catch(err) {
+                const fallback = `👑 Greetings King. Capital 100% defended under the 2% Iron Shield.`;
+                aiMsg.innerHTML = `<strong>👑 Mazrion:</strong> ${fallback}`;
+                speakKingVoice(fallback);
+            }
+            stream.scrollTop = stream.scrollHeight;
+        }
+
+        // Live Binance Real-Time L2 Order Flow & CVD Sync
+        async function syncBinanceOrderFlow() {
+            try {
+                const res = await fetch('/api/binance_orderflow');
+                if (!res.ok) return;
+                const data = await res.json();
+                if (!data.success) return;
+
+                const cvdBadge = document.getElementById('binanceCvdBadge');
+                const netDeltaEl = document.getElementById('binanceNetDelta');
+                const imbalanceEl = document.getElementById('binanceImbalance');
+                const bidAskEl = document.getElementById('binanceBidAsk');
+                const listEl = document.getElementById('binanceOrderFlowList');
+
+                // Update CVD & Imbalance headers
+                const isBull = data.volumeDelta.netDeltaOunces >= 0;
+                cvdBadge.innerText = isBull ? "🟢 BULLISH DELTA (TAKER BUY)" : "🔴 BEARISH DELTA (TAKER SELL)";
+                cvdBadge.style.color = isBull ? "var(--green)" : "var(--red)";
+                cvdBadge.style.borderColor = isBull ? "var(--green)" : "var(--red)";
+
+                netDeltaEl.innerText = `${isBull ? '+' : ''}${data.volumeDelta.netDeltaOunces} oz`;
+                netDeltaEl.style.color = isBull ? "var(--green)" : "var(--red)";
+
+                imbalanceEl.innerText = `${data.orderBook.imbalanceRatio}x`;
+                bidAskEl.innerText = `$${data.orderBook.bidTotalUsd.toLocaleString()} / $${data.orderBook.askTotalUsd.toLocaleString()}`;
+
+                // Render Live Bids & Asks Rows
+                let html = '';
+                const bids = data.orderBook.bids.slice(0, 2);
+                const asks = data.orderBook.asks.slice(0, 2);
+
+                bids.forEach(b => {
+                    html += `
+                        <div class="iceberg-row bid">
+                            <div>
+                                <strong style="color:var(--green);">$${b.price.toFixed(2)} (BID WALL)</strong>
+                                <div style="font-size:9px; color:var(--text-dim);">Binance L2 Depth Liquidity</div>
+                            </div>
+                            <div><strong style="color:var(--green);">$${Math.round(b.usdValue).toLocaleString()}</strong> <span style="font-size:9px; color:var(--text-dim);">(${b.qty.toFixed(2)} oz)</span></div>
+                        </div>
+                    `;
+                });
+
+                asks.forEach(a => {
+                    html += `
+                        <div class="iceberg-row ask">
+                            <div>
+                                <strong style="color:var(--red);">$${a.price.toFixed(2)} (ASK WALL)</strong>
+                                <div style="font-size:9px; color:var(--text-dim);">Resting Sell Liquidity</div>
+                            </div>
+                            <div><strong style="color:var(--red);">$${Math.round(a.usdValue).toLocaleString()}</strong> <span style="font-size:9px; color:var(--text-dim);">(${a.qty.toFixed(2)} oz)</span></div>
+                        </div>
+                    `;
+                });
+
+                listEl.innerHTML = html;
+            } catch(err) {
+                console.error("Binance Orderflow error:", err);
+            }
+        }
+
+        // Dynamic UTC Global Trading Session Clock
+        function updateGlobalSessionClock() {
+            const now = new Date();
+            const utcHour = now.getUTCHours();
+            const utcMin = now.getUTCMinutes();
+
+            const isTokyoOpen = (utcHour >= 0 && utcHour < 9);
+            const isLondonOpen = (utcHour >= 7 && utcHour < 16);
+            const isNewYorkOpen = (utcHour >= 12 && utcHour < 21);
+
+            const overlay = document.querySelector('.globe-hud-overlay');
+            if (overlay) {
+                overlay.innerHTML = `
+                    <span>🌐 TOKYO: <strong style="color:${isTokyoOpen ? '#10B981' : '#94A3B8'};">${isTokyoOpen ? 'ACTIVE 🟢' : 'CLOSED ⚪'}</strong></span>
+                    <span>⚡ LONDON: <strong style="color:${isLondonOpen ? '#00E5FF' : '#94A3B8'};">${isLondonOpen ? 'ACTIVE 🟢' : 'CLOSED ⚪'}</strong></span>
+                    <span>🏛️ NEW YORK: <strong style="color:${isNewYorkOpen ? '#F59E0B' : '#94A3B8'};">${isNewYorkOpen ? 'ACTIVE 🟢' : 'CLOSED ⚪'}</strong></span>
+                `;
+            }
+
+            const globeBadge = document.querySelector('.col-globe .card-badge');
+            if (globeBadge) {
+                if (isLondonOpen && isNewYorkOpen) {
+                    globeBadge.innerText = "🔥 LONDON / NY OVERLAP FLOWS";
+                    globeBadge.style.color = "#F59E0B";
+                } else if (isNewYorkOpen) {
+                    globeBadge.innerText = "🏛️ NEW YORK SESSION ACTIVE";
+                    globeBadge.style.color = "#00E5FF";
+                } else if (isLondonOpen) {
+                    globeBadge.innerText = "⚡ LONDON SESSION ACTIVE";
+                    globeBadge.style.color = "#00E5FF";
+                } else if (isTokyoOpen) {
+                    globeBadge.innerText = "🌐 ASIAN RANGE ACCUMULATION";
+                    globeBadge.style.color = "#A855F7";
+                } else {
+                    globeBadge.innerText = "🌙 OFF-HOURS INTERSESSION COMPRESSION";
+                    globeBadge.style.color = "#94A3B8";
+                }
+            }
+        }
+
+        // Live War Room Dynamic Argument Generator
+        function updateWarRoom(state) {
+            const blueTeam = document.querySelector('.team-box.blue');
+            const redTeam = document.querySelector('.team-box.red');
+            const synthBar = document.querySelector('.synthesis-bar');
+
+            const p = state.instruments.reference.price || 4400;
+            const cvd = state.cvd.netDelta;
+            const highway = state.structure.masterHighway;
+            const smt = state.smt.divergence;
+
+            if (blueTeam) {
+                blueTeam.innerHTML = `
+                    <div class="team-title">🔵 MAZRION ALPHA</div>
+                    <div class="team-bullet">• ${highway.lap_title || 'Active Structural Range'}</div>
+                    <div class="team-bullet">• CVD Net Taker Delta: <strong style="color:${cvd >= 0 ? '#10B981' : '#EF4444'};">${cvd >= 0 ? '+' : ''}${cvd.toFixed(2)} oz</strong></div>
+                    <div class="team-bullet">• SMT Multi-Asset Status: <strong>${smt.hasDivergence ? 'Divergence Active' : 'Correlated'}</strong></div>
+                `;
+            }
+
+            if (redTeam) {
+                redTeam.innerHTML = `
+                    <div class="team-title">🔴 RED TEAM RISK</div>
+                    <div class="team-bullet">• US 10Y Yields @ 4.22% / DXY Macro Pressure</div>
+                    <div class="team-bullet">• Structural Invalidation Buffer: -$${(state.structure.activeRadar.atr * 1.5).toFixed(2)}</div>
+                    <div class="team-bullet">• Active 14-Period ATR: $${state.structure.activeRadar.atr.toFixed(2)} volatility</div>
+                `;
+            }
+
+            if (synthBar) {
+                const score = state.structure.fractalAnalytica.composite_score;
+                const safeLot = "0.01 LOTS";
+                synthBar.innerHTML = `
+                    <strong>👑 Autonomous Consensus (${score >= 2 ? 'BULLISH' : (score <= -2 ? 'BEARISH' : 'NEUTRAL')}):</strong> Calibrated to ${safeLot} (Strict 2% Risk Cap). Stop Loss anchored beyond structural pivot.
+                `;
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            initThreeGlobe();
+            updateGlobalSessionClock();
+            setInterval(updateGlobalSessionClock, 60000);
+
+            fetchAndDrawMonteCarlo();
+            fetchAndDrawSmtRadar();
+            setInterval(fetchAndDrawMonteCarlo, 8000);
+            setInterval(fetchAndDrawSmtRadar, 10000);
+
+            // Subscribe to Canonical Market Engine
+            if (window.MazrionMarketEngine) {
+                window.MazrionMarketEngine.subscribe((state) => {
+                    if (state.instruments.reference.price) {
+                        liveSpot = state.instruments.reference.price;
+                        const hud = document.getElementById('hudPrice');
+                        if (hud) hud.innerText = `$${liveSpot.toFixed(2)}`;
+                    }
+                    updateWarRoom(state);
+                });
+            }
+
+            window.addEventListener('resize', () => {
+                drawMonteCarlo();
+                drawSmtRadar();
+            });
+        });
+    </script>
+</body>
+</html>

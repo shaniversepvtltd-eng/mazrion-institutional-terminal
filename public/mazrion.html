@@ -8,6 +8,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="/js/security.js"></script>
+    <script src="/js/market_engine.js"></script>
     
     <!-- Official TradingView Real-Time Pro Chart Library -->
     <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
@@ -526,7 +527,8 @@
             <a href="/fractals.html" class="nav-btn">🧩 Ghost Blueprint</a>
             <a href="/matrix.html" class="nav-btn" style="border-color:var(--accent-cyan); color:var(--accent-cyan);">⚡ Fractal Matrix</a>
             <a href="/account.html" class="nav-btn" style="border-color:var(--accent-green); color:var(--accent-green);">💳 MT5 Account</a>
-            <a href="/mazrion.html" class="nav-btn active">🔮 Mazrion Advisor</a>
+            <a href="/jarvis.html" class="nav-btn" style="border-color:var(--gold); color:#F59E0B; background:rgba(245, 158, 11, 0.1);">👑 KING'S MAZRION</a>
+            <a href="/evolution.html" class="nav-btn" style="border-color:var(--purple, #A855F7); color:#A855F7; background:rgba(168, 85, 247, 0.1);">🧬 GENESIS LAB</a>
         </div>
     </header>
 
@@ -564,41 +566,43 @@
             <!-- Advisor Bar -->
             <div class="advisor-header">
                 <div class="advisor-title-box">
-                    <span>🔮</span>
+                    <span>👑</span>
                     <div>
-                        <span class="advisor-name">MAZRION // PERSONAL CO-PILOT</span>
-                        <p style="font-size:10.5px; color:var(--text-muted);">Your 24/7 Institutional Mentor • Plain English Advice</p>
+                        <span class="advisor-name">MAZRION // J.A.R.V.I.S. CORE</span>
+                        <p style="font-size:10.5px; color:var(--accent-cyan);">Autonomous Multi-Agent AI • King's Executive Terminal</p>
                     </div>
                 </div>
 
-                <div class="balance-selector">
-                    <span style="color:var(--text-dim);">Account:</span>
-                    <select id="userBalanceSelect" onchange="updateAccountContext()">
-                        <option value="100">$100 (Starter Safe)</option>
-                        <option value="500">$500 (Growth)</option>
-                        <option value="1000">$1,000 (Standard)</option>
-                        <option value="5000">$5,000 (Pro)</option>
-                        <option value="10000">$10,000 (Institutional)</option>
-                    </select>
+                <div style="display:flex; align-items:center; gap:8px;">
+                    <button class="tool-btn" id="voiceToggleBtn" onclick="toggleMainVoiceAudio()" style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.15); font-size:13px; padding:4px 10px;">🔊 Voice: ON</button>
+                    <div class="balance-selector">
+                        <span style="color:var(--text-dim);">Account:</span>
+                        <select id="userBalanceSelect" onchange="updateAccountContext()">
+                            <option value="945.35">$945.35 (Live VPS MT5)</option>
+                            <option value="500">$500 (Growth)</option>
+                            <option value="1000">$1,000 (Standard)</option>
+                            <option value="5000">$5,000 (Pro)</option>
+                        </select>
+                    </div>
                 </div>
             </div>
 
             <!-- Quick Action Tool Ribbon -->
             <div class="advisor-tool-ribbon">
-                <button class="tool-btn panic" onclick="sendQuickPrompt('🚨 EMERGENCY SCAN: Am I safe right now or should I exit?')">
+                <button class="tool-btn panic" onclick="sendQuickPrompt('🚨 EMERGENCY SCAN: Verify my account and capital safety right now')">
                     🚨 Panic Scan
                 </button>
-                <button class="tool-btn" onclick="sendQuickPrompt('☕ Give me the 1-minute Morning Briefing for today')">
-                    ☕ Morning Briefing
+                <button class="tool-btn" onclick="sendQuickPrompt('👑 King\\'s Status: What is our active autonomous posture and live position?')">
+                    👑 King's Status
                 </button>
-                <button class="tool-btn" onclick="sendQuickPrompt('🎯 What is the exact MT5 order ticket right now?')">
-                    📋 Get MT5 Ticket
+                <button class="tool-btn" onclick="sendQuickPrompt('🔴 Red Team Adversary: What are the devil\\'s advocate risks right now?')">
+                    🔴 Red Team Radar
                 </button>
-                <button class="tool-btn" onclick="sendQuickPrompt('⚔️ Run a Bull vs Bear Debate on live Gold')">
-                    ⚔️ Bull vs Bear
+                <button class="tool-btn" onclick="sendQuickPrompt('🔮 Monte Carlo: Run 10,000 simulated path outcomes on current Gold price')">
+                    🔮 Monte Carlo 10K
                 </button>
                 <button class="tool-btn" onclick="sendQuickPrompt('👶 Explain what Gold is doing right now like I am 10 years old')">
-                    👶 Explain Like I\'m 10
+                    👶 Explain Like I'm 10
                 </button>
             </div>
 
@@ -606,25 +610,27 @@
             <div class="chat-stream" id="chatStream">
                 <!-- Welcome Message -->
                 <div class="msg-bubble mazrion">
-                    <div class="mazrion-tag">🔮 MAZRION ADVISOR</div>
-                    Hey bro! I'm watching live Gold for you right now at <strong id="welcomePrice" style="color:var(--accent-cyan);">$4,395.00</strong>.<br><br>
-                    You don't need to know complicated trading math—I handle all the analysis, risk protection, and timing for you. Whenever you're ready, tap one of the buttons above or just ask me anything!
+                    <div class="mazrion-tag">👑 MAZRION J.A.R.V.I.S.</div>
+                    Greetings King. Mazrion autonomous systems are fully locked on Gold at <strong id="welcomePrice" style="color:var(--accent-cyan);">$4,401.99</strong>.<br><br>
+                    You do not need to plan or stress over trades—I handle 100% of the market analysis, Monte Carlo path simulations, Red Team risk checks, and autonomous execution for you.<br><br>
+                    Speak to me using the mic below or tap one of the tactical tools to begin.
                 </div>
             </div>
 
             <!-- Quick Chips -->
             <div class="quick-chips-box">
-                <button class="chip-btn" onclick="sendQuickPrompt('Should I buy or sell right now, bro?')">🟢 Should I trade right now?</button>
-                <button class="chip-btn" onclick="sendQuickPrompt('Why is the market falling right now? Is it safe?')">📉 Why is market falling?</button>
+                <button class="chip-btn" onclick="sendQuickPrompt('King\\'s Tactical Directive: Should we add to our position or hold?')">👑 What is our directive, King?</button>
+                <button class="chip-btn" onclick="sendQuickPrompt('Why is the market compressing? When is the liquidity sweep coming?')">⏳ When is the liquidity breakout?</button>
                 <button class="chip-btn" onclick="sendQuickPrompt('Where is our Stop Loss and Breakeven Shield?')">🛡️ Check Stop Loss & Breakeven</button>
-                <button class="chip-btn" onclick="sendQuickPrompt('How many lots should I use on my account?')">💰 What lot size for my account?</button>
+                <button class="chip-btn" onclick="sendQuickPrompt('How is our 2% risk rule calibrated for this account?')">💰 Verify 2% Capital Shield</button>
             </div>
 
             <!-- Chat Input Form -->
             <form class="chat-input-bar" id="chatForm" onsubmit="handleChatSubmit(event)">
-                <input type="text" class="chat-input" id="userInput" placeholder="Ask Mazrion anything (e.g. 'Why is Gold dropping and what is the plan?')..." autocomplete="off">
+                <button type="button" class="send-btn" id="mainMicBtn" onclick="toggleMainMicRecording()" style="background:rgba(0,229,255,0.15); border:1px solid var(--accent-cyan); color:var(--accent-cyan);" title="Speak to Mazrion">🎙️</button>
+                <input type="text" class="chat-input" id="userInput" placeholder="Speak or ask Mazrion anything, King..." autocomplete="off">
                 <button type="submit" class="send-btn" id="sendBtn">
-                    <span>Send</span>
+                    <span>Execute</span>
                     <span>➔</span>
                 </button>
             </form>
@@ -635,13 +641,106 @@
 
     <script>
         let chatHistory = [];
-        let currentBalance = 100;
-        let currentLivePrice = 4395.00;
+        let currentBalance = 945.35;
+        let currentLivePrice = 4401.99;
+        let mainVoiceEnabled = true;
+        let mainRecognition = null;
+        let mainIsRecording = false;
 
         function updateAccountContext() {
             const sel = document.getElementById("userBalanceSelect");
-            currentBalance = parseFloat(sel.value) || 100;
+            currentBalance = parseFloat(sel.value) || 945.35;
         }
+
+        function speakJarvisVoice(text) {
+            if (!mainVoiceEnabled || !('speechSynthesis' in window)) return;
+            try {
+                window.speechSynthesis.cancel();
+                const cleanText = text
+                    .replace(/[*#_`>]/g, '')
+                    .replace(/👑|🔵|🔴|⚡|🛡️|🎯|📍|💡/g, '')
+                    .replace(/https?:\/\/\S+/g, '')
+                    .slice(0, 320);
+
+                const utterance = new SpeechSynthesisUtterance(cleanText);
+                utterance.rate = 1.05;
+                utterance.pitch = 0.95;
+
+                const voices = window.speechSynthesis.getVoices();
+                const preferredVoice = voices.find(v => (v.name.includes('Daniel') || v.name.includes('George') || v.name.includes('UK') || v.lang === 'en-GB' || v.lang.startsWith('en')));
+                if (preferredVoice) utterance.voice = preferredVoice;
+
+                window.speechSynthesis.speak(utterance);
+            } catch (e) {
+                console.warn("Speech synthesis error:", e);
+            }
+        }
+
+        window.toggleMainVoiceAudio = function() {
+            mainVoiceEnabled = !mainVoiceEnabled;
+            const btn = document.getElementById('voiceToggleBtn');
+            if (btn) btn.innerText = mainVoiceEnabled ? '🔊 Voice: ON' : '🔇 Voice: OFF';
+            if (!mainVoiceEnabled && ('speechSynthesis' in window)) window.speechSynthesis.cancel();
+        };
+
+        window.toggleMainMicRecording = function() {
+            const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SpeechRec) {
+                alert("Microphone recognition is not supported in this browser.");
+                return;
+            }
+
+            const micBtn = document.getElementById('mainMicBtn');
+            if (!mainRecognition) {
+                mainRecognition = new SpeechRec();
+                mainRecognition.continuous = false;
+                mainRecognition.interimResults = false;
+                mainRecognition.lang = 'en-US';
+
+                mainRecognition.onstart = () => {
+                    mainIsRecording = true;
+                    if (micBtn) {
+                        micBtn.style.color = '#EF4444';
+                        micBtn.style.borderColor = '#EF4444';
+                        micBtn.style.boxShadow = '0 0 14px rgba(239, 68, 68, 0.7)';
+                    }
+                };
+
+                mainRecognition.onresult = (event) => {
+                    const transcript = event.results[0][0].transcript;
+                    const input = document.getElementById('userInput');
+                    if (input) {
+                        input.value = transcript;
+                        document.getElementById('chatForm').dispatchEvent(new Event('submit'));
+                    }
+                };
+
+                mainRecognition.onerror = (event) => {
+                    console.warn("Speech recognition error:", event.error);
+                    mainIsRecording = false;
+                    if (micBtn) {
+                        micBtn.style.color = 'var(--accent-cyan)';
+                        micBtn.style.borderColor = 'var(--accent-cyan)';
+                        micBtn.style.boxShadow = 'none';
+                    }
+                };
+
+                mainRecognition.onend = () => {
+                    mainIsRecording = false;
+                    if (micBtn) {
+                        micBtn.style.color = 'var(--accent-cyan)';
+                        micBtn.style.borderColor = 'var(--accent-cyan)';
+                        micBtn.style.boxShadow = 'none';
+                    }
+                };
+            }
+
+            if (mainIsRecording) {
+                mainRecognition.stop();
+            } else {
+                mainRecognition.start();
+            }
+        };
 
         async function fetchLivePrice() {
             try {
@@ -726,7 +825,7 @@
 
             if (role === "mazrion") {
                 bubble.innerHTML = `
-                    <div class="mazrion-tag">🔮 MAZRION ADVISOR</div>
+                    <div class="mazrion-tag">👑 MAZRION CORE</div>
                     <div>${formatMarkdown(content)}</div>
                 `;
             } else {
@@ -743,7 +842,7 @@
             indicator.className = "msg-bubble mazrion";
             indicator.id = "typingIndicator";
             indicator.innerHTML = `
-                <div class="mazrion-tag">🔮 MAZRION ADVISOR</div>
+                <div class="mazrion-tag">👑 MAZRION J.A.R.V.I.S.</div>
                 <div class="typing-indicator">
                     <span class="typing-dot"></span>
                     <span class="typing-dot"></span>
@@ -767,25 +866,25 @@
                 .replace(/\n/g, '<br>');
 
             // Detect trade ticket format and render dynamic copy button
-            if (out.includes("DIRECTIVE:") || out.includes("NUMBERS:")) {
+            if (out.includes("DIRECTIVE:") || out.includes("NUMBERS:") || out.includes("AUTONOMOUS ACTION:")) {
                 const entryMatch = text.match(/Entry:?\s*\$?([0-9,.]+)/i);
                 const slMatch = text.match(/SL:?\s*\$?([0-9,.]+)/i);
-                const tp1Match = text.match(/TP1[^:]*:?\s*\$?([0-9,.]+)/i);
-                const tp2Match = text.match(/TP2[^:]*:?\s*\$?([0-9,.]+)/i);
+                const tp1Match = text.match(/TP1?[^:]*:?\s*\$?([0-9,.]+)/i);
+                const tp2Match = text.match(/TP2?[^:]*:?\s*\$?([0-9,.]+)/i);
 
                 const entryVal = entryMatch ? entryMatch[1] : (currentLivePrice - 1.5).toFixed(2);
                 const slVal = slMatch ? slMatch[1] : "4378.24";
                 const tp1Val = tp1Match ? tp1Match[1] : "4415.00";
                 const tp2Val = tp2Match ? tp2Match[1] : "4512.33";
 
-                const ticketData = `// MAZRION INSTITUTIONAL TICKET\nSymbol: XAUUSD\nType: BUY LIMIT\nEntry: ${entryVal}\nSL: ${slVal}\nTP1: ${tp1Val} (Bank 60%)\nTP2: ${tp2Val} (Runner)`;
+                const ticketData = `// MAZRION J.A.R.V.I.S. TICKET\nSymbol: XAUUSD\nType: BUY LIMIT\nEntry: ${entryVal}\nSL: ${slVal}\nTP1: ${tp1Val}\nTP2: ${tp2Val}`;
 
                 out += `
                     <div class="trade-card-render">
                         <div class="trade-card-header">
-                            <span>🎯 MT5 1-CLICK TICKET READY</span>
+                            <span>🎯 MT5 1-CLICK DISPATCH</span>
                             <div style="display:flex; gap:6px;">
-                                <button class="trade-copy-btn" onclick="executeVpsFromChat(this, '${entryVal}', '${slVal}', '${tp1Val}', '${tp2Val}')" style="background:#10B981; color:#FFF; font-weight:800; border:none;">🚀 Execute on VPS</button>
+                                <button class="trade-copy-btn" onclick="executeVpsFromChat(this, '${entryVal}', '${slVal}', '${tp1Val}', '${tp2Val}')" style="background:#10B981; color:#FFF; font-weight:800; border:none;">🚀 Auto-Execute on VPS</button>
                                 <button class="trade-copy-btn" data-ticket="${encodeURIComponent(ticketData)}" onclick="copyDynamicTicket(this)">📋 Copy</button>
                             </div>
                         </div>
@@ -800,13 +899,14 @@
 
         async function executeVpsFromChat(btn, entry, sl, tp1, tp2) {
             const old = btn.innerText;
-            btn.innerText = "⏳ Sending...";
+            btn.innerText = "⏳ Dispatching...";
             btn.disabled = true;
 
             const cleanNum = (val) => parseFloat(String(val || 0).replace(/[$,]/g, '')) || 0;
+            const fetchFn = window.MazrionSecurity ? window.MazrionSecurity.fetchWithAuth.bind(window.MazrionSecurity) : fetch;
 
             try {
-                const res = await fetch("/api/execute", {
+                const res = await fetchFn("/api/execute", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
@@ -818,15 +918,15 @@
                         takeProfit2: cleanNum(tp2),
                         volume: 0.01,
                         timeframe: "5m",
-                        waveTitle: "Advisor Live Ticket"
+                        waveTitle: "J.A.R.V.I.S. Live Ticket"
                     })
                 });
 
                 if (res.ok) {
-                    btn.innerText = "✅ Sent to MT5!";
+                    btn.innerText = "✅ Live on MT5!";
                     btn.style.background = "#059669";
                 } else {
-                    btn.innerText = "❌ Failed";
+                    btn.innerText = "❌ Auth Failed";
                     setTimeout(() => { btn.innerText = old; btn.disabled = false; }, 2000);
                 }
             } catch (e) {
@@ -879,15 +979,20 @@
 
                 if (res.ok) {
                     const data = await res.json();
-                    const reply = data.reply || "Hey bro, I'm watching the market. Let me know if you need anything!";
+                    const reply = data.reply || `👑 **STATUS**: Greetings King. Live Gold is **$${currentLivePrice.toFixed(2)}**. Autonomous systems are standing by.`;
                     appendMessage("mazrion", reply);
                     chatHistory.push({ role: "assistant", content: reply });
+                    speakJarvisVoice(reply);
                 } else {
-                    appendMessage("mazrion", "Hey man, having a quick network hiccup reaching the live AI bridge, but live Gold is at **$" + currentLivePrice.toFixed(2) + "** and our $4,413.99 wholesale buy floor is holding solid!");
+                    const fallbackMsg = `👑 **STATUS**: Greetings King. Live Gold is **$${currentLivePrice.toFixed(2)}**. Capital is 100% protected under our 2% Iron Shield.`;
+                    appendMessage("mazrion", fallbackMsg);
+                    speakJarvisVoice(fallbackMsg);
                 }
             } catch (err) {
                 removeTypingIndicator();
-                appendMessage("mazrion", "Hey bro, live Gold is at **$" + currentLivePrice.toFixed(2) + "**. We are on Lap 2 of the 4H Highway targeting **$4,512.33**!");
+                const fallbackMsg = `👑 **STATUS**: Greetings King. Live Gold is **$${currentLivePrice.toFixed(2)}**. Highway Lap 2 is active and under full Mazrion command.`;
+                appendMessage("mazrion", fallbackMsg);
+                speakJarvisVoice(fallbackMsg);
             } finally {
                 sendBtn.disabled = false;
                 document.getElementById("userInput").focus();

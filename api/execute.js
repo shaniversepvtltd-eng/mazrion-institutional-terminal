@@ -89,12 +89,17 @@ export default async function handler(req, res) {
         }
 
         if (req.method === 'GET') {
-            // Fetch recent 10 orders from queue
-            const dbRes = await fetch(`${SUPABASE_URL}/rest/v1/mazrion_order_queue?order=created_at.desc&limit=10`, {
+            // Fetch recent orders via Secure RPC Function
+            const dbRes = await fetch(`${SUPABASE_URL}/rest/v1/rpc/mazrion_secure_get_order_history`, {
+                method: "POST",
                 headers: {
                     "apikey": SUPABASE_ANON_KEY,
-                    "Authorization": `Bearer ${SUPABASE_ANON_KEY}`
-                }
+                    "Authorization": `Bearer ${SUPABASE_ANON_KEY}`,
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    auth_secret: MASTER_PIN
+                })
             });
 
             if (!dbRes.ok) {
