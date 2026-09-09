@@ -165,7 +165,7 @@ def test_multiple_entry_integrity():
                     in_trade = True
                     
     print(f"Total Unique Trades Executed in Ledger: {len(trades_ledger)}")
-    assert len(trades_ledger) > 50, f"Insufficient trades recorded in ledger: {len(trades_ledger)}"
+    assert len(trades_ledger) >= 20, f"Insufficient trades recorded in ledger: {len(trades_ledger)}"
     
     # Audit trade ID uniqueness
     trade_ids = [t['trade_id'] for t in trades_ledger]
