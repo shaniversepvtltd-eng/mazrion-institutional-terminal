@@ -19,7 +19,10 @@ export default async function handler(req, res) {
 
     try {
         const ffRes = await fetch("https://nfs.faireconomy.media/ff_calendar_thisweek.json", {
-            headers: { "User-Agent": "Mozilla/5.0 (Mazrion Terminal Quantitative Engine/4.0)" }
+            headers: {
+                "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
+                "Accept": "application/json, text/plain, */*"
+            }
         });
 
         if (!ffRes.ok) {

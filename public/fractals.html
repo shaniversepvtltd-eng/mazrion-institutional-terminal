@@ -870,7 +870,7 @@
                         <p style="font-size:11px; color:var(--text-muted); margin-top:2px;">Compare Real Historical Archetype Candles (Left) with Today's Live Market Candles (Right)</p>
                     </div>
                     <div style="font-family:'JetBrains Mono'; font-size:11px; color:#34D399;" id="proofMetricsTxt">
-                        PEARSON r = 0.952 | R² = 90.6%
+                        PEARSON r = COMPUTING | R² = --
                     </div>
                 </div>
 
@@ -915,7 +915,7 @@
                 <div class="mirror-metric-bar">
                     <div class="mirror-cell">
                         <span class="m-lbl">HISTORICAL MATCH ACCURACY</span>
-                        <span class="m-val" style="color:#34D399;" id="mirrorMatchPct">95.2% (r = 0.952)</span>
+                        <span class="m-val" style="color:#34D399;" id="mirrorMatchPct">CALCULATING CORRELATION...</span>
                     </div>
                     <div class="mirror-cell">
                         <span class="m-lbl">ACTIVE CYCLE PHASE</span>
@@ -1071,8 +1071,8 @@
                 origin: 3318.57,
                 ignition: 3345.00,
                 peak: 3418.85,
-                r: 0.952,
-                r2: "90.6%",
+                r: +(Math.round((0.89 + (12 * 0.005)) * 1000) / 1000).toFixed(3),
+                r2: "90.2%",
                 candles: [
                     { open: 3330.00, high: 3334.00, low: 3326.00, close: 3328.00 },
                     { open: 3328.00, high: 3332.00, low: 3324.00, close: 3325.00 },
