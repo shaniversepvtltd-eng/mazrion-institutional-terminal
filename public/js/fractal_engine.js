@@ -153,6 +153,9 @@
                 this.highway = this.calculateDynamicHighway(p4h.swing_high || (spot + 20), p4h.swing_low || (spot - 20), p4h.atr_current || 14.5, '4h');
             }
 
+            if (apiSnapshot.executionTicket) {
+                this.executionTicket = apiSnapshot.executionTicket;
+            }
             if (apiSnapshot.orderFlowTelemetry) {
                 this.orderFlowTelemetry = apiSnapshot.orderFlowTelemetry;
             }
@@ -634,14 +637,14 @@
             const p1m = this.activeCycles['1m'] || {};
             const spot = p1m.current_price || (p4h.current_price || 4398.00);
 
-            // 1M Execution Ticket details
+            // 1M Execution Ticket details (Prefer canonical API ticket, or compute exact 1:2 RR + 4H target)
             const scoreData1m = this.calculate1mDeterministicScore(spot);
             const atr1m = p1m.atr_current || 2.2;
             const entryPrice = +(spot - 0.50).toFixed(2);
-            const stopLoss = +(entryPrice - (atr1m * 1.8)).toFixed(2);
-            const tp1 = +(entryPrice + (atr1m * 2.8)).toFixed(2);
-            const tp2 = +(entryPrice + (atr1m * 5.2)).toFixed(2);
-            const riskDistance = +(entryPrice - stopLoss).toFixed(2);
+            const riskDistance = +(atr1m * 1.5).toFixed(2);
+            const stopLoss = +(entryPrice - riskDistance).toFixed(2);
+            const tp1 = +(entryPrice + (riskDistance * 2.0)).toFixed(2);
+            const tp2 = +(p4h.destination_price || (spot + 50)).toFixed(2);
             const rewardDistance = +(tp1 - entryPrice).toFixed(2);
 
             // Calculate 4 distinct metrics
@@ -650,14 +653,14 @@
             const currentMove4h = p4h.direction === 'BULLISH' ? Math.max(0, spot - (p4h.origin_price || spot - 50)) : Math.max(0, (p4h.origin_price || spot + 50) - spot);
             const journeyProgress4h = +Math.min(100, Math.max(0, (currentMove4h / totalJourney4h) * 100)).toFixed(1);
 
-            const executionTicket = {
+            const executionTicket = this.executionTicket || {
                 executionId: `EXEC_XAU_1M_#${this.cycleCounters['1m'] || 1420}`,
                 timeframe: '1m',
                 symbol: this.symbol,
                 parentLineage: TIMEFRAMES,
                 parentChainIds: TIMEFRAMES.map(tf => ({ timeframe: tf, cycleId: this.activeCycles[tf]?.cycle_id })),
                 parentMissionId: p4h.cycle_id,
-                parentMissionDestination: p4h.destination_price,
+                parentMissionDestination: p4h.destination_price || tp2,
                 direction: 'BUY',
                 status: 'ARMED_FOR_RETEST',
                 entryPrice: entryPrice,
@@ -666,7 +669,7 @@
                 tp2: tp2,
                 riskDistance: riskDistance,
                 rewardDistance: rewardDistance,
-                riskRewardRatio: +(rewardDistance / riskDistance).toFixed(2),
+                riskRewardRatio: "1 : 2.00",
                 accountRiskPercent: 2.0,
                 dollarRisk: 20.00,
                 positionSizeLots: 0.01,
@@ -678,7 +681,8 @@
                     '⚡ Bullish displacement candle confirmed',
                     '📈 1M Micro Break of Structure (BOS)',
                     '🛡️ 1M Bullish FVG Demand Imbalance Formed',
-                    '⏳ Retest of FVG zone active'
+                    '⏳ Retest of FVG zone active',
+                    '🔒 Automatic SL ➔ CTC trailing armed upon 1:2 TP1 hit'
                 ],
                 algorithmVersion: ALGORITHM_VERSION,
                 timestamp: this.lastUpdateTimestamp || new Date().toISOString()
