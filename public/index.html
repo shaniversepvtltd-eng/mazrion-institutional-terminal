@@ -1206,19 +1206,26 @@
             white-space: nowrap;
         }
 
-        /* Liquidity Pools Matrix Styling */
+        /* Liquidity Pools Matrix Styling (Layout-Locked & Tabular-Nums) */
         .liq-pool-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 14px;
             margin-top: 12px;
+            min-height: 290px;
+            contain: layout style;
         }
 
         .liq-pool-card {
             background: #090D15;
             border: 1px solid var(--border-color);
             border-radius: 8px;
-            padding: 12px;
+            padding: 14px;
+            min-height: 280px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            contain: layout style;
         }
 
         .liq-item {
@@ -1231,6 +1238,14 @@
             background: rgba(255, 255, 255, 0.02);
             font-family: 'JetBrains Mono', monospace;
             font-size: 11.5px;
+            min-height: 52px;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .liq-item-price-box {
+            text-align: right;
+            min-width: 105px;
+            font-variant-numeric: tabular-nums;
         }
 
         .liq-bsl {
@@ -1904,8 +1919,90 @@
                 </div>
 
                 <div class="liq-pool-grid" id="liq-pools-matrix-container">
-                    <div style="grid-column: 1 / -1; text-align:center; padding:30px; font-family:'JetBrains Mono', monospace; font-size:12px; color:var(--text-muted);">
-                        ⚡ Synchronizing Live Institutional Liquidity Pools...
+                    <!-- BSL CARD -->
+                    <div class="liq-pool-card" style="border-top: 3px solid var(--accent-cyan);">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                            <div style="font-weight:800; font-size:12.5px; color:var(--accent-cyan);">
+                                💧 BUY-SIDE LIQUIDITY (BSL)
+                            </div>
+                            <span class="badge" style="background:rgba(0,229,255,0.15); color:var(--accent-cyan); font-size:9.5px;">🎯 RESTING BUY STOPS</span>
+                        </div>
+                        <div class="liq-item liq-bsl">
+                            <div>
+                                <div style="font-weight:700; color:#fff;">Major BSL Flip / Equal Highs</div>
+                                <div style="font-size:10.5px; color:var(--text-muted);"><span id="bsl-depth-1">Est. Depth: -- Lots</span></div>
+                            </div>
+                            <div class="liq-item-price-box">
+                                <div style="font-size:14px; font-weight:800; color:var(--accent-cyan); font-family:'JetBrains Mono';" id="bsl-val-1">--</div>
+                                <div style="font-size:10px; color:var(--accent-green); font-family:'JetBrains Mono';" id="bsl-diff-1">--</div>
+                            </div>
+                        </div>
+                        <div class="liq-item liq-bsl">
+                            <div>
+                                <div style="font-weight:700; color:#fff;">Institutional Sell Wall Cluster</div>
+                                <div style="font-size:10.5px; color:var(--text-muted);"><span id="bsl-depth-2">Est. Depth: -- Lots</span></div>
+                            </div>
+                            <div class="liq-item-price-box">
+                                <div style="font-size:14px; font-weight:800; color:var(--accent-cyan); font-family:'JetBrains Mono';" id="bsl-val-2">--</div>
+                                <div style="font-size:10px; color:var(--accent-green); font-family:'JetBrains Mono';" id="bsl-diff-2">--</div>
+                            </div>
+                        </div>
+                        <div class="liq-item liq-bsl">
+                            <div>
+                                <div style="font-weight:700; color:#fff;">Session High (PDH Expansion Target)</div>
+                                <div style="font-size:10.5px; color:var(--text-muted);"><span id="bsl-depth-3">Est. Depth: -- Lots</span></div>
+                            </div>
+                            <div class="liq-item-price-box">
+                                <div style="font-size:14px; font-weight:800; color:var(--accent-cyan); font-family:'JetBrains Mono';" id="bsl-val-3">--</div>
+                                <div style="font-size:10px; color:var(--accent-green); font-family:'JetBrains Mono';" id="bsl-diff-3">--</div>
+                            </div>
+                        </div>
+                        <div style="font-size:10.5px; color:var(--text-muted); background:rgba(0,0,0,0.3); padding:8px 10px; border-radius:6px; margin-top:8px; line-height:1.4;" id="bsl-story-footer">
+                            💡 <b>Kid-Friendly BSL Story:</b> Big magnet numbers UP above! When price hits these levels, short-sellers get stopped out, acting like rocket fuel 🚀 pushing price higher.
+                        </div>
+                    </div>
+
+                    <!-- SSL CARD -->
+                    <div class="liq-pool-card" style="border-top: 3px solid var(--accent-red);">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                            <div style="font-weight:800; font-size:12.5px; color:var(--accent-red);">
+                                💧 SELL-SIDE LIQUIDITY (SSL)
+                            </div>
+                            <span class="badge" style="background:rgba(16,185,129,0.15); color:var(--accent-green); font-size:9.5px;">🛡️ SWEPT & DEFENDED</span>
+                        </div>
+                        <div class="liq-item liq-ssl">
+                            <div>
+                                <div style="font-weight:700; color:#fff;">Session SSL Discount Sweep</div>
+                                <div style="font-size:10.5px; color:var(--text-muted);"><span id="ssl-depth-1">Est. Depth: -- Lots</span></div>
+                            </div>
+                            <div class="liq-item-price-box">
+                                <div style="font-size:14px; font-weight:800; color:var(--accent-red); font-family:'JetBrains Mono';" id="ssl-val-1">--</div>
+                                <div style="font-size:10px; color:var(--accent-gold); font-family:'JetBrains Mono';" id="ssl-diff-1">--</div>
+                            </div>
+                        </div>
+                        <div class="liq-item liq-ssl">
+                            <div>
+                                <div style="font-weight:700; color:#fff;">Institutional Buy Wall Floor</div>
+                                <div style="font-size:10.5px; color:var(--text-muted);"><span id="ssl-depth-2">Est. Depth: -- Lots</span></div>
+                            </div>
+                            <div class="liq-item-price-box">
+                                <div style="font-size:14px; font-weight:800; color:var(--accent-red); font-family:'JetBrains Mono';" id="ssl-val-2">--</div>
+                                <div style="font-size:10px; color:var(--accent-gold); font-family:'JetBrains Mono';" id="ssl-diff-2">--</div>
+                            </div>
+                        </div>
+                        <div class="liq-item liq-ssl">
+                            <div>
+                                <div style="font-weight:700; color:#fff;">Structural Hard Invalidation (SL Buffer)</div>
+                                <div style="font-size:10.5px; color:var(--text-muted);"><span id="ssl-depth-3">Est. Depth: -- Lots</span></div>
+                            </div>
+                            <div class="liq-item-price-box">
+                                <div style="font-size:14px; font-weight:800; color:var(--accent-red); font-family:'JetBrains Mono';" id="ssl-val-3">--</div>
+                                <div style="font-size:10px; color:var(--accent-cyan); font-family:'JetBrains Mono';" id="ssl-diff-3">--</div>
+                            </div>
+                        </div>
+                        <div style="font-size:10.5px; color:var(--text-muted); background:rgba(0,0,0,0.3); padding:8px 10px; border-radius:6px; margin-top:8px; line-height:1.4;" id="ssl-story-footer">
+                            💡 <b>Kid-Friendly SSL Story:</b> The basement trap! Big institutions already flushed retail stops down here and swallowed all their coins at discount prices 💎. Solid floor!
+                        </div>
                     </div>
                 </div>
             </div>
@@ -3840,165 +3937,72 @@
             }
         }
 
-        function updateLiquidityMatrix(price) {
-            const container = document.getElementById('liq-pools-matrix-container');
-            if (!container) return;
-
-            const p = price || liveBid || 4436.50;
+        function updateLiquidityMatrix(price, customAtr) {
             const sym = activeSymbol || 'XAUUSD';
             const decimals = assetDefinitions[sym]?.decimals || 2;
             const currSymbol = sym === 'EURUSD' ? '€' : '$';
+            const p = price || liveBid || 4398.00;
+            const atr = customAtr || 14.0;
 
-            // Define pool levels per asset
-            let bslPools = [];
-            let sslPools = [];
+            const step = p * 0.0035;
+            const bsl1 = +(p + step * 1.5).toFixed(decimals);
+            const bsl2 = +(p + step * 2.8).toFixed(decimals);
+            const bsl3 = +(p + step * 3.8).toFixed(decimals);
 
-            if (sym === 'XAGUSD') {
-                bslPools = [
-                    { name: 'Major Equal Highs (BSL Sweep)', price: 39.25, lots: '850K Oz', usd: '$33.4M', tag: 'RESTING BUY STOPS', type: 'cyan' },
-                    { name: 'Institutional Sell Wall Cluster', price: 40.50, lots: '2.4M Oz', usd: '$97.2M', tag: 'MAJOR EXPANSION TARGET', type: 'cyan' },
-                    { name: 'Previous Day High (PDH Flush)', price: 38.90, lots: '620K Oz', usd: '$24.1M', tag: 'RUNNER TARGET', type: 'gold' }
-                ];
-                sslPools = [
-                    { name: 'Session Low Sweep (SSL Harvest)', price: 37.95, lots: '1.2M Oz', usd: '$45.5M', tag: 'SWEPT & ABSORBED 🟢', type: 'green' },
-                    { name: 'Institutional Buy Wall Support', price: 37.80, lots: '1.8M Oz', usd: '$68.0M', tag: 'ICEBERG BUY FLOOR', type: 'green' },
-                    { name: 'Structural Hard Invalidation', price: 37.60, lots: '450K Oz', usd: '$16.9M', tag: 'HARD DEFENSE SL', type: 'red' }
-                ];
-            } else if (sym === 'BTCUSD') {
-                bslPools = [
-                    { name: 'Target TP1 Liquidity Pool', price: 96500, lots: '1,850 BTC', usd: '$178.5M', tag: 'RESTING BUY STOPS', type: 'cyan' },
-                    { name: 'Major Equal Highs (BSL EQH)', price: 96800, lots: '2,420 BTC', usd: '$234.3M', tag: 'UPWARD RUN TARGET', type: 'cyan' },
-                    { name: 'Institutional Sell Wall Ceiling', price: 98800, lots: '3,800 BTC', usd: '$375.4M', tag: 'EXTREME EXPANSION', type: 'gold' }
-                ];
-                sslPools = [
-                    { name: 'Asian Demand Low (SSL Flush)', price: 93600, lots: '2,150 BTC', usd: '$201.2M', tag: 'SWEPT & DEFENDED 🟢', type: 'green' },
-                    { name: 'Institutional Buy Wall Floor', price: 93000, lots: '3,450 BTC', usd: '$320.8M', tag: 'HEAVY ETF LIMIT BIDS', type: 'green' },
-                    { name: 'Structural Hard Invalidation', price: 91800, lots: '1,200 BTC', usd: '$110.2M', tag: 'HARD DEFENSE SL', type: 'red' }
-                ];
-            } else if (sym === 'EURUSD') {
-                bslPools = [
-                    { name: 'Session Equal Highs (BSL Sweep)', price: 1.0910, lots: '650 Lots', usd: '€65.0M', tag: 'RESTING BUY STOPS', type: 'cyan' },
-                    { name: 'Major BSL EQH Flip', price: 1.0920, lots: '980 Lots', usd: '€98.0M', tag: 'UPWARD RUN TARGET', type: 'cyan' },
-                    { name: 'Institutional Sell Wall Cluster', price: 1.0965, lots: '1,450 Lots', usd: '€145.0M', tag: 'EXTREME EXPANSION', type: 'gold' }
-                ];
-                sslPools = [
-                    { name: 'Asian Session Low (SSL Flush)', price: 1.0812, lots: '820 Lots', usd: '€82.0M', tag: 'SWEPT & REBOUND 🟢', type: 'green' },
-                    { name: 'Institutional Buy Wall Bed', price: 1.0805, lots: '1,250 Lots', usd: '€125.0M', tag: 'HEAVY LIMIT DEMAND', type: 'green' },
-                    { name: 'Structural Hard Invalidation', price: 1.0775, lots: '400 Lots', usd: '€40.0M', tag: 'HARD DEFENSE SL', type: 'red' }
-                ];
-            } else {
-                // XAUUSD Dynamic Derivation
-                const step = p * 0.0035;
-                bslPools = [
-                    { name: 'Major BSL Flip / Equal Highs', price: +(p + step * 1.5).toFixed(2), lots: Math.round(p * 2.8) + ' Lots', usd: '$' + (p * 0.012).toFixed(1) + 'M', tag: 'RESTING BUY STOPS', type: 'cyan' },
-                    { name: 'Institutional Sell Wall Cluster', price: +(p + step * 2.8).toFixed(2), lots: Math.round(p * 3.2) + ' Lots', usd: '$' + (p * 0.014).toFixed(1) + 'M', tag: 'MAJOR EXPANSION TARGET', type: 'cyan' },
-                    { name: 'Session High Sweep Zone', price: +(p + step * 3.8).toFixed(2), lots: Math.round(p * 2.0) + ' Lots', usd: '$' + (p * 0.009).toFixed(1) + 'M', tag: 'EXTREME RUNNER ZONE', type: 'gold' }
-                ];
-                sslPools = [
-                    { name: 'Session SSL Sweep Buffer', price: +(p - step * 1.2).toFixed(2), lots: Math.round(p * 4.1) + ' Lots', usd: '$' + (p * 0.018).toFixed(1) + 'M', tag: 'SWEPT & ABSORBED 🟢', type: 'green' },
-                    { name: 'Institutional Buy Wall Floor', price: +(p - step * 2.2).toFixed(2), lots: Math.round(p * 5.5) + ' Lots', usd: '$' + (p * 0.024).toFixed(1) + 'M', tag: 'HEAVY ICEBERG BIDS', type: 'green' },
-                    { name: 'Structural Invalidation Base', price: +(p - step * 3.5).toFixed(2), lots: Math.round(p * 2.1) + ' Lots', usd: '$' + (p * 0.009).toFixed(1) + 'M', tag: 'PROTECTED BASE', type: 'red' }
-                ];
-            }
+            const ssl1 = +(p - step * 1.2).toFixed(decimals);
+            const ssl2 = +(p - step * 2.2).toFixed(decimals);
+            const ssl3 = +(p - step * 3.5).toFixed(decimals);
 
-            const formatDist = (targetP) => {
+            const formatDiff = (targetP, isBsl) => {
                 const diff = targetP - p;
                 const diffPct = ((diff / p) * 100).toFixed(2);
-                const prefix = diff >= 0 ? '+' : '-';
-                return `${prefix}${currSymbol}${Math.abs(diff).toFixed(decimals)} (${diff >= 0 ? '+' : ''}${diffPct}%)`;
+                const prefix = diff >= 0 ? '+' : '';
+                return `${prefix}${currSymbol}${Math.abs(diff).toFixed(decimals)} (${prefix}${diffPct}%)`;
             };
 
-            const bslItemsHtml = bslPools.map(pool => {
-                const distStr = formatDist(pool.price);
-                const tagColor = pool.type === 'gold' ? 'var(--accent-gold)' : 'var(--accent-cyan)';
-                const tagBg = pool.type === 'gold' ? 'rgba(245,158,11,0.12)' : 'rgba(0,229,255,0.12)';
-                return `
-                    <div class="liq-item liq-bsl">
-                        <div>
-                            <div style="font-weight:700; color:#fff; display:flex; align-items:center; gap:6px;">
-                                <span>${pool.name}</span>
-                                <span class="badge" style="background:${tagBg}; color:${tagColor}; font-size:9px;">${pool.tag}</span>
-                            </div>
-                            <div style="font-size:10.5px; color:var(--text-muted); margin-top:2px;">
-                                Est. Liquidity: <span style="color:#fff;">${pool.lots}</span> (${pool.usd})
-                            </div>
-                        </div>
-                        <div style="text-align:right;">
-                            <div style="font-size:14px; font-weight:800; color:var(--accent-cyan); font-family:'JetBrains Mono';">
-                                ${currSymbol}${pool.price.toFixed(decimals)}
-                            </div>
-                            <div style="font-size:10px; color:${pool.price >= p ? 'var(--accent-green)' : 'var(--accent-red)'}; font-family:'JetBrains Mono';">
-                                ${distStr}
-                            </div>
-                        </div>
-                    </div>
-                `;
-            }).join('');
+            const elBslVal1 = document.getElementById('bsl-val-1');
+            if (elBslVal1) {
+                elBslVal1.innerText = `${currSymbol}${bsl1}`;
+                const diff1 = document.getElementById('bsl-diff-1');
+                if (diff1) diff1.innerText = formatDiff(bsl1, true);
+                const dep1 = document.getElementById('bsl-depth-1');
+                if (dep1) dep1.innerText = `Est. Depth: ${Math.round(atr * 320)} Lots (${currSymbol}${(p * atr * 0.032).toFixed(1)}M)`;
 
-            const sslItemsHtml = sslPools.map(pool => {
-                const distStr = formatDist(pool.price);
-                const tagColor = pool.type === 'green' ? 'var(--accent-green)' : (pool.type === 'red' ? 'var(--accent-red)' : 'var(--accent-gold)');
-                const tagBg = pool.type === 'green' ? 'rgba(16,185,129,0.12)' : (pool.type === 'red' ? 'rgba(239,68,68,0.12)' : 'rgba(245,158,11,0.12)');
-                return `
-                    <div class="liq-item liq-ssl">
-                        <div>
-                            <div style="font-weight:700; color:#fff; display:flex; align-items:center; gap:6px;">
-                                <span>${pool.name}</span>
-                                <span class="badge" style="background:${tagBg}; color:${tagColor}; font-size:9px;">${pool.tag}</span>
-                            </div>
-                            <div style="font-size:10.5px; color:var(--text-muted); margin-top:2px;">
-                                Est. Liquidity: <span style="color:#fff;">${pool.lots}</span> (${pool.usd})
-                            </div>
-                        </div>
-                        <div style="text-align:right;">
-                            <div style="font-size:14px; font-weight:800; color:var(--accent-red); font-family:'JetBrains Mono';">
-                                ${currSymbol}${pool.price.toFixed(decimals)}
-                            </div>
-                            <div style="font-size:10px; color:${pool.price <= p ? 'var(--accent-gold)' : 'var(--accent-cyan)'}; font-family:'JetBrains Mono';">
-                                ${distStr}
-                            </div>
-                        </div>
-                    </div>
-                `;
-            }).join('');
+                const val2 = document.getElementById('bsl-val-2');
+                if (val2) val2.innerText = `${currSymbol}${bsl2}`;
+                const diff2 = document.getElementById('bsl-diff-2');
+                if (diff2) diff2.innerText = formatDiff(bsl2, true);
+                const dep2 = document.getElementById('bsl-depth-2');
+                if (dep2) dep2.innerText = `Est. Depth: ${Math.round(atr * 580)} Lots (${currSymbol}${(p * atr * 0.058).toFixed(1)}M)`;
 
-            container.innerHTML = `
-                <!-- BSL CARD -->
-                <div class="liq-pool-card" style="border-top: 3px solid var(--accent-cyan);">
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                        <div style="font-weight:800; font-size:12.5px; color:var(--accent-cyan); display:flex; align-items:center; gap:6px;">
-                            <span>💧 BUY-SIDE LIQUIDITY (BSL)</span>
-                        </div>
-                        <span class="badge" style="background:rgba(0,229,255,0.15); color:var(--accent-cyan); font-size:9.5px;">🎯 RESTING BUY STOPS</span>
-                    </div>
+                const val3 = document.getElementById('bsl-val-3');
+                if (val3) val3.innerText = `${currSymbol}${bsl3}`;
+                const diff3 = document.getElementById('bsl-diff-3');
+                if (diff3) diff3.innerText = formatDiff(bsl3, true);
+                const dep3 = document.getElementById('bsl-depth-3');
+                if (dep3) dep3.innerText = `Est. Depth: ${Math.round(atr * 850)} Lots (${currSymbol}${(p * atr * 0.085).toFixed(1)}M)`;
 
-                    ${bslItemsHtml}
+                const sVal1 = document.getElementById('ssl-val-1');
+                if (sVal1) sVal1.innerText = `${currSymbol}${ssl1}`;
+                const sDiff1 = document.getElementById('ssl-diff-1');
+                if (sDiff1) sDiff1.innerText = formatDiff(ssl1, false);
+                const sDep1 = document.getElementById('ssl-depth-1');
+                if (sDep1) sDep1.innerText = `Est. Depth: ${Math.round(atr * 410)} Lots (${currSymbol}${(p * atr * 0.041).toFixed(1)}M)`;
 
-                    <div style="margin-top:8px; padding:6px 8px; border-radius:4px; background:rgba(0,229,255,0.05); border:1px dashed rgba(0,229,255,0.2); font-size:10.5px; color:#A0AEC0;">
-                        ${isSimpleStoryMode ?
-                            '🧒 <b>Kid-Friendly BSL Story:</b> Big magnet numbers UP above! When price hits these levels, short-sellers get stopped out, acting like rocket fuel 🚀 pushing price higher.' :
-                            '📈 <b>Pro BSL Structure:</b> Resting buy-stop liquidity clusters above session swing highs. Institutional algorithms target these levels to engineer distribution liquidity.'}
-                    </div>
-                </div>
+                const sVal2 = document.getElementById('ssl-val-2');
+                if (sVal2) sVal2.innerText = `${currSymbol}${ssl2}`;
+                const sDiff2 = document.getElementById('ssl-diff-2');
+                if (sDiff2) sDiff2.innerText = formatDiff(ssl2, false);
+                const sDep2 = document.getElementById('ssl-depth-2');
+                if (sDep2) sDep2.innerText = `Est. Depth: ${Math.round(atr * 690)} Lots (${currSymbol}${(p * atr * 0.069).toFixed(1)}M)`;
 
-                <!-- SSL CARD -->
-                <div class="liq-pool-card" style="border-top: 3px solid var(--accent-red);">
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                        <div style="font-weight:800; font-size:12.5px; color:var(--accent-red); display:flex; align-items:center; gap:6px;">
-                            <span>💧 SELL-SIDE LIQUIDITY (SSL)</span>
-                        </div>
-                        <span class="badge" style="background:rgba(16,185,129,0.15); color:var(--accent-green); font-size:9.5px;">🛡️ SWEPT & DEFENDED</span>
-                    </div>
-
-                    ${sslItemsHtml}
-
-                    <div style="margin-top:8px; padding:6px 8px; border-radius:4px; background:rgba(16,185,129,0.05); border:1px dashed rgba(16,185,129,0.2); font-size:10.5px; color:#A0AEC0;">
-                        ${isSimpleStoryMode ?
-                            '🧒 <b>Kid-Friendly SSL Story:</b> The basement trap! Big institutions already flushed retail stops down here and swallowed all their coins at discount prices 💎. Solid floor!' :
-                            '🛡️ <b>Pro SSL Structure:</b> Sell-side liquidity sweep below key session lows. Retail breakout shorts trapped into passive institutional iceberg absorption.'}
-                    </div>
-                </div>
-            `;
+                const sVal3 = document.getElementById('ssl-val-3');
+                if (sVal3) sVal3.innerText = `${currSymbol}${ssl3}`;
+                const sDiff3 = document.getElementById('ssl-diff-3');
+                if (sDiff3) sDiff3.innerText = formatDiff(ssl3, false);
+                const sDep3 = document.getElementById('ssl-depth-3');
+                if (sDep3) sDep3.innerText = `Est. Depth: ${Math.round(atr * 950)} Lots (${currSymbol}${(p * atr * 0.095).toFixed(1)}M)`;
+            }
         }
 
         // ==================== PRICE ALERTS ====================
@@ -4137,98 +4141,7 @@
 
             // 4. Dynamic Liquidity Pools Matrix (BSL & SSL)
             const atr = ref.atr || 14.0;
-            const bslContainer = document.getElementById('liq-pools-matrix-container');
-            if (bslContainer) {
-                const bsl1 = +(spot + atr).toFixed(decimals);
-                const bsl2 = +(spot + (atr * 1.8)).toFixed(decimals);
-                const bsl3 = +(spot + (atr * 2.5)).toFixed(decimals);
-
-                const ssl1 = +(spot - atr).toFixed(decimals);
-                const ssl2 = +(spot - (atr * 1.8)).toFixed(decimals);
-                const ssl3 = +(spot - (atr * 2.5)).toFixed(decimals);
-
-                bslContainer.innerHTML = `
-                    <!-- BSL CARD -->
-                    <div class="liq-pool-card" style="border-top: 3px solid var(--accent-cyan);">
-                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                            <div style="font-weight:800; font-size:12.5px; color:var(--accent-cyan);">
-                                💧 BUY-SIDE LIQUIDITY (BSL)
-                            </div>
-                            <span class="badge" style="background:rgba(0,229,255,0.15); color:var(--accent-cyan); font-size:9.5px;">🎯 RESTING BUY STOPS</span>
-                        </div>
-                        <div class="liq-item liq-bsl">
-                            <div>
-                                <div style="font-weight:700; color:#fff;">Major BSL Flip / Equal Highs</div>
-                                <div style="font-size:10.5px; color:var(--text-muted);">Est. Depth: ${Math.round(atr * 320)} Lots ($${(spot * atr * 0.032).toFixed(1)}M)</div>
-                            </div>
-                            <div style="text-align:right;">
-                                <div style="font-size:14px; font-weight:800; color:var(--accent-cyan); font-family:'JetBrains Mono';">$${bsl1}</div>
-                                <div style="font-size:10px; color:var(--accent-green); font-family:'JetBrains Mono';">+$${(bsl1 - spot).toFixed(decimals)}</div>
-                            </div>
-                        </div>
-                        <div class="liq-item liq-bsl">
-                            <div>
-                                <div style="font-weight:700; color:#fff;">Institutional Sell Wall Cluster</div>
-                                <div style="font-size:10.5px; color:var(--text-muted);">Est. Depth: ${Math.round(atr * 580)} Lots ($${(spot * atr * 0.058).toFixed(1)}M)</div>
-                            </div>
-                            <div style="text-align:right;">
-                                <div style="font-size:14px; font-weight:800; color:var(--accent-cyan); font-family:'JetBrains Mono';">$${bsl2}</div>
-                                <div style="font-size:10px; color:var(--accent-green); font-family:'JetBrains Mono';">+$${(bsl2 - spot).toFixed(decimals)}</div>
-                            </div>
-                        </div>
-                        <div class="liq-item liq-bsl">
-                            <div>
-                                <div style="font-weight:700; color:#fff;">Session High (PDH Expansion Target)</div>
-                                <div style="font-size:10.5px; color:var(--text-muted);">Est. Depth: ${Math.round(atr * 850)} Lots ($${(spot * atr * 0.085).toFixed(1)}M)</div>
-                            </div>
-                            <div style="text-align:right;">
-                                <div style="font-size:14px; font-weight:800; color:var(--accent-cyan); font-family:'JetBrains Mono';">$${bsl3}</div>
-                                <div style="font-size:10px; color:var(--accent-green); font-family:'JetBrains Mono';">+$${(bsl3 - spot).toFixed(decimals)}</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- SSL CARD -->
-                    <div class="liq-pool-card" style="border-top: 3px solid var(--accent-red);">
-                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                            <div style="font-weight:800; font-size:12.5px; color:var(--accent-red);">
-                                💧 SELL-SIDE LIQUIDITY (SSL)
-                            </div>
-                            <span class="badge" style="background:rgba(16,185,129,0.15); color:var(--accent-green); font-size:9.5px;">🛡️ SWEPT & DEFENDED</span>
-                        </div>
-                        <div class="liq-item liq-ssl">
-                            <div>
-                                <div style="font-weight:700; color:#fff;">Session SSL Discount Sweep</div>
-                                <div style="font-size:10.5px; color:var(--text-muted);">Est. Depth: ${Math.round(atr * 410)} Lots ($${(spot * atr * 0.041).toFixed(1)}M)</div>
-                            </div>
-                            <div style="text-align:right;">
-                                <div style="font-size:14px; font-weight:800; color:var(--accent-red); font-family:'JetBrains Mono';">$${ssl1}</div>
-                                <div style="font-size:10px; color:var(--accent-gold); font-family:'JetBrains Mono';">-$${(spot - ssl1).toFixed(decimals)}</div>
-                            </div>
-                        </div>
-                        <div class="liq-item liq-ssl">
-                            <div>
-                                <div style="font-weight:700; color:#fff;">Institutional Buy Wall Floor</div>
-                                <div style="font-size:10.5px; color:var(--text-muted);">Est. Depth: ${Math.round(atr * 690)} Lots ($${(spot * atr * 0.069).toFixed(1)}M)</div>
-                            </div>
-                            <div style="text-align:right;">
-                                <div style="font-size:14px; font-weight:800; color:var(--accent-red); font-family:'JetBrains Mono';">$${ssl2}</div>
-                                <div style="font-size:10px; color:var(--accent-gold); font-family:'JetBrains Mono';">-$${(spot - ssl2).toFixed(decimals)}</div>
-                            </div>
-                        </div>
-                        <div class="liq-item liq-ssl">
-                            <div>
-                                <div style="font-weight:700; color:#fff;">Structural Hard Invalidation (SL Buffer)</div>
-                                <div style="font-size:10.5px; color:var(--text-muted);">Est. Depth: ${Math.round(atr * 950)} Lots ($${(spot * atr * 0.095).toFixed(1)}M)</div>
-                            </div>
-                            <div style="text-align:right;">
-                                <div style="font-size:14px; font-weight:800; color:var(--accent-red); font-family:'JetBrains Mono';">$${ssl3}</div>
-                                <div style="font-size:10px; color:var(--accent-cyan); font-family:'JetBrains Mono';">-$${(spot - ssl3).toFixed(decimals)}</div>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            }
+            updateLiquidityMatrix(spot, atr);
 
             // 5. Radar Strip Live Telemetry
             const radarSmt = document.getElementById('radar-smt-val');
