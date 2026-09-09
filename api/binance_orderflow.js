@@ -187,7 +187,7 @@ export default async function handler(req, res) {
         status: "LIVE",
         instrument: "PAXGUSDT",
         instrumentType: "ORDER_FLOW_PROXY",
-        provider: `Binance Global Cluster (${successfulHost})`,
+        provider: activeProvider || "Tier-1 L2 Order Flow Engine",
         algorithmVersion: "orderflow_engine_v1",
         timestamp: timestampUtc,
         latencyMs: Date.now() - startTime,
@@ -229,7 +229,7 @@ export default async function handler(req, res) {
             netDeltaOunces: +netDelta.toFixed(3),
             deltaPct: deltaPct,
             cvdState: netDelta > 0.5 ? "BULLISH_AGGRESSION" : (netDelta < -0.5 ? "BEARISH_AGGRESSION" : "NEUTRAL_ABSORPTION"),
-            tradesSampledCount: tradesData.length,
+            tradesSampledCount: trades.length,
             recentTrades: cvdHistory.slice(-25)
         }
     });
