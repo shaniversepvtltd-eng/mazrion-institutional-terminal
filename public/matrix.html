@@ -677,21 +677,26 @@
                             <div class="param-val text-red" id="ticket-sl">$4,393.50</div>
                         </div>
                         <div class="param-cell">
-                            <div class="param-label">Take Profit 1 (1M Liquidity)</div>
-                            <div class="param-val text-cyan" id="ticket-tp1">$4,403.60</div>
+                            <div class="param-label">TP1 (50% Partial @ 1:2 R:R)</div>
+                            <div class="param-val text-cyan" id="ticket-tp1">$4,405.50</div>
                         </div>
                         <div class="param-cell">
-                            <div class="param-label">Take Profit 2 (4H Mission)</div>
+                            <div class="param-label">TP2 (50% Runner @ 4H Mission)</div>
                             <div class="param-val text-gold" id="ticket-tp2">$4,445.00</div>
                         </div>
                         <div class="param-cell">
-                            <div class="param-label">Risk / Reward (TP1)</div>
-                            <div class="param-val text-cyan" id="ticket-rr">1 : 3.05</div>
+                            <div class="param-label">SL Trailing Mode</div>
+                            <div class="param-val text-cyan" id="ticket-sl-mode">AUTO CTC ON TP1</div>
                         </div>
                         <div class="param-cell">
                             <div class="param-label">2% Risk / Lot Size</div>
                             <div class="param-val text-gold" id="ticket-risk">$20.00 / 0.01 Lots</div>
                         </div>
+                    </div>
+
+                    <!-- Partial Booking & CTC Rule Banner -->
+                    <div style="display:flex; align-items:center; justify-content:space-between; background:rgba(0, 229, 255, 0.08); border:1px solid var(--border-cyan); border-radius:6px; padding:6px 10px; font-size:9.5px; font-family:'JetBrains Mono';">
+                        <span>🛡️ <b>PARTIAL EXECUTION:</b> 50% Booked @ 1:2 R:R ➔ SL to CTC ➔ 50% Risk-Free 4H Runner</span>
                     </div>
 
                     <!-- Causal Triggers -->
@@ -700,6 +705,7 @@
                         <div>✓ Bullish displacement candle confirmed</div>
                         <div>✓ 1M Micro BOS with clean higher lows</div>
                         <div>⏳ Retest into 1M Bullish FVG active</div>
+                        <div style="color:var(--cyan-glow);">🔒 Automatic SL ➔ CTC trailing armed upon 1:2 TP1 hit</div>
                     </div>
                 </div>
 

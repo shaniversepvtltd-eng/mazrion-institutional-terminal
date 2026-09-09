@@ -307,6 +307,18 @@ export default async function handler(req, res) {
             positionSizeLots: 0.01,
             executionSetupScore: 92.0,
             orderFlowConfirmationState: hierarchyTree[8].orderFlowState,
+            partialBookingStrategy: {
+                enabled: true,
+                tp1PartialPercent: 50.0,
+                tp1Target: tp1,
+                tp1RewardRiskRatio: "1:2.0",
+                slTrailingMode: "MOVE_TO_CTC_BREAKEVEN_ON_TP1",
+                ctcStopPrice: +(entryPrice + 0.35).toFixed(2),
+                runnerPercent: 50.0,
+                tp2Target: tp2,
+                tp2RewardRiskRatio: "1:4.0_MACRO_BSL",
+                executionRule: "Book 50% lot at TP1 (1:2 R:R), instantly lock SL to CTC (+spread). Let 50% runner ride risk-free toward 4H Target."
+            },
             monteCarloGate: {
                 probTargetBeforeStopPct,
                 probStopBeforeTargetPct,
