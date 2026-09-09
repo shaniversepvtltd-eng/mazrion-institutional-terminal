@@ -33,6 +33,7 @@ export default async function handler(req, res) {
     const binanceHosts = [
         "https://data-api.binance.vision",
         "https://api.binance.com",
+        "https://api.binance.us",
         "https://api1.binance.com",
         "https://api3.binance.com"
     ];
@@ -43,57 +44,65 @@ export default async function handler(req, res) {
 
     let primaryKlines = [];
     let macro4hKlines = [];
+    let providerSource = null;
 
     for (const host of binanceHosts) {
         try {
             const [pRes, mRes] = await Promise.all([
                 fetch(`${host}/api/v3/klines?symbol=${binanceSymbol}&interval=${activeTf}&limit=40`, {
                     headers: { "User-Agent": "Mazrion-Terminal/4.0" },
-                    signal: AbortSignal.timeout(3500)
+                    signal: AbortSignal.timeout(3000)
                 }),
                 fetch(`${host}/api/v3/klines?symbol=${binanceSymbol}&interval=4h&limit=50`, {
                     headers: { "User-Agent": "Mazrion-Terminal/4.0" },
-                    signal: AbortSignal.timeout(3500)
+                    signal: AbortSignal.timeout(3000)
                 })
             ]);
 
             if (pRes.ok) primaryKlines = await pRes.json();
             if (mRes.ok) macro4hKlines = await mRes.json();
 
-            if (Array.isArray(primaryKlines) && primaryKlines.length >= 10) break;
+            if (Array.isArray(primaryKlines) && primaryKlines.length >= 10) {
+                providerSource = host.includes("binance.us") ? "Binance US" : "Binance Global";
+                break;
+            }
         } catch (e) {}
     }
 
-    // Fallback: If Binance cluster is temporarily throttled, fetch live Gold from TradingView
+    // Fallback B: Kraken OHLC multi-timeframe candles
     if (!Array.isArray(primaryKlines) || primaryKlines.length < 5) {
         try {
-            const tvRes = await fetch("https://scanner.tradingview.com/cfd/scan", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    symbols: { tickers: ["OANDA:XAUUSD"] },
-                    columns: ["close", "high", "low", "open", "ATR"]
+            const krakenIntervalMap = { "1m": 1, "5m": 5, "15m": 15, "1h": 60, "4h": 240, "1d": 1440 };
+            const kPair = symbol.includes("BTC") ? "XXBTZUSD" : "PAXGUSD";
+            const kIntPrim = krakenIntervalMap[activeTf] || 240;
+
+            const [kPrimRes, k4hRes] = await Promise.all([
+                fetch(`https://api.kraken.com/0/public/OHLC?pair=${kPair}&interval=${kIntPrim}`, {
+                    headers: { "User-Agent": "Mazrion-Terminal/4.0" },
+                    signal: AbortSignal.timeout(3500)
+                }),
+                fetch(`https://api.kraken.com/0/public/OHLC?pair=${kPair}&interval=240`, {
+                    headers: { "User-Agent": "Mazrion-Terminal/4.0" },
+                    signal: AbortSignal.timeout(3500)
                 })
-            });
-            if (tvRes.ok) {
-                const tvData = await tvRes.json();
-                if (tvData?.data?.[0]?.d) {
-                    const row = tvData.data[0].d;
-                    const c = parseFloat(row[0]);
-                    const h = parseFloat(row[1]);
-                    const l = parseFloat(row[2]);
-                    const o = parseFloat(row[3]);
-                    primaryKlines = [
-                        [0, o, h, l, (o+c)/2, 100],
-                        [0, (o+c)/2, h, l, c, 100]
-                    ];
-                    macro4hKlines = primaryKlines;
+            ]);
+
+            if (kPrimRes.ok && k4hRes.ok) {
+                const kPrimData = await kPrimRes.json();
+                const k4hData = await k4hRes.json();
+                const primArray = kPrimData?.result?.[kPair] || Object.values(kPrimData?.result || {})[0];
+                const m4hArray = k4hData?.result?.[kPair] || Object.values(k4hData?.result || {})[0];
+
+                if (Array.isArray(primArray) && primArray.length >= 10) {
+                    primaryKlines = primArray.slice(-40).map(c => [c[0] * 1000, c[1], c[2], c[3], c[4], c[6]]);
+                    macro4hKlines = Array.isArray(m4hArray) ? m4hArray.slice(-50).map(c => [c[0] * 1000, c[1], c[2], c[3], c[4], c[6]]) : primaryKlines;
+                    providerSource = `Kraken Institutional (${kPair})`;
                 }
             }
-        } catch (tvErr) {}
+        } catch (kErr) {}
     }
 
-    if (!Array.isArray(primaryKlines) || primaryKlines.length === 0) {
+    if (!Array.isArray(primaryKlines) || primaryKlines.length < 5) {
         return res.status(503).json({
             success: false,
             status: "DATA_UNAVAILABLE",

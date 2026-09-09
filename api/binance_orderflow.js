@@ -18,46 +18,95 @@ export default async function handler(req, res) {
     const startTime = Date.now();
     const timestampUtc = new Date().toISOString();
 
+    let bids = [];
+    let asks = [];
+    let trades = [];
+    let activeProvider = null;
+
+    // Provider A: Binance Global / Cluster Mirrors
     const binanceHosts = [
         "https://data-api.binance.vision",
         "https://api.binance.com",
+        "https://api.binance.us",
         "https://api1.binance.com",
         "https://api3.binance.com"
     ];
-
-    let depthData = null;
-    let tradesData = null;
-    let successfulHost = null;
 
     for (const host of binanceHosts) {
         try {
             const depthPromise = fetch(`${host}/api/v3/depth?symbol=PAXGUSDT&limit=50`, {
                 headers: { "User-Agent": "Mazrion-Terminal/4.0" },
-                signal: AbortSignal.timeout(3500)
+                signal: AbortSignal.timeout(3000)
             });
             const tradesPromise = fetch(`${host}/api/v3/aggTrades?symbol=PAXGUSDT&limit=500`, {
                 headers: { "User-Agent": "Mazrion-Terminal/4.0" },
-                signal: AbortSignal.timeout(3500)
+                signal: AbortSignal.timeout(3000)
             });
 
             const [depthRes, tradesRes] = await Promise.all([depthPromise, tradesPromise]);
 
             if (depthRes.ok && tradesRes.ok) {
-                depthData = await depthRes.json();
-                tradesData = await tradesRes.json();
-                successfulHost = host;
-                break;
+                const depthData = await depthRes.json();
+                const rawTrades = await tradesRes.json();
+                if (depthData.bids && depthData.bids.length > 0 && Array.isArray(rawTrades)) {
+                    bids = depthData.bids;
+                    asks = depthData.asks;
+                    trades = rawTrades.map(t => ({
+                        price: parseFloat(t.p),
+                        qty: parseFloat(t.q),
+                        isBuyerMaker: t.m,
+                        time: t.T
+                    }));
+                    activeProvider = host.includes("binance.us") ? "Binance US (PAXGUSDT)" : "Binance Global (PAXGUSDT)";
+                    break;
+                }
             }
         } catch (e) {
             // Try next mirror
         }
     }
 
-    if (!depthData || !depthData.bids || !Array.isArray(tradesData)) {
+    // Provider B: Kraken L2 Depth & Public Trades (Tier-1 Exchange Fallback)
+    if (bids.length === 0) {
+        try {
+            const krakenDepthPromise = fetch("https://api.kraken.com/0/public/Depth?pair=PAXGUSD&count=50", {
+                headers: { "User-Agent": "Mazrion-Terminal/4.0" },
+                signal: AbortSignal.timeout(3500)
+            });
+            const krakenTradesPromise = fetch("https://api.kraken.com/0/public/Trades?pair=PAXGUSD", {
+                headers: { "User-Agent": "Mazrion-Terminal/4.0" },
+                signal: AbortSignal.timeout(3500)
+            });
+
+            const [kDepthRes, kTradesRes] = await Promise.all([krakenDepthPromise, krakenTradesPromise]);
+            if (kDepthRes.ok && kTradesRes.ok) {
+                const kDepthData = await kDepthRes.json();
+                const kTradesData = await kTradesRes.json();
+                const pairData = kDepthData?.result?.PAXGUSD;
+                const tradeList = kTradesData?.result?.PAXGUSD;
+
+                if (pairData && pairData.bids && Array.isArray(tradeList)) {
+                    bids = pairData.bids.map(b => [b[0], b[1]]);
+                    asks = pairData.asks.map(a => [a[0], a[1]]);
+                    trades = tradeList.slice(-500).map(t => ({
+                        price: parseFloat(t[0]),
+                        qty: parseFloat(t[1]),
+                        isBuyerMaker: t[3] === 's', // 's' = sell (taker sell = maker buy)
+                        time: Math.floor(t[2] * 1000)
+                    }));
+                    activeProvider = "Kraken Institutional (PAXG/USD L2)";
+                }
+            }
+        } catch (e) {
+            // Kraken failed
+        }
+    }
+
+    if (bids.length === 0 || trades.length === 0) {
         return res.status(503).json({
             success: false,
             status: "DATA_UNAVAILABLE",
-            error: "Unable to reach Binance Global public data cluster. Please check connection telemetry.",
+            error: "All tier-1 order flow providers (Binance Global, Binance US, Kraken) are temporarily unreachable.",
             timestamp: timestampUtc,
             latencyMs: Date.now() - startTime
         });
@@ -69,11 +118,11 @@ export default async function handler(req, res) {
     let maxBidWall = { price: 0, qty: 0, usdValue: 0, distancePct: 0 };
     let maxAskWall = { price: 0, qty: 0, usdValue: 0, distancePct: 0 };
 
-    const topBid = parseFloat(depthData.bids[0]?.[0] || 0);
-    const topAsk = parseFloat(depthData.asks[0]?.[0] || 0);
+    const topBid = parseFloat(bids[0]?.[0] || 0);
+    const topAsk = parseFloat(asks[0]?.[0] || 0);
     const midPrice = +((topBid + topAsk) / 2).toFixed(2);
 
-    const formattedBids = depthData.bids.map(([priceStr, qtyStr]) => {
+    const formattedBids = bids.map(([priceStr, qtyStr]) => {
         const price = parseFloat(priceStr);
         const qty = parseFloat(qtyStr);
         const usdValue = price * qty;
@@ -85,7 +134,7 @@ export default async function handler(req, res) {
         return { price, qty, usdValue, distancePct };
     });
 
-    const formattedAsks = depthData.asks.map(([priceStr, qtyStr]) => {
+    const formattedAsks = asks.map(([priceStr, qtyStr]) => {
         const price = parseFloat(priceStr);
         const qty = parseFloat(qtyStr);
         const usdValue = price * qty;
@@ -103,10 +152,10 @@ export default async function handler(req, res) {
     let runningCvd = 0;
     const cvdHistory = [];
 
-    tradesData.forEach((t) => {
-        const price = parseFloat(t.p);
-        const qty = parseFloat(t.q);
-        const isAggressiveSell = t.m; // isBuyerMaker = true -> seller was aggressive taker
+    trades.forEach((t) => {
+        const price = t.price;
+        const qty = t.qty;
+        const isAggressiveSell = t.isBuyerMaker; // isBuyerMaker = true -> seller was aggressive taker
 
         if (isAggressiveSell) {
             sellVolume += qty;
@@ -117,7 +166,7 @@ export default async function handler(req, res) {
         }
 
         cvdHistory.push({
-            time: t.T,
+            time: t.time,
             price,
             qty,
             side: isAggressiveSell ? "SELL" : "BUY",

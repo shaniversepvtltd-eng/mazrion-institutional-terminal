@@ -36,59 +36,65 @@ export default async function handler(req, res) {
     const binanceHosts = [
         "https://data-api.binance.vision",
         "https://api.binance.com",
+        "https://api.binance.us",
         "https://api1.binance.com",
         "https://api3.binance.com"
     ];
 
     let klines = [];
+    let providerSource = null;
 
     for (const host of binanceHosts) {
         try {
             const klineRes = await fetch(`${host}/api/v3/klines?symbol=PAXGUSDT&interval=${timeframe}&limit=50`, {
                 headers: { "User-Agent": "Mazrion-Terminal/4.0" },
-                signal: AbortSignal.timeout(3500)
+                signal: AbortSignal.timeout(3000)
             });
             if (klineRes.ok) {
-                klines = await klineRes.json();
-                if (Array.isArray(klines) && klines.length >= 10) break;
+                const rawKlines = await klineRes.json();
+                if (Array.isArray(rawKlines) && rawKlines.length >= 10) {
+                    klines = rawKlines;
+                    providerSource = host.includes("binance.us") ? "Binance US" : "Binance Global";
+                    break;
+                }
             }
         } catch (e) {}
     }
 
-    // Fallback to TradingView scanner if all mirrors are throttled
-    if (!Array.isArray(klines) || klines.length < 10) {
+    // Provider B: Kraken OHLC Historical Candles
+    if (klines.length < 10) {
         try {
-            const tvRes = await fetch("https://scanner.tradingview.com/cfd/scan", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    symbols: { tickers: ["OANDA:XAUUSD"] },
-                    columns: ["close", "high", "low", "open", "ATR"]
-                })
+            // Map interval to Kraken minutes
+            const krakenIntervalMap = { "1m": 1, "5m": 5, "15m": 15, "1h": 60, "4h": 240, "1d": 1440 };
+            const kInterval = krakenIntervalMap[timeframe] || 15;
+            const krakenRes = await fetch(`https://api.kraken.com/0/public/OHLC?pair=PAXGUSD&interval=${kInterval}`, {
+                headers: { "User-Agent": "Mazrion-Terminal/4.0" },
+                signal: AbortSignal.timeout(3500)
             });
-            if (tvRes.ok) {
-                const tvData = await tvRes.json();
-                if (tvData?.data?.[0]?.d) {
-                    const c = parseFloat(tvData.data[0].d[0]);
-                    const h = parseFloat(tvData.data[0].d[1]);
-                    const l = parseFloat(tvData.data[0].d[2]);
-                    const o = parseFloat(tvData.data[0].d[3]);
-                    const a = parseFloat(tvData.data[0].d[4] || 12);
-                    // Synthesize minimum seed klines from today's actual range
-                    klines = [
-                        [0, o, h, l, (o+c)/2, 100],
-                        [0, (o+c)/2, h, l, c, 100]
-                    ];
+            if (krakenRes.ok) {
+                const kData = await krakenRes.json();
+                const krakenCandles = kData?.result?.PAXGUSD;
+                if (Array.isArray(krakenCandles) && krakenCandles.length >= 10) {
+                    // Normalize Kraken OHLC [time, open, high, low, close, vwap, vol, count]
+                    klines = krakenCandles.slice(-60).map(c => [
+                        c[0] * 1000,
+                        c[1],
+                        c[2],
+                        c[3],
+                        c[4],
+                        c[6]
+                    ]);
+                    providerSource = "Kraken Institutional (PAXG/USD)";
                 }
             }
-        } catch (tvErr) {}
+        } catch (kErr) {}
     }
 
-    if (!Array.isArray(klines) || klines.length === 0) {
+    if (!Array.isArray(klines) || klines.length < 5) {
         return res.status(503).json({
             success: false,
             status: "DATA_UNAVAILABLE",
-            error: "Insufficient market data to calibrate Monte Carlo stochastic parameters",
+            error: "Insufficient historical klines to calibrate realized volatility",
             timestamp: timestampUtc
         });
     }
