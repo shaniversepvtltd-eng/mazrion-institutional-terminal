@@ -27,6 +27,13 @@ def run_all():
         ("60/40 In-Sample vs Out-of-Sample Validation", "tests/fractals/test_out_of_sample.py"),
         ("Fractal Hypothesis Empirical Real Data Backtest", "tests/fractals/test_fractal_backtest.py"),
         ("Recursive HTF ➔ 1M Execution Comparative Backtest", "tests/fractals/test_recursive_execution_backtest.py"),
+        ("Hierarchy D0-D5 & Filter Ablation Study", "tests/fractals/test_execution_filter_ablation.py"),
+        ("Trading Session & Time-of-Day Empirical Analysis", "tests/fractals/test_session_analysis.py"),
+        ("1M Trade Exit Logic & Management Ablation", "tests/fractals/test_exit_logic.py"),
+        ("Market Regime Sensitivity Analysis", "tests/fractals/test_regime_analysis.py"),
+        ("Rigorous Chronological Walk-Forward Audit", "tests/fractals/test_walk_forward.py"),
+        ("Multiple-Entry & Trade Lifecycle Integrity Audit", "tests/fractals/test_multiple_entry_integrity.py"),
+        ("Parameter Freeze & Zero-Leakage Hash Audit", "tests/fractals/test_parameter_freeze.py"),
     ]
     
     results = []
