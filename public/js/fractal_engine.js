@@ -75,11 +75,68 @@
         /**
          * Initialize the engine with canonical market state or historical candles.
          */
-        init(canonicalState) {
+        async init(canonicalState) {
             if (this.isInitialized) return;
             this.bootstrapFromState(canonicalState);
             this.isInitialized = true;
             this.setupMarketEngineSubscription();
+            await this.fetchCanonicalState();
+        }
+
+        /**
+         * Fetch the single canonical state object from the API backend.
+         */
+        async fetchCanonicalState() {
+            try {
+                const res = await fetch('/api/fractal_matrix');
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data && data.success) {
+                        this.applyCanonicalSnapshot(data);
+                    }
+                }
+            } catch (err) {
+                console.warn('[MazrionFractalEngine] Canonical fetch fallback:', err);
+            }
+        }
+
+        /**
+         * Ingest canonical snapshot directly from backend API.
+         */
+        applyCanonicalSnapshot(apiSnapshot) {
+            if (!apiSnapshot || !apiSnapshot.hierarchyTree) return;
+            this.dataSource = 'CANONICAL_API_SYNCED';
+            this.lastUpdateTimestamp = apiSnapshot.timestamp;
+            
+            apiSnapshot.hierarchyTree.forEach(node => {
+                const tf = node.timeframe;
+                if (this.activeCycles[tf]) {
+                    this.activeCycles[tf] = {
+                        ...this.activeCycles[tf],
+                        cycle_id: node.cycleId,
+                        parent_cycle_id: node.parentCycleId,
+                        status: node.status,
+                        direction: node.direction,
+                        origin_price: node.originPrice,
+                        destination_price: node.destinationPrice,
+                        invalidation_price: node.invalidationPrice,
+                        current_price: node.currentPrice,
+                        completion_score: node.structuralCompletionScore || node.completionScore,
+                        score_components: node.scoreComponents,
+                        parent_alignment: node.parentAlignment,
+                        completed_child_count: node.completedChildCount,
+                        atr_current: node.atr
+                    };
+                }
+            });
+
+            if (apiSnapshot.contained1mExecutionsLedger) {
+                this.executionLedger1m = apiSnapshot.contained1mExecutionsLedger;
+            }
+            if (apiSnapshot.highway) {
+                this.highway = apiSnapshot.highway;
+            }
+            this.notifyListeners();
         }
 
         /**
@@ -98,6 +155,11 @@
                         this.processTick(state);
                     });
                 }
+
+                // Poll canonical endpoint periodically to ensure zero state drift
+                setInterval(() => {
+                    this.fetchCanonicalState();
+                }, 15000);
             }
         }
 

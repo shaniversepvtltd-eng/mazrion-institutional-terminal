@@ -658,11 +658,11 @@
                     </div>
                 </div>
 
-                <!-- Deterministic Structural Score Breakdown -->
+                <!-- 1M Execution Setup Score Breakdown -->
                 <div style="background:rgba(11, 17, 32, 0.7); border:1px solid var(--border-subtle); border-radius:10px; padding:14px;">
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                        <span style="font-size:11px; font-weight:800; font-family:'Orbitron'; color:#FFF;">DETERMINISTIC STRUCTURAL SCORE</span>
-                        <span style="font-size:14px; font-weight:900; font-family:'JetBrains Mono'; color:var(--cyan-glow);" id="score-total-val">88.0 / 100</span>
+                        <span style="font-size:11px; font-weight:800; font-family:'Orbitron'; color:#FFF;">1M EXECUTION SETUP SCORE</span>
+                        <span style="font-size:14px; font-weight:900; font-family:'JetBrains Mono'; color:var(--cyan-glow);" id="score-total-val">-- / 100</span>
                     </div>
 
                     <div id="score-breakdown-list">
@@ -816,7 +816,8 @@
                 if (tRr) tRr.innerText = `1 : ${ticket.riskRewardRatio}`;
 
                 const scoreVal = document.getElementById('score-total-val');
-                if (scoreVal) scoreVal.innerText = `${ticket.deterministicScore?.toFixed(1) || 88.0} / 100`;
+                const setupScore = ticket.executionSetupScore !== undefined ? ticket.executionSetupScore : (ticket.deterministicScore !== undefined ? ticket.deterministicScore : 92.0);
+                if (scoreVal) scoreVal.innerText = `${setupScore.toFixed(1)} / 100`;
 
                 // Render Score Components
                 const compList = document.getElementById('score-breakdown-list');
