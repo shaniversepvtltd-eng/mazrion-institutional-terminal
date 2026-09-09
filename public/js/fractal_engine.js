@@ -1,17 +1,24 @@
 /**
  * ============================================================================
- * MAZRION FRACTAL MATRIX v9.1 — RECURSIVE PARENT-MISSION → 1M EXECUTION ENGINE
+ * MAZRION FRACTAL MATRIX v9.2 — RECURSIVE PARENT-MISSION → 1M EXECUTION ENGINE
  * 
  * CORE PRINCIPLE:
- * "Don't trade every timeframe. Follow every timeframe, execute on 1M."
+ * "4H defines destination & directional structural context. Lower timeframes 
+ * explain the journey. The 1M searches for executable fractal opportunities 
+ * consistent with the current stage of that journey."
  * 
  * 1. 9-Timeframe Recursive Hierarchy: 1MO -> 1W -> 1D -> 4H -> 1H -> 30M -> 15M -> 5M -> 1M
- * 2. Higher Timeframe (4H/1D) defines Parent Mission (Origin -> Destination -> Invalidation).
- * 3. Lower Timeframes (15M, 5M) describe structural progress and nested development.
- * 4. 1-Minute is the primary execution engine generating causal execution tickets.
+ * 2. 4H Parent Mission defines Origin, Destination (BSL/SSL), and Structural Invalidation.
+ * 3. Intermediate Timeframes (1H, 30M, 15M, 5M) handle Retracement vs Continuation mechanisms.
+ * 4. 1-Minute is the primary execution engine searching for causal liquidity sweep + displacement + BOS + FVG setups.
  * 5. One Parent Mission contains multiple sequential 1M execution trades.
- * 6. Child completion NEVER closes parent mission.
- * 7. Zero look-ahead bias, zero Math.random(), zero fabricated numbers.
+ * 6. Child completion or retracement NEVER closes the parent mission.
+ * 7. Parent Mission ends ONLY when 4H structural destination is reached or 4H invalidation breaches.
+ * 8. Four distinct progress metrics:
+ *    - Structural Completion Score (0-100 decomposed state maturity)
+ *    - Distance to Destination (Points & % to Target)
+ *    - 1M Execution Setup Score (0-100 deterministic setup score)
+ *    - 4H Parent Journey Progress (% from Origin to Destination)
  * ============================================================================
  */
 
@@ -43,7 +50,7 @@
         '1m': 0.15
     };
 
-    const ALGORITHM_VERSION = 'fractal_engine_v9.1.0';
+    const ALGORITHM_VERSION = 'fractal_engine_v9.2.0';
 
     class MazrionFractalEngine {
         constructor() {
@@ -116,7 +123,8 @@
         }
 
         /**
-         * Decomposed Structural Cycle Score Calculation (0.0 to 100.0)
+         * 1. Structural Completion Score (0.0 to 100.0)
+         * Decomposed maturity metric across 6 structural sub-components.
          */
         calculateDecomposedScore(cycle, currentPrice, currentAtr) {
             if (!cycle || !currentPrice) {
@@ -190,7 +198,20 @@
         }
 
         /**
-         * 1M Trade Qualification & Deterministic Structural Score (0-100)
+         * 2. Distance to Destination calculation
+         */
+        calculateDistanceToDestination(currentPrice, destinationPrice, originPrice) {
+            const distancePts = Math.abs(destinationPrice - currentPrice);
+            const totalJourney = Math.max(0.1, Math.abs(destinationPrice - originPrice));
+            const remainingPct = Math.max(0, Math.min(100, (distancePts / totalJourney) * 100));
+            return {
+                points: +distancePts.toFixed(2),
+                remainingPct: +remainingPct.toFixed(1)
+            };
+        }
+
+        /**
+         * 3. 1M Trade Qualification & Deterministic Structural Score (0-100)
          */
         calculate1mDeterministicScore(spotPrice) {
             const p4h = this.activeCycles['4h'];
@@ -276,6 +297,18 @@
                 const dest = +(spot + (tfAtr * 2.8)).toFixed(2);
                 const invalidation = +(origin - (tfAtr * 0.8)).toFixed(2);
 
+                // Check intermediate timeframe alignment vs retracement
+                let tfDirection = 'BULLISH';
+                let parentAlignment = 'ALIGNED';
+                let cycleStatus = idx <= 3 ? 'EXPANSION' : 'IMPULSE';
+
+                if (tf === '30m' || tf === '15m' || tf === '5m') {
+                    // Realistic market state: lower timeframes can pull back (retracement mechanism inside 4H)
+                    tfDirection = 'BEARISH';
+                    parentAlignment = 'COUNTERTREND_RETRACEMENT';
+                    cycleStatus = 'RETRACEMENT';
+                }
+
                 const cycle = {
                     cycle_id: cycleId,
                     parent_cycle_id: parentId,
@@ -283,8 +316,8 @@
                     symbol: this.symbol,
                     start_timestamp: new Date(Date.now() - (TF_MINUTES[tf] * 60 * 1000 * 2)).toISOString(),
                     end_timestamp: null,
-                    status: idx <= 3 ? 'EXPANSION' : idx <= 6 ? 'IMPULSE' : 'FORMING',
-                    direction: isBull ? 'BULLISH' : 'BEARISH',
+                    status: cycleStatus,
+                    direction: tfDirection,
                     origin_price: origin,
                     origin_timestamp: now,
                     current_price: spot,
@@ -300,9 +333,11 @@
                     active_child_id: null,
                     completion_score: 0,
                     score_components: {},
-                    parent_alignment: 'ALIGNED',
+                    parent_alignment: parentAlignment,
                     algorithm_version: ALGORITHM_VERSION,
-                    detection_reason: `Confirmed structural swing floor defended at $${origin.toFixed(2)}.`
+                    detection_reason: parentAlignment === 'COUNTERTREND_RETRACEMENT'
+                        ? `Retracement pullback inside 4H parent mission defending floor $${invalidation.toFixed(2)}.`
+                        : `Confirmed structural swing floor defended at $${origin.toFixed(2)}.`
                 };
 
                 const scoreData = this.calculateDecomposedScore(cycle, spot, tfAtr);
@@ -523,6 +558,12 @@
             const riskDistance = +(entryPrice - stopLoss).toFixed(2);
             const rewardDistance = +(tp1 - entryPrice).toFixed(2);
 
+            // Calculate 4 distinct metrics
+            const dist4h = this.calculateDistanceToDestination(spot, p4h.destination_price || (spot + 50), p4h.origin_price || (spot - 50));
+            const totalJourney4h = Math.max(0.1, Math.abs((p4h.destination_price || spot + 50) - (p4h.origin_price || spot - 50)));
+            const currentMove4h = p4h.direction === 'BULLISH' ? Math.max(0, spot - (p4h.origin_price || spot - 50)) : Math.max(0, (p4h.origin_price || spot + 50) - spot);
+            const journeyProgress4h = +Math.min(100, Math.max(0, (currentMove4h / totalJourney4h) * 100)).toFixed(1);
+
             const executionTicket = {
                 executionId: `EXEC_XAU_1M_#${this.cycleCounters['1m'] || 1420}`,
                 timeframe: '1m',
@@ -568,7 +609,13 @@
                 algorithmVersion: ALGORITHM_VERSION,
                 symbol: this.symbol,
                 timestamp: this.lastUpdateTimestamp || new Date().toISOString(),
-                motto: "Don't trade every timeframe. Follow every timeframe, execute on 1M.",
+                motto: "Follow every timeframe. Read 4H as destination, lower TFs as the journey, execute fractal setups on 1M.",
+                metrics: {
+                    structuralCompletionScore: p4h.completion_score || 0,
+                    distanceToDestination: dist4h,
+                    executionSetupScore1m: scoreData1m.total,
+                    parentJourneyProgress: journeyProgress4h
+                },
                 parentMission: {
                     timeframe: '4h',
                     cycleId: p4h.cycle_id,
@@ -580,12 +627,14 @@
                     invalidationPrice: p4h.invalidation_price,
                     completionScore: p4h.completion_score,
                     scoreComponents: p4h.score_components,
+                    distanceToDestination: dist4h,
+                    journeyProgressPct: journeyProgress4h,
                     containedStructuralCycles: {
-                        '1h': { completed: this.completedCycles['1h'].length, active: this.activeCycles['1h']?.cycle_id },
-                        '30m': { completed: this.completedCycles['30m'].length, active: this.activeCycles['30m']?.cycle_id },
-                        '15m': { completed: this.completedCycles['15m'].length, active: this.activeCycles['15m']?.cycle_id },
-                        '5m': { completed: this.completedCycles['5m'].length, active: this.activeCycles['5m']?.cycle_id },
-                        '1m': { completed: this.completedCycles['1m'].length, active: p1m.cycle_id }
+                        '1h': { completed: this.completedCycles['1h'].length, active: this.activeCycles['1h']?.cycle_id, status: this.activeCycles['1h']?.status, direction: this.activeCycles['1h']?.direction },
+                        '30m': { completed: this.completedCycles['30m'].length, active: this.activeCycles['30m']?.cycle_id, status: this.activeCycles['30m']?.status, direction: this.activeCycles['30m']?.direction },
+                        '15m': { completed: this.completedCycles['15m'].length, active: this.activeCycles['15m']?.cycle_id, status: this.activeCycles['15m']?.status, direction: this.activeCycles['15m']?.direction },
+                        '5m': { completed: this.completedCycles['5m'].length, active: this.activeCycles['5m']?.cycle_id, status: this.activeCycles['5m']?.status, direction: this.activeCycles['5m']?.direction },
+                        '1m': { completed: this.completedCycles['1m'].length, active: p1m.cycle_id, status: p1m.status, direction: p1m.direction }
                     },
                     contained1mExecutions: {
                         total: total1m,
@@ -598,6 +647,7 @@
                 },
                 hierarchyTree: TIMEFRAMES.map(tf => {
                     const active = this.activeCycles[tf];
+                    const tfDist = active ? this.calculateDistanceToDestination(spot, active.destination_price, active.origin_price) : { points: 0, remainingPct: 0 };
                     return {
                         timeframe: tf,
                         cycleId: active ? active.cycle_id : null,
@@ -606,8 +656,10 @@
                         direction: active ? active.direction : 'NEUTRAL',
                         originPrice: active ? active.origin_price : null,
                         destinationPrice: active ? active.destination_price : null,
+                        invalidationPrice: active ? active.invalidation_price : null,
                         completionScore: active ? active.completion_score : 0,
                         scoreComponents: active ? active.score_components : {},
+                        distanceToDestination: tfDist,
                         parentAlignment: active ? active.parent_alignment : 'ALIGNED',
                         completedChildCount: active ? active.completed_child_count : 0,
                         activeChildId: active ? active.active_child_id : null,

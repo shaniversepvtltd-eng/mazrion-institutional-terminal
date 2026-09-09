@@ -9,6 +9,7 @@ def run_all():
     
     test_files = [
         ("Zero-Fabrication Repository Scan", "tests/data_integrity/test_repository_scan.py"),
+        ("Real MT5 Data Ingestion & Integrity", "tests/fractals/test_real_data_ingestion.py"),
         ("Live Price Feed Telemetry (TradingView / OANDA)", "tests/providers/test_live_price_feed.py"),
         ("Order Flow & L2 Order Book Depth (Binance PAXG)", "tests/orderflow/test_orderbook_integrity.py"),
         ("Cumulative Volume Delta (CVD) Math Verification", "tests/cvd/test_cvd_mathematics.py"),
@@ -20,7 +21,11 @@ def run_all():
         ("Recursive Hierarchy & Time Containment", "tests/fractals/test_recursive_hierarchy.py"),
         ("Fractal State Machine & Decomposed Score", "tests/fractals/test_state_machine.py"),
         ("Look-Ahead Bias Prevention & Causal Pivots", "tests/fractals/test_lookahead_bias.py"),
-        ("Fractal Hypothesis Empirical Backtest", "tests/fractals/test_fractal_backtest.py"),
+        ("Dynamic Nesting Distribution on Real MT5 Data", "tests/fractals/test_nesting_distribution.py"),
+        ("Step-by-Step Replay Causality Audit", "tests/fractals/test_replay_causality.py"),
+        ("Spread & Slippage Transaction Cost Sensitivity", "tests/fractals/test_transaction_costs.py"),
+        ("60/40 In-Sample vs Out-of-Sample Validation", "tests/fractals/test_out_of_sample.py"),
+        ("Fractal Hypothesis Empirical Real Data Backtest", "tests/fractals/test_fractal_backtest.py"),
         ("Recursive HTF ➔ 1M Execution Comparative Backtest", "tests/fractals/test_recursive_execution_backtest.py"),
     ]
     
@@ -37,7 +42,8 @@ def run_all():
         proc = subprocess.run([sys.executable, full_path], capture_output=True, text=True)
         if proc.returncode == 0:
             print(f"✅ PASS: {title}")
-            results.append((title, "PASS", proc.stdout.strip().split("\n")[-1]))
+            last_line = proc.stdout.strip().split("\n")[-1] if proc.stdout.strip() else "OK"
+            results.append((title, "PASS", last_line))
         else:
             print(f"❌ FAIL: {title}")
             print(proc.stdout)
@@ -52,7 +58,7 @@ def run_all():
         status_icon = "🟢 PASS" if status == "PASS" else "🔴 FAIL"
         if status != "PASS":
             all_passed = False
-        print(f"{status_icon} | {title:<48} | {note}")
+        print(f"{status_icon} | {title:<52} | {note}")
         
     print("=================================================================\n")
     return all_passed

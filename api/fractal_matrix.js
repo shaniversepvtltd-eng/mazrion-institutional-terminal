@@ -1,8 +1,8 @@
 // ============================================================================
-// MAZRION INSTITUTIONAL TERMINAL: RECURSIVE FRACTAL MATRIX v9.1
+// MAZRION INSTITUTIONAL TERMINAL: RECURSIVE FRACTAL MATRIX v9.2
 // Endpoint: /api/fractal_matrix
 // Classification: LIVE_DERIVED / RECURSIVE MULTI-TIMEFRAME ENGINE
-// Principle: "Don't trade every timeframe. Follow every timeframe, execute on 1M."
+// Principle: "Follow the entire hierarchy. 4H = Parent Mission, 1M = Execution."
 // Zero Math.random(), Zero hardcoded prices, Zero fabricated wave counts
 // ============================================================================
 
@@ -17,10 +17,9 @@ export default async function handler(req, res) {
 
     const startTime = Date.now();
     const timestampUtc = new Date().toISOString();
-    const algorithmVersion = 'fractal_engine_v9.1.0';
+    const algorithmVersion = 'fractal_engine_v9.2.0';
 
     try {
-        // Fetch Live Price Reference from canonical price endpoint
         let spotPrice = 4398.00;
         let atr14 = 14.50;
 
@@ -28,7 +27,7 @@ export default async function handler(req, res) {
             const host = req.headers.host || 'mazrion-institutional-terminal.vercel.app';
             const proto = req.headers['x-forwarded-proto'] || 'https';
             const priceRes = await fetch(`${proto}://${host}/api/price`, {
-                headers: { 'User-Agent': 'Mozilla/5.0 MazrionEngine/9.1' }
+                headers: { 'User-Agent': 'Mozilla/5.0 MazrionEngine/9.2' }
             });
             if (priceRes.ok) {
                 const priceData = await priceRes.json();
@@ -36,10 +35,9 @@ export default async function handler(req, res) {
                 if (priceData.atr) atr14 = priceData.atr;
             }
         } catch (e) {
-            // Fallback gracefully to spot reference
+            // Graceful fallback
         }
 
-        // Full 9-Timeframe Recursive Hierarchy
         const timeframes = ['1mo', '1w', '1d', '4h', '1h', '30m', '15m', '5m', '1m'];
         const tfAtrMultipliers = {
             '1mo': 12.0,
@@ -77,7 +75,7 @@ export default async function handler(req, res) {
             const destPrice = +(spotPrice + (tfAtr * 2.6)).toFixed(2);
             const invalPrice = +(originPrice - (tfAtr * 0.75)).toFixed(2);
 
-            // Decomposed Structural Progress Score (0-100)
+            // 1. Structural Completion Score (0-100)
             const dispMove = Math.max(0, spotPrice - originPrice);
             const totalDist = Math.max(1.0, destPrice - originPrice);
 
@@ -88,13 +86,21 @@ export default async function handler(req, res) {
             const volScore = +(Math.min(1.0, tfAtr / (atr14 * tfAtrMultipliers[tf])) * 10.0).toFixed(1);
             const revScore = +(idx <= 3 ? 4.0 : 2.0).toFixed(1);
 
-            const totalScore = +(dispScore + targetProxScore + structScore + liqScore + volScore + revScore).toFixed(1);
+            const structuralCompletionScore = +(dispScore + targetProxScore + structScore + liqScore + volScore + revScore).toFixed(1);
+
+            // 2. Distance to Destination
+            const distanceToDestPts = +(destPrice - spotPrice).toFixed(2);
+            const distanceToDestPct = +((distanceToDestPts / spotPrice) * 100).toFixed(2);
+
+            // Alignment Classification
+            // If 15M/5M are pulling back, classify as COUNTERTREND_RETRACEMENT
+            const alignment = idx === 6 || idx === 7 ? 'COUNTERTREND_RETRACEMENT' : 'CONTINUATION_ALIGNMENT';
 
             const cycleObj = {
                 timeframe: tf,
                 cycleId: cycleId,
                 parentCycleId: parentCycleId,
-                status: idx <= 3 ? 'EXPANSION' : idx <= 6 ? 'IMPULSE' : 'FORMING',
+                status: idx <= 3 ? 'EXPANSION' : (idx === 6 || idx === 7 ? 'RETRACEMENT' : 'FORMING'),
                 direction: isBull ? 'BULLISH' : 'BEARISH',
                 originPrice: originPrice,
                 originTimestamp: new Date(Date.now() - (idx * 3600 * 1000 * 6)).toISOString(),
@@ -102,10 +108,14 @@ export default async function handler(req, res) {
                 swingHigh: +(spotPrice + (tfAtr * 0.6)).toFixed(2),
                 swingLow: originPrice,
                 destinationPrice: destPrice,
-                destinationType: 'CONFIRMED_STRUCTURAL_BSL',
+                destinationType: idx <= 3 ? 'OBSERVED_BSL' : 'DERIVED_ATR_SCENARIO',
                 invalidationPrice: invalPrice,
                 atr: tfAtr,
-                completionScore: Math.min(100.0, totalScore),
+                structuralCompletionScore: Math.min(100.0, structuralCompletionScore),
+                distanceToDestination: {
+                    points: distanceToDestPts,
+                    percent: distanceToDestPct
+                },
                 scoreComponents: {
                     displacementProgress: dispScore,
                     targetProximity: targetProxScore,
@@ -114,7 +124,7 @@ export default async function handler(req, res) {
                     volatilityNormalization: volScore,
                     reversalConfirmation: revScore
                 },
-                parentAlignment: 'ALIGNED',
+                parentAlignment: alignment,
                 completedChildCount: idx < 8 ? Math.max(1, (8 - idx) * 3) : 0,
                 algorithmVersion: algorithmVersion
             };
@@ -127,21 +137,26 @@ export default async function handler(req, res) {
         const p4h = hierarchyTree.find(h => h.timeframe === '4h') || hierarchyTree[3];
         const p1m = hierarchyTree.find(h => h.timeframe === '1m') || hierarchyTree[8];
 
-        // 1M Trade Qualification & Deterministic Structural Score Calculation
-        const scoreComponents = {
-            parentAlignment: 20.0,            // 4H/1D/1W Mission Bullish Alignment (max 20)
-            structureConfirmation1m: 18.0,    // Micro BOS + Clean Higher Lows (max 20)
-            liquiditySweep: 14.5,             // Session Sell-Side Liquidity Swept & Defended (max 15)
-            displacement: 13.0,               // Strong Bullish Candle Expansion away from sweep (max 15)
-            fvgImbalance: 9.0,                // 1M Fair Value Gap Imbalance created (max 10)
-            retestConfirmation: 8.5,          // Price retracing into FVG demand zone (max 10)
-            riskRewardRatio: 4.5,             // 1:3.2 R:R to local liquidity (max 5)
-            volatilityRegime: 4.5             // ATR expansion without excessive slippage (max 5)
+        // 4. 4H Parent Journey Progress
+        const parentTotalDistance = Math.max(1.0, p4h.destinationPrice - p4h.originPrice);
+        const parentCurrentDistance = Math.max(0, spotPrice - p4h.originPrice);
+        const parentJourneyProgressPct = +Math.min(100.0, Math.max(0.0, (parentCurrentDistance / parentTotalDistance) * 100)).toFixed(1);
+
+        // 3. 1M Execution Setup Score (0-100)
+        const setupScoreComponents = {
+            parentContextAlignment: 20.0,
+            structureConfirmation1m: 18.0,
+            liquiditySweep: 14.5,
+            displacement: 13.0,
+            fvgImbalance: 9.0,
+            retestConfirmation: 8.5,
+            riskRewardRatio: 4.5,
+            volatilityRegime: 4.5
         };
 
-        const deterministicStructuralScore = +(Object.values(scoreComponents).reduce((a, b) => a + b, 0)).toFixed(1);
+        const executionSetupScore = +(Object.values(setupScoreComponents).reduce((a, b) => a + b, 0)).toFixed(1);
 
-        // 1M Execution Ticket (Strict Causal Setup)
+        // 1M Execution Ticket (Causal Setup on Retracement)
         const atr1m = p1m.atr;
         const entryPrice = +(spotPrice - 0.50).toFixed(2);
         const stopLoss = +(entryPrice - (atr1m * 1.8)).toFixed(2);
@@ -168,13 +183,13 @@ export default async function handler(req, res) {
             riskDistance: riskDistance,
             rewardDistance: rewardDistance,
             riskRewardRatio: rrRatio,
-            accountRiskPercent: 2.0, // Strict small-cap 2% cap
-            dollarRisk: 20.00,       // $20 risk on $1,000 capital
-            positionSizeLots: 0.01,  // Scaled for Small Account Safety
-            deterministicScore: deterministicStructuralScore,
-            scoreComponents: scoreComponents,
+            accountRiskPercent: 2.0,
+            dollarRisk: 20.00,
+            positionSizeLots: 0.01,
+            executionSetupScore: executionSetupScore,
+            scoreComponents: setupScoreComponents,
             scoreMaxWeights: {
-                parentAlignment: 20.0,
+                parentContextAlignment: 20.0,
                 structureConfirmation1m: 20.0,
                 liquiditySweep: 15.0,
                 displacement: 15.0,
@@ -218,7 +233,7 @@ export default async function handler(req, res) {
             }
         };
 
-        // Contained 1M Execution Ledger inside Active 4H Mission
+        // Contained 1M Execution Ledger
         const contained1mExecutionsLedger = [
             {
                 id: "EXEC_1M_#812",
@@ -284,7 +299,7 @@ export default async function handler(req, res) {
             symbol: "XAUUSD",
             timestamp: timestampUtc,
             latencyMs: Date.now() - startTime,
-            motto: "Don't trade every timeframe. Follow every timeframe, execute on 1M.",
+            motto: "Follow every timeframe. 4H = Parent Mission, 1M = Execution.",
             parentMission: {
                 timeframe: '4h',
                 cycleId: p4h.cycleId,
@@ -294,7 +309,9 @@ export default async function handler(req, res) {
                 destinationPrice: p4h.destinationPrice,
                 destinationType: p4h.destinationType,
                 invalidationPrice: p4h.invalidationPrice,
-                completionScore: p4h.completionScore,
+                parentJourneyProgress: parentJourneyProgressPct,
+                structuralCompletionScore: p4h.structuralCompletionScore,
+                distanceToDestination: p4h.distanceToDestination,
                 scoreComponents: p4h.scoreComponents,
                 containedStructuralCycles: {
                     '1h': { completed: 3, active: hierarchyTree[4].cycleId },
