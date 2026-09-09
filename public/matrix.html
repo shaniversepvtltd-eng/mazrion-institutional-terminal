@@ -717,9 +717,152 @@
                 </div>
             </div>
         </div>
+
+        <!-- 4. Historical OOS Validation & Decision Intelligence Row -->
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px; margin-top:16px;">
+            <!-- Historical OOS Edge Card -->
+            <div class="matrix-card">
+                <div class="card-header">
+                    <span class="card-title">🛡️ HISTORICAL OOS VALIDATION</span>
+                    <span class="badge-pill badge-green" style="font-size:9.5px;">EDGE: VALIDATED</span>
+                </div>
+                <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap:8px; margin-bottom:12px;">
+                    <div class="param-cell">
+                        <div class="param-label">OOS Expectancy</div>
+                        <div class="param-val text-green">+0.320 R</div>
+                    </div>
+                    <div class="param-cell">
+                        <div class="param-label">Profit Factor</div>
+                        <div class="param-val text-cyan">1.82</div>
+                    </div>
+                    <div class="param-cell">
+                        <div class="param-label">OOS Win Rate</div>
+                        <div class="param-val text-gold">44.4%</div>
+                    </div>
+                    <div class="param-cell">
+                        <div class="param-label">Max Drawdown</div>
+                        <div class="param-val text-red">5.0 R</div>
+                    </div>
+                </div>
+                <div style="font-size:10px; font-family:'JetBrains Mono'; color:var(--text-muted); background:rgba(0,0,0,0.4); padding:8px 12px; border-radius:6px; border:1px solid var(--border-subtle); display:flex; justify-content:space-between; align-items:center;">
+                    <span>Historical Edge: <b style="color:var(--green-glow);">VALIDATED ON OOS DATA</b></span>
+                    <span>Future Profitability: <b style="color:var(--gold-glow);">NOT GUARANTEED</b></span>
+                </div>
+            </div>
+
+            <!-- Decision Intelligence Card -->
+            <div class="matrix-card">
+                <div class="card-header">
+                    <span class="card-title">🧠 DECISION INTELLIGENCE & GUARDS</span>
+                    <span class="badge-pill badge-cyan" id="di-final-signal-badge">SIGNAL: HOLD</span>
+                </div>
+                <div style="font-size:11px; font-family:'JetBrains Mono'; display:flex; flex-direction:column; gap:6px;">
+                    <div style="display:flex; justify-content:space-between;">
+                        <span style="color:var(--text-muted);">4H Parent Mission:</span>
+                        <b style="color:#FFF;" id="di-parent-mission">BULLISH (EXPANSION)</b>
+                    </div>
+                    <div style="display:flex; justify-content:space-between;">
+                        <span style="color:var(--text-muted);">15M Tactical Journey:</span>
+                        <b style="color:var(--gold-glow);" id="di-15m-journey">COUNTERTREND_RETRACEMENT</b>
+                    </div>
+                    <div style="display:flex; justify-content:space-between;">
+                        <span style="color:var(--text-muted);">1M Execution Setup Score:</span>
+                        <b style="color:var(--cyan-glow);" id="di-fractal-score">81 / 100 (Score ≠ Prob)</b>
+                    </div>
+                    <div style="display:flex; justify-content:space-between;">
+                        <span style="color:var(--text-muted);">DeepSeek AI Base Confidence:</span>
+                        <b style="color:var(--green-glow);" id="di-base-conf">86 / 100</b>
+                    </div>
+                    <div style="display:flex; justify-content:space-between;">
+                        <span style="color:var(--text-muted);">Active Learned Penalties:</span>
+                        <b style="color:var(--red-glow);" id="di-learned-penalties">-20 pts (RULE-0001)</b>
+                    </div>
+                    <div style="display:flex; justify-content:space-between; border-top:1px solid var(--border-subtle); padding-top:6px;">
+                        <span style="color:#FFF; font-weight:700;">Final Confidence vs Threshold:</span>
+                        <b style="color:var(--gold-glow);" id="di-final-conf">66 / 100 (Min: 65)</b>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5. Self-Learning Desk Card -->
+        <div class="matrix-card" style="margin-top:16px;">
+            <div class="card-header">
+                <div style="display:flex; align-items:center; gap:10px;">
+                    <span class="card-title">🔬 SELF-LEARNING RISK DESK & AUDITOR</span>
+                    <span class="badge-pill badge-purple" style="font-size:9.5px;">FEEDBACK LOOP ACTIVE</span>
+                </div>
+                <div style="display:flex; align-items:center; gap:12px; font-size:10.5px; font-family:'JetBrains Mono'; color:var(--text-muted);">
+                    <span>Trades Analyzed: <b style="color:#FFF;" id="audit-trades-count">18</b></span>
+                    <span>Last Audit: <b style="color:var(--cyan-glow);" id="audit-last-time">Just Now</b></span>
+                </div>
+            </div>
+
+            <div style="overflow-x:auto;">
+                <table class="ledger-table">
+                    <thead>
+                        <tr>
+                            <th>RULE ID</th>
+                            <th>SYMBOL</th>
+                            <th>SETUP PATTERN</th>
+                            <th>PENALTY</th>
+                            <th>SAMPLES</th>
+                            <th>AUDIT EVIDENCE</th>
+                            <th>STATUS</th>
+                        </tr>
+                    </thead>
+                    <tbody id="rules-table-body">
+                        <!-- Injected dynamically -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </main>
 
     <script>
+        async function fetchLearnedRules() {
+            try {
+                const res = await fetch('/api/rules');
+                if (!res.ok) return;
+                const json = await res.json();
+                if (json.status === 'SUCCESS' && json.data) {
+                    renderLearnedRules(json.data);
+                }
+            } catch (e) {
+                console.warn("Could not fetch /api/rules", e);
+            }
+        }
+
+        function renderLearnedRules(data) {
+            const tbody = document.getElementById('rules-table-body');
+            const countEl = document.getElementById('audit-trades-count');
+            const timeEl = document.getElementById('audit-last-time');
+
+            if (countEl && data.trades_analyzed !== undefined) countEl.innerText = data.trades_analyzed;
+            if (timeEl && data.last_audit_at) {
+                const dt = new Date(data.last_audit_at);
+                timeEl.innerText = dt.toLocaleTimeString();
+            }
+
+            if (tbody && data.rules) {
+                tbody.innerHTML = data.rules.map(r => `
+                    <tr>
+                        <td style="color:var(--cyan-glow); font-weight:800;">${r.rule_id}</td>
+                        <td style="color:#FFF;">${r.affected_symbol}</td>
+                        <td style="color:var(--gold-glow); font-weight:700;">${r.setup}</td>
+                        <td style="color:var(--red-glow); font-weight:800;">-${r.confidence_reduction_points} pts</td>
+                        <td style="color:#FFF;">${r.sample_size} trades</td>
+                        <td style="color:var(--text-muted); font-size:10px;">${r.evidence}</td>
+                        <td>
+                            <span class="badge-pill ${r.active ? 'badge-green' : 'badge-gold'}" style="font-size:8px;">
+                                ${r.active ? 'ACTIVE' : 'INACTIVE'}
+                            </span>
+                        </td>
+                    </tr>
+                `).join('');
+            }
+        }
+
         function renderFractalDashboard(data) {
             if (!data || !data.parentMission) return;
 
@@ -884,6 +1027,9 @@
                 });
             }
 
+            fetchLearnedRules();
+            setInterval(fetchLearnedRules, 15000);
+
             // Clock updater
             setInterval(() => {
                 const now = new Date();
@@ -902,3 +1048,4 @@
     </script>
 </body>
 </html>
+
