@@ -348,32 +348,33 @@
         .tree-node-table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 10.5px;
+            font-size: 9.5px;
             font-family: 'JetBrains Mono', monospace;
         }
 
         .tree-node-table th {
             text-align: left;
-            padding: 6px 8px;
+            padding: 4px 6px;
             color: var(--text-muted);
             border-bottom: 1px solid var(--border-subtle);
-            font-size: 9px;
+            font-size: 8.5px;
             letter-spacing: 0.5px;
         }
 
         .tree-node-table td {
-            padding: 7px 8px;
+            padding: 3.5px 6px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.04);
             vertical-align: middle;
+            font-size: 9.5px;
         }
 
         .tree-node-row:hover {
-            background: rgba(255, 255, 255, 0.03);
+            background: rgba(255, 255, 255, 0.04);
         }
 
         .tree-node-row.row-1m {
-            background: rgba(0, 229, 255, 0.05);
-            border-left: 2px solid var(--cyan-glow);
+            background: rgba(0, 229, 255, 0.08);
+            border-left: 2.5px solid var(--cyan-glow);
         }
 
         /* 1M Execution Ticket */
@@ -594,7 +595,7 @@
         <!-- 2. Execution Journey Breadcrumb HUD -->
         <section class="execution-journey-hud">
             <div class="journey-step">
-                <div class="step-node active-dest">🎯 4H TARGET: $4,445.00</div>
+                <div class="step-node active-dest" id="hud-4h-target">🎯 4H TARGET: $4,471.08</div>
                 <span class="step-arrow">➔</span>
             </div>
             <div class="journey-step">
@@ -1063,15 +1064,17 @@
                 if (tEntry) tEntry.innerText = `$${Number(ticket.entryPrice || (spot - 0.50)).toFixed(2)}`;
                 if (tSl) tSl.innerText = `$${Number(ticket.stopLoss || (spot - 4.0)).toFixed(2)}`;
                 if (tTp1) tTp1.innerText = `$${Number(ticket.tp1 || (spot + 6.0)).toFixed(2)}`;
-                if (tTp2) tTp2.innerText = `$${Number(ticket.tp2 || (spot + 15.0)).toFixed(2)}`;
-                if (tRr) tRr.innerText = `1 : ${ticket.riskRewardRatio || '3.05'}`;
+                if (tTp2) tTp2.innerText = `$${Number(ticket.tp2 || pm.destinationPrice || (spot + 15.0)).toFixed(2)}`;
+                if (tRr) tRr.innerText = ticket.riskRewardRatio || '1 : 2.00';
                 if (tDirPill) tDirPill.innerText = `DIRECTION: ${ticket.direction || 'BUY'}`;
 
                 // Breadcrumb sync
+                const hud4h = document.getElementById('hud-4h-target');
                 const hudEntry = document.getElementById('hud-entry-node');
                 const hudTp = document.getElementById('hud-tp-node');
+                if (hud4h) hud4h.innerText = `🎯 4H TARGET: $${Number(pm.destinationPrice || ticket.tp2 || 4471.08).toFixed(2)}`;
                 if (hudEntry) hudEntry.innerText = `ENTRY $${Number(ticket.entryPrice || (spot - 0.50)).toFixed(2)}`;
-                if (hudTp) hudTp.innerText = `TP1 $${Number(ticket.tp1 || (spot + 6.0)).toFixed(2)} / TP2 $${Number(ticket.tp2 || (spot + 15.0)).toFixed(2)}`;
+                if (hudTp) hudTp.innerText = `TP1 $${Number(ticket.tp1 || (spot + 6.0)).toFixed(2)} / TP2 $${Number(ticket.tp2 || pm.destinationPrice || (spot + 15.0)).toFixed(2)}`;
 
                 const scoreVal = document.getElementById('score-total-val');
                 const setupScore = ticket.executionSetupScore !== undefined ? ticket.executionSetupScore : (ticket.deterministicScore !== undefined ? ticket.deterministicScore : 88.0);

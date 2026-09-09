@@ -223,14 +223,14 @@ export default async function handler(req, res) {
         const parentJourneyProgress = Math.min(100, Math.round((currentMove4h / totalJourney4h) * 100));
 
         // 1M Execution Ticket (Deterministic, look-ahead free)
-        const atr1m = hierarchyTree.find(h => h.timeframe === '1m').atr;
+        const atr1m = hierarchyTree.find(h => h.timeframe === '1m').atr || 2.18;
         const entryPrice = +(spotPrice - 0.50).toFixed(2);
-        const stopLoss = +(entryPrice - (atr1m * 1.8)).toFixed(2);
-        const tp1 = +(entryPrice + (atr1m * 2.8)).toFixed(2);
-        const tp2 = +(entryPrice + (atr1m * 5.2)).toFixed(2);
-        const riskDistance = +(entryPrice - stopLoss).toFixed(2);
+        const riskDistance = +(atr1m * 1.5).toFixed(2);
+        const stopLoss = +(entryPrice - riskDistance).toFixed(2);
+        const tp1 = +(entryPrice + (riskDistance * 2.0)).toFixed(2); // Exact 1:2.0 R:R Partial Booking
+        const tp2 = +htf4h.destinationPrice.toFixed(2); // Exact 4H Parent Target
         const rewardDistance = +(tp1 - entryPrice).toFixed(2);
-        const rrRatio = +(rewardDistance / riskDistance).toFixed(2);
+        const rrRatio = "1 : 2.00";
 
         // 4. Pre-Trade Monte Carlo Possibility Gate (10,000 GBM Iterations)
         const numSimulations = 10000;
