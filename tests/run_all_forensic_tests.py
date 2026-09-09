@@ -17,6 +17,10 @@ def run_all():
         ("BOS / CHoCH Market Structure Determinism", "tests/structure/test_structure_engine.py"),
         ("Macro Calendar & Treasury Yield Sources", "tests/macro/test_macro_calendar.py"),
         ("Risk Engine Contract Sizing & 2% Capital Cap", "tests/risk/test_risk_engine.py"),
+        ("Recursive Hierarchy & Time Containment", "tests/fractals/test_recursive_hierarchy.py"),
+        ("Fractal State Machine & Decomposed Score", "tests/fractals/test_state_machine.py"),
+        ("Look-Ahead Bias Prevention & Causal Pivots", "tests/fractals/test_lookahead_bias.py"),
+        ("Fractal Hypothesis Empirical Backtest", "tests/fractals/test_fractal_backtest.py"),
     ]
     
     results = []

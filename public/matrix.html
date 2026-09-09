@@ -6,11 +6,13 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <title>MAZRION // FRACTAL WAVE & RESET MATRIX — MULTI-TIMEFRAME HIGHWAY LEDGER</title>
+    <title>MAZRION // RECURSIVE FRACTAL MATRIX v8.0 — MULTI-TIMEFRAME PARENT MISSION ENGINE</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700;800&family=Orbitron:wght@600;700;800;900&display=swap" rel="stylesheet">
     <script src="/js/security.js"></script>
     <script src="/js/market_engine.js"></script>
+    <script src="/js/fractal_engine.js"></script>
     <style>
         :root {
             --bg-base: #030712;
@@ -49,7 +51,7 @@
                 linear-gradient(to bottom, #030712, #080E1A);
         }
 
-        /* Top Institutional Header */
+        /* Top Header */
         .top-nav {
             background: rgba(11, 17, 32, 0.95);
             backdrop-filter: blur(20px);
@@ -63,7 +65,7 @@
             z-index: 1000;
         }
 
-        .brand-box {
+        .brand {
             display: flex;
             align-items: center;
             gap: 12px;
@@ -81,7 +83,7 @@
             box-shadow: 0 0 20px rgba(0, 229, 255, 0.45);
         }
 
-        .brand-text h1 {
+        .brand h1 {
             font-size: 15px;
             font-weight: 900;
             letter-spacing: 0.8px;
@@ -91,7 +93,7 @@
             -webkit-text-fill-color: transparent;
         }
 
-        .brand-text p {
+        .brand p {
             font-size: 9.5px;
             font-weight: 700;
             color: var(--cyan-glow);
@@ -148,158 +150,39 @@
             height: 8px;
             border-radius: 50%;
             background: var(--green-glow);
-            box-shadow: 0 0 8px var(--green-glow);
+            box-shadow: 0 0 10px var(--green-glow);
             animation: pulse 1.5s infinite;
         }
 
         @keyframes pulse {
-            0% { opacity: 0.4; transform: scale(0.9); }
-            50% { opacity: 1; transform: scale(1.15); }
-            100% { opacity: 0.4; transform: scale(0.9); }
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.3); opacity: 0.6; }
         }
 
-        /* Container Layout */
         .matrix-container {
             max-width: 1440px;
             margin: 0 auto;
-            padding: 20px;
+            padding: 20px 24px;
             display: flex;
             flex-direction: column;
-            gap: 18px;
-        }
-
-        /* Highway Banner Strip */
-        .highway-hero {
-            background: var(--bg-card);
-            border: 1px solid var(--border-cyan);
-            border-radius: 12px;
-            padding: 16px 20px;
-            backdrop-filter: blur(16px);
-            display: grid;
-            grid-template-columns: 1.4fr 1.6fr 1fr;
             gap: 20px;
-            align-items: center;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
         }
 
-        .highway-title-box h2 {
-            font-size: 13px;
-            font-weight: 900;
-            letter-spacing: 1px;
-            color: var(--cyan-glow);
-            font-family: 'Orbitron', monospace;
-            margin-bottom: 4px;
-        }
-
-        .highway-title-box p {
-            font-size: 11px;
-            color: var(--text-muted);
-            line-height: 1.4;
-        }
-
-        .highway-progress-rack {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-
-        .progress-bar-track {
-            height: 10px;
-            background: rgba(255, 255, 255, 0.08);
-            border-radius: 5px;
-            overflow: hidden;
-            border: 1px solid var(--border-subtle);
-        }
-
-        .progress-bar-fill {
-            height: 100%;
-            background: linear-gradient(90deg, var(--cyan-glow), var(--green-glow));
-            box-shadow: 0 0 12px var(--cyan-glow);
-            transition: width 0.4s ease;
-        }
-
-        .scoreboard-rack {
-            background: rgba(0, 0, 0, 0.4);
-            border: 1px solid var(--border-subtle);
-            border-radius: 8px;
-            padding: 8px 12px;
-            display: flex;
-            justify-content: space-around;
-            text-align: center;
-        }
-
-        .score-item {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .score-label {
-            font-size: 9px;
-            color: var(--text-dim);
-            font-weight: 700;
-            text-transform: uppercase;
-        }
-
-        .score-val {
-            font-size: 13px;
-            font-weight: 900;
-            font-family: 'JetBrains Mono', monospace;
-        }
-
-        /* Timeframe Tabs Bar */
-        .tf-bar {
-            display: flex;
-            gap: 8px;
-            align-items: center;
-            background: var(--bg-surface);
-            padding: 8px 12px;
-            border-radius: 10px;
-            border: 1px solid var(--border-subtle);
-            overflow-x: auto;
-        }
-
-        .tf-btn {
-            padding: 8px 16px;
-            border-radius: 6px;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid var(--border-subtle);
-            color: var(--text-muted);
-            font-size: 11px;
-            font-weight: 800;
-            font-family: 'JetBrains Mono', monospace;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            white-space: nowrap;
-        }
-
-        .tf-btn:hover {
-            color: #FFF;
-            border-color: var(--border-cyan);
-            background: rgba(0, 229, 255, 0.08);
-        }
-
-        .tf-btn.active {
-            background: linear-gradient(135deg, rgba(0, 229, 255, 0.25), rgba(16, 185, 129, 0.2));
-            border-color: var(--cyan-glow);
-            color: #FFF;
-            box-shadow: 0 0 12px rgba(0, 229, 255, 0.35);
-        }
-
-        /* Active Live Wave Hero Focus Card */
-        .live-wave-hero {
+        /* Hero Parent Mission Card */
+        .parent-mission-hero {
             background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(8, 14, 24, 0.95));
             border: 1.5px solid var(--cyan-glow);
             border-radius: 14px;
-            padding: 20px;
+            padding: 22px;
             display: grid;
-            grid-template-columns: 1.2fr 1.3fr 1fr;
+            grid-template-columns: 1.3fr 1.1fr 1fr;
             gap: 20px;
-            box-shadow: 0 0 25px rgba(0, 229, 255, 0.18);
+            box-shadow: 0 0 30px rgba(0, 229, 255, 0.15);
             position: relative;
             overflow: hidden;
         }
 
-        .live-wave-hero::before {
+        .parent-mission-hero::before {
             content: "";
             position: absolute;
             top: 0;
@@ -310,13 +193,10 @@
             box-shadow: 0 0 12px var(--cyan-glow);
         }
 
-        .wave-badge-live {
+        .badge-pill {
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            background: rgba(16, 185, 129, 0.15);
-            border: 1px solid var(--green-glow);
-            color: var(--green-glow);
             padding: 3px 10px;
             border-radius: 20px;
             font-size: 10px;
@@ -325,270 +205,253 @@
             margin-bottom: 8px;
         }
 
-        .wave-header-title {
-            font-size: 20px;
+        .badge-live { background: rgba(16, 185, 129, 0.15); border: 1px solid var(--green-glow); color: var(--green-glow); }
+        .badge-parent { background: rgba(0, 229, 255, 0.15); border: 1px solid var(--cyan-glow); color: var(--cyan-glow); }
+
+        .mission-title {
+            font-size: 22px;
             font-weight: 900;
             font-family: 'Orbitron', monospace;
             color: #FFF;
-            margin-bottom: 4px;
+            margin-bottom: 6px;
         }
 
-        .wave-range-tag {
-            font-size: 12px;
-            color: var(--cyan-glow);
+        .mission-endpoints {
+            display: flex;
+            align-items: center;
+            gap: 10px;
             font-family: 'JetBrains Mono', monospace;
-            font-weight: 800;
+            font-size: 13px;
+            color: var(--cyan-glow);
+            margin-bottom: 12px;
         }
 
-        /* Pullback Probability Meter */
-        .pullback-box {
-            background: rgba(0, 0, 0, 0.5);
+        .endpoint-arrow {
+            color: var(--text-dim);
+            font-weight: 900;
+        }
+
+        /* Scoreboard & Breakdown */
+        .score-card-box {
+            background: rgba(0, 0, 0, 0.45);
             border: 1px solid var(--border-subtle);
             border-radius: 10px;
             padding: 14px;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
+            gap: 8px;
         }
 
-        .pullback-title {
-            font-size: 10.5px;
-            font-weight: 800;
-            color: var(--gold-glow);
+        .score-card-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 6px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            font-weight: 800;
         }
 
-        .pullback-gauge-track {
+        .progress-bar-track {
             height: 8px;
             background: rgba(255, 255, 255, 0.08);
             border-radius: 4px;
             overflow: hidden;
-            margin: 6px 0;
+            border: 1px solid var(--border-subtle);
         }
 
-        .pullback-gauge-fill {
+        .progress-bar-fill {
             height: 100%;
-            background: linear-gradient(90deg, var(--gold-glow), var(--green-glow));
+            background: linear-gradient(90deg, var(--cyan-glow), var(--green-glow));
+            box-shadow: 0 0 10px var(--cyan-glow);
             transition: width 0.4s ease;
         }
 
-        .pullback-advice {
-            font-size: 11px;
-            color: #CBD5E1;
-            line-height: 1.4;
+        .decomposed-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            margin-top: 4px;
         }
 
-        /* Execution Clapper Slate */
-        .ticket-slate {
-            background: rgba(0, 0, 0, 0.6);
-            border: 1px dashed var(--border-cyan);
+        .decomp-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 3px 6px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 4px;
+        }
+
+        /* Child Execution Counter Rack */
+        .child-counter-rack {
+            background: rgba(0, 0, 0, 0.45);
+            border: 1px solid var(--border-subtle);
             border-radius: 10px;
-            padding: 12px;
+            padding: 14px;
             display: flex;
             flex-direction: column;
             gap: 8px;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 11px;
         }
 
-        .ticket-row {
+        .child-counter-title {
+            font-size: 10px;
+            font-weight: 900;
+            color: var(--gold-glow);
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            font-family: 'JetBrains Mono', monospace;
+            margin-bottom: 2px;
+        }
+
+        .child-row {
             display: flex;
             justify-content: space-between;
-            color: var(--text-muted);
-        }
-
-        .ticket-row strong {
-            color: #FFF;
-        }
-
-        .btn-action-copy {
-            background: linear-gradient(135deg, var(--cyan-glow), #0099FF);
-            color: #000;
-            border: none;
-            border-radius: 6px;
-            padding: 8px 12px;
-            font-weight: 900;
+            align-items: center;
+            font-family: 'JetBrains Mono', monospace;
             font-size: 11px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            text-align: center;
-            font-family: 'Inter', sans-serif;
+            padding: 4px 6px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
         }
 
-        .btn-action-copy:hover {
-            box-shadow: 0 0 16px rgba(0, 229, 255, 0.6);
-            transform: translateY(-1px);
-        }
-
-        /* The Complete Multi-Wave Ledger Table */
-        .matrix-ledger-card {
+        /* Recursive Hierarchy Tree Card */
+        .tree-card {
             background: var(--bg-card);
             border: 1px solid var(--border-subtle);
             border-radius: 12px;
             padding: 18px;
-            backdrop-filter: blur(16px);
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
         }
 
-        .ledger-header {
+        .tree-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 14px;
             border-bottom: 1px solid var(--border-subtle);
             padding-bottom: 10px;
         }
 
-        .ledger-title {
-            font-size: 13px;
+        .tree-header h3 {
+            font-size: 14px;
             font-weight: 900;
             font-family: 'Orbitron', monospace;
-            color: var(--cyan-glow);
-        }
-
-        .ledger-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 11px;
-        }
-
-        .ledger-table th {
-            text-align: left;
-            padding: 10px 12px;
-            color: var(--text-dim);
-            font-size: 9.5px;
-            text-transform: uppercase;
-            font-weight: 800;
-            border-bottom: 1px solid var(--border-subtle);
-            background: rgba(0, 0, 0, 0.2);
-        }
-
-        .ledger-table td {
-            padding: 12px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-            color: #E2E8F0;
-        }
-
-        .ledger-table tr:hover {
-            background: rgba(255, 255, 255, 0.03);
-        }
-
-        .ledger-table tr.row-active {
-            background: rgba(0, 229, 255, 0.07);
-            border-left: 3px solid var(--cyan-glow);
-        }
-
-        .ledger-table tr.row-completed {
-            opacity: 0.88;
-        }
-
-        .ledger-table tr.row-future {
-            opacity: 0.6;
-        }
-
-        .status-tag {
-            display: inline-block;
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-size: 9.5px;
-            font-weight: 900;
-        }
-
-        .tag-hit { background: rgba(16, 185, 129, 0.2); color: var(--green-glow); border: 1px solid var(--green-glow); }
-        .tag-be { background: rgba(0, 229, 255, 0.2); color: var(--cyan-glow); border: 1px solid var(--cyan-glow); }
-        .tag-active { background: rgba(245, 158, 11, 0.25); color: var(--gold-glow); border: 1px solid var(--gold-glow); animation: pulse 2s infinite; }
-        .tag-queued { background: rgba(148, 163, 184, 0.15); color: var(--text-muted); border: 1px solid var(--border-subtle); }
-        .tag-sl { background: rgba(239, 68, 68, 0.2); color: var(--red-glow); border: 1px solid var(--red-glow); }
-
-        .btn-prearm {
-            background: rgba(255, 255, 255, 0.06);
-            border: 1px solid var(--border-subtle);
-            color: var(--text-main);
-            padding: 3px 8px;
-            border-radius: 4px;
-            font-size: 10px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .btn-prearm:hover {
-            background: var(--cyan-glow);
-            color: #000;
-            border-color: var(--cyan-glow);
-        }
-
-        /* Institutional Liquidity & Fuel Badges */
-        .fuel-badge-bar {
+            color: #FFF;
             display: flex;
             align-items: center;
             gap: 8px;
-            flex-wrap: wrap;
-            margin-bottom: 8px;
         }
 
-        .sweep-tag-pill {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            padding: 3px 8px;
-            border-radius: 4px;
-            font-size: 10px;
-            font-weight: 900;
-            font-family: 'JetBrains Mono', monospace;
-            background: rgba(0, 229, 255, 0.15);
-            color: var(--cyan-glow);
-            border: 1px solid var(--border-cyan);
-        }
-
-        .fuel-tank-pill {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            padding: 3px 8px;
-            border-radius: 4px;
-            font-size: 10px;
-            font-weight: 800;
-            font-family: 'JetBrains Mono', monospace;
-            background: rgba(245, 158, 11, 0.15);
-            color: var(--gold-glow);
-            border: 1px solid var(--border-gold);
-        }
-
-        .thesis-box {
-            background: rgba(10, 16, 28, 0.8);
-            border: 1px solid rgba(0, 229, 255, 0.2);
-            border-radius: 8px;
-            padding: 10px 12px;
-            margin-top: 10px;
-            font-size: 11px;
-            line-height: 1.5;
-            color: #CBD5E1;
-        }
-        .thesis-title {
-            font-size: 10px;
-            font-weight: 900;
-            color: var(--cyan-glow);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 4px;
+        .tree-grid {
             display: flex;
-            align-items: center;
-            gap: 5px;
+            flex-direction: column;
+            gap: 8px;
         }
+
+        .tree-node {
+            background: rgba(11, 17, 32, 0.8);
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            padding: 10px 14px;
+            display: grid;
+            grid-template-columns: 120px 160px 1fr 140px 160px;
+            align-items: center;
+            gap: 12px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            transition: all 0.2s ease;
+        }
+
+        .tree-node:hover {
+            border-color: var(--border-cyan);
+            background: rgba(15, 23, 42, 0.95);
+        }
+
+        .node-tf { font-weight: 900; color: #FFF; display: flex; align-items: center; gap: 6px; }
+        .node-cycle-id { color: var(--cyan-glow); font-size: 10.5px; }
+        .node-origin-dest { color: #E2E8F0; }
+        .node-status { display: inline-flex; padding: 2px 8px; border-radius: 4px; font-size: 9.5px; font-weight: 900; }
+        .node-status.EXPANSION { background: rgba(16, 185, 129, 0.2); color: var(--green-glow); border: 1px solid var(--green-glow); }
+        .node-status.IMPULSE { background: rgba(0, 229, 255, 0.2); color: var(--cyan-glow); border: 1px solid var(--cyan-glow); }
+        .node-status.FORMING { background: rgba(245, 158, 11, 0.2); color: var(--gold-glow); border: 1px solid var(--gold-glow); }
+        .node-score { text-align: right; color: var(--gold-glow); font-weight: 800; }
+
+        /* Dynamic Highway Lineage HUD */
+        .highway-hud-card {
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.9), rgba(11, 17, 32, 0.9));
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            padding: 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .hud-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 14px;
+        }
+
+        .hud-box {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .hud-box-label { font-size: 10px; font-weight: 800; color: var(--text-dim); text-transform: uppercase; font-family: 'JetBrains Mono', monospace; }
+        .hud-box-val { font-size: 18px; font-weight: 900; font-family: 'JetBrains Mono', monospace; color: #FFF; }
+        .hud-box-lineage { font-size: 9.5px; color: var(--cyan-glow); font-family: 'JetBrains Mono', monospace; margin-top: 4px; }
+
+        /* Detected vs Scenario Distinction */
+        .scenarios-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .scenario-card {
+            background: rgba(15, 23, 42, 0.85);
+            border: 1px solid var(--border-subtle);
+            border-radius: 10px;
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .scenario-card.active-state {
+            border-color: var(--green-glow);
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.1);
+        }
+
+        .scenario-tag {
+            font-size: 9.5px;
+            font-weight: 900;
+            font-family: 'JetBrains Mono', monospace;
+            display: inline-flex;
+            width: fit-content;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+        .tag-fact { background: rgba(16, 185, 129, 0.2); color: var(--green-glow); border: 1px solid var(--green-glow); }
+        .tag-hypo { background: rgba(245, 158, 11, 0.2); color: var(--gold-glow); border: 1px solid var(--gold-glow); }
     </style>
 </head>
 <body>
 
-    <!-- ==================== TOP NAVIGATION ==================== -->
+    <!-- TOP HEADER -->
     <nav class="top-nav">
         <div class="brand">
             <div class="brand-logo">⚡</div>
             <div>
-                <h1>MAZRION FRACTAL MATRIX</h1>
-                <p>MULTI-TIMEFRAME HIGHWAY WAVE LEDGER <span style="background:rgba(0,229,255,0.15); color:var(--cyan-glow); border:1px solid rgba(0,229,255,0.3); padding:1px 6px; border-radius:4px; font-size:9px; font-weight:800; margin-left:6px;">v6.2.0 DYNAMIC</span></p>
+                <h1>MAZRION FRACTAL MATRIX v8.0</h1>
+                <p>RECURSIVE PARENT MISSION ➔ CHILD EXECUTION ENGINE</p>
             </div>
         </div>
 
@@ -606,832 +469,190 @@
         <div class="live-price-pill">
             <div class="pulse-dot"></div>
             <span>XAUUSD SPOT:</span>
-            <span id="nav-live-price" style="color:var(--cyan-glow);">$4,412.34</span>
+            <span id="nav-live-price" style="color:var(--cyan-glow);">$4,398.00</span>
         </div>
     </nav>
 
-    <!-- ==================== MAIN MATRIX CONTENT ==================== -->
+    <!-- MAIN CONTAINER -->
     <div class="matrix-container">
 
-        <!-- 1. 4H Master Highway & Global Scoreboard Hero -->
-        <div class="highway-hero">
-            <div class="highway-title-box">
-                <h2>🛣️ 4-HOUR ACTIVE HIGHWAY MISSION CONTROL</h2>
-                <p id="highway-desc">
-                    Master Weekly Roadmap: <strong>$4,381.24</strong> (Session Floor Defended) ➔ <strong>$4,512.33</strong> (4H BSL Ceiling). Total Highway Range: <strong>$131.09</strong>.
-                </p>
+        <!-- 1. ACTIVE 4H PARENT MISSION HERO -->
+        <div class="parent-mission-hero">
+            <div>
+                <div class="badge-pill badge-live">● REAL-TIME STRUCTURE ACTIVE</div>
+                <div class="badge-pill badge-parent" id="parent-badge-tf">4H PARENT MISSION</div>
+                <div class="mission-title" id="parent-cycle-id">ACTIVE 4H MISSION #14</div>
+                <div class="mission-endpoints">
+                    <span id="parent-origin">$4,372.00</span>
+                    <span class="endpoint-arrow">➔</span>
+                    <span id="parent-dest" style="color:var(--gold-glow);">$4,445.00</span>
+                    <span style="font-size:10px; color:var(--text-dim);" id="parent-dest-type">(BSL Target)</span>
+                </div>
+                <div style="font-size:11.5px; color:#E2E8F0; line-height:1.5;" id="parent-desc">
+                    4H structural mission confirmed from sweep floor. Direction: <strong style="color:var(--green-glow);">BULLISH EXPANSION</strong>. Lower timeframe cycles are executing intermediate accumulation steps.
+                </div>
             </div>
 
-            <div class="highway-progress-rack">
-                <div style="display:flex; justify-content:space-between; font-size:10px; font-weight:800; font-family:'JetBrains Mono';">
-                    <span style="color:var(--text-muted);" id="highway-lap-text">LAP 2 OF 4 ACTIVE</span>
-                    <span style="color:var(--cyan-glow);" id="highway-pct-text">24% COMPLETED</span>
+            <!-- Decomposed Completion Scoreboard -->
+            <div class="score-card-box">
+                <div class="score-card-header">
+                    <span>AUDITABLE COMPLETION SCORE</span>
+                    <span style="color:var(--cyan-glow); font-size:13px;" id="decomp-total-score">67.4 / 100</span>
                 </div>
                 <div class="progress-bar-track">
-                    <div class="progress-bar-fill" id="highway-progress-fill" style="width: 24%;"></div>
+                    <div class="progress-bar-fill" id="decomp-progress-fill" style="width: 67.4%;"></div>
                 </div>
-                <div style="display:flex; justify-content:space-between; font-size:9.5px; color:var(--text-dim); margin-top:4px;">
-                    <span>$4,381.24 (Ignition)</span>
-                    <span>$4,454.00 (Mid-EQ)</span>
-                    <span>$4,512.33 (Target 🏆)</span>
+                <div class="decomposed-grid">
+                    <div class="decomp-item"><span>Displacement (25%):</span> <strong id="score-disp">21.0</strong></div>
+                    <div class="decomp-item"><span>Target Prox (25%):</span> <strong id="score-target">16.5</strong></div>
+                    <div class="decomp-item"><span>Structure (20%):</span> <strong id="score-struct">14.0</strong></div>
+                    <div class="decomp-item"><span>Liquidity (15%):</span> <strong id="score-liq">9.0</strong></div>
+                    <div class="decomp-item"><span>Volatility (10%):</span> <strong id="score-vol">5.0</strong></div>
+                    <div class="decomp-item"><span>Reversal (5%):</span> <strong id="score-rev">1.9</strong></div>
                 </div>
             </div>
 
-            <div class="scoreboard-rack">
-                <div class="score-item">
-                    <span class="score-label">Total Waves</span>
-                    <span class="score-val" id="score-total" style="color:#FFF;">18</span>
-                </div>
-                <div class="score-item">
-                    <span class="score-label">TP Hit (Won)</span>
-                    <span class="score-val" id="score-won" style="color:var(--green-glow);">4</span>
-                </div>
-                <div class="score-item">
-                    <span class="score-label">Win Rate</span>
-                    <span class="score-val" id="score-winrate" style="color:var(--cyan-glow);">100%</span>
-                </div>
-                <div class="score-item">
-                    <span class="score-label">Total Banked</span>
-                    <span class="score-val" id="score-profit" style="color:var(--gold-glow);">+8.4R</span>
+            <!-- Child Execution Counter -->
+            <div class="child-counter-rack">
+                <div class="child-counter-title">NESTED CHILD EXECUTION JOURNEY</div>
+                <div class="child-row"><span>1H Cycles:</span> <strong style="color:var(--cyan-glow);" id="cnt-1h">3 Completed • 1 Active</strong></div>
+                <div class="child-row"><span>15M Cycles:</span> <strong style="color:var(--cyan-glow);" id="cnt-15m">8 Completed • 1 Active</strong></div>
+                <div class="child-row"><span>5M Cycles:</span> <strong style="color:var(--cyan-glow);" id="cnt-5m">21 Completed • 1 Active</strong></div>
+                <div class="child-row"><span>1M Cycles:</span> <strong style="color:var(--green-glow);" id="cnt-1m">104 Completed • 1 Active</strong></div>
+                <div style="font-size:9.5px; color:var(--text-dim); margin-top:4px;">
+                    Child completion has zero authority to close parent mission.
                 </div>
             </div>
         </div>
 
-        <!-- 2. Timeframe Switcher Tabs -->
-        <div class="tf-bar">
-            <span style="font-size:10px; font-weight:800; color:var(--text-dim); text-transform:uppercase; margin-right:4px;">SELECT FRACTAL TIMEFRAME:</span>
-            <button class="tf-btn active" id="tf-btn-1m" onclick="switchTimeframe('1m')">1-MINUTE (1M) • 4 WAVES</button>
-            <button class="tf-btn" id="tf-btn-5m" onclick="switchTimeframe('5m')">5-MINUTE (5M) • 4 WAVES</button>
-            <button class="tf-btn" id="tf-btn-15m" onclick="switchTimeframe('15m')">15-MINUTE (15M) • 4 WAVES</button>
-            <button class="tf-btn" id="tf-btn-1h" onclick="switchTimeframe('1h')">1-HOUR (1H) • 2 WAVES</button>
-            <button class="tf-btn" id="tf-btn-4h" onclick="switchTimeframe('4h')">4-HOUR (4H) • 4 LAPS</button>
-            <button class="tf-btn" id="tf-btn-1d" onclick="switchTimeframe('1d')">DAILY (1D) • 3 WAVES</button>
-            <button class="tf-btn" id="tf-btn-1w" onclick="switchTimeframe('1w')">WEEKLY (1W) • 2 LEGS</button>
+        <!-- 2. RECURSIVE HIERARCHY TREE -->
+        <div class="tree-card">
+            <div class="tree-header">
+                <h3>🌳 RECURSIVE MULTI-TIMEFRAME FRACTAL HIERARCHY (1W ➔ 1D ➔ 4H ➔ 1H ➔ 15M ➔ 5M ➔ 1M)</h3>
+                <span style="font-size:10px; font-weight:800; color:var(--text-dim); font-family:'JetBrains Mono';">ALGORITHM: fractal_engine_v8.0.0</span>
+            </div>
+            <div class="tree-grid" id="tree-container">
+                <!-- Dynamically populated hierarchy nodes -->
+            </div>
         </div>
 
-        <!-- 3. Active Live Wave Radar Focus -->
-        <div class="live-wave-hero" id="active-wave-hero">
-            <div>
-                <div class="fuel-badge-bar">
-                    <span class="sweep-tag-pill" id="hero-sweep-pill">⚡ ERL SWEEP CONFIRMED</span>
-                    <span class="fuel-tank-pill" id="hero-fuel-pill">⛽ TIER 2: HIGHWAY SESSION TANK</span>
-                </div>
-                <div class="wave-badge-live" id="hero-badge">⚡ LIVE ACTIVE WAVE #2</div>
-                <div class="wave-header-title" id="hero-title">4H WAVE #2 (OF 4)</div>
-                <div class="wave-range-tag" id="hero-range">$4,395.12 ➔ $4,448.74 (+$53.62 Fuel Tank)</div>
-                
-                <div style="margin-top:10px;">
-                    <div style="display:flex; justify-content:space-between; font-size:10px; font-weight:800; font-family:'JetBrains Mono'; margin-bottom:4px;">
-                        <span style="color:var(--text-muted);">WAVE PROGRESSION GAUGE:</span>
-                        <span style="color:var(--cyan-glow);" id="hero-wave-pct">24% COMPLETED</span>
-                    </div>
-                    <div class="progress-bar-track" style="height:8px;">
-                        <div class="progress-bar-fill" id="hero-wave-fill" style="width: 24%;"></div>
-                    </div>
-                </div>
-
-                <div style="font-size:10.5px; color:var(--text-muted); margin-top:8px;" id="hero-status-desc">
-                    Live Price ($4,412.34) is in Wholesale Discount zone. Institutions defending the $4,395.12 floor.
-                </div>
-
-                <!-- Institutional Thesis Card -->
-                <div class="thesis-box" id="hero-thesis-box">
-                    <div class="thesis-title">🧠 INSTITUTIONAL ORDER FLOW THESIS</div>
-                    <div id="hero-thesis-text">
-                        Smart Money swept retail Sell-Side Liquidity (SSL) at the $4,395.12 floor, trapping breakout sellers. Price is expanding toward unmitigated Buy-Side Liquidity (BSL) at $4,448.74.
-                    </div>
-                </div>
+        <!-- 3. DYNAMIC HIGHWAY DERIVATION HUD -->
+        <div class="highway-hud-card">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <h3 style="font-size:13px; font-weight:900; font-family:'Orbitron'; color:#FFF;">🛣️ DYNAMIC 4H HIGHWAY DERIVATION HUD</h3>
+                <span style="font-size:10px; color:var(--cyan-glow); font-family:'JetBrains Mono'; font-weight:800;" id="hw-calc-stamp">CALCULATED LIVE</span>
             </div>
-
-            <!-- Pullback Probability Gauge -->
-            <div class="pullback-box">
-                <div>
-                    <div class="pullback-title">
-                        <span>🎯 PULLBACK PROBABILITY GAUGE</span>
-                        <span id="pullback-pct-val" style="color:var(--gold-glow); font-size:12px;">76% CHANCE</span>
-                    </div>
-                    <div class="pullback-gauge-track">
-                        <div class="pullback-gauge-fill" id="pullback-gauge-fill" style="width: 76%;"></div>
-                    </div>
-                    <div class="pullback-advice" id="pullback-advice-text">
-                        <strong>HIGH PULLBACK LIKELIHOOD</strong>: Do not market-buy. Rest a <strong>BUY LIMIT</strong> order in the <strong>$4,395.12 – $4,406.00</strong> wholesale discount zone.
-                    </div>
+            <div class="hud-grid">
+                <div class="hud-box">
+                    <span class="hud-box-label">Highway Ceiling (BSL Extension)</span>
+                    <span class="hud-box-val" id="hw-ceiling" style="color:var(--gold-glow);">$4,460.00</span>
+                    <span class="hud-box-lineage" id="hw-ceiling-lineage">4H Swing High ($4,435.00) + 1.5 * ATR ($16.50)</span>
                 </div>
-
-                <div style="margin-top:8px; font-size:10px; color:var(--text-muted); border-top:1px solid rgba(255,255,255,0.06); padding-top:6px;" id="hero-be-trigger">
-                    ⚡ Institutional Breakeven Shield: <strong style="color:var(--cyan-glow);">+1.0R / TP1 Target Hit</strong> ➔ Lock SL to Entry (Risk-Free)
+                <div class="hud-box">
+                    <span class="hud-box-label">Highway Equilibrium (50% Fair Value)</span>
+                    <span class="hud-box-val" id="hw-eq" style="color:var(--cyan-glow);">$4,403.50</span>
+                    <span class="hud-box-lineage" id="hw-eq-lineage">(Swing High + Swing Low) / 2</span>
                 </div>
-            </div>
-
-            <!-- 1-Click Ticket Execution Slate -->
-            <div class="ticket-slate">
-                <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <div style="font-weight:900; color:var(--cyan-glow); font-size:11.5px;">📋 LIVE EXECUTION TICKET</div>
-                    <span id="vpsSyncTag" style="font-size:9.5px; font-weight:800; color:var(--green-glow); background:rgba(16,185,129,0.12); border:1px solid rgba(16,185,129,0.3); padding:2px 6px; border-radius:4px;">● VPS BRIDGE READY</span>
-                </div>
-                <div class="ticket-row"><span>ORDER TYPE:</span> <strong style="color:var(--green-glow);" id="ticket-order-type">BUY LIMIT</strong></div>
-                <div class="ticket-row"><span>ENTRY POI:</span> <strong id="ticket-entry">$4,395.15</strong></div>
-                <div class="ticket-row"><span>STOP LOSS:</span> <strong id="ticket-sl" style="color:var(--red-glow);">$4,378.00</strong></div>
-                <div class="ticket-row"><span>TP1 (BE LOCK):</span> <strong id="ticket-tp1" style="color:var(--cyan-glow);">$4,416.05</strong></div>
-                <div class="ticket-row"><span>TP2 (GOAL):</span> <strong id="ticket-tp2" style="color:var(--green-glow);">$4,448.74</strong></div>
-                <div class="ticket-row"><span>RISK (2% GUARD):</span> <strong id="ticket-risk">$17.15 (0.01 Lots)</strong></div>
-                
-                <div style="display:flex; gap:6px; margin-top:8px;">
-                    <button class="btn-action-copy" id="btn-execute-vps" onclick="executeActiveTicketOnVps()" style="flex:1.2; font-weight:900;">
-                        🚀 EXECUTE ON VPS MT5
-                    </button>
-                    <button class="btn-action-copy" id="btn-copy-ticket" onclick="copyActiveTicket()" style="flex:0.8; background:rgba(255,255,255,0.06); font-size:10px;">
-                        📋 COPY
-                    </button>
+                <div class="hud-box">
+                    <span class="hud-box-label">Highway Floor (Structural Invalidation)</span>
+                    <span class="hud-box-val" id="hw-floor" style="color:var(--red-glow);">$4,347.00</span>
+                    <span class="hud-box-lineage" id="hw-floor-lineage">4H Swing Low ($4,372.00) - 1.5 * ATR ($16.50)</span>
                 </div>
             </div>
         </div>
 
-        <!-- 4. Missed Wave Situation Protocol -->
-        <div class="missed-protocol-card">
-            <div style="display:flex; align-items:center; gap:10px;">
-                <span style="font-size:18px;">🛡️</span>
-                <div>
-                    <strong style="color:var(--gold-glow);">MISSED THE CURRENT WAVE ENTRY?</strong>
-                    <span style="color:var(--text-muted); display:block;">Do NOT chase green candles at the top of the wave. You can pre-arm a limit order on the <strong>upcoming future wave</strong> from the ledger below.</span>
-                </div>
-            </div>
-            <div style="font-size:10px; font-weight:800; color:var(--cyan-glow); font-family:'JetBrains Mono';">
-                INSTITUTIONAL DISCIPLINE PROTOCOL: ACTIVE
-            </div>
-        </div>
-
-        <!-- 5. Full Wave Matrix Ledger Table -->
-        <div class="matrix-ledger-card">
-            <div class="ledger-header">
-                <div class="ledger-title" id="ledger-title">📜 1-MINUTE (1M) COMPLETE 18-WAVE ROADMAP & TRADE AUDIT</div>
-                <div style="font-size:11px; color:var(--text-dim); font-family:'JetBrains Mono';">
-                    START: <strong>$4,381.24</strong> ➔ CEILING: <strong>$4,512.33</strong>
+        <!-- 4. DETECTED ACTIVE CYCLES VS POTENTIAL SCENARIOS -->
+        <div class="scenarios-grid">
+            <div class="scenario-card active-state">
+                <span class="scenario-tag tag-fact">● OBSERVED MARKET FACT (ACTIVE CYCLE)</span>
+                <div style="font-size:14px; font-weight:900; font-family:'Orbitron'; color:#FFF; margin-top:4px;" id="fact-title">1M EXECUTION CYCLE #640 ACTIVE</div>
+                <div style="font-size:11px; color:#CBD5E1; line-height:1.5; font-family:'JetBrains Mono';" id="fact-desc">
+                    Confirmed double-bottom sweep at $4,395.20 with displacement candle close above $4,397.50. Target: $4,402.50. Stop: $4,394.00.
                 </div>
             </div>
 
-            <table class="ledger-table">
-                <thead>
-                    <tr>
-                        <th>Wave #</th>
-                        <th>Swept Liquidity Pool (Fuel Source)</th>
-                        <th>Discount Entry POI</th>
-                        <th>Protected SL</th>
-                        <th>Target BSL Pool</th>
-                        <th>Status / Outcome</th>
-                        <th>R / Dollar Gain</th>
-                        <th>Institutional Rationale</th>
-                        <th>Pre-Arm MT5 Order</th>
-                    </tr>
-                </thead>
-                <tbody id="ledger-tbody">
-                    <!-- Dynamically Generated Wave Rows -->
-                </tbody>
-            </table>
+            <div class="scenario-card">
+                <span class="scenario-tag tag-hypo">⚡ CONDITIONAL SCENARIO (NOT FACT)</span>
+                <div style="font-size:14px; font-weight:900; font-family:'Orbitron'; color:#FFF; margin-top:4px;">PROSPECTIVE CONTINUATION SCENARIO</div>
+                <div style="font-size:11px; color:#CBD5E1; line-height:1.5; font-family:'JetBrains Mono';" id="scenario-desc">
+                    If price reclaims $4,408.00 with 15M candle close: Potential expansion toward 4H Target ($4,445.00). Model Score: <strong>78.4 / 100</strong> (DETERMINISTIC_MODEL_SCORE).
+                </div>
+            </div>
         </div>
 
     </div>
 
-    <!-- ==================== MATRIX LOGIC ENGINE ==================== -->
+    <!-- CLIENT HYDRATION SCRIPT -->
     <script>
-        let livePrice = 4412.34;
-        let selectedTf = '1m';
-        const macroHighwayLow = 4363.16;
-        const macroHighwayHigh = 4697.99;
-        const active4hLow = 4381.24;
-        const active4hHigh = 4512.33;
-        const activeRetestLow = 4395.12;
-        const activeWave1High = 4448.74;
+        function renderMatrixFromSnapshot(data) {
+            if (!data) return;
 
-        const tfWaveSpecs = {
-            "1m": {
-                name: "1-MINUTE (1M)",
-                step: 25.00,
-                total: 4,
-                baseLow: activeRetestLow,
-                baseHigh: active4hHigh,
-                slOffset: 10.50,
-                tp1Offset: 18.00,
-                activeWaveOverride: 2,
-                sweepType: "IRL (1M FVG Retest)",
-                fuelGrade: "⛽ TIER 1: MICRO EXPANSION TANK (+$25.00 Leg)",
-                fuelCap: "+$25.00 Micro Fuel",
-                sweptPool: "Asian High Swept ➔ FVG Retest @ $4,403–$4,406",
-                thesis: "Micro Sell-Side Liquidity (SSL) harvested in the 1M Fair Value Gap (FVG) discount retest; targeting immediate London High BSL at $4,448.74."
-            },
-            "5m": {
-                name: "5-MINUTE (5M)",
-                step: 25.00,
-                total: 4,
-                baseLow: activeRetestLow,
-                baseHigh: active4hHigh,
-                slOffset: 10.50,
-                tp1Offset: 18.00,
-                activeWaveOverride: 2,
-                sweepType: "IRL (5M Momentum FVG)",
-                fuelGrade: "⛽ TIER 1: FAST MOMENTUM TANK (+$25.00 Leg)",
-                fuelCap: "+$25.00 Wave Fuel",
-                sweptPool: "5M Liquidity Sweep ➔ FVG Retest @ $4,403–$4,406 Defended",
-                thesis: "5-Minute momentum pivot purged retail stop losses. Institutional limit orders absorbed sell volume in the discount FVG; pushing to $4,448.74 London High BSL pool."
-            },
-            "15m": {
-                name: "15-MINUTE (15M)",
-                step: 32.00,
-                total: 4,
-                baseLow: active4hLow,
-                baseHigh: active4hHigh,
-                slOffset: 10.50,
-                tp1Offset: 12.00,
-                activeWaveOverride: 2,
-                sweepType: "ERL ⇄ IRL Convergence",
-                fuelGrade: "⛽ TIER 2: SESSION INTRADAY TANK (+$32.00 Step)",
-                fuelCap: "+$32.00 Session Fuel",
-                sweptPool: "London Open Low ($4,395.12) Swept & Defended",
-                thesis: "London session low purged. Breakout sellers were trapped on the downside break; market structure shifted bullish (CHoCH) targeting London High at $4,448.74."
-            },
-            "1h": {
-                name: "1-HOUR (1H)",
-                step: 65.00,
-                total: 2,
-                baseLow: active4hLow,
-                baseHigh: active4hHigh,
-                slOffset: 14.00,
-                tp1Offset: 18.00,
-                activeWaveOverride: 1,
-                sweepType: "ERL (Intraday Equilibrium)",
-                fuelGrade: "⛽ TIER 2: INTRADAY EXPANSION TANK (+$65.00 Step)",
-                fuelCap: "+$65.00 Fuel to $4,454 BSL",
-                sweptPool: "Wholesale Equilibrium Floor ($4,381.24) Defended",
-                thesis: "Wholesale 1-hour demand zone defended by institutional buyers. Fuel unlocked to power expansion into Friday High ($4,490.89) and $4,512.33 BSL pool."
-            },
-            "4h": {
-                name: "4-HOUR (4H)",
-                step: 32.77,
-                total: 4,
-                baseLow: active4hLow,
-                baseHigh: active4hHigh,
-                slOffset: 16.50,
-                tp1Offset: 24.00,
-                activeWaveOverride: 2,
-                sweepType: "ERL (Master Weekly Highway)",
-                fuelGrade: "⛽ TIER 2: MASTER HIGHWAY TANK (+$131.09 Total)",
-                fuelCap: "+$131.09 Master Highway Fuel",
-                sweptPool: "Weekly Highway Floor ($4,381.24) / Retest @ $4,395.12",
-                thesis: "Primary Weekly Accumulation Defended. Smart money is utilizing resting buy limits in the $4,395 – $4,411 discount box to propel price through the 4-Lap Highway toward the $4,512.33 macro ceiling."
-            },
-            "1d": {
-                name: "DAILY (1D)",
-                step: 111.61,
-                total: 3,
-                baseLow: macroHighwayLow,
-                baseHigh: macroHighwayHigh,
-                slOffset: 45.00,
-                tp1Offset: 65.00,
-                activeWaveOverride: 1,
-                sweepType: "ERL (Macro Sweep Base)",
-                fuelGrade: "🚀 TIER 3: ROCKET BOOSTER TANK (+$334.83 Capacity)",
-                fuelCap: "+$334.83 Macro Superhighway Fuel",
-                sweptPool: "Macro Institutional Base ($4,363.16) Multi-Week Pool",
-                thesis: "Daily liquidity sweep base defended. Institutional desks absorbed massive liquidation volume to power the multi-week mean-reversion wave to $4,580.00 (50% Drop EQ)."
-            },
-            "1w": {
-                name: "WEEKLY (1W)",
-                step: 167.00,
-                total: 2,
-                baseLow: macroHighwayLow,
-                baseHigh: 5000.00,
-                slOffset: 66.00,
-                tp1Offset: 120.00,
-                activeWaveOverride: 1,
-                sweepType: "ERL (Grand Macro Superhighway)",
-                fuelGrade: "🚀 TIER 3: ROCKET BOOSTER TANK (+$334.83+ Capacity)",
-                fuelCap: "Multi-Month Macro Bull Run",
-                sweptPool: "Macro Support Base ($4,363.16) ➔ August Peak ($4,697.99)",
-                thesis: "Grand Macro Super-Highway accumulation wave. Multi-month institutional bull run targeting All-Time Highs ($4,697.99 – $5,000.00)."
-            }
-        };
-
-        function switchTimeframe(tf) {
-            selectedTf = tf;
-            ['1m', '5m', '15m', '1h', '4h', '1d', '1w'].forEach(t => {
-                const btn = document.getElementById(`tf-btn-${t}`);
-                if (btn) btn.className = `tf-btn ${t === tf ? 'active' : ''}`;
-            });
-            renderMatrixHUD();
-        }
-
-        function renderMatrixHUD() {
-            const spec = tfWaveSpecs[selectedTf];
-            
-            // Institutional Roadmaps for all 7 Timeframes (Directly Aligned to TradingView Swings)
-            const institutionalRoadmaps = {
-                "1m": [
-                    { num: 1, swept: "London Low ($4,395.12) Swept & Defended", entry: 4395.15, sl: 4384.50, tp1: 4410.00, tp2: 4420.00, desc: "1M Expansion wave from London sweep low.", status: "TP2 HIT 🎯", isWon: true },
-                    { num: 2, swept: "Asian High Swept ➔ FVG Retest @ $4,403–$4,406", entry: 4403.50, sl: 4392.00, tp1: 4422.00, tp2: 4448.74, desc: "1M FVG discount retest; expanding toward London High BSL.", status: "ACTIVE 🟢", isActive: true },
-                    { num: 3, swept: "London High Swept ➔ 50% Retest @ $4,430.00", entry: 4430.00, sl: 4418.00, tp1: 4455.00, tp2: 4480.00, desc: "Inter-session continuation wave.", status: "QUEUED ⏳" },
-                    { num: 4, swept: "Friday High Swept ➔ 50% Retest @ $4,460.00", entry: 4460.00, sl: 4445.00, tp1: 4485.00, tp2: 4512.33, desc: "Final 1M micro-sprint into 4H highway ceiling.", status: "QUEUED ⏳" }
-                ],
-                "5m": [
-                    { num: 1, swept: "London Low ($4,395.12) Swept & Defended", entry: 4395.15, sl: 4381.00, tp1: 4410.00, tp2: 4420.00, desc: "5M Momentum ignition out of London double bottom.", status: "TP2 HIT 🎯", isWon: true },
-                    { num: 2, swept: "Asian High Swept ➔ 50% FVG Retest @ $4,403–$4,406", entry: 4403.50, sl: 4392.00, tp1: 4422.00, tp2: 4448.74, desc: "5M FVG discount retest; pushing to London High BSL.", status: "ACTIVE 🟢", isActive: true },
-                    { num: 3, swept: "London High Swept ➔ 50% Retest @ $4,430.00", entry: 4430.00, sl: 4416.00, tp1: 4455.00, tp2: 4480.00, desc: "Pre-NY momentum expansion.", status: "QUEUED ⏳" },
-                    { num: 4, swept: "Friday High Swept ➔ 50% Retest @ $4,460.00", entry: 4460.00, sl: 4445.00, tp1: 4485.00, tp2: 4512.33, desc: "Final 5M momentum drive into 4H BSL ceiling.", status: "QUEUED ⏳" }
-                ],
-                "15m": [
-                    { num: 1, swept: "Asian Low Sweep @ $4,381.24 Defended", entry: 4381.25, sl: 4371.00, tp1: 4395.00, tp2: 4414.00, desc: "Session open liquidity sweep expansion.", status: "TP2 HIT 🎯", isWon: true },
-                    { num: 2, swept: "London Low Swept ➔ FVG Retest @ $4,395.12", entry: 4395.15, sl: 4384.50, tp1: 4416.00, tp2: 4448.74, desc: "Discount FVG retest; expanding to session high.", status: "ACTIVE 🟢", isActive: true },
-                    { num: 3, swept: "Session High Swept ➔ Retest @ $4,422.00", entry: 4422.00, sl: 4411.50, tp1: 4445.00, tp2: 4480.00, desc: "Inter-session continuation wave.", status: "QUEUED ⏳" },
-                    { num: 4, swept: "Pre-NY High Swept ➔ Retest @ $4,454.00", entry: 4454.00, sl: 4443.50, tp1: 4480.00, tp2: 4512.33, desc: "NY Session macro liquidity expansion.", status: "QUEUED ⏳" }
-                ],
-                "1h": [
-                    { num: 1, swept: "Wholesale Equilibrium Floor ($4,381.24) Defended", entry: 4381.25, sl: 4367.24, tp1: 4418.00, tp2: 4454.00, desc: "Wholesale 1-hour demand accumulation wave.", status: "ACTIVE 🟢", isActive: true },
-                    { num: 2, swept: "Intraday BSL Swept ➔ Retest Floor @ $4,428.00", entry: 4428.00, sl: 4414.00, tp1: 4465.00, tp2: 4512.33, desc: "Continuation through Friday ceiling to 4H BSL.", status: "QUEUED ⏳" }
-                ],
-                "4h": [
-                    { num: 1, swept: "Weekly Floor ($4,381.24) Defended", entry: 4381.25, sl: 4364.74, tp1: 4405.00, tp2: 4414.00, desc: "Liquidated short breakout stops; ignited highway.", status: "TP2 HIT 🎯", isWon: true },
-                    { num: 2, swept: "London Low Swept ➔ Retest @ $4,395.12 Defended", entry: 4395.15, sl: 4378.00, tp1: 4416.05, tp2: 4448.74, desc: "Retest defended in discount FVG; targeting London High BSL.", status: "ACTIVE 🟢", isActive: true },
-                    { num: 3, swept: "Wave #2 High Swept ➔ 50% Retest @ $4,422.00", entry: 4422.00, sl: 4408.00, tp1: 4445.00, tp2: 4480.00, desc: "50% equilibrium retest expansion toward Friday High.", status: "QUEUED ⏳" },
-                    { num: 4, swept: "Wave #3 High Swept ➔ 50% Retest @ $4,455.00", entry: 4455.00, sl: 4440.00, tp1: 4485.00, tp2: 4512.33, desc: "Final 4H Highway expansion to macro ceiling BSL.", status: "QUEUED ⏳" }
-                ],
-                "1d": [
-                    { num: 1, swept: "Macro Institutional Base Swept", entry: 4365.00, sl: 4320.00, tp1: 4440.00, tp2: 4580.00, desc: "Daily Liquidity Sweep Mean-Reversion to 50% Drop EQ.", status: "ACTIVE 🟢", isActive: true },
-                    { num: 2, swept: "50% EQ Swept ➔ Retest Floor", entry: 4510.00, sl: 4465.00, tp1: 4580.00, tp2: 4697.99, desc: "Multi-week bull run pushing to ATH peak.", status: "QUEUED ⏳" },
-                    { num: 3, swept: "ATH High Swept ➔ Retest Floor", entry: 4640.00, sl: 4595.00, tp1: 4750.00, tp2: 4850.00, desc: "Price discovery expansion into psychological barrier.", status: "QUEUED ⏳" }
-                ],
-                "1w": [
-                    { num: 1, swept: "Macro Support Base ($4,363.16) Multi-Month Floor", entry: 4365.00, sl: 4299.00, tp1: 4485.00, tp2: 4697.99, desc: "Grand Macro Super-Highway primary accumulation wave.", status: "ACTIVE 🟢", isActive: true },
-                    { num: 2, swept: "Macro ATH Swept ➔ Retest Floor @ $4,620.00", entry: 4620.00, sl: 4554.00, tp1: 4780.00, tp2: 5000.00, desc: "Super-cycle expansion to $5,000.00 institutional target.", status: "QUEUED ⏳" }
-                ]
-            };
-
-            const isCustomRoadmap = institutionalRoadmaps[selectedTf] !== undefined;
-            const roadmap = institutionalRoadmaps[selectedTf];
-            
-            let activeWaveNum = spec.activeWaveOverride || 1;
-            let activeWaveObj = null;
-
-            if (isCustomRoadmap) {
-                const foundActive = roadmap.find(r => r.isActive) || roadmap[0];
-                activeWaveNum = foundActive.num;
-                activeWaveObj = foundActive;
-            } else {
-                // Algorithmic 50% Pullback Model for 1M and 5M
-                activeWaveNum = spec.activeWaveOverride || 2;
+            // Live Price
+            if (data.parentMission && data.parentMission.originPrice) {
+                const spot = data.hierarchyTree && data.hierarchyTree[6] ? data.hierarchyTree[6].currentPrice : 4398.00;
+                document.getElementById('nav-live-price').innerText = `$${spot.toFixed(2)}`;
             }
 
-            const resetsDone = activeWaveNum - 1;
+            // Parent Mission Hero
+            const pm = data.parentMission;
+            if (pm) {
+                document.getElementById('parent-cycle-id').innerText = `${pm.timeframe.toUpperCase()} MISSION ${pm.cycleId}`;
+                document.getElementById('parent-origin').innerText = `$${pm.originPrice.toFixed(2)}`;
+                document.getElementById('parent-dest').innerText = `$${pm.destinationPrice.toFixed(2)}`;
+                document.getElementById('parent-dest-type').innerText = `(${pm.destinationType})`;
+                document.getElementById('decomp-total-score').innerText = `${pm.completionScore.toFixed(1)} / 100`;
+                document.getElementById('decomp-progress-fill').style.width = `${pm.completionScore}%`;
 
-            // Compute active wave metrics
-            let activeWaveLow = 0;
-            let activeWaveHigh = 0;
-            let entryPoi = 0;
-            let slPoi = 0;
-            let tp1Poi = 0;
-            let tp2Poi = 0;
-            let riskDist = 0;
+                // Decomposed Components
+                const sc = pm.scoreComponents || {};
+                document.getElementById('score-disp').innerText = (sc.displacement || sc.displacementProgress || 21.0).toFixed(1);
+                document.getElementById('score-target').innerText = (sc.targetProximity || 16.5).toFixed(1);
+                document.getElementById('score-struct').innerText = (sc.structure || sc.structuralConfirmation || 14.0).toFixed(1);
+                document.getElementById('score-liq').innerText = (sc.liquidity || sc.liquidityInteraction || 9.0).toFixed(1);
+                document.getElementById('score-vol').innerText = (sc.volatility || sc.volatilityNormalization || 5.0).toFixed(1);
+                document.getElementById('score-rev').innerText = (sc.reversal || sc.reversalConfirmation || 1.9).toFixed(1);
 
-            if (isCustomRoadmap && activeWaveObj) {
-                activeWaveLow = activeWaveObj.entry;
-                activeWaveHigh = activeWaveObj.tp2;
-                entryPoi = activeWaveObj.entry.toFixed(2);
-                slPoi = activeWaveObj.sl.toFixed(2);
-                tp1Poi = activeWaveObj.tp1.toFixed(2);
-                tp2Poi = activeWaveObj.tp2.toFixed(2);
-                riskDist = (parseFloat(entryPoi) - parseFloat(slPoi)).toFixed(2);
-            } else {
-                // Algorithmic 1M / 5M 50% Pullback Calculation
-                const step = spec.step;
-                const halfStep = step * 0.50;
-                
-                // Active Wave Entry is calculated as Defended Retest Floor (NOT the old peak!)
-                const w1Low = spec.baseLow;
-                activeWaveLow = (activeWaveNum === 1) ? w1Low : (w1Low + ((activeWaveNum - 1) * halfStep));
-                activeWaveHigh = activeWaveLow + step;
-
-                entryPoi = (activeWaveLow + 0.05).toFixed(2);
-                slPoi = (activeWaveLow - spec.slOffset).toFixed(2);
-                tp1Poi = (activeWaveLow + spec.tp1Offset).toFixed(2);
-                tp2Poi = activeWaveHigh.toFixed(2);
-                riskDist = (parseFloat(entryPoi) - parseFloat(slPoi)).toFixed(2);
+                // Child Counters
+                const cs = pm.completedChildrenSummary || {};
+                if (cs['1h']) document.getElementById('cnt-1h').innerText = `${cs['1h'].completed} Completed • 1 Active`;
+                if (cs['15m']) document.getElementById('cnt-15m').innerText = `${cs['15m'].completed} Completed • 1 Active`;
+                if (cs['5m']) document.getElementById('cnt-5m').innerText = `${cs['5m'].completed} Completed • 1 Active`;
+                if (cs['1m']) document.getElementById('cnt-1m').innerText = `${cs['1m'].completed} Completed • 1 Active`;
             }
 
-            const waveRange = activeWaveHigh - activeWaveLow;
-            const wavePct = Math.min(100, Math.max(0, Math.round(((livePrice - activeWaveLow) / (waveRange || 1)) * 100)));
-
-            const hwTitleEl = document.querySelector('.highway-title-box h2');
-            const hwDescEl = document.getElementById('highway-desc');
-            
-            if (livePrice < active4hLow) {
-                if (hwTitleEl) hwTitleEl.innerHTML = `🚨 HIGHWAY REROUTED: SCENARIO B (MACRO LIQUIDITY SWEEP)`;
-                if (hwDescEl) hwDescEl.innerHTML = `⚠️ <strong style="color:var(--red-glow);">PATH CHANGED:</strong> Active Floor ($4,381.24) Breached. Smart Money is executing a <strong>Macro Liquidity Sweep to $4,363.16 – $4,365.00</strong> before multi-week rally to $4,697.99. Suspend counter-trend buys!`;
-                document.getElementById('highway-lap-text').innerText = `🚨 MACRO SWEEP IN PROGRESS`;
-                document.getElementById('highway-pct-text').innerText = `REROUTED TO $4,365 SWEEP`;
-                document.getElementById('highway-progress-fill').style.width = `100%`;
-                document.getElementById('highway-progress-fill').style.background = 'linear-gradient(90deg, #EF4444, #F59E0B)';
-            } else {
-                const hwRange = active4hHigh - active4hLow;
-                const hwPct = Math.min(100, Math.max(0, Math.round(((livePrice - active4hLow) / hwRange) * 100)));
-                if (hwTitleEl) hwTitleEl.innerHTML = `🛣️ 4-HOUR ACTIVE HIGHWAY MISSION CONTROL`;
-                if (hwDescEl) hwDescEl.innerHTML = `Master Weekly Roadmap: <strong>$4,381.24</strong> (Session Floor Defended) ➔ <strong>$4,512.33</strong> (4H BSL Ceiling). Total Highway Range: <strong>$131.09</strong>.`;
-                document.getElementById('highway-pct-text').innerText = `${hwPct}% COMPLETED`;
-                document.getElementById('highway-progress-fill').style.width = `${hwPct}%`;
-                document.getElementById('highway-progress-fill').style.background = 'linear-gradient(90deg, var(--cyan-glow), var(--green-glow))';
-
-                let currentLap = 1;
-                if (livePrice >= 4414 && livePrice < 4454) currentLap = 2;
-                else if (livePrice >= 4454 && livePrice < 4491) currentLap = 3;
-                else if (livePrice >= 4491) currentLap = 4;
-                document.getElementById('highway-lap-text').innerText = `LAP ${currentLap} OF 4 ACTIVE`;
+            // Hierarchy Tree
+            const treeContainer = document.getElementById('tree-container');
+            if (treeContainer && data.hierarchyTree) {
+                treeContainer.innerHTML = data.hierarchyTree.map(node => `
+                    <div class="tree-node">
+                        <div class="node-tf"><span>⚡</span> [${node.timeframe.toUpperCase()}]</div>
+                        <div class="node-cycle-id">${node.cycleId}</div>
+                        <div class="node-origin-dest">$${(node.originPrice || 0).toFixed(2)} ➔ $${(node.destinationPrice || 0).toFixed(2)}</div>
+                        <div><span class="node-status ${node.status}">${node.status}</span></div>
+                        <div class="node-score">Score: ${(node.completionScore || 0).toFixed(1)}/100</div>
+                    </div>
+                `).join('');
             }
 
-            document.getElementById('score-total').innerText = `${spec.total}`;
-            document.getElementById('score-won').innerText = `${resetsDone}`;
-            document.getElementById('score-winrate').innerText = resetsDone > 0 ? "100%" : "READY";
-            document.getElementById('score-profit').innerText = `+${(resetsDone * 2.2).toFixed(1)}R`;
-
-            document.getElementById('hero-sweep-pill').innerText = `⚡ ${spec.sweepType}`;
-            document.getElementById('hero-fuel-pill').innerText = spec.fuelGrade;
-            document.getElementById('hero-badge').innerText = `⚡ LIVE ACTIVE WAVE #${activeWaveNum}`;
-            document.getElementById('hero-title').innerText = `${spec.name} WAVE #${activeWaveNum} (OF ${spec.total})`;
-            document.getElementById('hero-range').innerText = `$${activeWaveLow.toFixed(2)} ➔ $${activeWaveHigh.toFixed(2)} (${spec.fuelCap})`;
-            document.getElementById('hero-wave-pct').innerText = `${wavePct}% COMPLETED`;
-            document.getElementById('hero-wave-fill').style.width = `${wavePct}%`;
-            document.getElementById('hero-thesis-text').innerText = spec.thesis;
-
-            const statusDescEl = document.getElementById('hero-status-desc');
-            if (statusDescEl) {
-                if (wavePct <= 35) {
-                    statusDescEl.innerHTML = `Live Price ($${livePrice.toFixed(2)}) is in <strong style="color:var(--green-glow);">Wholesale Discount</strong> (${wavePct}% of Wave #${activeWaveNum}). Swept Pool: <strong>${spec.sweptPool}</strong>.`;
-                } else if (wavePct <= 85) {
-                    statusDescEl.innerHTML = `Live Price ($${livePrice.toFixed(2)}) is in <strong style="color:var(--cyan-glow);">Mid-Wave Expansion</strong> (${wavePct}% of Wave #${activeWaveNum}). Pushing toward the <strong>$${activeWaveHigh.toFixed(2)}</strong> target.`;
-                } else {
-                    statusDescEl.innerHTML = `Live Price ($${livePrice.toFixed(2)}) is in <strong style="color:var(--gold-glow);">Wave Exhaustion Zone</strong> (${wavePct}% of Wave #${activeWaveNum}). Target $${activeWaveHigh.toFixed(2)} approached; prepare for Reset #${activeWaveNum}.`;
+            // Highway HUD
+            const hw = data.highway;
+            if (hw) {
+                document.getElementById('hw-ceiling').innerText = `$${hw.ceiling.toFixed(2)}`;
+                document.getElementById('hw-eq').innerText = `$${hw.equilibrium.toFixed(2)}`;
+                document.getElementById('hw-floor').innerText = `$${hw.floor.toFixed(2)}`;
+                if (hw.lineage) {
+                    document.getElementById('hw-ceiling-lineage').innerText = hw.lineage.ceilingFormula;
+                    document.getElementById('hw-eq-lineage').innerText = hw.lineage.equilibriumFormula;
+                    document.getElementById('hw-floor-lineage').innerText = hw.lineage.floorFormula;
                 }
-            }
-
-            // Dynamic Order Type Calculation
-            let dynOrderType = "BUY LIMIT";
-            let dynOrderBadgeColor = "var(--green-glow)";
-            const entryNum = parseFloat(entryPoi);
-
-            let btnText = "🚀 EXECUTE ON VPS MT5";
-            let btnStyle = "background:linear-gradient(135deg, #10B981, #059669); border-color:#34D399; box-shadow:0 0 15px rgba(16,185,129,0.35);";
-
-            if (Math.abs(livePrice - entryNum) <= 1.00) {
-                dynOrderType = "BUY (MARKET DISCOUNT)";
-                dynOrderBadgeColor = "var(--green-glow)";
-                btnText = `⚡ EXECUTE MARKET BUY ($${livePrice.toFixed(2)})`;
-                btnStyle = "background:linear-gradient(135deg, #10B981, #059669); border-color:#34D399; box-shadow:0 0 16px rgba(16,185,129,0.5);";
-            } else if (entryNum < livePrice) {
-                dynOrderType = "BUY LIMIT (DISCOUNT FLOOR)";
-                dynOrderBadgeColor = "var(--cyan-glow)";
-                btnText = `⏳ PLACE BUY LIMIT @ $${entryPoi}`;
-                btnStyle = "background:linear-gradient(135deg, #0284C7, #0369A1); border-color:#38BDF8; box-shadow:0 0 16px rgba(14,165,233,0.4);";
-            } else {
-                dynOrderType = "BUY STOP (BREAKOUT RECLAIM)";
-                dynOrderBadgeColor = "var(--gold-glow)";
-                btnText = `🟠 PLACE BUY STOP @ $${entryPoi}`;
-                btnStyle = "background:linear-gradient(135deg, #D97706, #B45309); border-color:#FBBF24; box-shadow:0 0 16px rgba(245,158,11,0.4);";
-            }
-
-            const orderTypeEl = document.getElementById('ticket-order-type');
-            if (orderTypeEl) {
-                orderTypeEl.innerText = dynOrderType;
-                orderTypeEl.style.color = dynOrderBadgeColor;
-            }
-
-            const btnExec = document.getElementById('btn-execute-vps');
-            if (btnExec) {
-                btnExec.innerHTML = btnText;
-                btnExec.style.cssText = `flex:1.2; font-weight:900; ${btnStyle}`;
-            }
-
-            const pullbackPct = Math.max(15, Math.min(88, 100 - wavePct));
-            document.getElementById('pullback-pct-val').innerText = `${pullbackPct}% CHANCE`;
-            document.getElementById('pullback-gauge-fill').style.width = `${pullbackPct}%`;
-
-            if (wavePct <= 35) {
-                document.getElementById('pullback-advice-text').innerHTML = `<strong>HIGH PULLBACK POI DEFENSE</strong>: In Wholesale Discount zone. Rest <strong>${dynOrderType} @ $${entryPoi}</strong>. Defend structural floor $${slPoi}.`;
-            } else if (wavePct <= 85) {
-                document.getElementById('pullback-advice-text').innerHTML = `<strong>MID-WAVE EXPANSION</strong>: Runners active in profit. Move SL to Breakeven (+1.2R lock) as price heads to <strong>$${activeWaveHigh.toFixed(2)}</strong>.`;
-            } else {
-                document.getElementById('pullback-advice-text').innerHTML = `<strong>WAVE EXHAUSTION (85%+)</strong>: Target $${activeWaveHigh.toFixed(2)} reached. Stand down on new buys; prepare for Reset #${activeWaveNum}.`;
-            }
-
-            document.getElementById('ticket-entry').innerText = `$${entryPoi}`;
-            document.getElementById('ticket-sl').innerText = `$${slPoi}`;
-            document.getElementById('ticket-tp1').innerText = `$${tp1Poi}`;
-            document.getElementById('ticket-tp2').innerText = `$${tp2Poi}`;
-            document.getElementById('ticket-risk').innerText = `$${riskDist} (0.01 Lots)`;
-
-            document.getElementById('ledger-title').innerText = `📜 ${spec.name} COMPLETE ${spec.total}-WAVE LIQUIDITY ROADMAP & TRADE AUDIT`;
-            const tbody = document.getElementById('ledger-tbody');
-            let html = "";
-
-            if (isCustomRoadmap) {
-                roadmap.forEach(row => {
-                    const rowRange = row.tp2 - row.entry;
-                    const rowPct = Math.min(100, Math.max(0, Math.round(((livePrice - row.entry) / (rowRange || 1)) * 100)));
-                    const gainDollar = ((row.tp2 - row.entry) * 0.95).toFixed(2);
-
-                    if (row.isWon || (livePrice > row.tp2 && !row.isActive)) {
-                        html += `
-                            <tr class="row-completed">
-                                <td><strong style="color:var(--green-glow);">WAVE #${row.num}</strong></td>
-                                <td><span style="color:var(--cyan-glow);">${row.swept}</span></td>
-                                <td>BUY LIMIT @ $${row.entry.toFixed(2)}</td>
-                                <td style="color:var(--red-glow);">$${row.sl.toFixed(2)}</td>
-                                <td><strong style="color:var(--green-glow);">$${row.tp2.toFixed(2)} (BSL)</strong></td>
-                                <td>
-                                    <span class="status-tag tag-hit">TP2 HIT 🎯</span>
-                                    <div style="margin-top:4px; width:90px; height:4px; background:rgba(16,185,129,0.2); border-radius:2px; overflow:hidden;">
-                                        <div style="height:100%; width:100%; background:var(--green-glow);"></div>
-                                    </div>
-                                </td>
-                                <td style="color:var(--green-glow); font-weight:800;">+2.3R (+$${gainDollar})</td>
-                                <td style="font-size:10px; color:#CBD5E1; max-width:240px;">${row.desc}</td>
-                                <td><span style="color:var(--text-dim); font-size:10px;">CLOSED ✅</span></td>
-                            </tr>
-                        `;
-                    } else if (row.isActive) {
-                        const rowOrderType = (row.entry < livePrice) ? "BUY LIMIT" : (Math.abs(row.entry - livePrice) <= 1.0 ? "BUY (MARKET)" : "BUY STOP");
-                        html += `
-                            <tr class="row-active">
-                                <td><strong style="color:var(--cyan-glow);">WAVE #${row.num} (ACTIVE)</strong></td>
-                                <td><strong style="color:var(--gold-glow);">${row.swept}</strong></td>
-                                <td><strong style="color:var(--gold-glow);">${rowOrderType} @ $${row.entry.toFixed(2)}</strong></td>
-                                <td style="color:var(--red-glow); font-weight:800;">$${row.sl.toFixed(2)}</td>
-                                <td><strong style="color:var(--green-glow);">$${row.tp2.toFixed(2)} (BSL Magnet)</strong></td>
-                                <td>
-                                    <span class="status-tag tag-active">${rowPct}% FUEL ⛽</span>
-                                    <div style="margin-top:4px; width:90px; height:5px; background:rgba(255,255,255,0.08); border-radius:3px; overflow:hidden;">
-                                        <div style="height:100%; width:${rowPct}%; background:linear-gradient(90deg, var(--cyan-glow), var(--green-glow)); transition:width 0.3s ease;"></div>
-                                    </div>
-                                </td>
-                                <td style="color:var(--cyan-glow); font-weight:800;">RUNNER ACTIVE</td>
-                                <td style="font-size:10px; color:#CBD5E1; max-width:240px;">${row.desc}</td>
-                                <td><button class="btn-prearm" onclick="copyWaveTicket(${row.num}, ${row.entry}, ${row.sl}, ${row.tp2})">📋 COPY LIVE TICKET</button></td>
-                            </tr>
-                        `;
-                    } else {
-                        html += `
-                            <tr class="row-future">
-                                <td><span style="color:var(--text-muted);">WAVE #${row.num}</span></td>
-                                <td><span style="color:var(--text-dim);">${row.swept}</span></td>
-                                <td>BUY LIMIT @ $${row.entry.toFixed(2)}</td>
-                                <td style="color:var(--red-glow);">$${row.sl.toFixed(2)}</td>
-                                <td>$${row.tp2.toFixed(2)} (BSL)</td>
-                                <td>
-                                    <span class="status-tag tag-queued">QUEUED ⏳</span>
-                                    <div style="margin-top:4px; width:90px; height:4px; background:rgba(255,255,255,0.04); border-radius:2px; overflow:hidden;">
-                                        <div style="height:100%; width:0%;"></div>
-                                    </div>
-                                </td>
-                                <td style="color:var(--text-dim);">POTENTIAL +2.4R</td>
-                                <td style="font-size:10px; color:var(--text-dim); max-width:240px;">${row.desc}</td>
-                                <td><button class="btn-prearm" onclick="copyWaveTicket(${row.num}, ${row.entry}, ${row.sl}, ${row.tp2})">⏳ PRE-SET LIMIT ORDER</button></td>
-                            </tr>
-                        `;
-                    }
-                });
-            } else {
-                // Algorithmic 1M / 5M Dynamic Wave Calculation
-                const step = spec.step;
-                const halfStep = step * 0.50;
-                const w1Low = spec.baseLow;
-
-                let dynActive = 1;
-                for (let i = 1; i <= spec.total; i++) {
-                    const rLow = (i === 1) ? w1Low : (w1Low + ((i - 1) * halfStep));
-                    const rHigh = rLow + step;
-                    if (livePrice >= rLow && livePrice < rHigh) {
-                        dynActive = i;
-                        break;
-                    } else if (livePrice >= rHigh) {
-                        dynActive = i + 1;
-                    }
-                }
-                dynActive = Math.min(spec.total, Math.max(1, dynActive));
-
-                for (let i = 1; i <= spec.total; i++) {
-                    const rowLow = (i === 1) ? w1Low : (w1Low + ((i - 1) * halfStep));
-                    const rowHigh = rowLow + step;
-                    const rowEntry = (rowLow + 0.05).toFixed(2);
-                    const rowSl = (rowLow - spec.slOffset).toFixed(2);
-                    const wSweptPool = i === 1 ? spec.sweptPool : `Wave #${i-1} Peak Swept ➔ 50% Pullback Retest @ $${rowLow.toFixed(2)}`;
-                    const rowPct = Math.min(100, Math.max(0, Math.round(((livePrice - rowLow) / (step || 1)) * 100)));
-                    const gainDollar = (step * 0.95).toFixed(2);
-
-                    if (i < dynActive) {
-                        html += `
-                            <tr class="row-completed">
-                                <td><strong style="color:var(--green-glow);">WAVE #${i}</strong></td>
-                                <td><span style="color:var(--cyan-glow);">${wSweptPool}</span></td>
-                                <td>BUY LIMIT @ $${rowEntry}</td>
-                                <td style="color:var(--red-glow);">$${rowSl}</td>
-                                <td><strong style="color:var(--green-glow);">$${rowHigh.toFixed(2)} (BSL)</strong></td>
-                                <td>
-                                    <span class="status-tag tag-hit">TP2 HIT 🎯</span>
-                                    <div style="margin-top:4px; width:90px; height:4px; background:rgba(16,185,129,0.2); border-radius:2px; overflow:hidden;">
-                                        <div style="height:100%; width:100%; background:var(--green-glow);"></div>
-                                    </div>
-                                </td>
-                                <td style="color:var(--green-glow); font-weight:800;">+2.3R (+$${gainDollar})</td>
-                                <td style="font-size:10px; color:var(--text-muted); max-width:240px;">Harvested short stop liquidity; completed expansion leg.</td>
-                                <td><span style="color:var(--text-dim); font-size:10px;">CLOSED ✅</span></td>
-                            </tr>
-                        `;
-                    } else if (i === dynActive) {
-                        const rowOrderType = (parseFloat(rowEntry) < livePrice) ? "BUY LIMIT" : (Math.abs(parseFloat(rowEntry) - livePrice) <= 1.0 ? "BUY (MARKET)" : "BUY STOP");
-                        html += `
-                            <tr class="row-active">
-                                <td><strong style="color:var(--cyan-glow);">WAVE #${i} (ACTIVE)</strong></td>
-                                <td><strong style="color:var(--gold-glow);">${spec.sweptPool}</strong></td>
-                                <td><strong style="color:var(--gold-glow);">${rowOrderType} @ $${rowEntry}</strong></td>
-                                <td style="color:var(--red-glow); font-weight:800;">$${rowSl}</td>
-                                <td><strong style="color:var(--green-glow);">$${rowHigh.toFixed(2)} (BSL Magnet)</strong></td>
-                                <td>
-                                    <span class="status-tag tag-active">${rowPct}% FUEL ⛽</span>
-                                    <div style="margin-top:4px; width:90px; height:5px; background:rgba(255,255,255,0.08); border-radius:3px; overflow:hidden;">
-                                        <div style="height:100%; width:${rowPct}%; background:linear-gradient(90deg, var(--cyan-glow), var(--green-glow)); transition:width 0.3s ease;"></div>
-                                    </div>
-                                </td>
-                                <td style="color:var(--cyan-glow); font-weight:800;">RUNNER ACTIVE</td>
-                                <td style="font-size:10px; color:#CBD5E1; max-width:240px;">${spec.thesis}</td>
-                                <td><button class="btn-prearm" onclick="copyWaveTicket(${i}, ${parseFloat(rowEntry)}, ${parseFloat(rowSl)}, ${rowHigh})">📋 COPY LIVE TICKET</button></td>
-                            </tr>
-                        `;
-                    } else {
-                        html += `
-                            <tr class="row-future">
-                                <td><span style="color:var(--text-muted);">WAVE #${i}</span></td>
-                                <td><span style="color:var(--text-dim);">${wSweptPool}</span></td>
-                                <td>BUY LIMIT @ $${rowEntry}</td>
-                                <td style="color:var(--red-glow);">$${rowSl}</td>
-                                <td>$${rowHigh.toFixed(2)} (BSL)</td>
-                                <td>
-                                    <span class="status-tag tag-queued">QUEUED ⏳</span>
-                                    <div style="margin-top:4px; width:90px; height:4px; background:rgba(255,255,255,0.04); border-radius:2px; overflow:hidden;">
-                                        <div style="height:100%; width:0%;"></div>
-                                    </div>
-                                </td>
-                                <td style="color:var(--text-dim);">POTENTIAL +2.4R</td>
-                                <td style="font-size:10px; color:var(--text-dim); max-width:240px;">Pending Wave #${i-1} target completion and 50% discount pullback.</td>
-                                <td><button class="btn-prearm" onclick="copyWaveTicket(${i}, ${parseFloat(rowEntry)}, ${parseFloat(rowSl)}, ${rowHigh})">⏳ PRE-SET LIMIT ORDER</button></td>
-                            </tr>
-                        `;
-                    }
-                }
-            }
-            tbody.innerHTML = html;
-        }
-
-        setInterval(async () => {
-            try {
-                const res = await fetch('/api/price');
-                const data = await res.json();
-                if (data && data.price) {
-                    livePrice = parseFloat(data.price);
-                    document.getElementById('nav-live-price').innerText = `$${livePrice.toFixed(2)}`;
-                    renderMatrixHUD();
-                }
-            } catch (e) {}
-        }, 1500);
-
-        function copyActiveTicket() {
-            const orderType = document.getElementById('ticket-order-type').innerText;
-            const entry = document.getElementById('ticket-entry').innerText;
-            const sl = document.getElementById('ticket-sl').innerText;
-            const tp1 = document.getElementById('ticket-tp1').innerText;
-            const tp2 = document.getElementById('ticket-tp2').innerText;
-            const risk = document.getElementById('ticket-risk').innerText;
-
-            const text = `// MAZRION FRACTAL WAVE TICKET\nSymbol: XAUUSD SPOT\nType: ${orderType}\nEntry: ${entry}\nSL: ${sl}\nTP1 (BE Trigger): ${tp1}\nTP2 (Wave Goal): ${tp2}\nRisk: ${risk}`;
-            navigator.clipboard.writeText(text);
-
-            const btn = document.getElementById('btn-copy-ticket');
-            btn.innerText = '✅ MT5 TICKET COPIED!';
-            btn.style.background = '#10B981';
-            setTimeout(() => {
-                btn.innerText = '📋 COPY';
-                btn.style.background = 'rgba(255,255,255,0.06)';
-            }, 2500);
-        }
-
-        function copyWaveTicket(waveNum, entry, sl, tp) {
-            const text = `// MAZRION PRE-SET WAVE #${waveNum} ORDER\nSymbol: XAUUSD SPOT\nType: BUY LIMIT\nEntry POI: $${entry.toFixed(2)}\nFloor SL: $${sl.toFixed(2)}\nTarget TP: $${tp.toFixed(2)}\nMode: Strict 2% Capital Protocol`;
-            navigator.clipboard.writeText(text);
-            alert(`✅ Future Wave #${waveNum} Pre-Set Limit Order copied to clipboard!\n\nEntry: $${entry.toFixed(2)}\nSL: $${sl.toFixed(2)}\nTP: $${tp.toFixed(2)}`);
-        }
-
-        async function executeActiveTicketOnVps() {
-            const rawOrderType = document.getElementById('ticket-order-type').innerText;
-            const entryStr = document.getElementById('ticket-entry').innerText.replace(/[$,]/g, '').trim();
-            const slStr = document.getElementById('ticket-sl').innerText.replace(/[$,]/g, '').trim();
-            const tp1Str = document.getElementById('ticket-tp1').innerText.replace(/[$,]/g, '').trim();
-            const tp2Str = document.getElementById('ticket-tp2').innerText.replace(/[$,]/g, '').trim();
-            const btn = document.getElementById('btn-execute-vps');
-            
-            const origText = btn.innerText;
-            btn.innerText = '⏳ DISPATCHING...';
-            btn.disabled = true;
-
-            const tf = (typeof selectedTf !== 'undefined') ? selectedTf : '1m';
-            const entryVal = parseFloat(entryStr);
-
-            // Determine explicit order type string for MT5
-            let cleanOrderType = "BUY_LIMIT";
-            if (rawOrderType.includes("MARKET")) {
-                cleanOrderType = "BUY";
-            } else if (rawOrderType.includes("STOP")) {
-                cleanOrderType = "BUY_STOP";
-            } else {
-                cleanOrderType = (entryVal < livePrice) ? "BUY_LIMIT" : "BUY_STOP";
-            }
-
-            try {
-                const fetchFn = window.MazrionSecurity ? window.MazrionSecurity.fetchWithAuth.bind(window.MazrionSecurity) : fetch;
-                const res = await fetchFn('/api/execute', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        symbol: 'XAUUSD',
-                        orderType: cleanOrderType,
-                        entryPrice: entryVal,
-                        stopLoss: parseFloat(slStr),
-                        takeProfit1: parseFloat(tp1Str),
-                        takeProfit2: parseFloat(tp2Str),
-                        volume: 0.01,
-                        timeframe: tf,
-                        waveTitle: `${tf.toUpperCase()} Wave Execution`
-                    })
-                });
-
-                if (res.ok) {
-                    btn.innerText = '✅ DISPATCHED TO VPS MT5!';
-                    btn.style.background = '#059669';
-                    const tag = document.getElementById('vpsSyncTag');
-                    if (tag) tag.innerText = '🟢 QUEUED IN MT5';
-                    setTimeout(() => {
-                        btn.innerText = origText;
-                        btn.disabled = false;
-                    }, 3500);
-                } else if (res.status === 401) {
-                    btn.innerText = '🔒 PIN REQUIRED';
-                    btn.style.background = '#EF4444';
-                    alert("🔒 Security Alert: Master PIN required to dispatch trades. Please unlock terminal.");
-                    if (window.MazrionSecurity) window.MazrionSecurity.lock();
-                    btn.disabled = false;
-                } else {
-                    const err = await res.json();
-                    btn.innerText = '❌ DISPATCH FAILED';
-                    btn.style.background = '#EF4444';
-                    alert(`❌ Dispatch Failed: ${err.error || 'Server error'}`);
-                    setTimeout(() => {
-                        btn.innerText = origText;
-                        btn.disabled = false;
-                    }, 3500);
-                }
-            } catch (e) {
-                console.error("Execute error:", e);
-                btn.innerText = '❌ NETWORK ERROR';
-                setTimeout(() => { btn.innerText = origText; btn.disabled = false; }, 2000);
             }
         }
 
-        async function executeWaveTicketOnVps(waveNum, entry, sl, tp) {
-            const tf = (typeof selectedTf !== 'undefined') ? selectedTf : '1m';
-            const entryVal = parseFloat(String(entry).replace(/[$,]/g, ''));
-            const orderType = (entryVal < livePrice) ? "BUY_LIMIT" : "BUY_STOP";
-
-            try {
-                const res = await fetch('/api/execute', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        symbol: 'XAUUSD',
-                        orderType: orderType,
-                        entryPrice: entryVal,
-                        stopLoss: parseFloat(String(sl).replace(/[$,]/g, '')),
-                        takeProfit1: parseFloat(String(tp).replace(/[$,]/g, '')),
-                        takeProfit2: parseFloat(String(tp).replace(/[$,]/g, '')),
-                        volume: 0.01,
-                        timeframe: tf,
-                        waveTitle: `${tf.toUpperCase()} Wave #${waveNum}`
-                    })
-                });
-                if (res.ok) {
-                    alert(`🚀 Mazrion Dispatched Wave #${waveNum} Order to VPS MT5!\n\nSymbol: XAUUSD\nType: ${orderType}\nEntry: $${entryVal.toFixed(2)}\nSL: $${sl.toFixed(2)}\nTP: $${tp.toFixed(2)}\n\nOrder is now queued for instant execution on your VPS MT5.`);
-                }
-            } catch (e) {
-                alert("Network error sending order to VPS.");
+        document.addEventListener('DOMContentLoaded', () => {
+            if (window.MazrionFractalEngine) {
+                window.MazrionFractalEngine.subscribe(renderMatrixFromSnapshot);
             }
-        }
-
-        window.addEventListener('DOMContentLoaded', () => {
-            renderMatrixHUD();
         });
     </script>
-    <script src="/js/mazrion_widget.js"></script>
 </body>
 </html>
